@@ -1,5 +1,3 @@
 ﻿  game.c
-  Processing_Sample.vcxproj -> C:\Users\trave\Desktop\1400\Mid Term Project v2\x64\Debug\Processing_Sample.exe
-  1 File(s) copied
-  1 File(s) copied
-  7 File(s) copied
+C:\Users\User\Documents\GitHub\CoffeeMochi\game.c(121,15): error C2220: the following warning is treated as an error
+C:\Users\User\Documents\GitHub\CoffeeMochi\game.c(121,15): warning C4101: 'gridPos': unreferenced local variable
