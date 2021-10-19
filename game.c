@@ -2,6 +2,7 @@
 #include <stdbool.h>
 #include "cprocessing.h"
 #include "TravessFunctions.h"
+#include "Resource_Stats.h"
 
 #define WORLDGRIDX 40
 #define WORLDGRIDY 40
