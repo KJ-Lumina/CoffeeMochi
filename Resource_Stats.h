@@ -16,11 +16,11 @@ different debuff values to affect resource generation to add more depth to calcu
 #define MAX_MORALE 100
 #define MORALE_DECREASE_MODIFIER 40
 
-// For now Gold generated from 'Market' tiles and 'business' citizens 
+// For now Gold generated from 'Market' tiles and 'merchant' citizens 
 // and tax amount is defaulted to the following values
 // Subject to adjustments if Levels/Ranks are to be implemented
 #define GOLD_AMT_FROM_MARKETS 20
-#define GOLD_AMT_FROM_BUSINESS 5
+#define GOLD_AMT_FROM_MERCHANTS 5
 #define TAX_AMOUNT 3
 
 // For now Food generated from 'Farm' tiles and 'farmer' citizens 
@@ -46,7 +46,7 @@ int max_population = 100;
 int current_morale;
 
 int num_of_markets = 0;
-int num_of_business_citizen = 0;
+int num_of_merchant_citizen = 0;
 bool is_bankrupt = FALSE;
 float bankrupt_debuff = 0.75f;
 
@@ -68,8 +68,8 @@ int unhappiness_factor = 0;
 // Function to check amount of Gold resource generated per turn
 void gold_generated_per_turn()
 {
-	// Gold generated from market and business citizens
-	int gold_generated_by_markets = (num_of_markets * GOLD_AMT_FROM_MARKETS) + (num_of_business_citizen * GOLD_AMT_FROM_CITIZEN);
+	// Gold generated from market and merchant citizens
+	int gold_generated_by_markets = (num_of_markets * GOLD_AMT_FROM_MARKETS) + (num_of_merchant_citizen * GOLD_AMT_FROM_MERCHANTS);
 
 	// Gold generated from population tax
 	int gold_generated_by_tax = current_population * TAX_AMOUNT;
