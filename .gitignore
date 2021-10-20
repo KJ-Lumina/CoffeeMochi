@@ -42,9 +42,17 @@ ipch/
 *.lai
 *.la
 *.a
-*.lib
 
 # Executables
 *.exe
 *.out
 *.app
+*.x64
+*.tlog
+*.lastbuildstate
+*.recipe
+*.idb
+*.pdb
+*.ipch
+*.db-shm
+*.db

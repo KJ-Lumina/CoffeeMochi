@@ -66,7 +66,7 @@ float overpopulation_debuff_rate = 0.0f;
 int unhappiness_factor = 0;
 
 // Function to check amount of Gold resource generated per turn
-void gold_generated_per_turn()
+void gold_generated_per_turn(void)
 {
 	// Gold generated from market and merchant citizens
 	int gold_generated_by_markets = (num_of_markets * GOLD_AMT_FROM_MARKETS) + (num_of_merchant_citizen * GOLD_AMT_FROM_MERCHANTS);
@@ -93,7 +93,7 @@ void gold_generated_per_turn()
 }
 
 // Function to check amount of Food resource generated per turn
-void food_generated_per_turn()
+void food_generated_per_turn(void)
 {
 	// Food generated from farms and farmer citizens
 	int food_generated_by_farms = (num_of_farms * FOOD_AMT_FROM_FARMS) + (num_of_farmer_citizen * FOOD_AMT_FROM_FARMERS);
@@ -117,7 +117,7 @@ void food_generated_per_turn()
 }
 
 // Function to check if kingdom is Overpopulated
-void check_for_overpopulation()
+void check_for_overpopulation(void)
 {
 	// Checks current_population with max_population and toggles overpopulation debuff if overpopulated
 	if (current_population > max_population)
@@ -132,7 +132,7 @@ void check_for_overpopulation()
 }
 
 // Function to update Morale of population based on current state of the kingdom
-void update_morale()
+void update_morale(void)
 {
 	// Check if kingdom has any of the respective debuffs and adjust current_morale accordingly
 	// Tentatively both bankrupt and starving debuff will reduce morale by 30 each if TRUE

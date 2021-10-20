@@ -7,7 +7,7 @@ int turnNumber = 1;
 void OnTurnPassed(void) {
 
     //Food Resource Calculations
-
+	gold_generated_per_turn();
 
 
 	//Gold Resource Calculations
