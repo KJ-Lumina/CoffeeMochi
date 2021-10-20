@@ -1,8 +1,4 @@
-﻿  game.c
-  main.c
-C:\Users\Seow Kai Jun\Documents\GitHub\CoffeeMochi\Resource_Stats.h(148,23): error C2220: the following warning is treated as an error (compiling source file game.c)
-C:\Users\Seow Kai Jun\Documents\GitHub\CoffeeMochi\Resource_Stats.h(148,23): warning C4244: '=': conversion from 'float' to 'int', possible loss of data (compiling source file game.c)
-C:\Users\Seow Kai Jun\Documents\GitHub\CoffeeMochi\Resource_Stats.h(156,23): warning C4244: '=': conversion from 'float' to 'int', possible loss of data (compiling source file game.c)
-C:\Users\Seow Kai Jun\Documents\GitHub\CoffeeMochi\Resource_Stats.h(164,23): warning C4244: '=': conversion from 'float' to 'int', possible loss of data (compiling source file game.c)
-C:\Users\Seow Kai Jun\Documents\GitHub\CoffeeMochi\Resource_Stats.h(172,23): warning C4244: '=': conversion from 'float' to 'int', possible loss of data (compiling source file game.c)
-C:\Users\Seow Kai Jun\Documents\GitHub\CoffeeMochi\game.c(122,15): warning C4101: 'gridPos': unreferenced local variable
+﻿  Processing_Sample.vcxproj -> C:\Users\trave\Documents\GitHub\CoffeeMochi\x64\Debug\Processing_Sample.exe
+  1 File(s) copied
+  1 File(s) copied
+  7 File(s) copied

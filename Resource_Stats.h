@@ -141,7 +141,7 @@ void update_morale()
 	// Changing MORALE_DECREASE_MODIFIER will change the amount of morale penalty from each debuff
 	if (is_bankrupt == TRUE && is_starving == TRUE && is_overpopulated == TRUE)
 	{
-		current_morale = MAX_MORALE - (
+		current_morale = MAX_MORALE - (int)(
 			(bankrupt_debuff * MORALE_DECREASE_MODIFIER) +
 			(starving_debuff * MORALE_DECREASE_MODIFIER) +
 			(overpopulation_debuff_rate * MORALE_DECREASE_MODIFIER) +
@@ -150,7 +150,7 @@ void update_morale()
 
 	else if (is_bankrupt == TRUE && is_starving == TRUE)
 	{
-		current_morale = MAX_MORALE - (
+		current_morale = MAX_MORALE - (int)(
 			(bankrupt_debuff * MORALE_DECREASE_MODIFIER) +
 			(starving_debuff * MORALE_DECREASE_MODIFIER) +
 			unhappiness_factor);
@@ -158,7 +158,7 @@ void update_morale()
 
 	else if (is_bankrupt == TRUE && is_overpopulated == TRUE)
 	{
-		current_morale = MAX_MORALE - (
+		current_morale = MAX_MORALE - (int)(
 			(bankrupt_debuff * MORALE_DECREASE_MODIFIER) +
 			(overpopulation_debuff_rate * MORALE_DECREASE_MODIFIER) +
 			unhappiness_factor);
@@ -166,7 +166,7 @@ void update_morale()
 
 	else if (is_starving == TRUE && is_overpopulated == TRUE)
 	{
-		current_morale = MAX_MORALE - (
+		current_morale = MAX_MORALE - (int)(
 			(starving_debuff * MORALE_DECREASE_MODIFIER) +
 			(overpopulation_debuff_rate * MORALE_DECREASE_MODIFIER) +
 			unhappiness_factor);
