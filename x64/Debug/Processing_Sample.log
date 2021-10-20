@@ -1,3 +1,8 @@
 ﻿  game.c
-C:\Users\User\Documents\GitHub\CoffeeMochi\game.c(121,15): error C2220: the following warning is treated as an error
-C:\Users\User\Documents\GitHub\CoffeeMochi\game.c(121,15): warning C4101: 'gridPos': unreferenced local variable
+  main.c
+C:\Users\Seow Kai Jun\Documents\GitHub\CoffeeMochi\Resource_Stats.h(148,23): error C2220: the following warning is treated as an error (compiling source file game.c)
+C:\Users\Seow Kai Jun\Documents\GitHub\CoffeeMochi\Resource_Stats.h(148,23): warning C4244: '=': conversion from 'float' to 'int', possible loss of data (compiling source file game.c)
+C:\Users\Seow Kai Jun\Documents\GitHub\CoffeeMochi\Resource_Stats.h(156,23): warning C4244: '=': conversion from 'float' to 'int', possible loss of data (compiling source file game.c)
+C:\Users\Seow Kai Jun\Documents\GitHub\CoffeeMochi\Resource_Stats.h(164,23): warning C4244: '=': conversion from 'float' to 'int', possible loss of data (compiling source file game.c)
+C:\Users\Seow Kai Jun\Documents\GitHub\CoffeeMochi\Resource_Stats.h(172,23): warning C4244: '=': conversion from 'float' to 'int', possible loss of data (compiling source file game.c)
+C:\Users\Seow Kai Jun\Documents\GitHub\CoffeeMochi\game.c(122,15): warning C4101: 'gridPos': unreferenced local variable
