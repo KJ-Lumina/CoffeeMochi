@@ -1,3 +1,1 @@
-﻿  game.c
-C:\Users\User\Documents\GitHub\CoffeeMochi\game.c(121,15): error C2220: the following warning is treated as an error
-C:\Users\User\Documents\GitHub\CoffeeMochi\game.c(121,15): warning C4101: 'gridPos': unreferenced local variable
+﻿LINK : fatal error LNK1104: cannot open file 'CProcessingd.lib'

@@ -119,7 +119,6 @@ void DrawAllTiles()
 void DrawCursorTile()
 {
     cursorTile = SnapToGrid(newMousePos.x, newMousePos.y);
-    CP_Vector gridPos = WorldPositionToGridPosition(cursorTile.x, cursorTile.y);
     //printf("%f,%f\n", gridPos.x, gridPos.y);
     CP_Image_Draw(grasstile, cursorTile.x, cursorTile.y, tileWidth, tileHeight, 255);
 }
