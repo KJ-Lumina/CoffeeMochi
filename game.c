@@ -36,7 +36,7 @@ CP_Image tdgrasstile;
 
 #pragma endregion
 
-#pragma region Resources Variables Declarion
+#pragma region Resources Variables Declaration
 int current_gold;
 int current_food;
 int current_population;
@@ -64,6 +64,9 @@ float overpopulation_debuff_rate = 0.0f;
 int unhappiness_factor = 0;
 #pragma endregion
 
+#pragma region Win & Lose Variable Declaration
+int loseCondition_FoodValue;
+#pragma endregion
 
 
 #pragma region Grid Functions
@@ -170,7 +173,7 @@ void UpdateResourceAmount(void) {
 #pragma endregion
 
 
-#pragma region Turn Functions
+#pragma region Turn & Win Lose Functions
 //Trigger Turn Start Functions Calls
 void OnTurnStart(void) {
 
@@ -179,7 +182,22 @@ void OnTurnStart(void) {
 //Trigger Turn End Functions Calls
 void OnTurnEnd(void) {
 
-   // gold_generated_per_turn(current_gold, num_of_markets, num_of_merchant_citizen);
+    //Updates and Check for Triggers
+    is_bankrupt = gold_generated_per_turn(current_gold, current_population, num_of_markets, num_of_merchant_citizen, num_of_farms, num_of_housing);
+    is_starving = food_generated_per_turn(current_food, current_population, num_of_farms, num_of_farmer_citizen);
+    is_overpopulated = check_for_overpopulation(current_population, max_population);
+
+    
+
+    //Check for Game Over Trigger
+    if (current_food <= loseCondition_FoodValue)
+        OnGameOver();
+
+}
+
+void OnGameOver(void) {
+    
+    //Lose UI Pop Up
 
 }
 
