@@ -3,10 +3,16 @@
 #include "cprocessing.h"
 #include "TravessFunctions.h"
 #include "Resource_Stats.h"
+#include "MainSystem.h"
 
 #define WORLDGRIDX 40
 #define WORLDGRIDY 40
 
+#pragma region World Variables Declaration
+int turnNumber = 1;
+#pragma endregion
+
+#pragma region  Grid Variables
 float windowsWidth;
 float windowsHeight;
 CP_Vector worldSpaceOrigin;
@@ -19,19 +25,48 @@ CP_Vector lastMousePos;
 CP_Vector newMousePos;
 bool mouseDrag = false;
 int worldGrid[WORLDGRIDX][WORLDGRIDY] = { 0 };
+#pragma endregion
 
+#pragma region Sprite/Images Declaration
 CP_Image grasstile;
 CP_Image housetile;
 CP_Image wheattile;
 CP_Image treetile;
 CP_Image tdgrasstile;
 
-void UpdateMousePosition()
-{
-    newMousePos.x = CP_Input_GetMouseX();
-    newMousePos.y = CP_Input_GetMouseY();
-}
+#pragma endregion
 
+#pragma region Resources Variables Declarion
+int current_gold;
+int current_food;
+int current_population;
+int max_population = 100;
+int current_morale;
+
+//Gold Related Variables
+int num_of_markets = 0;
+int num_of_merchant_citizen = 0;
+bool is_bankrupt = false;
+float bankrupt_debuff = 0.75f;
+
+//Food Related Variables
+int num_of_farms = 0;
+int num_of_farmer_citizen = 0;
+bool is_starving = false;
+float starving_debuff = 0.75f;
+
+//Population Related Variables
+int num_of_housing = 0;
+bool is_overpopulated = false;
+float overpopulation_debuff_rate = 0.0f;
+
+// Function for unhappiness_factor not implemented yet
+int unhappiness_factor = 0;
+#pragma endregion
+
+
+
+#pragma region Grid Functions
 CP_Vector SnapToGrid(float x, float y)
 {
     x -= worldSpaceOrigin.x;
@@ -76,8 +111,7 @@ CP_Vector GridPositionToWorldPosition(float x, float y)
     return CP_Vector_Set(x, y);
 }
 
-
-void DrawAllTiles()
+void DrawAllTiles(void)
 {
     CP_Vector newTile;
     for (int j = 0; j < WORLDGRIDY; ++j)
@@ -116,20 +150,53 @@ void DrawAllTiles()
     }
 }
 
-void DrawCursorTile()
+void DrawCursorTile(void)
 {
     cursorTile = SnapToGrid(newMousePos.x, newMousePos.y);
     //printf("%f,%f\n", gridPos.x, gridPos.y);
     CP_Image_Draw(grasstile, cursorTile.x, cursorTile.y, tileWidth, tileHeight, 255);
 }
 
-void ReturnToCenter()
+#pragma endregion
+
+#pragma region Resource Functions
+void UpdateResourceAmount(void) {
+    if (current_gold <= 0)
+        current_gold = 0;
+
+    if (current_food <= 0)
+        current_food = 0;
+}
+#pragma endregion
+
+
+#pragma region Turn Functions
+//Trigger Turn Start Functions Calls
+void OnTurnStart(void) {
+
+}
+
+//Trigger Turn End Functions Calls
+void OnTurnEnd(void) {
+
+   // gold_generated_per_turn(current_gold, num_of_markets, num_of_merchant_citizen);
+
+}
+
+#pragma endregion
+
+void UpdateMousePosition(void)
+{
+    newMousePos = CP_Vector_Set(CP_Input_GetMouseX(), CP_Input_GetMouseY());
+}
+
+void ReturnToCenter(void)
 {
     worldSpaceOrigin.x = windowsWidth / 2 - tileWidth * 10;
     worldSpaceOrigin.y = windowsHeight / 2 - tileHeight * 10;
 }
 
-void CheckPlayerInput()
+void CheckPlayerInput(void)
 {
     if (CP_Input_KeyDown(KEY_F))
     {
@@ -162,7 +229,7 @@ void CheckPlayerInput()
     }
 }
 
-void BasicPlatform()
+void BasicPlatform(void)
 {
     for (int i = 7; i < 12; ++i)
     {
