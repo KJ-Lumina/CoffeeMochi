@@ -87,7 +87,7 @@ END OF TURN FUNCTIONS
 ---------------------*/
 
 // Function to check amount of Gold resource generated per turn
-int gold_generated_per_turn()
+void gold_generated_per_turn()
 {
 	// Gold generated from market
 	int gold_generated_by_markets = (numMarkets * GOLD_AMT_FROM_MARKETS);
@@ -101,12 +101,10 @@ int gold_generated_per_turn()
 	// Net total Gold generated
 	curGold += gold_generated_by_markets + gold_generated_by_tax - gold_deducted_from_upkeep;
 
-	return curGold;
-
 }
 
 // Function to check amount of Food resource generated per turn
-int food_generated_per_turn()
+void food_generated_per_turn()
 {
 	// Food generated from farms and farmer citizens
 	int food_generated_by_farms = (numFarms * FOOD_AMT_FROM_FARMS);
@@ -117,13 +115,11 @@ int food_generated_per_turn()
 	// Net total Food generated
 	curFood += food_generated_by_farms - food_deducted_from_consumption;
 
-	return curFood;
 }
 
-int population_per_turn()
+void population_per_turn()
 {
 	curPopulation = initPopulation + (numHouses * PAX_PER_HOUSING);
-	return curPopulation;
 }
 
 /*
