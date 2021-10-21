@@ -1,5 +1,9 @@
 ﻿  game.c
-  Processing_Sample.vcxproj -> C:\Users\trave\Documents\GitHub\CoffeeMochi\x64\Debug\Processing_Sample.exe
-  1 File(s) copied
-  1 File(s) copied
+  main.c
+  LINK : C:\Users\Erron\Documents\GitHub\CoffeeMochi\x64\Debug\Processing_Sample.exe not found or not built by the last incremental link; performing full link
+  Processing_Sample.vcxproj -> C:\Users\Erron\Documents\GitHub\CoffeeMochi\x64\Debug\Processing_Sample.exe
+  0 File(s) copied
+  File not found - CProcessingd.dll
+  File not found - fmodL.dll
+  0 File(s) copied
   9 File(s) copied

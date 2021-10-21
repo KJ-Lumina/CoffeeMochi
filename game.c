@@ -2,7 +2,7 @@
 #include <stdbool.h>
 #include "cprocessing.h"
 #include "TravessFunctions.h"
-#include "Resource_Stats.h"
+#include "Resource_Stats.c"
 #include "MainSystem.h"
 
 #define WORLDGRIDX 40
@@ -37,31 +37,19 @@ CP_Image tdgrasstile;
 #pragma endregion
 
 #pragma region Resources Variables Declaration
-int current_gold;
-int current_food;
-int current_population;
-int max_population = 100;
-int current_morale;
+int curGold;
+int curFood;
+int curPopulation;
+int initPopulation = 100;
 
 //Gold Related Variables
-int num_of_markets = 0;
-int num_of_merchant_citizen = 0;
-float bankrupt_debuff = 0.75f;
-bool is_bankrupt = false;
+int numMarkets = 0;
 
 //Food Related Variables
-int num_of_farms = 0;
-int num_of_farmer_citizen = 0;
-float starving_debuff = 0.75f;
-bool is_starving = false;
+int numFarms = 0;
 
 //Population Related Variables
-int num_of_housing = 0;
-float overpopulation_debuff_rate = 0.0f;
-bool is_overpopulated = false;
-
-// Function for unhappiness_factor not implemented yet
-int unhappiness_factor = 0;
+int numHouses = 0;
 #pragma endregion
 
 #pragma region Win & Lose Variable Declaration
@@ -160,11 +148,11 @@ void DrawCursorTile(void)
 
 #pragma region Resource Functions
 void UpdateResourceAmount(void) {
-    if (current_gold <= 0)
-        current_gold = 0;
+    if (curGold <= 0)
+        curGold = 0;
 
-    if (current_food <= 0)
-        current_food = 0;
+    if (curFood <= 0)
+        curFood = 0;
 }
 #pragma endregion
 
@@ -184,13 +172,11 @@ void GameOver(void)
 
 void EndTurn(void) 
 {
-    //Updates and Check for Triggers
-    is_bankrupt = gold_generated_per_turn(current_gold, current_population, num_of_markets, num_of_merchant_citizen, num_of_farms, num_of_housing);
-    is_starving = food_generated_per_turn(current_food, current_population, num_of_farms, num_of_farmer_citizen);
-    is_overpopulated = check_for_overpopulation(current_population, max_population);
-
+    int gold_generated_per_turn(int curGold, int curPopulation, int numMarkets, int numFarms, int numHouses);
+    int food_generated_per_turn(int curFood, int curPopulation, int numFarms);
+    int population_per_turn(int numHouses, int initPopulation, int curPopulation);
     //Check for Game Over Trigger
-    if (current_food <= loseCondition_FoodValue)
+    if (curFood <= loseCondition_FoodValue)
         GameOver();
 }
 
