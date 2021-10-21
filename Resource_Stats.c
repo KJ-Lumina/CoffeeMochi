@@ -44,21 +44,23 @@ int numFarms = 0;
 //Population Related Variables
 int numHouses = 0;
 
+
+
 /*--------------------
 GET RESOURCE FUNCTIONS
 ---------------------*/
 
-int get_current_gold()
+int Get_current_gold()
 {
 	return curGold;
 }
 
-int get_current_food()
+int Get_current_food()
 {
 	return curFood;
 }
 
-int get_current_population()
+int Get_current_population()
 {
 	return curPopulation;
 }
@@ -87,39 +89,42 @@ END OF TURN FUNCTIONS
 ---------------------*/
 
 // Function to check amount of Gold resource generated per turn
-void gold_generated_per_turn()
+void Gold_generated_per_turn()
 {
 	// Gold generated from market
-	int gold_generated_by_markets = (numMarkets * GOLD_AMT_FROM_MARKETS);
+	//int gold_generated_by_markets = (numMarkets * GOLD_AMT_FROM_MARKETS);
 
 	// Gold generated from population tax
-	int gold_generated_by_tax = curPopulation * TAX_AMOUNT;
+	//int gold_generated_by_tax = curPopulation * TAX_AMOUNT;
 
 	// Gold deducted from facility upkeep
-	int gold_deducted_from_upkeep = (MARKET_UPKEEP_COST * numMarkets) + (FARM_UPKEEP_COST * numFarms) + (HOUSING_UPKEEP_COST * numHouses);
+	//int gold_deducted_from_upkeep = (MARKET_UPKEEP_COST * numMarkets) + (FARM_UPKEEP_COST * numFarms) + (HOUSING_UPKEEP_COST * numHouses);
 
 	// Net total Gold generated
-	curGold += gold_generated_by_markets + gold_generated_by_tax - gold_deducted_from_upkeep;
+	//curGold += gold_generated_by_markets + gold_generated_by_tax - gold_deducted_from_upkeep;
 
+	curGold += numMarkets;
 }
 
 // Function to check amount of Food resource generated per turn
-void food_generated_per_turn()
+void Food_generated_per_turn()
 {
 	// Food generated from farms and farmer citizens
-	int food_generated_by_farms = (numFarms * FOOD_AMT_FROM_FARMS);
+	//int food_generated_by_farms = (numFarms * FOOD_AMT_FROM_FARMS);
 
 	// Food deducted from population consumption
-	int food_deducted_from_consumption = curPopulation * FOOD_CONSUMPTION_PER_PAX;
+	//int food_deducted_from_consumption = curPopulation * FOOD_CONSUMPTION_PER_PAX;
 
 	// Net total Food generated
-	curFood += food_generated_by_farms - food_deducted_from_consumption;
+	//curFood += food_generated_by_farms - food_deducted_from_consumption;
 
+	curFood += numFarms;
 }
 
-void population_per_turn()
+void Population_per_turn()
 {
-	curPopulation = initPopulation + (numHouses * PAX_PER_HOUSING);
+	//curPopulation = initPopulation + (numHouses * PAX_PER_HOUSING);
+	curPopulation = numHouses * 5;
 }
 
 /*
@@ -141,5 +146,25 @@ bool check_for_overpopulation(int curPopulation, int max_population)
 	}
 }
 */
+
+//TEMPORARY FOR PROTOTYPE ONLYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
+void AddMarket()
+{
+	numMarkets++;
+}
+void AddFarm()
+{
+	numFarms++;
+}
+void AddHouse()
+{
+	numHouses++;
+}
+void GenerateResourcesOnEndTurn()
+{
+	Gold_generated_per_turn();
+	Food_generated_per_turn();
+	Population_per_turn();
+}
 
 
