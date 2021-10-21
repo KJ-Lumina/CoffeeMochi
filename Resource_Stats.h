@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "cprocessing.h"
+#include "MainSystem.h"
 /*
 Extra Notes from Erron:
 Basic calculation for all resources per turn has been added but not tested until
@@ -36,37 +37,12 @@ different debuff values to affect resource generation to add more depth to calcu
 #define FARM_UPKEEP_COST 5
 #define HOUSING_UPKEEP_COST 5
 
-#define TRUE 1
-#define FALSE 0
 
-int current_gold;
-int current_food;
-int current_population;
-int max_population = 100;
-int current_morale;
 
-int num_of_markets = 0;
-int num_of_merchant_citizen = 0;
-bool is_bankrupt = FALSE;
-float bankrupt_debuff = 0.75f;
 
-int num_of_farms = 0;
-int num_of_farmer_citizen = 0;
-bool is_starving = FALSE;
-float starving_debuff = 0.75f;
-
-int num_of_housing = 0;
-bool is_overpopulated = FALSE;
-float overpopulation_debuff_rate = 0.0f;
-// Note for unhappiness factor, it is the value generated from
-// tile placement (e.g. housing tiles too close to farm tiles
-// generate unhappiness factor per pax living in the affected
-// housing tile)
-// Function for unhappiness_factor not implemented yet
-int unhappiness_factor = 0;
 
 // Function to check amount of Gold resource generated per turn
-void gold_generated_per_turn()
+bool gold_generated_per_turn(int current_gold, int current_population, int num_of_markets, int num_of_merchant_citizen, int num_of_farms, int num_of_housing)
 {
 	// Gold generated from market and merchant citizens
 	int gold_generated_by_markets = (num_of_markets * GOLD_AMT_FROM_MARKETS) + (num_of_merchant_citizen * GOLD_AMT_FROM_MERCHANTS);
@@ -81,19 +57,18 @@ void gold_generated_per_turn()
 	current_gold += gold_generated_by_markets + gold_generated_by_tax - gold_deducted_from_upkeep;
 
 	// Check if net total is below 0 or not and toggles is_bankrupt debuff accordingly
-	if (current_gold < 0)
+	if (current_gold <= 0)
 	{
-		is_bankrupt = TRUE;
-		current_gold = 0;
+		return true;
 	}
 	else
 	{
-		is_bankrupt = FALSE;
+		return false;
 	}
 }
 
 // Function to check amount of Food resource generated per turn
-void food_generated_per_turn()
+bool food_generated_per_turn(int current_food, int current_population, int num_of_farms, int num_of_farmer_citizen)
 {
 	// Food generated from farms and farmer citizens
 	int food_generated_by_farms = (num_of_farms * FOOD_AMT_FROM_FARMS) + (num_of_farmer_citizen * FOOD_AMT_FROM_FARMERS);
@@ -105,68 +80,76 @@ void food_generated_per_turn()
 	current_food += food_generated_by_farms - food_deducted_from_consumption;
 
 	// Check if net total is below 0 or not and toggles is_starving debuff accordingly
-	if (current_food < 0)
+	if (current_food <= 0)
 	{
-		is_starving = TRUE;
-		current_food = 0;
+		return true;
 	}
 	else
 	{
-		is_starving = FALSE;
+		return false;
 	}
 }
 
+float update_overpopulation_debuff_rate(int current_population, int max_population) {
+	return ((float)current_population / (float)max_population);
+}
+
 // Function to check if kingdom is Overpopulated
-void check_for_overpopulation()
+bool check_for_overpopulation(int current_population, int max_population)
 {
 	// Checks current_population with max_population and toggles overpopulation debuff if overpopulated
 	if (current_population > max_population)
 	{
-		is_overpopulated = TRUE;
-		overpopulation_debuff_rate = ((float)current_population / (float)max_population);
+		return true;		
 	}
 	else
 	{
-		is_overpopulated = FALSE;
+		return false;
 	}
 }
 
+
+// Note for unhappiness factor, it is the value generated from
+// tile placement (e.g. housing tiles too close to farm tiles
+// generate unhappiness factor per pax living in the affected
+// housing tile)
+
 // Function to update Morale of population based on current state of the kingdom
-void update_morale()
+int update_morale(bool is_bankrupt, float bankrupt_debuff, bool is_starving, float starving_debuff, bool is_overpopulated, float overpopulation_debuff_rate, int unhappiness_factor)
 {
 	// Check if kingdom has any of the respective debuffs and adjust current_morale accordingly
 	// Tentatively both bankrupt and starving debuff will reduce morale by 30 each if TRUE
 	// while overpopulation debuff will scale with the magnitude of overpopulation
 	// such that it is possible to hit 0 current_morale
 	// Changing MORALE_DECREASE_MODIFIER will change the amount of morale penalty from each debuff
-	if (is_bankrupt == TRUE && is_starving == TRUE && is_overpopulated == TRUE)
+	if (is_bankrupt == true && is_starving == true && is_overpopulated == true)
 	{
-		current_morale = MAX_MORALE - (int)(
+		return MAX_MORALE - (int)(
 			(bankrupt_debuff * MORALE_DECREASE_MODIFIER) +
 			(starving_debuff * MORALE_DECREASE_MODIFIER) +
 			(overpopulation_debuff_rate * MORALE_DECREASE_MODIFIER) +
 			unhappiness_factor);
 	}
 
-	else if (is_bankrupt == TRUE && is_starving == TRUE)
+	else if (is_bankrupt == true && is_starving == true)
 	{
-		current_morale = MAX_MORALE - (int)(
+		return MAX_MORALE - (int)(
 			(bankrupt_debuff * MORALE_DECREASE_MODIFIER) +
 			(starving_debuff * MORALE_DECREASE_MODIFIER) +
 			unhappiness_factor);
 	}
 
-	else if (is_bankrupt == TRUE && is_overpopulated == TRUE)
+	else if (is_bankrupt == true && is_overpopulated == true)
 	{
-		current_morale = MAX_MORALE - (int)(
+		return MAX_MORALE - (int)(
 			(bankrupt_debuff * MORALE_DECREASE_MODIFIER) +
 			(overpopulation_debuff_rate * MORALE_DECREASE_MODIFIER) +
 			unhappiness_factor);
 	}
 
-	else if (is_starving == TRUE && is_overpopulated == TRUE)
+	else if (is_starving == true && is_overpopulated == true)
 	{
-		current_morale = MAX_MORALE - (int)(
+		return MAX_MORALE - (int)(
 			(starving_debuff * MORALE_DECREASE_MODIFIER) +
 			(overpopulation_debuff_rate * MORALE_DECREASE_MODIFIER) +
 			unhappiness_factor);
@@ -175,6 +158,6 @@ void update_morale()
 	else
 	{
 		//Note that unhappiness_factor calculation is not implemented yet
-		current_morale = MAX_MORALE - unhappiness_factor;
+		return MAX_MORALE - unhappiness_factor;
 	}
 }
