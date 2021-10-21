@@ -2,11 +2,11 @@
 #include <stdbool.h>
 #include "cprocessing.h"
 #include "TravessFunctions.h"
-#include "Resource_Stats.h"
+#include "Resource_Stats.c"
 #include "MainSystem.h"
+#include "grid.h"
 
-#define WORLDGRIDX 40
-#define WORLDGRIDY 40
+
 
 #pragma region World Variables Declaration
 int turnNumber = 1;
@@ -17,8 +17,8 @@ int worldGrid[WORLDGRIDX][WORLDGRIDY] = { 0 };
 CP_Vector worldSpaceOrigin;
 float windowsWidth;
 float windowsHeight;
-float tileWidth = 64;
-float tileHeight = 64;
+//float TILEWIDTH = 64;
+//float TILEHEIGHT = 64;
 
 CP_Vector cursorTile;
 CP_Vector lastMousePos;
@@ -37,31 +37,19 @@ CP_Image tdgrasstile;
 #pragma endregion
 
 #pragma region Resources Variables Declaration
-int current_gold;
-int current_food;
-int current_population;
-int max_population = 100;
-int current_morale;
+int curGold;
+int curFood;
+int curPopulation;
+int initPopulation = 100;
 
 //Gold Related Variables
-int num_of_markets = 0;
-int num_of_merchant_citizen = 0;
-float bankrupt_debuff = 0.75f;
-bool is_bankrupt = false;
+int numMarkets = 0;
 
 //Food Related Variables
-int num_of_farms = 0;
-int num_of_farmer_citizen = 0;
-float starving_debuff = 0.75f;
-bool is_starving = false;
+int numFarms = 0;
 
 //Population Related Variables
-int num_of_housing = 0;
-float overpopulation_debuff_rate = 0.0f;
-bool is_overpopulated = false;
-
-// Function for unhappiness_factor not implemented yet
-int unhappiness_factor = 0;
+int numHouses = 0;
 #pragma endregion
 
 #pragma region Win & Lose Variable Declaration
@@ -70,46 +58,9 @@ int loseCondition_FoodValue;
 
 
 void DrawUI(void);
-
-
-
-#pragma region Grid Functions
-CP_Vector SnapToGrid(float x, float y)
-{
-    x -= worldSpaceOrigin.x;
-    y -= worldSpaceOrigin.y;
-
-    // Snap to box grid
-    float tilePosX = (int)(x / tileWidth) * tileWidth;
-    float tilePosY = (int)(y / tileHeight) * tileHeight;
-
-    tilePosX += worldSpaceOrigin.x + tileWidth / 2;
-    tilePosY += worldSpaceOrigin.y + tileHeight / 2;
-
-    return CP_Vector_Set(tilePosX, tilePosY);
-}
-
-CP_Vector WorldPositionToGridPosition(float x, float y)
-{
-    x -= worldSpaceOrigin.x + tileWidth / 2;
-    y -= worldSpaceOrigin.y + tileHeight / 2;
-
-    x /= tileWidth;
-    y /= tileHeight;
-
-    return CP_Vector_Set(x, y);
-}
-
-CP_Vector GridPositionToWorldPosition(float x, float y)
-{
-    x *= tileWidth;
-    y *= tileHeight;
-
-    x += worldSpaceOrigin.x + tileWidth / 2;
-    y += worldSpaceOrigin.y + tileHeight / 2;;
-
-    return CP_Vector_Set(x, y);
-}
+CP_Vector SnapToGrid(float, float, CP_Vector);
+CP_Vector WorldToGridPosition(float, float, CP_Vector);
+CP_Vector GridToWorldPosition(float, float, CP_Vector);
 
 void DrawAllTiles(void)
 {
@@ -124,26 +75,26 @@ void DrawAllTiles(void)
                 break;
 
             case 1:
-                newTile = GridPositionToWorldPosition((float)i, (float)j);
-                CP_Image_Draw(grasstile, newTile.x, newTile.y, tileWidth, tileHeight, 255);
+                newTile = GridToWorldPosition((float)i, (float)j, worldSpaceOrigin);
+                CP_Image_Draw(grasstile, newTile.x, newTile.y, TILEWIDTH, TILEHEIGHT, 255);
                 break;
 
             case 2:
-                newTile = GridPositionToWorldPosition((float)i, (float)j);
-                CP_Image_Draw(housetile, newTile.x, newTile.y, tileWidth, tileHeight, 255);
+                newTile = GridToWorldPosition((float)i, (float)j, worldSpaceOrigin);
+                CP_Image_Draw(housetile, newTile.x, newTile.y, TILEWIDTH, TILEHEIGHT, 255);
                 break;
 
             case 3:
-                newTile = GridPositionToWorldPosition((float)i, (float)j);
-                CP_Image_Draw(wheattile, newTile.x, newTile.y, tileWidth, tileHeight, 255);
+                newTile = GridToWorldPosition((float)i, (float)j, worldSpaceOrigin);
+                CP_Image_Draw(wheattile, newTile.x, newTile.y, TILEWIDTH, TILEHEIGHT, 255);
                 break;
             case 4:
-                newTile = GridPositionToWorldPosition((float)i, (float)j);
-                CP_Image_Draw(treetile, newTile.x, newTile.y, tileWidth, tileHeight, 255);
+                newTile = GridToWorldPosition((float)i, (float)j, worldSpaceOrigin);
+                CP_Image_Draw(treetile, newTile.x, newTile.y, TILEWIDTH, TILEHEIGHT, 255);
                 break;
             case 5:
-                newTile = GridPositionToWorldPosition((float)i, (float)j);
-                CP_Image_Draw(tdgrasstile, newTile.x, newTile.y, tileWidth, tileHeight, 255);
+                newTile = GridToWorldPosition((float)i, (float)j, worldSpaceOrigin);
+                CP_Image_Draw(tdgrasstile, newTile.x, newTile.y, TILEWIDTH, TILEHEIGHT, 255);
                 break;
             }
         }
@@ -152,19 +103,19 @@ void DrawAllTiles(void)
 
 void DrawCursorTile(void)
 {
-    cursorTile = SnapToGrid(newMousePos.x, newMousePos.y);
-    CP_Image_Draw(grasstile, cursorTile.x, cursorTile.y, tileWidth, tileHeight, 255);
+    cursorTile = SnapToGrid(newMousePos.x, newMousePos.y, worldSpaceOrigin);
+    CP_Image_Draw(grasstile, cursorTile.x, cursorTile.y, TILEWIDTH, TILEHEIGHT, 255);
 }
 
 #pragma endregion
 
 #pragma region Resource Functions
 void UpdateResourceAmount(void) {
-    if (current_gold <= 0)
-        current_gold = 0;
+    if (curGold <= 0)
+        curGold = 0;
 
-    if (current_food <= 0)
-        current_food = 0;
+    if (curFood <= 0)
+        curFood = 0;
 }
 #pragma endregion
 
@@ -184,13 +135,11 @@ void GameOver(void)
 
 void EndTurn(void) 
 {
-    //Updates and Check for Triggers
-    is_bankrupt = gold_generated_per_turn(current_gold, current_population, num_of_markets, num_of_merchant_citizen, num_of_farms, num_of_housing);
-    is_starving = food_generated_per_turn(current_food, current_population, num_of_farms, num_of_farmer_citizen);
-    is_overpopulated = check_for_overpopulation(current_population, max_population);
-
+    int gold_generated_per_turn(int curGold, int curPopulation, int numMarkets, int numFarms, int numHouses);
+    int food_generated_per_turn(int curFood, int curPopulation, int numFarms);
+    int population_per_turn(int numHouses, int initPopulation, int curPopulation);
     //Check for Game Over Trigger
-    if (current_food <= loseCondition_FoodValue)
+    if (curFood <= loseCondition_FoodValue)
         GameOver();
 }
 
@@ -208,8 +157,8 @@ void UpdateMouseInput(void)
 
 void ReturnToCenter(void)
 {
-    worldSpaceOrigin.x = windowsWidth / 2 - tileWidth * 10;
-    worldSpaceOrigin.y = windowsHeight / 2 - tileHeight * 10;
+    worldSpaceOrigin.x = windowsWidth / 2 - TILEWIDTH * 10;
+    worldSpaceOrigin.y = windowsHeight / 2 - TILEHEIGHT * 10;
 }
 
 void CheckKeyInput(void)
@@ -220,27 +169,27 @@ void CheckKeyInput(void)
     }
     if (CP_Input_KeyDown(KEY_1))
     {
-        CP_Vector newTileGridPos = WorldPositionToGridPosition(cursorTile.x, cursorTile.y);
+        CP_Vector newTileGridPos = WorldToGridPosition(cursorTile.x, cursorTile.y, worldSpaceOrigin);
         worldGrid[(int)(newTileGridPos.x)][(int)(newTileGridPos.y)] = 1;
     }
     else if (CP_Input_KeyDown(KEY_2))
     {
-        CP_Vector newTileGridPos = WorldPositionToGridPosition(cursorTile.x, cursorTile.y);
+        CP_Vector newTileGridPos = WorldToGridPosition(cursorTile.x, cursorTile.y, worldSpaceOrigin);
         worldGrid[(int)(newTileGridPos.x)][(int)(newTileGridPos.y)] = 2;
     }
     else if (CP_Input_KeyDown(KEY_3))
     {
-        CP_Vector newTileGridPos = WorldPositionToGridPosition(cursorTile.x, cursorTile.y);
+        CP_Vector newTileGridPos = WorldToGridPosition(cursorTile.x, cursorTile.y, worldSpaceOrigin);
         worldGrid[(int)(newTileGridPos.x)][(int)(newTileGridPos.y)] = 3;
     }
     else if (CP_Input_KeyDown(KEY_4))
     {
-        CP_Vector newTileGridPos = WorldPositionToGridPosition(cursorTile.x, cursorTile.y);
+        CP_Vector newTileGridPos = WorldToGridPosition(cursorTile.x, cursorTile.y, worldSpaceOrigin);
         worldGrid[(int)(newTileGridPos.x)][(int)(newTileGridPos.y)] = 4;
     }
     else if (CP_Input_KeyDown(KEY_5))
     {
-        CP_Vector newTileGridPos = WorldPositionToGridPosition(cursorTile.x, cursorTile.y);
+        CP_Vector newTileGridPos = WorldToGridPosition(cursorTile.x, cursorTile.y, worldSpaceOrigin);
         worldGrid[(int)(newTileGridPos.x)][(int)(newTileGridPos.y)] = 5;
     }
 }
@@ -268,7 +217,7 @@ void MouseDrag(void)
     // To deferentiate between drag and click
     if (CP_Input_MouseClicked() && !mouseDrag)
     {
-        CP_Vector newTileGridPos = WorldPositionToGridPosition(cursorTile.x, cursorTile.y);
+        CP_Vector newTileGridPos = WorldToGridPosition(cursorTile.x, cursorTile.y, worldSpaceOrigin);
         worldGrid[(int)(newTileGridPos.x)][(int)(newTileGridPos.y)] = 1;
     }
     // end of drag
@@ -283,8 +232,8 @@ void game_init(void)
     CP_System_SetWindowSize(900, 600);
     windowsWidth = (float)CP_System_GetWindowWidth();
     windowsHeight = (float)CP_System_GetWindowHeight();
-    worldSpaceOrigin.x = windowsWidth / 2 - tileWidth * 9.5f;
-    worldSpaceOrigin.y = windowsHeight / 2 - tileHeight * 9.5f;
+    worldSpaceOrigin.x = windowsWidth / 2 - TILEWIDTH * 9.5f;
+    worldSpaceOrigin.y = windowsHeight / 2 - TILEHEIGHT * 9.5f;
     
     grasstile = CP_Image_Load("./Assets/grasstile.png");
     housetile = CP_Image_Load("./Assets/housetile.png");
