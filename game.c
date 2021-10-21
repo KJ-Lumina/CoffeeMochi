@@ -3,6 +3,7 @@
 #include "cprocessing.h"
 #include "TravessFunctions.h"
 #include "Resource_Stats.h"
+#include "UI_mechanics.h"
 
 #define WORLDGRIDX 40
 #define WORLDGRIDY 40
@@ -25,6 +26,9 @@ CP_Image housetile;
 CP_Image wheattile;
 CP_Image treetile;
 CP_Image tdgrasstile;
+CP_Image zBuilding;
+CP_Image zPopup;
+
 
 void UpdateMousePosition()
 {
@@ -186,6 +190,9 @@ void game_init(void)
     wheattile = CP_Image_Load("./Assets/wheattile.png");
     treetile = CP_Image_Load("./Assets/treetile.png");
     tdgrasstile = CP_Image_Load("./Assets/TDgrasstile.png");
+    zBuilding = CP_Image_Load("./Assets/Building.png");
+    zPopup = CP_Image_Load("./Assets/Popup.png");
+
 
     BasicPlatform();
 }
@@ -195,11 +202,17 @@ void game_update(void)
     CP_Graphics_ClearBackground(CP_Color_Create(150, 150, 150, 255));
     UpdateMousePosition();
     //placing tiles, currently permanent in testing
+    CP_Image_Draw(zBuilding, 200, 200, 100, 100, 255);
 
     
     if (CP_Input_MouseTriggered(0))
     {
         lastMousePos = newMousePos;
+        
+    }
+    if (CP_Input_MouseDown(0))
+    {
+        MouseCollidingState(gamestate);
     }
     if (CP_Input_MouseDragged(0))
     {

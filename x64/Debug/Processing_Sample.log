@@ -1,4 +1,2 @@
-﻿  Processing_Sample.vcxproj -> C:\Users\trave\Documents\GitHub\CoffeeMochi\x64\Debug\Processing_Sample.exe
-  1 File(s) copied
-  1 File(s) copied
-  7 File(s) copied
+﻿  game.c
+LINK : fatal error LNK1168: cannot open C:\Users\windy\Documents\GitHub\CoffeeMochi\x64\Debug\Processing_Sample.exe for writing
