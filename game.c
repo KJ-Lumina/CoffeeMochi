@@ -3,7 +3,6 @@
 #include "cprocessing.h"
 #include "TravessFunctions.h"
 #include "Resource_Stats.c"
-#include "MainSystem.h"
 #include "grid.h"
 
 

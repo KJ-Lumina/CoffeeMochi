@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include "cprocessing.h"
-#include "MainSystem.h"
 /*
 Extra Notes from Erron:
 Basic calculation for all resources per turn has been added but not tested until
