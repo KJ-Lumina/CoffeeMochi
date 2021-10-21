@@ -30,6 +30,38 @@ Buff/Debuff effects will be seperated to a different header file
 #define FARM_UPKEEP_COST 5
 #define HOUSING_UPKEEP_COST 5
 
+int curGold;
+int curFood;
+int curPopulation;
+int initPopulation = 100;
+
+//Gold Related Variables
+int numMarkets = 0;
+
+//Food Related Variables
+int numFarms = 0;
+
+//Population Related Variables
+int numHouses = 0;
+
+/*--------------------
+GET RESOURCE FUNCTIONS
+---------------------*/
+
+int get_current_gold()
+{
+	return curGold;
+}
+
+int get_current_food()
+{
+	return curFood;
+}
+
+int get_current_population()
+{
+	return curPopulation;
+}
 
 /*--------------------
 DURING TURN FUNCTIONS
@@ -55,7 +87,7 @@ END OF TURN FUNCTIONS
 ---------------------*/
 
 // Function to check amount of Gold resource generated per turn
-int gold_generated_per_turn(int curGold, int curPopulation, int numMarkets, int numFarms, int numHouses)
+int gold_generated_per_turn()
 {
 	// Gold generated from market
 	int gold_generated_by_markets = (numMarkets * GOLD_AMT_FROM_MARKETS);
@@ -74,7 +106,7 @@ int gold_generated_per_turn(int curGold, int curPopulation, int numMarkets, int 
 }
 
 // Function to check amount of Food resource generated per turn
-int food_generated_per_turn(int curFood, int curPopulation, int numFarms)
+int food_generated_per_turn()
 {
 	// Food generated from farms and farmer citizens
 	int food_generated_by_farms = (numFarms * FOOD_AMT_FROM_FARMS);
@@ -88,7 +120,7 @@ int food_generated_per_turn(int curFood, int curPopulation, int numFarms)
 	return curFood;
 }
 
-int population_per_turn(int numHouses, int initPopulation, int curPopulation)
+int population_per_turn()
 {
 	curPopulation = initPopulation + (numHouses * PAX_PER_HOUSING);
 	return curPopulation;

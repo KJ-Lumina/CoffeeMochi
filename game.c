@@ -2,7 +2,6 @@
 #include <stdbool.h>
 #include "cprocessing.h"
 #include "TravessFunctions.h"
-#include "Resource_Stats.c"
 #include "grid.h"
 
 
@@ -35,21 +34,6 @@ CP_Image tdgrasstile;
 
 #pragma endregion
 
-#pragma region Resources Variables Declaration
-int curGold;
-int curFood;
-int curPopulation;
-int initPopulation = 100;
-
-//Gold Related Variables
-int numMarkets = 0;
-
-//Food Related Variables
-int numFarms = 0;
-
-//Population Related Variables
-int numHouses = 0;
-#pragma endregion
 
 #pragma region Win & Lose Variable Declaration
 int loseCondition_FoodValue;
@@ -108,15 +92,7 @@ void DrawCursorTile(void)
 
 #pragma endregion
 
-#pragma region Resource Functions
-void UpdateResourceAmount(void) {
-    if (curGold <= 0)
-        curGold = 0;
 
-    if (curFood <= 0)
-        curFood = 0;
-}
-#pragma endregion
 
 
 #pragma region Turn & Win Lose Functions
@@ -134,12 +110,10 @@ void GameOver(void)
 
 void EndTurn(void) 
 {
-    int gold_generated_per_turn(int curGold, int curPopulation, int numMarkets, int numFarms, int numHouses);
-    int food_generated_per_turn(int curFood, int curPopulation, int numFarms);
-    int population_per_turn(int numHouses, int initPopulation, int curPopulation);
-    //Check for Game Over Trigger
-    if (curFood <= loseCondition_FoodValue)
-        GameOver();
+    //int gold_generated_per_turn();
+    //int food_generated_per_turn();
+    //int population_per_turn();
+    
 }
 
 

@@ -1,5 +1,1 @@
-C:\Users\trave\Desktop\1400\Mid Term Project\x64\Debug\Processing_Sample.exe
-C:\Users\trave\Desktop\1400\Mid Term Project v2\x64\Debug\Processing_Sample.exe
-C:\Users\trave\Documents\GitHub\CoffeeMochi\x64\Debug\Processing_Sample.exe
-C:\Users\windy\Documents\GitHub\CoffeeMochi\x64\Debug\Processing_Sample.exe
 C:\Users\Erron\Documents\GitHub\CoffeeMochi\x64\Debug\Processing_Sample.exe
