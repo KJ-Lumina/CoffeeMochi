@@ -13,18 +13,18 @@ int turnNumber = 1;
 #pragma endregion
 
 #pragma region  Grid Variables
+int worldGrid[WORLDGRIDX][WORLDGRIDY] = { 0 };
+CP_Vector worldSpaceOrigin;
 float windowsWidth;
 float windowsHeight;
-CP_Vector worldSpaceOrigin;
 float tileWidth = 64;
 float tileHeight = 64;
 
 CP_Vector cursorTile;
-CP_Vector tilePos;
 CP_Vector lastMousePos;
 CP_Vector newMousePos;
 bool mouseDrag = false;
-int worldGrid[WORLDGRIDX][WORLDGRIDY] = { 0 };
+
 #pragma endregion
 
 #pragma region Sprite/Images Declaration
@@ -46,19 +46,19 @@ int current_morale;
 //Gold Related Variables
 int num_of_markets = 0;
 int num_of_merchant_citizen = 0;
-bool is_bankrupt = false;
 float bankrupt_debuff = 0.75f;
+bool is_bankrupt = false;
 
 //Food Related Variables
 int num_of_farms = 0;
 int num_of_farmer_citizen = 0;
-bool is_starving = false;
 float starving_debuff = 0.75f;
+bool is_starving = false;
 
 //Population Related Variables
 int num_of_housing = 0;
-bool is_overpopulated = false;
 float overpopulation_debuff_rate = 0.0f;
+bool is_overpopulated = false;
 
 // Function for unhappiness_factor not implemented yet
 int unhappiness_factor = 0;
@@ -67,6 +67,10 @@ int unhappiness_factor = 0;
 #pragma region Win & Lose Variable Declaration
 int loseCondition_FoodValue;
 #pragma endregion
+
+
+void DrawUI(void);
+
 
 
 #pragma region Grid Functions
@@ -78,13 +82,6 @@ CP_Vector SnapToGrid(float x, float y)
     // Snap to box grid
     float tilePosX = (int)(x / tileWidth) * tileWidth;
     float tilePosY = (int)(y / tileHeight) * tileHeight;
-
-    // Snap to grid
-    //x = (x - tilePosX) / tileWidth;
-    //y = (y - tilePosY) / tileHeight;
-
-    // value below is the grid position of the tile
-    //printf("%f %f \n", tilePosX * 2 / tileWidth, tilePosY * 2 / tileHeight);
 
     tilePosX += worldSpaceOrigin.x + tileWidth / 2;
     tilePosY += worldSpaceOrigin.y + tileHeight / 2;
@@ -156,7 +153,6 @@ void DrawAllTiles(void)
 void DrawCursorTile(void)
 {
     cursorTile = SnapToGrid(newMousePos.x, newMousePos.y);
-    //printf("%f,%f\n", gridPos.x, gridPos.y);
     CP_Image_Draw(grasstile, cursorTile.x, cursorTile.y, tileWidth, tileHeight, 255);
 }
 
@@ -175,37 +171,39 @@ void UpdateResourceAmount(void) {
 
 #pragma region Turn & Win Lose Functions
 //Trigger Turn Start Functions Calls
-void OnTurnStart(void) {
+void StartTurn(void) 
+{
 
 }
 
 //Trigger Turn End Functions Calls
-void OnTurnEnd(void) {
+void GameOver(void) 
+{
+    //Lose UI Pop Up
+}
 
+void EndTurn(void) 
+{
     //Updates and Check for Triggers
     is_bankrupt = gold_generated_per_turn(current_gold, current_population, num_of_markets, num_of_merchant_citizen, num_of_farms, num_of_housing);
     is_starving = food_generated_per_turn(current_food, current_population, num_of_farms, num_of_farmer_citizen);
     is_overpopulated = check_for_overpopulation(current_population, max_population);
 
-    
-
     //Check for Game Over Trigger
     if (current_food <= loseCondition_FoodValue)
-        OnGameOver();
-
+        GameOver();
 }
 
-void OnGameOver(void) {
-    
-    //Lose UI Pop Up
-
-}
 
 #pragma endregion
 
-void UpdateMousePosition(void)
+void UpdateMouseInput(void)
 {
     newMousePos = CP_Vector_Set(CP_Input_GetMouseX(), CP_Input_GetMouseY());
+    if (CP_Input_MouseTriggered(0))
+    {
+        lastMousePos = newMousePos;
+    }
 }
 
 void ReturnToCenter(void)
@@ -214,7 +212,7 @@ void ReturnToCenter(void)
     worldSpaceOrigin.y = windowsHeight / 2 - tileHeight * 10;
 }
 
-void CheckPlayerInput(void)
+void CheckKeyInput(void)
 {
     if (CP_Input_KeyDown(KEY_F))
     {
@@ -247,7 +245,7 @@ void CheckPlayerInput(void)
     }
 }
 
-void BasicPlatform(void)
+void CreateBasicPlatform(void)
 {
     for (int i = 7; i < 12; ++i)
     {
@@ -258,34 +256,8 @@ void BasicPlatform(void)
     }
 }
 
-void game_init(void)
-{    
-    CP_System_SetWindowSize(900, 600);
-    windowsWidth = (float)CP_System_GetWindowWidth();
-    windowsHeight = (float)CP_System_GetWindowHeight();
-    worldSpaceOrigin.x = windowsWidth / 2 - tileWidth * 9.5f;
-    worldSpaceOrigin.y = windowsHeight / 2 - tileHeight * 9.5f;
-    
-    grasstile = CP_Image_Load("./Assets/grasstile.png");
-    housetile = CP_Image_Load("./Assets/housetile.png");
-    wheattile = CP_Image_Load("./Assets/wheattile.png");
-    treetile = CP_Image_Load("./Assets/treetile.png");
-    tdgrasstile = CP_Image_Load("./Assets/TDgrasstile.png");
-
-    BasicPlatform();
-}
-
-void game_update(void)
+void MouseDrag(void)
 {
-    CP_Graphics_ClearBackground(CP_Color_Create(150, 150, 150, 255));
-    UpdateMousePosition();
-    //placing tiles, currently permanent in testing
-
-    
-    if (CP_Input_MouseTriggered(0))
-    {
-        lastMousePos = newMousePos;
-    }
     if (CP_Input_MouseDragged(0))
     {
         mouseDrag = true;
@@ -303,16 +275,36 @@ void game_update(void)
     if (CP_Input_MouseReleased(0) && mouseDrag)
     {
         mouseDrag = false;
-    }   
-    
-    CheckPlayerInput();
+    }
+}
 
-    CP_Graphics_DrawRect(worldSpaceOrigin.x + WORLDGRIDX / 4 * tileWidth - tileWidth, worldSpaceOrigin.y + WORLDGRIDX / 4 * tileHeight - tileHeight, tileWidth, tileHeight);
+void game_init(void)
+{    
+    CP_System_SetWindowSize(900, 600);
+    windowsWidth = (float)CP_System_GetWindowWidth();
+    windowsHeight = (float)CP_System_GetWindowHeight();
+    worldSpaceOrigin.x = windowsWidth / 2 - tileWidth * 9.5f;
+    worldSpaceOrigin.y = windowsHeight / 2 - tileHeight * 9.5f;
+    
+    grasstile = CP_Image_Load("./Assets/grasstile.png");
+    housetile = CP_Image_Load("./Assets/housetile.png");
+    wheattile = CP_Image_Load("./Assets/wheattile.png");
+    treetile = CP_Image_Load("./Assets/treetile.png");
+    tdgrasstile = CP_Image_Load("./Assets/TDgrasstile.png");
+
+    CreateBasicPlatform();
+}
+
+void game_update(void)
+{
+    UpdateMouseInput();
+    MouseDrag();
+    CheckKeyInput();
+
+    CP_Graphics_ClearBackground(CP_Color_Create(150, 150, 150, 255));
     DrawAllTiles();
     DrawCursorTile();
-    //printf("%f", SnapToGrid(CP_Input_GetMouseX(), CP_Input_GetMouseY()).x);
-    
-    
+    //DrawUI();
 }
 
 void game_exit(void)
