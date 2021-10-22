@@ -1,6 +1,17 @@
 #include <stdio.h>
 #include "cprocessing.h"
 
+
+typedef enum
+{
+	State_MainMenu,
+	State_Idle,
+	State_MakeAChoice,
+	State_PlaceYourBuilding,
+	State_GameOver
+}GAMESTATE;
+
+
 typedef struct 
 {
 	const char* name;
@@ -20,6 +31,7 @@ typedef struct
 	char* stringOptionA;
 	char* stringOptionB;
 }CARDEVENTS;
+
 
 typedef struct 
 {
@@ -43,6 +55,7 @@ typedef struct
 #define TILEWIDTH 64.0f
 #define TILEHEIGHT 64.0f
 
+GAMESTATE GetGameState();
 CP_Vector SnapToGrid(float, float, CP_Vector);
 CP_Vector WorldToGridPosition(float, float, CP_Vector);
 CP_Vector GridToWorldPosition(float, float, CP_Vector);
@@ -50,6 +63,8 @@ void DrawUI();
 void InitBuildings(void);
 void InitDeck(void);
 void InitUI();
+void UI_SetEvent(CARDEVENTS);
+BUILDING GetBuildingByIndex(int);
 CP_Image GetBuildingSpriteByIndex(int);
 int Get_current_gold();
 int Get_current_food();

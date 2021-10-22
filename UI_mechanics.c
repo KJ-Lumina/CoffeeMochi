@@ -8,7 +8,7 @@
 
 CP_Image basicEvent;
 CP_Image advancedEvent;
-CARDEVENTS eventCard;
+CARDEVENTS currentEvent;
 float windowWidth;
 float windowHeight;
 CP_Vector optionAPos;
@@ -16,14 +16,32 @@ CP_Vector optionBPos;
 
 int CheckUIClick(float xPos, float yPos)
 {
-    if (xPos >= windowWidth - 238 && xPos <= windowWidth - 142 && yPos >= windowHeight - 180 && yPos <= windowHeight - 20)
+    switch (GetGameState())
     {
-        return 1;
-    }
-    else
-    {
+    case State_MainMenu:
+        break;
+    case State_Idle:
+        // click on basic card
+        if (xPos >= windowWidth - 238 && xPos <= windowWidth - 142 && yPos >= windowHeight - 180 && yPos <= windowHeight - 20)
+        {
+            return 1;
+        }
+        // click on advanced card ?
+        break;
+    case State_MakeAChoice:
+        // click on option A
+        if (xPos >= optionAPos.x - TILEWIDTH / 2 && xPos <= optionAPos.x + TILEWIDTH / 2 && yPos >= optionBPos.y - TILEHEIGHT / 2 && yPos <= optionBPos.y + TILEHEIGHT / 2)
+        {
+            return 2;
+        }
+        // click on option B?
+        break;
+    case State_PlaceYourBuilding:
+        break;
+    default:
         return 0;
     }
+    return 0;
 }
 
 void InitUI()
@@ -36,26 +54,34 @@ void InitUI()
     optionBPos = CP_Vector_Set(windowWidth - 70, windowHeight - 300);
 }
 
+void UI_SetEvent(CARDEVENTS newEvent)
+{
+    currentEvent = newEvent;
+}
+
 void DrawUI()
 {
     CP_Settings_Fill(CP_Color_Create(0, 0, 0, 255));
     CP_Graphics_DrawRect(windowWidth - 260, 0, windowWidth, windowHeight);
-    eventCard = GetCurrentEvent();
-    if (eventCard.eventIndex != 0)
+    if (GetGameState() == State_Idle)
+    {
+        CP_Image_Draw(basicEvent, windowWidth - 190, windowHeight - 100, 160, 160, 255);
+        CP_Image_Draw(advancedEvent, windowWidth - 70, windowHeight - 100, 160, 160, 255);
+    }
+    else if (GetGameState() == State_MakeAChoice)
     {
         CP_Settings_TextSize(20);
         CP_Settings_Fill(CP_Color_Create(255, 255, 255, 255));
         char buffer[100];
-        sprintf_s(buffer, 100, "%s", eventCard.description);
+        sprintf_s(buffer, 100, "%s", currentEvent.description);
         CP_Font_DrawText(buffer, 250, 100);
 
-        CP_Image_Draw(GetBuildingSpriteByIndex(eventCard.indexOptionA), optionAPos.x, optionAPos.y, TILEWIDTH, TILEHEIGHT, 255);
-        CP_Image_Draw(GetBuildingSpriteByIndex(eventCard.indexOptionB), optionBPos.x, optionBPos.y, TILEWIDTH, TILEHEIGHT, 255);
+        CP_Image_Draw(GetBuildingSpriteByIndex(currentEvent.indexOptionA), optionAPos.x, optionAPos.y, TILEWIDTH, TILEHEIGHT, 255);
+        CP_Image_Draw(GetBuildingSpriteByIndex(currentEvent.indexOptionB), optionBPos.x, optionBPos.y, TILEWIDTH, TILEHEIGHT, 255);
     }
     else
     {
-        CP_Image_Draw(basicEvent, windowWidth - 190, windowHeight - 100, 160, 160, 255);
-        CP_Image_Draw(advancedEvent, windowWidth - 70, windowHeight - 100, 160, 160, 255);
+        
     }
 }
 

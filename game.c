@@ -7,7 +7,7 @@
 
 
 
-
+GAMESTATE gameState = State_Idle;
 
 #pragma region World Variables Declaration
 int turnNumber = 1;
@@ -21,7 +21,7 @@ float windowsHeight;
 //float TILEWIDTH = 64;
 //float TILEHEIGHT = 64;
 CP_Vector cursorTile;
-BUILDING *cursorBuilding;
+BUILDING cursorBuilding;
 CARDEVENTS currentEvent;
 
 CP_Vector lastMousePos;
@@ -46,7 +46,10 @@ int loseCondition_FoodValue;
 
 
 
-
+GAMESTATE GetGameState()
+{
+    return gameState;
+}
 
 
 void DrawAllTiles(void)
@@ -91,7 +94,7 @@ void DrawAllTiles(void)
 void DrawCursorTile(void)
 {
     cursorTile = SnapToGrid(newMousePos.x, newMousePos.y, worldSpaceOrigin);
-    CP_Image_Draw(grasstile, cursorTile.x, cursorTile.y, TILEWIDTH, TILEHEIGHT, 255);
+    CP_Image_Draw(GetBuildingSpriteByIndex(cursorBuilding.spriteIndex), cursorTile.x, cursorTile.y, TILEWIDTH, TILEHEIGHT, 255);
 }
 
 #pragma endregion
@@ -152,6 +155,22 @@ void ReturnToCenter(void)
 {
     worldSpaceOrigin.x = windowsWidth / 2 - TILEWIDTH * 10;
     worldSpaceOrigin.y = windowsHeight / 2 - TILEHEIGHT * 10;
+}
+
+void AddNewResourceBuilding(int buildingIndex)
+{
+    switch (buildingIndex)
+    {
+    case 2:
+        AddHouse();
+        break;
+    case 3:
+        AddFarm();
+        break;
+    case 4:
+        AddMarket();
+        break;
+    }
 }
 
 void CheckKeyInput(void)
@@ -215,7 +234,7 @@ void CreateBasicPlatform(void)
     {
         for (int j = 7; j < 12; ++j)
         {
-            worldGrid[i][j] = 5;
+            worldGrid[i][j] = 1;
         }
     }
 }
@@ -227,17 +246,29 @@ CARDEVENTS GetCurrentEvent()
 
 void MouseClick()
 {
-    if (cursorBuilding != NULL)
+    if (gameState == State_PlaceYourBuilding)
     {
         CP_Vector newTileGridPos = WorldToGridPosition(cursorTile.x, cursorTile.y, worldSpaceOrigin);
-        worldGrid[(int)(newTileGridPos.x)][(int)(newTileGridPos.y)] = cursorBuilding->spriteIndex;
-        cursorBuilding = NULL;
+        if (worldGrid[(int)(newTileGridPos.x)][(int)(newTileGridPos.y)] == 1)
+        {
+            worldGrid[(int)(newTileGridPos.x)][(int)(newTileGridPos.y)] = cursorBuilding.spriteIndex;
+            AddNewResourceBuilding(cursorBuilding.spriteIndex);
+            EndTurn();
+            gameState = State_Idle;
+        }
     }
     else
     {
-        if (CheckUIClick(lastMousePos.x, lastMousePos.y) == 1)
+        switch (CheckUIClick(lastMousePos.x, lastMousePos.y))
         {
+        case 1:
+            gameState = State_MakeAChoice;
             currentEvent = GetBasicEvent();
+            UI_SetEvent(currentEvent);
+            break;
+        case 2:
+            gameState = State_PlaceYourBuilding;
+            cursorBuilding = GetBuildingByIndex(currentEvent.indexOptionA);
         }
     }
 }
@@ -287,7 +318,10 @@ void game_update(void)
 
     CP_Graphics_ClearBackground(CP_Color_Create(150, 150, 150, 255));
     DrawAllTiles();
-    DrawCursorTile();
+    if (gameState == State_PlaceYourBuilding)
+    {
+        DrawCursorTile();
+    }
     DrawUI();
     CP_Settings_TextSize(20);
     CP_Settings_Fill(CP_Color_Create(255, 255, 255, 255));
