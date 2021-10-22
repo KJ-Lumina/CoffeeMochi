@@ -1,21 +1,15 @@
 #include <stdio.h>
 #include "cprocessing.h"
+#include "game.h"
 
 
-struct Building
-{
-	const char* name;
-	int spriteIndex;
-	int goldGen;
-	int foodGen;
-	int moraleGen;
-};
 
-struct Building tile_base		= { "grass",	1, 0, 0, 0 };
-struct Building tile_house		= { "House",	2, 0, 0, 0 };
-struct Building tile_farm		= { "Farm",		3, 0, 1, 0 };
-struct Building	tile_market		= { "Market",	4, 1, 0, 0 };
-struct Building tile_tavern		= { "Tavern",	5, 0, 0, 10 };
+
+BUILDING tile_base		= { "grass",	1, 0, 0, 0 };
+BUILDING tile_house		= { "House",	2, 0, 0, 0 };
+BUILDING tile_farm		= { "Farm",		3, 0, 1, 0 };
+BUILDING tile_market	= { "Market",	4, 1, 0, 0 };
+BUILDING tile_tavern	= { "Tavern",	5, 0, 0, 10 };
 
 CP_Image sprite_grass;
 CP_Image sprite_house;
@@ -32,7 +26,7 @@ void InitBuildings(void)
 	sprite_tavern = CP_Image_Load("./Assets/TDgrasstile.png");
 }
 
-struct Building GetBuildingByIndex(int index)
+BUILDING GetBuildingByIndex(int index)
 {
 	switch (index)
 	{

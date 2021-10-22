@@ -1,8 +1,11 @@
 #include <stdio.h>
 #include <stdbool.h>
+#include "game.h"
 #include "cprocessing.h"
 #include "TravessFunctions.h"
 #include "grid.h"
+
+
 
 
 
@@ -17,8 +20,10 @@ float windowsWidth;
 float windowsHeight;
 //float TILEWIDTH = 64;
 //float TILEHEIGHT = 64;
-
 CP_Vector cursorTile;
+BUILDING *cursorBuilding;
+CARDEVENTS *currentEvent;
+
 CP_Vector lastMousePos;
 CP_Vector newMousePos;
 bool mouseDrag = false;
@@ -39,19 +44,7 @@ CP_Image tdgrasstile;
 int loseCondition_FoodValue;
 #pragma endregion
 
-CP_Vector SnapToGrid(float, float, CP_Vector);
-CP_Vector WorldToGridPosition(float, float, CP_Vector);
-CP_Vector GridToWorldPosition(float, float, CP_Vector);
-void DrawUI(void);
-void InitBuildings(void);
-CP_Image GetBuildingSpriteByIndex(int);
-int Get_current_gold();
-int Get_current_food();
-int Get_current_population();
-void AddMarket();
-void AddFarm();
-void AddHouse();
-void GenerateResourcesOnEndTurn();
+
 
 
 
@@ -227,7 +220,29 @@ void CreateBasicPlatform(void)
     }
 }
 
-void MouseDrag(void)
+CARDEVENTS GetCurrentEvent()
+{
+    return *currentEvent;
+}
+
+void MouseClick()
+{
+    if (cursorBuilding != NULL)
+    {
+        CP_Vector newTileGridPos = WorldToGridPosition(cursorTile.x, cursorTile.y, worldSpaceOrigin);
+        worldGrid[(int)(newTileGridPos.x)][(int)(newTileGridPos.y)] = cursorBuilding->spriteIndex;
+        cursorBuilding = NULL;
+    }
+    else
+    {
+        if (CheckUIClick(lastMousePos.x, lastMousePos.y) == 1)
+        {
+            *currentEvent = GetBasicEvent();
+        }
+    }
+}
+
+void MouseDragOrClick(void)
 {
     if (CP_Input_MouseDragged(0))
     {
@@ -239,8 +254,7 @@ void MouseDrag(void)
     // To deferentiate between drag and click
     if (CP_Input_MouseClicked() && !mouseDrag)
     {
-        CP_Vector newTileGridPos = WorldToGridPosition(cursorTile.x, cursorTile.y, worldSpaceOrigin);
-        worldGrid[(int)(newTileGridPos.x)][(int)(newTileGridPos.y)] = 1;
+        MouseClick();
     }
     // end of drag
     if (CP_Input_MouseReleased(0) && mouseDrag)
@@ -253,6 +267,8 @@ void game_init(void)
 {    
     CP_System_SetWindowSize(900, 600);
     InitBuildings();
+    InitDeck();
+    InitUI();
     windowsWidth = (float)CP_System_GetWindowWidth();
     windowsHeight = (float)CP_System_GetWindowHeight();
     worldSpaceOrigin.x = windowsWidth / 2 - TILEWIDTH * 9.5f;
@@ -266,14 +282,13 @@ void game_init(void)
 void game_update(void)
 {
     UpdateMouseInput();
-    MouseDrag();
+    MouseDragOrClick();
     CheckKeyInput();
 
     CP_Graphics_ClearBackground(CP_Color_Create(150, 150, 150, 255));
     DrawAllTiles();
     DrawCursorTile();
-
-    //DrawUI();
+    DrawUI();
     CP_Settings_TextSize(20);
     CP_Settings_Fill(CP_Color_Create(255, 255, 255, 255));
     char buffer[100];
