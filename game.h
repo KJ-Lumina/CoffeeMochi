@@ -38,6 +38,11 @@ typedef struct
 	int goldCost;
 }Building;
 
+#define WORLDGRIDX 40
+#define WORLDGRIDY 40
+#define TILEWIDTH 64.0f
+#define TILEHEIGHT 64.0f
+
 CP_Vector SnapToGrid(float, float, CP_Vector);
 CP_Vector WorldToGridPosition(float, float, CP_Vector);
 CP_Vector GridToWorldPosition(float, float, CP_Vector);

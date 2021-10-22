@@ -8,9 +8,11 @@
 
 CP_Image basicEvent;
 CP_Image advancedEvent;
-CARDEVENTS *eventCard;
+CARDEVENTS eventCard;
 float windowWidth;
 float windowHeight;
+CP_Vector optionAPos;
+CP_Vector optionBPos;
 
 int CheckUIClick(float xPos, float yPos)
 {
@@ -30,23 +32,25 @@ void InitUI()
     advancedEvent = CP_Image_Load("./Assets/advancedeventcard.png");
     windowWidth = (float)CP_System_GetWindowWidth();
     windowHeight = (float)CP_System_GetWindowHeight();
+    optionAPos = CP_Vector_Set(windowWidth - 190, windowHeight - 300);
+    optionBPos = CP_Vector_Set(windowWidth - 70, windowHeight - 300);
 }
 
 void DrawUI()
 {
     CP_Settings_Fill(CP_Color_Create(0, 0, 0, 255));
     CP_Graphics_DrawRect(windowWidth - 260, 0, windowWidth, windowHeight);
-    *eventCard = GetCurrentEvent();
-    if (eventCard != NULL)
+    eventCard = GetCurrentEvent();
+    if (eventCard.eventIndex != 0)
     {
-        printf("passed\n");
         CP_Settings_TextSize(20);
         CP_Settings_Fill(CP_Color_Create(255, 255, 255, 255));
         char buffer[100];
-        printf("passed\n");
-        sprintf_s(buffer, 100, "%s", eventCard->description);
-        printf("passed\n");
-        CP_Font_DrawText(buffer, 20, 20);
+        sprintf_s(buffer, 100, "%s", eventCard.description);
+        CP_Font_DrawText(buffer, 250, 100);
+
+        CP_Image_Draw(GetBuildingSpriteByIndex(eventCard.indexOptionA), optionAPos.x, optionAPos.y, TILEWIDTH, TILEHEIGHT, 255);
+        CP_Image_Draw(GetBuildingSpriteByIndex(eventCard.indexOptionB), optionBPos.x, optionBPos.y, TILEWIDTH, TILEHEIGHT, 255);
     }
     else
     {

@@ -4,8 +4,8 @@
 
 
 
-CARDEVENTS b_BuildAHouse = { 1, 1, "Hey governor, our citizens needs a place to sleep. Could you build a house?", 3, 0, "", "" };
-CARDEVENTS b_BuildAFarm = { 2, 1, "Hey governor, our city needs to eat. Could you build a farm for food production?", 3, 0, "", "" };
+CARDEVENTS b_BuildAHouse = { 1, 1, "Our citizens needs a place to sleep. Click on the house below and build it on the grid.", 3, 0, "", "" };
+CARDEVENTS b_BuildAFarm = { 2, 1, "Our city needs to eat. Click on the farm below and build it on the grid.", 3, 0, "", "" };
 
 
 CARDEVENTS basicDeck[20];

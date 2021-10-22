@@ -2,10 +2,7 @@
 #include "cprocessing.h"
 
 
-#define WORLDGRIDX 40
-#define WORLDGRIDY 40
-#define TILEWIDTH 64.0f
-#define TILEHEIGHT 64.0f
+
 
 #pragma region Grid Functions
 CP_Vector SnapToGrid(float x, float y, CP_Vector worldSpaceOrigin)

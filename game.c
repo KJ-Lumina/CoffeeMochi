@@ -22,7 +22,7 @@ float windowsHeight;
 //float TILEHEIGHT = 64;
 CP_Vector cursorTile;
 BUILDING *cursorBuilding;
-CARDEVENTS *currentEvent;
+CARDEVENTS currentEvent;
 
 CP_Vector lastMousePos;
 CP_Vector newMousePos;
@@ -222,7 +222,7 @@ void CreateBasicPlatform(void)
 
 CARDEVENTS GetCurrentEvent()
 {
-    return *currentEvent;
+    return currentEvent;
 }
 
 void MouseClick()
@@ -237,7 +237,7 @@ void MouseClick()
     {
         if (CheckUIClick(lastMousePos.x, lastMousePos.y) == 1)
         {
-            *currentEvent = GetBasicEvent();
+            currentEvent = GetBasicEvent();
         }
     }
 }
