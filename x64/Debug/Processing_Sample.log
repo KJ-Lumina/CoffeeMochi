@@ -1,4 +1,7 @@
-﻿  game.c
+﻿  Buildings.c
+  Scenerios.c
+  UI_mechanics.c
+  game.c
   Processing_Sample.vcxproj -> C:\Users\windy\Documents\GitHub\CoffeeMochi\x64\Debug\Processing_Sample.exe
   File not found - CProcessingd.dll
   0 File(s) copied

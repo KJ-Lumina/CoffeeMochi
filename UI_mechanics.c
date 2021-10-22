@@ -198,6 +198,46 @@ CP_Image GetSpriteSheetByIndex(int index)
     }
 }
 
+// Draws Animation, float x and y for position, float scale pixel size, delay is animation time, index is enum spritesheet
+void DrawAnimation(float x, float y, float scaleX, float scaleY, float delay, int index)
+{
+
+    timeElapse[index] += CP_System_GetDt();
+
+
+    if (timeElapse[index] >= delay)
+    {
+        timeElapse[index] -= delay;
+        setNextSprite[index] = 1;
+    }
+
+    if (setNextSprite[index] == 1)
+    {
+        if (minX[index] == maxX[index] - 1)
+        {
+            minX[index] = 0;
+        }
+        else
+        {
+            minX[index]++;
+        }
+
+        if (minY[index] == maxY[index] - 1)
+        {
+            minY[index] = 0;
+        }
+        else
+        {
+            minY[index]++;
+        }
+
+        setNextSprite[index] = 0;
+    }
+
+    //CP_Image_DrawSubImage(GetBuildingSpriteByIndex(7), WORLDGRIDX, WORLDGRIDY, TILEWIDTH, TILEHEIGHT, 0, 512, 128, 672, 255);
+    CP_Image_DrawSubImage(GetSpriteSheetByIndex(index), x, y, scaleX, scaleY, spriteSizeX[index] * minX[index], spriteSizeY[index] * minY[index], spriteSizeX[index] * (minX[index] + 1), spriteSizeY[index] * (minY[index] + 1), 255);
+
+}
 
 
 

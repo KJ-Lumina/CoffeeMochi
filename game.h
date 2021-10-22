@@ -89,9 +89,7 @@ int CheckUIClick(float, float);
 CARDEVENTS GetBasicEvent();
 CARDEVENTS GetCurrentEvent();
 void DrawAnimation(float x, float y, float scaleX, float scaleY, float delay, int index);
-SPRITESHEET GetSpriteAnimationByIndex(int index);
-CP_Image GetSpriteSheetByIndex(int index);
-void InitSpritesheets(void); 
+
 
 
 
