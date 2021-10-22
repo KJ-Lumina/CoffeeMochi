@@ -33,6 +33,8 @@ CP_Image housetile;
 CP_Image wheattile;
 CP_Image treetile;
 CP_Image tdgrasstile;
+CP_Image buybuilding;
+CP_Image popup;
 
 #pragma endregion
 
@@ -271,6 +273,8 @@ void game_init(void)
     wheattile = CP_Image_Load("./Assets/wheattile.png");
     treetile = CP_Image_Load("./Assets/treetile.png");
     tdgrasstile = CP_Image_Load("./Assets/TDgrasstile.png");
+    buybuilding = CP_Image_Load("./Assets/Building.png");
+    popup = CP_Image_Load("./Assets/Popup.png");
 
     BasicPlatform();
 }
@@ -285,6 +289,10 @@ void game_update(void)
     if (CP_Input_MouseTriggered(0))
     {
         lastMousePos = newMousePos;
+    }
+    if (CP_Input_MouseDown(0))
+    {
+
     }
     if (CP_Input_MouseDragged(0))
     {
