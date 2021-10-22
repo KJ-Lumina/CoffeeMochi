@@ -50,6 +50,18 @@ typedef struct
 	int goldCost;
 }Building;
 
+typedef struct
+{
+	int setNextSprite;
+	float minX; //parameters for recurring sprites x-axis
+	float maxX; //parameters for recurring sprites x-axis
+	float minY;
+	float maxY;
+	int maxSprites; //number of sprites in a spritesheet
+	float spriteSizeX; //pixels on a sprite grid x-axis
+	float spriteSizeY; //pixels on a sprite grid y-axis
+}SPRITESHEET;
+
 #define WORLDGRIDX 40
 #define WORLDGRIDY 40
 #define TILEWIDTH 64.0f
@@ -76,6 +88,11 @@ void GenerateResourcesOnEndTurn();
 int CheckUIClick(float, float);
 CARDEVENTS GetBasicEvent();
 CARDEVENTS GetCurrentEvent();
+void DrawAnimation(float x, float y, float scaleX, float scaleY, float delay, int index);
+SPRITESHEET GetSpriteAnimationByIndex(int index);
+CP_Image GetSpriteSheetByIndex(int index);
+void InitSpritesheets(void); 
+
 
 
 

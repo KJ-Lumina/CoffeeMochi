@@ -4,6 +4,7 @@
 #include "cprocessing.h"
 #include "TravessFunctions.h"
 #include "grid.h"
+#include "UI_mechanics.h"
 
 
 
@@ -55,6 +56,7 @@ GAMESTATE GetGameState()
 void DrawAllTiles(void)
 {
     CP_Vector newTile;
+    
     for (int j = 0; j < WORLDGRIDY; ++j)
     {
         for (int i = 0; i < WORLDGRIDX; ++i)
@@ -89,7 +91,50 @@ void DrawAllTiles(void)
             }
         }
     }
+    DrawAnimation( 500, 500, TILEWIDTH, TILEHEIGHT, 0.25, TILESET_TESTENEMY);
+
 }
+
+void DrawAnimation(float x, float y, float scaleX, float scaleY, float delay, int index)
+{
+
+    timeElapse[index] += CP_System_GetDt();
+
+
+    if (timeElapse[index] >= delay)
+    {
+        timeElapse[index] -= delay;
+        setNextSprite[index] = 1;
+    }
+
+    if (setNextSprite[index] == 1)
+    {
+        if (minX[index] == maxX[index] - 1)
+        {
+            minX[index] = 0;
+        }
+        else
+        {
+            minX[index]++;
+        }
+
+        if (minY[index] == maxY[index] - 1)
+        {
+            minY[index] = 0;
+        }
+        else
+        {
+            minY[index]++;
+        }
+
+        setNextSprite[index] = 0;
+    }
+
+    //CP_Image_DrawSubImage(GetBuildingSpriteByIndex(7), WORLDGRIDX, WORLDGRIDY, TILEWIDTH, TILEHEIGHT, 0, 512, 128, 672, 255);
+    CP_Image_DrawSubImage(GetSpriteSheetByIndex(index), x , y , scaleX, scaleY , spriteSizeX[index] * minX[index], spriteSizeY[index] * minY[index], spriteSizeX[index] * (minX[index] + 1), spriteSizeY[index] * (minY[index] + 1), 255);
+
+}
+
 
 void DrawCursorTile(void)
 {
@@ -296,8 +341,9 @@ void MouseDragOrClick(void)
 
 void game_init(void)
 {    
-    CP_System_SetWindowSize(900, 600);
+    CP_System_SetWindowSize(1600, 900);
     InitBuildings();
+    InitSpritesheets();
     InitDeck();
     InitUI();
     windowsWidth = (float)CP_System_GetWindowWidth();

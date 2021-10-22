@@ -1,8 +1,7 @@
 #include <stdio.h>
 #include "cprocessing.h"
 #include "game.h"
-
-
+#include "UI_mechanics.h"
 
 //TEMPPPPPPPPPPPPP FOR PROTOTYPE ONLY
 
@@ -13,6 +12,11 @@ float windowWidth;
 float windowHeight;
 CP_Vector optionAPos;
 CP_Vector optionBPos;
+
+//SPRITESHEET tileset_testenemy = { setNextSprite,minX,maxX,minY,maxY,maxSprites,spriteSizeX,spritesizeY };
+SPRITESHEET tileset_testenemy =   { 0,0,4,0,1,4,64,64 };
+CP_Image testenemy;
+
 
 int CheckUIClick(float xPos, float yPos)
 {
@@ -85,18 +89,8 @@ void DrawUI()
     }
 }
 
-//temp gamestate will be toggled in UI file
-// gamestate is required input from main.c!!
-int gamestate = 2;
 
-//void ClosePopup();
 void OpenPopup(int identity);
-
-/* Things left to do:
-How to initialise all buildings/buttons
-Work on image render into struct*/
-
-
 
 
 // all structs are temporarily initialized to 3 in array
@@ -130,28 +124,10 @@ int CheckMouseColliding(Button array[])
         }
         else
             result = 0;
-
-    switch (result)
-    {
-    case 0:
-        if (gamestate == 3) {
-            gamestate = 2;
-            //ClosePopup();
-        }
-        break;
-
-    case 21:
-        gamestate = 3;
-        OpenPopup(result);
-        break;
-
-    case 31:
-        //cursorTile = SnapToGrid(mousePosX, mousePosY);
-        //CP_Image_Draw(housetile, cursorTile.x, cursorTile.y, tileWidth, tileHeight, 255);
-        break;
-    }
-
+    
     return result;
+        //OpenPopup(result);
+
 }
 
 void MouseCollidingState(int zgamestate)
@@ -161,7 +137,7 @@ void MouseCollidingState(int zgamestate)
         result = CheckMouseColliding(StartMenu);
     else if (zgamestate == 2)
         result = CheckMouseColliding(Main);
-    else if (gamestate == 3)
+    else if (zgamestate == 3)
         result = CheckMouseColliding(Popup);
 
     //return result;
@@ -181,11 +157,47 @@ void OpenPopup(int identity)
 
 }
 
+void InitSpritesheets(void)
+{
+    numOfSpritesheets = 1;
+    testenemy = CP_Image_Load("./Assets/testenemy.png");
+    
 
+    for (int i = 0; i < numOfSpritesheets; ++i)
+    {
+        minX[i] = GetSpriteAnimationByIndex(i).minX;
+        maxX[i] = GetSpriteAnimationByIndex(i).maxX;
+        minY[i] = GetSpriteAnimationByIndex(i).minY;
+        maxY[i] = GetSpriteAnimationByIndex(i).maxY;
+        maxSprites[i] = GetSpriteAnimationByIndex(i).maxSprites;
+        spriteSizeX[i] = GetSpriteAnimationByIndex(i).spriteSizeX;
+        spriteSizeY[i] = GetSpriteAnimationByIndex(i).spriteSizeY;
+    }
 
+}
 
+SPRITESHEET GetSpriteAnimationByIndex(int index)
+{
+    switch (index)
+    {
+    case TILESET_TESTENEMY:
+        return tileset_testenemy;
+    default:
+        return tileset_testenemy;
+    }
+}
 
-//All Button call defininitions past this point
+CP_Image GetSpriteSheetByIndex(int index)
+{
+    switch (index)
+    {
+    case 1:
+        return testenemy;
+    default:
+        return testenemy;
+    }
+}
+
 
 
 
