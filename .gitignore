@@ -56,3 +56,6 @@ ipch/
 *.ipch
 *.db-shm
 *.db
+*.ipch
+*.db-wal
+*.db
