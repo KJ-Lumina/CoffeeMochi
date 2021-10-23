@@ -15,6 +15,8 @@ CP_Vector optionBPos;
 
 //SPRITESHEET tileset_testenemy = { setNextSprite,minX,maxX,minY,maxY,maxSprites,spriteSizeX,spritesizeY };
 SPRITESHEET tileset_testenemy =   { 0,0,4,0,1,4,64,64 };
+TILEMAP tilemap_world = { "TilesetGrass", 3, 3 };
+CP_Image tilemap;
 CP_Image testenemy;
 
 
@@ -159,8 +161,11 @@ void OpenPopup(int identity)
 
 void InitSpritesheets(void)
 {
+    //edit this when more spritesheets
     numOfSpritesheets = 1;
+    tilemap = CP_Image_Load("./Assets/TilesetGrass.png");
     testenemy = CP_Image_Load("./Assets/testenemy.png");
+
     
 
     for (int i = 0; i < numOfSpritesheets; ++i)
@@ -239,6 +244,28 @@ void DrawAnimation(float x, float y, float scaleX, float scaleY, float delay, in
 
 }
 
+// valid tilenumbers are from 1 to 9
+void DrawTile(int tileNumber,float posX, float posY)
+{
+    int varX = 0;
+    int varY = 0;
+    float pixelwidthX = 128;
+    float pixelWidthY = 160;
+
+    if (tileNumber == 2 || tileNumber == 5 || tileNumber == 8)
+        varX = 1;
+
+    if (tileNumber == 3 || tileNumber == 6 || tileNumber == 9)
+        varX = 2;
+
+    if (tileNumber == 4 || tileNumber == 5 || tileNumber == 6)
+        varY = 1;
+
+    if (tileNumber == 7 || tileNumber == 8 || tileNumber == 9)
+        varY = 2;
+
+    CP_Image_DrawSubImage(tilemap, posX, posY, pixelwidthX, pixelWidthY, pixelwidthX * varX, pixelWidthY * varY, pixelwidthX * (varX + 1), pixelWidthY * (varY + 1), 255); 
+}
 
 
 
