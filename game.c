@@ -66,34 +66,36 @@ void DrawAllTiles(void)
             newTile = GridToWorldPosition((float)i, (float)j, worldSpaceOrigin);
             DrawTile(tileNum, newTile.x, newTile.y);
 
-            /*switch (worldGrid[i][j])
-            {
-            case 0:
-                break;
+            //switch (worldGrid[i][j])
+            //{
+            //case 0:
+            //    break;
 
-            case 1:
-                newTile = GridToWorldPosition((float)i, (float)j, worldSpaceOrigin);
-                CP_Image_Draw(GetBuildingSpriteByIndex(1), newTile.x, newTile.y, TILEWIDTH, TILEHEIGHT, 255);
-                break;
+            //case 1:
+            //    newTile = GridToWorldPosition((float)i, (float)j, worldSpaceOrigin);
+            //    CP_Image_Draw(GetBuildingSpriteByIndex(1), newTile.x, newTile.y, TILEWIDTH, TILEHEIGHT, 255);
+            //    break;
 
-            case 2:
-                newTile = GridToWorldPosition((float)i, (float)j, worldSpaceOrigin);
-                CP_Image_Draw(GetBuildingSpriteByIndex(2), newTile.x, newTile.y, TILEWIDTH, TILEHEIGHT, 255);
-                break;
+            //case 2:
+            //    newTile = GridToWorldPosition((float)i, (float)j, worldSpaceOrigin);
+            //    CP_Image_Draw(GetBuildingSpriteByIndex(2), newTile.x, newTile.y, TILEWIDTH, TILEHEIGHT, 255);
+            //    break;
 
-            case 3:
-                newTile = GridToWorldPosition((float)i, (float)j, worldSpaceOrigin);
-                CP_Image_Draw(GetBuildingSpriteByIndex(3), newTile.x, newTile.y, TILEWIDTH, TILEHEIGHT, 255);
-                break;
-            case 4:
-                newTile = GridToWorldPosition((float)i, (float)j, worldSpaceOrigin);
-                CP_Image_Draw(GetBuildingSpriteByIndex(4), newTile.x, newTile.y, TILEWIDTH, TILEHEIGHT, 255);
-                break;
-            case 5:
-                newTile = GridToWorldPosition((float)i, (float)j, worldSpaceOrigin);
-                CP_Image_Draw(GetBuildingSpriteByIndex(5), newTile.x, newTile.y, TILEWIDTH, TILEHEIGHT, 255);
-                break;*/
+            //case 3:
+            //    newTile = GridToWorldPosition((float)i, (float)j, worldSpaceOrigin);
+            //    CP_Image_Draw(GetBuildingSpriteByIndex(3), newTile.x, newTile.y, TILEWIDTH, TILEHEIGHT, 255);
+            //    break;
+            //case 4:
+            //    newTile = GridToWorldPosition((float)i, (float)j, worldSpaceOrigin);
+            //    CP_Image_Draw(GetBuildingSpriteByIndex(4), newTile.x, newTile.y, TILEWIDTH, TILEHEIGHT, 255);
+            //    break;
+            //case 5:
+            //    newTile = GridToWorldPosition((float)i, (float)j, worldSpaceOrigin);
+            //    CP_Image_Draw(GetBuildingSpriteByIndex(5), newTile.x, newTile.y, TILEWIDTH, TILEHEIGHT, 255);
+            //    break;
             //}
+
+            
         }
     }
     DrawAnimation(500, 500, 200, 200, 0.25, TILESET_TESTENEMY);
@@ -279,6 +281,11 @@ void MouseClick()
         case 2:
             gameState = State_PlaceYourBuilding;
             cursorBuilding = GetBuildingByIndex(currentEvent.indexOptionA);
+            break;
+        case 3:
+            gameState = State_PlaceYourBuilding;
+            cursorBuilding = GetBuildingByIndex(currentEvent.indexOptionB);
+            break;
         }
     }
 }

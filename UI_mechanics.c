@@ -39,8 +39,15 @@ int CheckUIClick(float xPos, float yPos)
         if (xPos >= optionAPos.x - TILEWIDTH / 2 && xPos <= optionAPos.x + TILEWIDTH / 2 && yPos >= optionBPos.y - TILEHEIGHT / 2 && yPos <= optionBPos.y + TILEHEIGHT / 2)
         {
             return 2;
+            break;
         }
+        
         // click on option B?
+        else if (xPos >= optionBPos.x - TILEWIDTH/2  && xPos <= optionBPos.x+TILEWIDTH/2 && yPos >= optionBPos.y -TILEHEIGHT/2 && yPos <= optionBPos.y+TILEHEIGHT / 2)
+        {
+            return 3;
+            break;
+        }
         break;
     case State_PlaceYourBuilding:
         break;
@@ -80,10 +87,11 @@ void DrawUI()
         CP_Settings_Fill(CP_Color_Create(255, 255, 255, 255));
         char buffer[100];
         sprintf_s(buffer, 100, "%s", currentEvent.description);
+
         CP_Font_DrawText(buffer, 250, 100);
 
-        CP_Image_Draw(GetBuildingSpriteByIndex(currentEvent.indexOptionA), optionAPos.x, optionAPos.y, TILEWIDTH, TILEHEIGHT, 255);
-        CP_Image_Draw(GetBuildingSpriteByIndex(currentEvent.indexOptionB), optionBPos.x, optionBPos.y, TILEWIDTH, TILEHEIGHT, 255);
+        CP_Image_Draw(GetBuildingSpriteButtonByIndex(currentEvent.indexOptionA), optionAPos.x-5, optionAPos.y, TILEWIDTH, TILEHEIGHT/2, 255);
+        CP_Image_Draw(GetBuildingSpriteButtonByIndex(currentEvent.indexOptionB), optionBPos.x+5, optionBPos.y, TILEWIDTH, TILEHEIGHT/2, 255);
     }
     else
     {

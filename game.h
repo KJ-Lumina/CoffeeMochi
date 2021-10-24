@@ -30,6 +30,7 @@ typedef struct
 	int indexOptionB;
 	char* stringOptionA;
 	char* stringOptionB;
+
 }CARDEVENTS;
 
 
@@ -66,6 +67,7 @@ void InitUI();
 void UI_SetEvent(CARDEVENTS);
 BUILDING GetBuildingByIndex(int);
 CP_Image GetBuildingSpriteByIndex(int);
+CP_Image GetBuildingSpriteButtonByIndex(int);
 int Get_current_gold();
 int Get_current_food();
 int Get_current_population();
@@ -76,6 +78,7 @@ void GenerateResourcesOnEndTurn();
 int CheckUIClick(float, float);
 CARDEVENTS GetBasicEvent();
 CARDEVENTS GetCurrentEvent();
+
 
 
 
