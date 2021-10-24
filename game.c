@@ -66,34 +66,34 @@ void DrawAllTiles(void)
             newTile = GridToWorldPosition((float)i, (float)j, worldSpaceOrigin);
             DrawTile(tileNum, newTile.x, newTile.y);
 
-            //switch (worldGrid[i][j])
-            //{
-            //case 0:
-            //    break;
+            switch (worldGrid[i][j])
+            {
+            case 0:
+                break;
 
-            //case 1:
-            //    newTile = GridToWorldPosition((float)i, (float)j, worldSpaceOrigin);
-            //    CP_Image_Draw(GetBuildingSpriteByIndex(1), newTile.x, newTile.y, TILEWIDTH, TILEHEIGHT, 255);
-            //    break;
+            case 1:
+                newTile = GridToWorldPosition((float)i, (float)j, worldSpaceOrigin);
+                CP_Image_Draw(GetBuildingSpriteByIndex(1), newTile.x, newTile.y, TILEWIDTH, TILEHEIGHT, 255);
+                break;
 
-            //case 2:
-            //    newTile = GridToWorldPosition((float)i, (float)j, worldSpaceOrigin);
-            //    CP_Image_Draw(GetBuildingSpriteByIndex(2), newTile.x, newTile.y, TILEWIDTH, TILEHEIGHT, 255);
-            //    break;
+            case 2:
+                newTile = GridToWorldPosition((float)i, (float)j, worldSpaceOrigin);
+                CP_Image_Draw(GetBuildingSpriteByIndex(2), newTile.x, newTile.y, TILEWIDTH, TILEHEIGHT, 255);
+                break;
 
-            //case 3:
-            //    newTile = GridToWorldPosition((float)i, (float)j, worldSpaceOrigin);
-            //    CP_Image_Draw(GetBuildingSpriteByIndex(3), newTile.x, newTile.y, TILEWIDTH, TILEHEIGHT, 255);
-            //    break;
-            //case 4:
-            //    newTile = GridToWorldPosition((float)i, (float)j, worldSpaceOrigin);
-            //    CP_Image_Draw(GetBuildingSpriteByIndex(4), newTile.x, newTile.y, TILEWIDTH, TILEHEIGHT, 255);
-            //    break;
-            //case 5:
-            //    newTile = GridToWorldPosition((float)i, (float)j, worldSpaceOrigin);
-            //    CP_Image_Draw(GetBuildingSpriteByIndex(5), newTile.x, newTile.y, TILEWIDTH, TILEHEIGHT, 255);
-            //    break;
-            //}
+            case 3:
+                newTile = GridToWorldPosition((float)i, (float)j, worldSpaceOrigin);
+                CP_Image_Draw(GetBuildingSpriteByIndex(3), newTile.x, newTile.y, TILEWIDTH, TILEHEIGHT, 255);
+                break;
+            case 4:
+                newTile = GridToWorldPosition((float)i, (float)j, worldSpaceOrigin);
+                CP_Image_Draw(GetBuildingSpriteByIndex(4), newTile.x, newTile.y, TILEWIDTH, TILEHEIGHT, 255);
+                break;
+            case 5:
+                newTile = GridToWorldPosition((float)i, (float)j, worldSpaceOrigin);
+                CP_Image_Draw(GetBuildingSpriteByIndex(5), newTile.x, newTile.y, TILEWIDTH, TILEHEIGHT, 255);
+                break;
+            }
 
             
         }
@@ -108,8 +108,6 @@ void DrawCursorTile(void)
     cursorTile = SnapToGrid(newMousePos.x, newMousePos.y, worldSpaceOrigin);
     CP_Image_Draw(GetBuildingSpriteByIndex(cursorBuilding.spriteIndex), cursorTile.x, cursorTile.y, TILEWIDTH, TILEHEIGHT, 255);
 }
-
-#pragma endregion
 
 
 
