@@ -4,6 +4,7 @@
 #include "cprocessing.h"
 #include "TravessFunctions.h"
 #include "grid.h"
+#include "UI_mechanics.h"
 
 
 
@@ -55,11 +56,17 @@ GAMESTATE GetGameState()
 void DrawAllTiles(void)
 {
     CP_Vector newTile;
+    
     for (int j = 0; j < WORLDGRIDY; ++j)
     {
         for (int i = 0; i < WORLDGRIDX; ++i)
         {
-            switch (worldGrid[i][j])
+            int tileNum = 1;
+
+            newTile = GridToWorldPosition((float)i, (float)j, worldSpaceOrigin);
+            DrawTile(tileNum, newTile.x, newTile.y);
+
+            /*switch (worldGrid[i][j])
             {
             case 0:
                 break;
@@ -85,11 +92,14 @@ void DrawAllTiles(void)
             case 5:
                 newTile = GridToWorldPosition((float)i, (float)j, worldSpaceOrigin);
                 CP_Image_Draw(GetBuildingSpriteByIndex(5), newTile.x, newTile.y, TILEWIDTH, TILEHEIGHT, 255);
-                break;
-            }
+                break;*/
+            //}
         }
     }
+    DrawAnimation(500, 500, 200, 200, 0.25, TILESET_TESTENEMY);
+
 }
+
 
 void DrawCursorTile(void)
 {
@@ -296,13 +306,14 @@ void MouseDragOrClick(void)
 
 void game_init(void)
 {    
-    CP_System_SetWindowSize(900, 600);
+    CP_System_SetWindowSize(1600, 900);
     InitBuildings();
+    InitSpritesheets();
     InitDeck();
     InitUI();
     windowsWidth = (float)CP_System_GetWindowWidth();
     windowsHeight = (float)CP_System_GetWindowHeight();
-    worldSpaceOrigin.x = windowsWidth / 2 - TILEWIDTH * 9.5f;
+    worldSpaceOrigin.x = windowsWidth / 2 - TILEWIDTH * 12.0f;
     worldSpaceOrigin.y = windowsHeight / 2 - TILEHEIGHT * 9.5f;
     
 

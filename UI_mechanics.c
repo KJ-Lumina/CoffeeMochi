@@ -1,8 +1,7 @@
 #include <stdio.h>
 #include "cprocessing.h"
 #include "game.h"
-
-
+#include "UI_mechanics.h"
 
 //TEMPPPPPPPPPPPPP FOR PROTOTYPE ONLY
 
@@ -13,6 +12,13 @@ float windowWidth;
 float windowHeight;
 CP_Vector optionAPos;
 CP_Vector optionBPos;
+
+//SPRITESHEET tileset_testenemy = { setNextSprite,minX,maxX,minY,maxY,maxSprites,spriteSizeX,spritesizeY };
+SPRITESHEET tileset_testenemy =   { 0,0,4,0,1,4,64,64 };
+TILEMAP tilemap_world = { "TilesetGrass", 3, 3 };
+CP_Image tilemap;
+CP_Image testenemy;
+
 
 int CheckUIClick(float xPos, float yPos)
 {
@@ -85,18 +91,8 @@ void DrawUI()
     }
 }
 
-//temp gamestate will be toggled in UI file
-// gamestate is required input from main.c!!
-int gamestate = 2;
 
-//void ClosePopup();
 void OpenPopup(int identity);
-
-/* Things left to do:
-How to initialise all buildings/buttons
-Work on image render into struct*/
-
-
 
 
 // all structs are temporarily initialized to 3 in array
@@ -130,28 +126,10 @@ int CheckMouseColliding(Button array[])
         }
         else
             result = 0;
-
-    switch (result)
-    {
-    case 0:
-        if (gamestate == 3) {
-            gamestate = 2;
-            //ClosePopup();
-        }
-        break;
-
-    case 21:
-        gamestate = 3;
-        OpenPopup(result);
-        break;
-
-    case 31:
-        //cursorTile = SnapToGrid(mousePosX, mousePosY);
-        //CP_Image_Draw(housetile, cursorTile.x, cursorTile.y, tileWidth, tileHeight, 255);
-        break;
-    }
-
+    
     return result;
+        //OpenPopup(result);
+
 }
 
 void MouseCollidingState(int zgamestate)
@@ -161,7 +139,7 @@ void MouseCollidingState(int zgamestate)
         result = CheckMouseColliding(StartMenu);
     else if (zgamestate == 2)
         result = CheckMouseColliding(Main);
-    else if (gamestate == 3)
+    else if (zgamestate == 3)
         result = CheckMouseColliding(Popup);
 
     //return result;
@@ -181,12 +159,113 @@ void OpenPopup(int identity)
 
 }
 
+void InitSpritesheets(void)
+{
+    //edit this when more spritesheets
+    numOfSpritesheets = 1;
+    tilemap = CP_Image_Load("./Assets/TilesetGrass.png");
+    testenemy = CP_Image_Load("./Assets/testenemy.png");
+
+    
+
+    for (int i = 0; i < numOfSpritesheets; ++i)
+    {
+        minX[i] = GetSpriteAnimationByIndex(i).minX;
+        maxX[i] = GetSpriteAnimationByIndex(i).maxX;
+        minY[i] = GetSpriteAnimationByIndex(i).minY;
+        maxY[i] = GetSpriteAnimationByIndex(i).maxY;
+        maxSprites[i] = GetSpriteAnimationByIndex(i).maxSprites;
+        spriteSizeX[i] = GetSpriteAnimationByIndex(i).spriteSizeX;
+        spriteSizeY[i] = GetSpriteAnimationByIndex(i).spriteSizeY;
+    }
+
+}
+
+SPRITESHEET GetSpriteAnimationByIndex(int index)
+{
+    switch (index)
+    {
+    case TILESET_TESTENEMY:
+        return tileset_testenemy;
+    default:
+        return tileset_testenemy;
+    }
+}
+
+CP_Image GetSpriteSheetByIndex(int index)
+{
+    switch (index)
+    {
+    case 1:
+        return testenemy;
+    default:
+        return testenemy;
+    }
+}
+
+// Draws Animation, float x and y for position, float scale pixel size, delay is animation time, index is enum spritesheet
+void DrawAnimation(float x, float y, float scaleX, float scaleY, float delay, int index)
+{
+
+    timeElapse[index] += CP_System_GetDt();
 
 
+    if (timeElapse[index] >= delay)
+    {
+        timeElapse[index] -= delay;
+        setNextSprite[index] = 1;
+    }
 
+    if (setNextSprite[index] == 1)
+    {
+        if (minX[index] == maxX[index] - 1)
+        {
+            minX[index] = 0;
+        }
+        else
+        {
+            minX[index]++;
+        }
 
-//All Button call defininitions past this point
+        if (minY[index] == maxY[index] - 1)
+        {
+            minY[index] = 0;
+        }
+        else
+        {
+            minY[index]++;
+        }
 
+        setNextSprite[index] = 0;
+    }
+
+    //CP_Image_DrawSubImage(GetBuildingSpriteByIndex(7), WORLDGRIDX, WORLDGRIDY, TILEWIDTH, TILEHEIGHT, 0, 512, 128, 672, 255);
+    CP_Image_DrawSubImage(GetSpriteSheetByIndex(index), x, y, scaleX, scaleY, spriteSizeX[index] * minX[index], spriteSizeY[index] * minY[index], spriteSizeX[index] * (minX[index] + 1), spriteSizeY[index] * (minY[index] + 1), 255);
+
+}
+
+// valid tilenumbers are from 1 to 9
+void DrawTile(int tileNumber,float posX, float posY)
+{
+    int varX = 0;
+    int varY = 0;
+    float pixelwidthX = 128;
+    float pixelWidthY = 160;
+
+    if (tileNumber == 2 || tileNumber == 5 || tileNumber == 8)
+        varX = 1;
+
+    if (tileNumber == 3 || tileNumber == 6 || tileNumber == 9)
+        varX = 2;
+
+    if (tileNumber == 4 || tileNumber == 5 || tileNumber == 6)
+        varY = 1;
+
+    if (tileNumber == 7 || tileNumber == 8 || tileNumber == 9)
+        varY = 2;
+
+    CP_Image_DrawSubImage(tilemap, posX, posY, pixelwidthX, pixelWidthY, pixelwidthX * varX, pixelWidthY * varY, pixelwidthX * (varX + 1), pixelWidthY * (varY + 1), 255); 
+}
 
 
 

@@ -62,6 +62,5 @@ CP_Image GetBuildingSpriteByIndex(int index)
 		return sprite_tavern;
 	default:
 		return sprite_grass;
-		break;
 	}
 }

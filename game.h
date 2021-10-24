@@ -52,8 +52,8 @@ typedef struct
 
 #define WORLDGRIDX 40
 #define WORLDGRIDY 40
-#define TILEWIDTH 64.0f
-#define TILEHEIGHT 64.0f
+#define TILEWIDTH 128.0f
+#define TILEHEIGHT 128.0f
 
 GAMESTATE GetGameState();
 CP_Vector SnapToGrid(float, float, CP_Vector);
@@ -76,6 +76,9 @@ void GenerateResourcesOnEndTurn();
 int CheckUIClick(float, float);
 CARDEVENTS GetBasicEvent();
 CARDEVENTS GetCurrentEvent();
+
+
+
 
 
 
