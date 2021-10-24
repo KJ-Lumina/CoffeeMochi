@@ -47,7 +47,6 @@ ipch/
 *.exe
 *.out
 *.app
-*.x64
 *.tlog
 *.lastbuildstate
 *.recipe
