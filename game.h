@@ -56,7 +56,11 @@ typedef struct
 #define TILEWIDTH 128.0f
 #define TILEHEIGHT 128.0f
 
+float Math_Clamp_Float(float target, float min, float max);
+int Math_Clamp_Int(int target, int min, int max);
+
 GAMESTATE GetGameState();
+CP_Vector GetWorldSpaceOrigin();
 CP_Vector SnapToGrid(float, float, CP_Vector);
 CP_Vector WorldToGridPosition(float, float, CP_Vector);
 CP_Vector GridToWorldPosition(float, float, CP_Vector);

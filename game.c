@@ -52,6 +52,11 @@ GAMESTATE GetGameState()
     return gameState;
 }
 
+CP_Vector GetWorldSpaceOrigin()
+{
+    return worldSpaceOrigin;
+}
+
 
 void DrawAllTiles(void)
 {
@@ -61,10 +66,7 @@ void DrawAllTiles(void)
     {
         for (int i = 0; i < WORLDGRIDX; ++i)
         {
-            int tileNum = 1;
-
-            newTile = GridToWorldPosition((float)i, (float)j, worldSpaceOrigin);
-            DrawTile(tileNum, newTile.x, newTile.y);
+            DrawTile(i, j);
 
             switch (worldGrid[i][j])
             {
@@ -312,14 +314,16 @@ void MouseDragOrClick(void)
 void game_init(void)
 {    
     CP_System_SetWindowSize(1600, 900);
-    InitBuildings();
-    InitSpritesheets();
-    InitDeck();
-    InitUI();
     windowsWidth = (float)CP_System_GetWindowWidth();
     windowsHeight = (float)CP_System_GetWindowHeight();
     worldSpaceOrigin.x = windowsWidth / 2 - TILEWIDTH * 12.0f;
     worldSpaceOrigin.y = windowsHeight / 2 - TILEHEIGHT * 9.5f;
+    printf("%f, %f \n", worldSpaceOrigin.x, worldSpaceOrigin.y);
+    InitBuildings();
+    InitSpritesheets();
+    InitDeck();
+    InitUI();
+
     
 
 

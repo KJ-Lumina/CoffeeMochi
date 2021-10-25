@@ -18,6 +18,11 @@ SPRITESHEET tileset_testenemy =   { 0,0,4,0,1,4,64,64 };
 TILEMAP tilemap_world = { "TilesetGrass", 3, 3 };
 CP_Image tilemap;
 CP_Image testenemy;
+int varX = 0;
+int varY = 0;
+float pixelwidthX = 128;
+float pixelWidthY = 160;
+CP_Vector worldPos;
 
 
 int CheckUIClick(float xPos, float yPos)
@@ -253,26 +258,37 @@ void DrawAnimation(float x, float y, float scaleX, float scaleY, float delay, in
 }
 
 // valid tilenumbers are from 1 to 9
-void DrawTile(int tileNumber,float posX, float posY)
+void DrawTile(int posX, int posY)
 {
-    int varX = 0;
-    int varY = 0;
-    float pixelwidthX = 128;
-    float pixelWidthY = 160;
+    worldPos = GridToWorldPosition((float)posX, (float)posY, GetWorldSpaceOrigin());
 
-    if (tileNumber == 2 || tileNumber == 5 || tileNumber == 8)
-        varX = 1;
-
-    if (tileNumber == 3 || tileNumber == 6 || tileNumber == 9)
+    switch (posX)
+    {
+    case 0:
+        varX = 0;
+        break;
+    case WORLDGRIDX - 1:
         varX = 2;
+        break;
+    default:
+        varX = 1;
+        break;
+    }
 
-    if (tileNumber == 4 || tileNumber == 5 || tileNumber == 6)
-        varY = 1;
-
-    if (tileNumber == 7 || tileNumber == 8 || tileNumber == 9)
+    switch (posY)
+    {
+    case 0:
+        varY = 0;
+        break;
+    case WORLDGRIDY - 1:
         varY = 2;
+        break;
+    default:
+        varY = 1;
+        break;
+    }
 
-    CP_Image_DrawSubImage(tilemap, posX, posY, pixelwidthX, pixelWidthY, pixelwidthX * varX, pixelWidthY * varY, pixelwidthX * (varX + 1), pixelWidthY * (varY + 1), 255); 
+    CP_Image_DrawSubImage(tilemap, worldPos.x, worldPos.y, pixelwidthX, pixelWidthY, pixelwidthX * varX, pixelWidthY * varY, pixelwidthX * (varX + 1), pixelWidthY * (varY + 1), 255);
 }
 
 
