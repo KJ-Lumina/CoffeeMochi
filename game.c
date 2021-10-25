@@ -61,7 +61,7 @@ void DrawAllTiles(void)
     {
         for (int i = 0; i < WORLDGRIDX; ++i)
         {
-            int tileNum = 1;
+            int tileNum = 7;
 
             newTile = GridToWorldPosition((float)i, (float)j, worldSpaceOrigin);
             DrawTile(tileNum, newTile.x, newTile.y);
