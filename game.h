@@ -30,6 +30,7 @@ typedef struct
 	int indexOptionB;
 	char* stringOptionA;
 	char* stringOptionB;
+
 }CARDEVENTS;
 
 
@@ -55,7 +56,11 @@ typedef struct
 #define TILEWIDTH 128.0f
 #define TILEHEIGHT 128.0f
 
+float Math_Clamp_Float(float target, float min, float max);
+int Math_Clamp_Int(int target, int min, int max);
+
 GAMESTATE GetGameState();
+CP_Vector GetWorldSpaceOrigin();
 CP_Vector SnapToGrid(float, float, CP_Vector);
 CP_Vector WorldToGridPosition(float, float, CP_Vector);
 CP_Vector GridToWorldPosition(float, float, CP_Vector);
@@ -66,6 +71,7 @@ void InitUI();
 void UI_SetEvent(CARDEVENTS);
 BUILDING GetBuildingByIndex(int);
 CP_Image GetBuildingSpriteByIndex(int);
+CP_Image GetBuildingSpriteButtonByIndex(int);
 int Get_current_gold();
 int Get_current_food();
 int Get_current_population();
@@ -76,6 +82,7 @@ void GenerateResourcesOnEndTurn();
 int CheckUIClick(float, float);
 CARDEVENTS GetBasicEvent();
 CARDEVENTS GetCurrentEvent();
+
 
 
 

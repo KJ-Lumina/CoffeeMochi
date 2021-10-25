@@ -37,7 +37,7 @@ SPRITESHEET GetSpriteAnimationByIndex(int index);
 CP_Image GetSpriteSheetByIndex(int index);
 void InitSpritesheets(void);
 void DrawAnimation(float x, float y, float scaleX, float scaleY, float delay, int index);
-void DrawTile(int tileNumber, float posX, float posY);
+void DrawTile(int gridPosX, int gridPosY);
 
 //have to add more in for more spritesheets
 enum SpriteAnimationIndex {

@@ -24,7 +24,6 @@ bool ScreenToGridPosition(int* selCol, int* selRow, int cellSize, int screenSize
 
 	//CP_Settings_Fill(CP_Color_Create(0, 255, 0, 255));
 	//CP_Graphics_DrawCircle((float)(xGrid * cellSize + cellSize/2), (float)(yGrid * cellSize + cellSize / 2), 10);
-	printf("true");
 	return true;
 }
 
@@ -35,6 +34,38 @@ float Math_Abs(float x)
 		return -x;
 	}
 	return x;
+}
+
+float Math_Clamp_Float(float target, float min, float max)
+{
+	if (target <= min)
+	{
+		return min;
+	}
+	else if (target >= max)
+	{
+		return max;
+	}
+	else
+	{
+		return target;
+	}
+}
+
+int Math_Clamp_Int(int target, int min, int max)
+{
+	if (target <= min)
+	{
+		return min;
+	}
+	else if (target >= max)
+	{
+		return max;
+	}
+	else
+	{
+		return target;
+	}
 }
 
 

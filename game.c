@@ -52,6 +52,11 @@ GAMESTATE GetGameState()
     return gameState;
 }
 
+CP_Vector GetWorldSpaceOrigin()
+{
+    return worldSpaceOrigin;
+}
+
 
 void DrawAllTiles(void)
 {
@@ -61,12 +66,9 @@ void DrawAllTiles(void)
     {
         for (int i = 0; i < WORLDGRIDX; ++i)
         {
-            int tileNum = 7;
+            DrawTile(i, j);
 
-            newTile = GridToWorldPosition((float)i, (float)j, worldSpaceOrigin);
-            DrawTile(tileNum, newTile.x, newTile.y);
-
-            /*switch (worldGrid[i][j])
+            switch (worldGrid[i][j])
             {
             case 0:
                 break;
@@ -92,8 +94,10 @@ void DrawAllTiles(void)
             case 5:
                 newTile = GridToWorldPosition((float)i, (float)j, worldSpaceOrigin);
                 CP_Image_Draw(GetBuildingSpriteByIndex(5), newTile.x, newTile.y, TILEWIDTH, TILEHEIGHT, 255);
-                break;*/
-            //}
+                break;
+            }
+
+            
         }
     }
     DrawAnimation(500, 500, 200, 200, 0.25, TILESET_TESTENEMY);
@@ -106,8 +110,6 @@ void DrawCursorTile(void)
     cursorTile = SnapToGrid(newMousePos.x, newMousePos.y, worldSpaceOrigin);
     CP_Image_Draw(GetBuildingSpriteByIndex(cursorBuilding.spriteIndex), cursorTile.x, cursorTile.y, TILEWIDTH, TILEHEIGHT, 255);
 }
-
-#pragma endregion
 
 
 
@@ -279,6 +281,11 @@ void MouseClick()
         case 2:
             gameState = State_PlaceYourBuilding;
             cursorBuilding = GetBuildingByIndex(currentEvent.indexOptionA);
+            break;
+        case 3:
+            gameState = State_PlaceYourBuilding;
+            cursorBuilding = GetBuildingByIndex(currentEvent.indexOptionB);
+            break;
         }
     }
 }
@@ -307,14 +314,16 @@ void MouseDragOrClick(void)
 void game_init(void)
 {    
     CP_System_SetWindowSize(1600, 900);
-    InitBuildings();
-    InitSpritesheets();
-    InitDeck();
-    InitUI();
     windowsWidth = (float)CP_System_GetWindowWidth();
     windowsHeight = (float)CP_System_GetWindowHeight();
     worldSpaceOrigin.x = windowsWidth / 2 - TILEWIDTH * 12.0f;
     worldSpaceOrigin.y = windowsHeight / 2 - TILEHEIGHT * 9.5f;
+    printf("%f, %f \n", worldSpaceOrigin.x, worldSpaceOrigin.y);
+    InitBuildings();
+    InitSpritesheets();
+    InitDeck();
+    InitUI();
+
     
 
 
