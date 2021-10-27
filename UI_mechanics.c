@@ -112,7 +112,6 @@ void OpenPopup(int identity);
 Button StartMenu[3];
 Button Main[3] = { { 100,100,200,200,21,"Building" }, { 100,100,900,900,22,"Citizen" }, { 100,100,900,900,23,"Settings" } };
 Button Popup[1] = { { 256,128,500,500,30,"Popup" } };
-Building Buildings[3];
 
 //Main[3] = { { 100,100,900,900,21,"Building" }, { 100,100,100,100,22,"Citizen" }, { 100,100,100,100,23,"Settings" } };
 //Popup[1] = { { 256,128,500,500,30,"Popup" } };

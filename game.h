@@ -12,6 +12,7 @@ typedef enum
 }GAMESTATE;
 
 
+
 typedef struct 
 {
 	const char* name;
@@ -34,6 +35,13 @@ typedef struct
 }CARDEVENTS;
 
 
+typedef struct
+{
+	CARDEVENTS cards[20];
+	int cardsLeft;
+
+}CARDDECK;
+
 typedef struct 
 {
 	float width;
@@ -44,12 +52,16 @@ typedef struct
 	const char* imagename;
 }Button;
 
-typedef struct 
-{
-	char buildingName[16];
-	int population;
-	int goldCost;
-}Building;
+
+#define B_GRASS_INDEX 1
+#define B_HOUSE_INDEX 2
+#define B_FARM_INDEX 3
+#define B_MARKET_INDEX 4
+
+#define BASIC_EVENT 1
+#define ADVANCED_EVENT 2
+#define NULL_CHOICE -1
+
 
 #define WORLDGRIDX 40
 #define WORLDGRIDY 40
