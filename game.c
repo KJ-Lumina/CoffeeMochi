@@ -3,31 +3,29 @@
 #include "game.h"
 #include "cprocessing.h"
 #include "TravessFunctions.h"
-#include "grid.h"
+#include "WorldSpaceGrid.h"
 #include "UI_mechanics.h"
 
 
 
 GAMESTATE gameState = State_Idle;
-
-#pragma region World Variables Declaration
-int turnNumber = 1;
+#pragma region Game Options Control
+bool AllowMouseDrag = true;
+bool AllowTileSet = true;
 #pragma endregion
 
+
+
 #pragma region  Grid Variables
-int worldGrid[WORLDGRIDX][WORLDGRIDY] = { 0 };
-CP_Vector worldSpaceOrigin;
-float windowsWidth;
-float windowsHeight;
-//float TILEWIDTH = 64;
-//float TILEHEIGHT = 64;
+
 CP_Vector cursorTile;
+CP_Vector cursorGrid;
 BUILDING cursorBuilding;
 CARDEVENTS currentEvent;
+CP_Vector currentMousePos;
 
-CP_Vector lastMousePos;
-CP_Vector newMousePos;
 bool mouseDrag = false;
+CP_Vector mouseDragPos;
 
 #pragma endregion
 
@@ -52,62 +50,9 @@ GAMESTATE GetGameState()
     return gameState;
 }
 
-CP_Vector GetWorldSpaceOrigin()
-{
-    return worldSpaceOrigin;
-}
-
-
-void DrawAllTiles(void)
-{
-    CP_Vector newTile;
-    
-    for (int j = 0; j < WORLDGRIDY; ++j)
-    {
-        for (int i = 0; i < WORLDGRIDX; ++i)
-        {
-            DrawTile(i, j);
-
-            switch (worldGrid[i][j])
-            {
-            case 0:
-                break;
-
-            case 1:
-                newTile = GridToWorldPosition((float)i, (float)j, worldSpaceOrigin);
-                CP_Image_Draw(GetBuildingSpriteByIndex(1), newTile.x, newTile.y, TILEWIDTH, TILEHEIGHT, 255);
-                break;
-
-            case 2:
-                newTile = GridToWorldPosition((float)i, (float)j, worldSpaceOrigin);
-                CP_Image_Draw(GetBuildingSpriteByIndex(2), newTile.x, newTile.y, TILEWIDTH, TILEHEIGHT, 255);
-                break;
-
-            case 3:
-                newTile = GridToWorldPosition((float)i, (float)j, worldSpaceOrigin);
-                CP_Image_Draw(GetBuildingSpriteByIndex(3), newTile.x, newTile.y, TILEWIDTH, TILEHEIGHT, 255);
-                break;
-            case 4:
-                newTile = GridToWorldPosition((float)i, (float)j, worldSpaceOrigin);
-                CP_Image_Draw(GetBuildingSpriteByIndex(4), newTile.x, newTile.y, TILEWIDTH, TILEHEIGHT, 255);
-                break;
-            case 5:
-                newTile = GridToWorldPosition((float)i, (float)j, worldSpaceOrigin);
-                CP_Image_Draw(GetBuildingSpriteByIndex(5), newTile.x, newTile.y, TILEWIDTH, TILEHEIGHT, 255);
-                break;
-            }
-
-            
-        }
-    }
-    DrawAnimation(500, 500, 200, 200, 0.25, TILESET_TESTENEMY);
-
-}
-
 
 void DrawCursorTile(void)
 {
-    cursorTile = SnapToGrid(newMousePos.x, newMousePos.y, worldSpaceOrigin);
     CP_Image_Draw(GetBuildingSpriteByIndex(cursorBuilding.spriteIndex), cursorTile.x, cursorTile.y, TILEWIDTH, TILEHEIGHT, 255);
 }
 
@@ -130,43 +75,20 @@ void GameOver(void)
 void EndTurn(void) 
 {
     GenerateResourcesOnEndTurn();
-    for (int j = 0; j < WORLDGRIDY; ++j)
-    {
-        for (int i = 0; i < WORLDGRIDX; ++i)
-        {
-            switch (worldGrid[i][j])
-            {
-            case 0:
-                break;
-            case 1:
-                break;
-            case 2:
-                break;
-            case 3:
-                break;
-            case 4:
-                break;
-            case 5:
-                break;
-            }
-        }
-    }
 }
 #pragma endregion
 
 void UpdateMouseInput(void)
 {
-    newMousePos = CP_Vector_Set(CP_Input_GetMouseX(), CP_Input_GetMouseY());
+    currentMousePos.x = CP_Input_GetMouseX();
+    currentMousePos.y = CP_Input_GetMouseY();
+    cursorTile = ScreenToWorldPosition(currentMousePos);
+    cursorGrid = WorldToGridPosition(cursorTile);
+    //mouseDrag purpose
     if (CP_Input_MouseTriggered(0))
     {
-        lastMousePos = newMousePos;
+        mouseDragPos = currentMousePos;
     }
-}
-
-void ReturnToCenter(void)
-{
-    worldSpaceOrigin.x = windowsWidth / 2 - TILEWIDTH * 10;
-    worldSpaceOrigin.y = windowsHeight / 2 - TILEHEIGHT * 10;
 }
 
 void AddNewResourceBuilding(int buildingIndex)
@@ -185,6 +107,49 @@ void AddNewResourceBuilding(int buildingIndex)
     }
 }
 
+void AdminControlInput()
+{
+    if (CP_Input_KeyDown(KEY_1))
+    {
+        if (!IsTileOccupied(cursorTile))
+        {
+            SetNewBuilding((int)cursorGrid.x, (int)cursorGrid.y, 1);
+        }
+    }
+    else if (CP_Input_KeyDown(KEY_2))
+    {
+        if (!IsTileOccupied(cursorTile))
+        {
+            SetNewBuilding((int)cursorGrid.x, (int)cursorGrid.y, 2);
+            AddHouse();
+        }
+    }
+    else if (CP_Input_KeyDown(KEY_3))
+    {
+        if (!IsTileOccupied(cursorTile))
+        {
+            SetNewBuilding((int)cursorGrid.x, (int)cursorGrid.y, 3);
+            AddFarm();
+        }
+    }
+    else if (CP_Input_KeyDown(KEY_4))
+    {
+        if (!IsTileOccupied(cursorTile))
+        {
+            SetNewBuilding((int)cursorGrid.x, (int)cursorGrid.y, 4);
+            AddMarket();
+        }
+    }
+    else if (CP_Input_KeyDown(KEY_5))
+    {
+        if (!IsTileOccupied(cursorTile))
+        {
+            SetNewBuilding((int)cursorGrid.x, (int)cursorGrid.y, 5);
+        }
+    }
+}
+
+
 void CheckKeyInput(void)
 {
     if (CP_Input_KeyTriggered(KEY_F))
@@ -195,60 +160,9 @@ void CheckKeyInput(void)
     {
         EndTurn();
     }
-    if (CP_Input_KeyDown(KEY_1))
-    {
-        CP_Vector newTileGridPos = WorldToGridPosition(cursorTile.x, cursorTile.y, worldSpaceOrigin);
-        if (worldGrid[(int)(newTileGridPos.x)][(int)(newTileGridPos.y)] == 0)
-        {
-            worldGrid[(int)(newTileGridPos.x)][(int)(newTileGridPos.y)] = 1;
-        }
-    }
-    else if (CP_Input_KeyDown(KEY_2))
-    {
-        CP_Vector newTileGridPos = WorldToGridPosition(cursorTile.x, cursorTile.y, worldSpaceOrigin);
-        if (worldGrid[(int)(newTileGridPos.x)][(int)(newTileGridPos.y)] == 0)
-        {
-            worldGrid[(int)(newTileGridPos.x)][(int)(newTileGridPos.y)] = 2;
-            AddHouse();
-        }
-    }
-    else if (CP_Input_KeyDown(KEY_3))
-    {
-        CP_Vector newTileGridPos = WorldToGridPosition(cursorTile.x, cursorTile.y, worldSpaceOrigin);
-        if (worldGrid[(int)(newTileGridPos.x)][(int)(newTileGridPos.y)] == 0)
-        {
-            worldGrid[(int)(newTileGridPos.x)][(int)(newTileGridPos.y)] = 3;
-            AddFarm();
-        }
-    }
-    else if (CP_Input_KeyDown(KEY_4))
-    {
-        CP_Vector newTileGridPos = WorldToGridPosition(cursorTile.x, cursorTile.y, worldSpaceOrigin);
-        if (worldGrid[(int)(newTileGridPos.x)][(int)(newTileGridPos.y)] == 0)
-        {
-            worldGrid[(int)(newTileGridPos.x)][(int)(newTileGridPos.y)] = 4;
-            AddMarket();
-        }
-    }
-    else if (CP_Input_KeyDown(KEY_5))
-    {
-        CP_Vector newTileGridPos = WorldToGridPosition(cursorTile.x, cursorTile.y, worldSpaceOrigin);
-        if (worldGrid[(int)(newTileGridPos.x)][(int)(newTileGridPos.y)] == 0)
-        {
-            worldGrid[(int)(newTileGridPos.x)][(int)(newTileGridPos.y)] = 5;
-        }
-    }
-}
-
-void CreateBasicPlatform(void)
-{
-    for (int i = 7; i < 12; ++i)
-    {
-        for (int j = 7; j < 12; ++j)
-        {
-            worldGrid[i][j] = 1;
-        }
-    }
+    
+    // PLAYTESTING
+    AdminControlInput();
 }
 
 CARDEVENTS GetCurrentEvent()
@@ -260,10 +174,9 @@ void MouseClick()
 {
     if (gameState == State_PlaceYourBuilding)
     {
-        CP_Vector newTileGridPos = WorldToGridPosition(cursorTile.x, cursorTile.y, worldSpaceOrigin);
-        if (worldGrid[(int)(newTileGridPos.x)][(int)(newTileGridPos.y)] == 1)
+        if (!IsTileOccupied(cursorTile))
         {
-            worldGrid[(int)(newTileGridPos.x)][(int)(newTileGridPos.y)] = cursorBuilding.spriteIndex;
+            SetNewBuilding((int)cursorGrid.x, (int)cursorGrid.y, cursorBuilding.spriteIndex);
             AddNewResourceBuilding(cursorBuilding.spriteIndex);
             EndTurn();
             gameState = State_Idle;
@@ -271,7 +184,7 @@ void MouseClick()
     }
     else
     {
-        switch (CheckUIClick(lastMousePos.x, lastMousePos.y))
+        switch (CheckUIClick(mouseDragPos.x, mouseDragPos.y))
         {
         case 1:
             gameState = State_MakeAChoice;
@@ -292,42 +205,40 @@ void MouseClick()
 
 void MouseDragOrClick(void)
 {
-    if (CP_Input_MouseDragged(0))
+    if (AllowMouseDrag)
     {
-        mouseDrag = true;
-        worldSpaceOrigin.x += newMousePos.x - lastMousePos.x;
-        worldSpaceOrigin.y += newMousePos.y - lastMousePos.y;
-        lastMousePos = newMousePos;
+        if (CP_Input_MouseDragged(0))
+        {
+            mouseDrag = true;
+            MoveWorldSpaceOrigin(currentMousePos.x - mouseDragPos.x, currentMousePos.y - mouseDragPos.y);
+            mouseDragPos = currentMousePos;
+        }
+        // To deferentiate between drag and click
+        if (CP_Input_MouseClicked() && !mouseDrag)
+        {
+            MouseClick();
+        }
+        // end of drag
+        if (CP_Input_MouseReleased(0) && mouseDrag)
+        {
+            mouseDrag = false;
+        }
     }
-    // To deferentiate between drag and click
-    if (CP_Input_MouseClicked() && !mouseDrag)
+    else
     {
         MouseClick();
     }
-    // end of drag
-    if (CP_Input_MouseReleased(0) && mouseDrag)
-    {
-        mouseDrag = false;
-    }
+    
 }
 
 void game_init(void)
 {    
     CP_System_SetWindowSize(1600, 900);
-    windowsWidth = (float)CP_System_GetWindowWidth();
-    windowsHeight = (float)CP_System_GetWindowHeight();
-    worldSpaceOrigin.x = windowsWidth / 2 - TILEWIDTH * 12.0f;
-    worldSpaceOrigin.y = windowsHeight / 2 - TILEHEIGHT * 9.5f;
-    printf("%f, %f \n", worldSpaceOrigin.x, worldSpaceOrigin.y);
+    InitWorldSpaceGrid();
     InitBuildings();
     InitSpritesheets();
     InitDeck();
     InitUI();
-
-    
-
-
-    CreateBasicPlatform();
 }
 
 void game_update(void)
@@ -337,17 +248,17 @@ void game_update(void)
     CheckKeyInput();
 
     CP_Graphics_ClearBackground(CP_Color_Create(150, 150, 150, 255));
-    DrawAllTiles();
+
+    if (AllowTileSet) DrawTileSet();
+    else DrawAllTiles();
+
     if (gameState == State_PlaceYourBuilding)
     {
         DrawCursorTile();
     }
+
     DrawUI();
-    CP_Settings_TextSize(20);
-    CP_Settings_Fill(CP_Color_Create(255, 255, 255, 255));
-    char buffer[100];
-    sprintf_s(buffer, 100, "Gold: %d\t\tFood: %d\t\tPopulation: %d", Get_current_gold(), Get_current_food(), Get_current_population());
-    CP_Font_DrawText(buffer, 20, 20);
+    DrawTempTextResources();
 }
 
 void game_exit(void)

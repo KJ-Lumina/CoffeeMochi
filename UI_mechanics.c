@@ -14,15 +14,9 @@ CP_Vector optionAPos;
 CP_Vector optionBPos;
 
 //SPRITESHEET tileset_testenemy = { setNextSprite,minX,maxX,minY,maxY,maxSprites,spriteSizeX,spritesizeY };
-SPRITESHEET tileset_testenemy =   { 0,0,4,0,1,4,64,64 };
-TILEMAP tilemap_world = { "TilesetGrass", 3, 3 };
-CP_Image tilemap;
+SPRITESHEET tileset_testenemy = { 0,0,4,0,1,4,64,64 };
 CP_Image testenemy;
-int varX = 0;
-int varY = 0;
-float pixelwidthX = 128;
-float pixelWidthY = 160;
-CP_Vector worldPos;
+
 
 
 int CheckUIClick(float xPos, float yPos)
@@ -112,7 +106,6 @@ void OpenPopup(int identity);
 Button StartMenu[3];
 Button Main[3] = { { 100,100,200,200,21,"Building" }, { 100,100,900,900,22,"Citizen" }, { 100,100,900,900,23,"Settings" } };
 Button Popup[1] = { { 256,128,500,500,30,"Popup" } };
-Building Buildings[3];
 
 //Main[3] = { { 100,100,900,900,21,"Building" }, { 100,100,100,100,22,"Citizen" }, { 100,100,100,100,23,"Settings" } };
 //Popup[1] = { { 256,128,500,500,30,"Popup" } };
@@ -176,7 +169,7 @@ void InitSpritesheets(void)
 {
     //edit this when more spritesheets
     numOfSpritesheets = 1;
-    tilemap = CP_Image_Load("./Assets/TilesetGrass.png");
+
     testenemy = CP_Image_Load("./Assets/testenemy.png");
 
     
@@ -257,38 +250,13 @@ void DrawAnimation(float x, float y, float scaleX, float scaleY, float delay, in
 
 }
 
-// valid tilenumbers are from 1 to 9
-void DrawTile(int posX, int posY)
+void DrawTempTextResources()
 {
-    worldPos = GridToWorldPosition((float)posX, (float)posY, GetWorldSpaceOrigin());
-
-    switch (posX)
-    {
-    case 0:
-        varX = 0;
-        break;
-    case WORLDGRIDX - 1:
-        varX = 2;
-        break;
-    default:
-        varX = 1;
-        break;
-    }
-
-    switch (posY)
-    {
-    case 0:
-        varY = 0;
-        break;
-    case WORLDGRIDY - 1:
-        varY = 2;
-        break;
-    default:
-        varY = 1;
-        break;
-    }
-
-    CP_Image_DrawSubImage(tilemap, worldPos.x, worldPos.y, pixelwidthX, pixelWidthY, pixelwidthX * varX, pixelWidthY * varY, pixelwidthX * (varX + 1), pixelWidthY * (varY + 1), 255);
+    CP_Settings_TextSize(20);
+    CP_Settings_Fill(CP_Color_Create(255, 255, 255, 255));
+    char buffer[100];
+    sprintf_s(buffer, 100, "Gold: %d\t\tFood: %d\t\tPopulation: %d", Get_current_gold(), Get_current_food(), Get_current_population());
+    CP_Font_DrawText(buffer, 20, 20);
 }
 
 

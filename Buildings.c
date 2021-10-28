@@ -5,10 +5,12 @@
 
 
 
-BUILDING tile_base		= { "grass",	1, 0, 0, 0 };
-BUILDING tile_house		= { "House",	2, 0, 0, 0 };
-BUILDING tile_farm		= { "Farm",		3, 0, 1, 0 };
-BUILDING tile_market	= { "Market",	4, 1, 0, 0 };
+
+
+BUILDING tile_base		= { "grass",	B_GRASS_INDEX, 0, 0, 0 };
+BUILDING tile_house		= { "House",	B_HOUSE_INDEX, 0, 0, 0 };
+BUILDING tile_farm		= { "Farm",		B_FARM_INDEX, 0, 1, 0 };
+BUILDING tile_market	= { "Market",	B_MARKET_INDEX, 1, 0, 0 };
 BUILDING tile_tavern	= { "Tavern",	5, 0, 0, 10 };
 
 CP_Image sprite_grass;

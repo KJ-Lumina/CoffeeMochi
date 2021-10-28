@@ -1,5 +1,20 @@
 #include <stdio.h>
+#include <stdbool.h>
 #include "cprocessing.h"
+
+#define WORLDGRIDX 10
+#define WORLDGRIDY 5
+#define TILEWIDTH 128.0f
+#define TILEHEIGHT 128.0f
+
+#define B_GRASS_INDEX 1
+#define B_HOUSE_INDEX 2
+#define B_FARM_INDEX 3
+#define B_MARKET_INDEX 4
+
+#define BASIC_EVENT 1
+#define ADVANCED_EVENT 2
+#define NULL_CHOICE -1
 
 
 typedef enum
@@ -10,7 +25,6 @@ typedef enum
 	State_PlaceYourBuilding,
 	State_GameOver
 }GAMESTATE;
-
 
 typedef struct 
 {
@@ -34,6 +48,13 @@ typedef struct
 }CARDEVENTS;
 
 
+typedef struct
+{
+	CARDEVENTS cards[20];
+	int cardsLeft;
+
+}CARDDECK;
+
 typedef struct 
 {
 	float width;
@@ -44,30 +65,43 @@ typedef struct
 	const char* imagename;
 }Button;
 
-typedef struct 
+typedef struct
 {
-	char buildingName[16];
-	int population;
-	int goldCost;
-}Building;
+	int setNextSprite;
+	float minX; //parameters for recurring sprites x-axis
+	float maxX; //parameters for recurring sprites x-axis
+	float minY;
+	float maxY;
+	int maxSprites; //number of sprites in a spritesheet
+	float spriteSizeX; //pixels on a sprite grid x-axis
+	float spriteSizeY; //pixels on a sprite grid y-axis
+}SPRITESHEET;
 
-#define WORLDGRIDX 40
-#define WORLDGRIDY 40
-#define TILEWIDTH 128.0f
-#define TILEHEIGHT 128.0f
+typedef struct
+{
+	const char* imagename;
+	int maxSpritesX;
+	int maxSpritesY;
+
+}TILEMAP;
 
 float Math_Clamp_Float(float target, float min, float max);
 int Math_Clamp_Int(int target, int min, int max);
 
 GAMESTATE GetGameState();
-CP_Vector GetWorldSpaceOrigin();
-CP_Vector SnapToGrid(float, float, CP_Vector);
-CP_Vector WorldToGridPosition(float, float, CP_Vector);
-CP_Vector GridToWorldPosition(float, float, CP_Vector);
+//CP_Vector GetWorldSpaceOrigin();
+//CP_Vector SnapToWorldGrid(CP_Vector);
+//CP_Vector WorldToGridPosition(CP_Vector);
+//CP_Vector GridToWorldPosition(CP_Vector);
+
+void MoveWorldSpaceOrigin(float positionChangeX, float positionChangeY);
+void SetNewBuilding(int xPos, int yPos, int buildingIndex);
+bool IsTileOccupied(CP_Vector);
 void DrawUI();
 void InitBuildings(void);
 void InitDeck(void);
 void InitUI();
+void DrawTempTextResources();
 void UI_SetEvent(CARDEVENTS);
 BUILDING GetBuildingByIndex(int);
 CP_Image GetBuildingSpriteByIndex(int);
