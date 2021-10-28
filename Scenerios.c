@@ -32,10 +32,6 @@ void InitDeck()
 	for (int index = 0; index < 20; index++) {
 		basicDeck.cards[index] = b_BuildAHouse;
 	}
-	
-	//basicDeck[0] = b_BuildAHouse;
-	//basicDeck[1] = b_BuildAFarm;
-
 }
 
 //Current Fix amount of Events = 20
