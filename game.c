@@ -82,8 +82,10 @@ void UpdateMouseInput(void)
 {
     currentMousePos.x = CP_Input_GetMouseX();
     currentMousePos.y = CP_Input_GetMouseY();
-    cursorTile = ScreenToWorldPosition(currentMousePos);
-    cursorGrid = WorldToGridPosition(cursorTile);
+    cursorTile = currentMousePos;
+    ScreenToWorldPosition(&cursorTile);
+    cursorGrid = cursorTile;
+    WorldToGridPosition(&cursorGrid);
     //mouseDrag purpose
     if (CP_Input_MouseTriggered(0))
     {
