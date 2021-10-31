@@ -203,7 +203,8 @@ xcopy "$(ProjectDir)Assets\*" "$(OutDir)Assets\" /s /r /y /q</Command>
     <ClCompile Include="WorldSpaceGrid.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="game.h" />
+    <ClInclude Include="Buildings.h" />
+    <ClInclude Include="Common_Headers.h" />
     <ClInclude Include="WorldSpaceGrid.h" />
     <ClInclude Include="TravessFunctions.h" />
     <ClInclude Include="UI_mechanics.h" />

@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdbool.h>
-#include "game.h"
+#include "Common_Headers.h"
 #include "cprocessing.h"
 #include "TravessFunctions.h"
 #include "WorldSpaceGrid.h"
@@ -11,32 +11,17 @@
 GAMESTATE gameState = State_Idle;
 #pragma region Game Options Control
 bool AllowMouseDrag = true;
-bool AllowTileSet = true;
 #pragma endregion
 
-
-
-#pragma region  Grid Variables
-
 CP_Vector cursorTile;
-CP_Vector cursorGrid;
-BUILDING cursorBuilding;
-CARDEVENTS currentEvent;
+CP_Vector selectedGrid;
+BUILDING* selectedBuilding;
+
+CARDEVENTS* currentEvent;
 CP_Vector currentMousePos;
 
 bool mouseDrag = false;
 CP_Vector mouseDragPos;
-
-#pragma endregion
-
-#pragma region Sprite/Images Declaration
-CP_Image grasstile;
-CP_Image housetile;
-CP_Image wheattile;
-CP_Image treetile;
-CP_Image tdgrasstile;
-
-#pragma endregion
 
 
 #pragma region Win & Lose Variable Declaration
@@ -53,7 +38,9 @@ GAMESTATE GetGameState()
 
 void DrawCursorTile(void)
 {
-    CP_Image_Draw(GetBuildingSpriteByIndex(cursorBuilding.spriteIndex), cursorTile.x, cursorTile.y, TILEWIDTH, TILEHEIGHT, 255);
+    cursorTile = currentMousePos;
+    ScreenToWorldPosition(&cursorTile);
+    CP_Image_Draw(*GetBuildingSpriteByIndex(selectedBuilding->spriteIndex), cursorTile.x, cursorTile.y, TILEWIDTH, TILEHEIGHT, 255);
 }
 
 
@@ -82,10 +69,7 @@ void UpdateMouseInput(void)
 {
     currentMousePos.x = CP_Input_GetMouseX();
     currentMousePos.y = CP_Input_GetMouseY();
-    cursorTile = currentMousePos;
-    ScreenToWorldPosition(&cursorTile);
-    cursorGrid = cursorTile;
-    WorldToGridPosition(&cursorGrid);
+    
     //mouseDrag purpose
     if (CP_Input_MouseTriggered(0))
     {
@@ -115,14 +99,14 @@ void AdminControlInput()
     {
         if (!IsTileOccupied(cursorTile))
         {
-            SetNewBuilding((int)cursorGrid.x, (int)cursorGrid.y, 1);
+            SetNewBuilding((int)selectedGrid.x, (int)selectedGrid.y, 1);
         }
     }
     else if (CP_Input_KeyDown(KEY_2))
     {
         if (!IsTileOccupied(cursorTile))
         {
-            SetNewBuilding((int)cursorGrid.x, (int)cursorGrid.y, 2);
+            SetNewBuilding((int)selectedGrid.x, (int)selectedGrid.y, 2);
             AddHouse();
         }
     }
@@ -130,7 +114,7 @@ void AdminControlInput()
     {
         if (!IsTileOccupied(cursorTile))
         {
-            SetNewBuilding((int)cursorGrid.x, (int)cursorGrid.y, 3);
+            SetNewBuilding((int)selectedGrid.x, (int)selectedGrid.y, 3);
             AddFarm();
         }
     }
@@ -138,7 +122,7 @@ void AdminControlInput()
     {
         if (!IsTileOccupied(cursorTile))
         {
-            SetNewBuilding((int)cursorGrid.x, (int)cursorGrid.y, 4);
+            SetNewBuilding((int)selectedGrid.x, (int)selectedGrid.y, 4);
             AddMarket();
         }
     }
@@ -146,7 +130,7 @@ void AdminControlInput()
     {
         if (!IsTileOccupied(cursorTile))
         {
-            SetNewBuilding((int)cursorGrid.x, (int)cursorGrid.y, 5);
+            SetNewBuilding((int)selectedGrid.x, (int)selectedGrid.y, 5);
         }
     }
 }
@@ -167,7 +151,7 @@ void CheckKeyInput(void)
     AdminControlInput();
 }
 
-CARDEVENTS GetCurrentEvent()
+CARDEVENTS* GetCurrentEvent()
 {
     return currentEvent;
 }
@@ -178,8 +162,10 @@ void MouseClick()
     {
         if (!IsTileOccupied(cursorTile))
         {
-            SetNewBuilding((int)cursorGrid.x, (int)cursorGrid.y, cursorBuilding.spriteIndex);
-            AddNewResourceBuilding(cursorBuilding.spriteIndex);
+            selectedGrid = cursorTile;
+            WorldToGridPosition(&selectedGrid);
+            SetNewBuilding((int)selectedGrid.x, (int)selectedGrid.y, selectedBuilding->spriteIndex);
+            AddNewResourceBuilding(selectedBuilding->spriteIndex);
             EndTurn();
             gameState = State_Idle;
         }
@@ -195,11 +181,11 @@ void MouseClick()
             break;
         case 2:
             gameState = State_PlaceYourBuilding;
-            cursorBuilding = GetBuildingByIndex(currentEvent.indexOptionA);
+            selectedBuilding = GetBuildingByIndex(currentEvent->indexOptionA);
             break;
         case 3:
             gameState = State_PlaceYourBuilding;
-            cursorBuilding = GetBuildingByIndex(currentEvent.indexOptionB);
+            selectedBuilding = GetBuildingByIndex(currentEvent->indexOptionB);
             break;
         }
     }
@@ -251,8 +237,8 @@ void game_update(void)
 
     CP_Graphics_ClearBackground(CP_Color_Create(150, 150, 150, 255));
 
-    if (AllowTileSet) DrawTileSet();
-    else DrawAllTiles();
+    DrawTileSet();
+    DrawBuildings();
 
     if (gameState == State_PlaceYourBuilding)
     {

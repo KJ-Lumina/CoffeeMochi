@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include "cprocessing.h"
-#include "game.h"
-
+#include "Common_Headers.h"
+#include "Buildings.h"
 
 
 
@@ -35,61 +35,61 @@ void InitBuildings(void)
 	button_grass = CP_Image_Load("./Assets/grassbtn.png");
 }
 
-BUILDING GetBuildingByIndex(int index)
+BUILDING* GetBuildingByIndex(int index)
 {
 	switch (index)
 	{
 	case 1:
-		return tile_base;
+		return &tile_base;
 	case 2:
-		return tile_house;
+		return &tile_house;
 	case 3:
-		return tile_farm;
+		return &tile_farm;
 	case 4:
-		return tile_market;
+		return &tile_market;
 	case 5:
-		return tile_tavern;
+		return &tile_tavern;
 	default:
-		return tile_base;
+		return &tile_base;
 		break;
 	}
 }
 
-CP_Image GetBuildingSpriteByIndex(int index)
+CP_Image* GetBuildingSpriteByIndex(int index)
 {
 	switch (index)
 	{
 	case 1:
-		return sprite_grass;
+		return &sprite_grass;
 
 	case 2:
-		return sprite_house;
+		return &sprite_house;
 	case 3:
-		return sprite_farm;
+		return &sprite_farm;
 	case 5:
-		return sprite_market;
+		return &sprite_market;
 	case 6:
-		return sprite_tavern;
+		return &sprite_tavern;
 	default:
-		return sprite_grass;
+		return &sprite_grass;
 	}
 }
-CP_Image GetBuildingSpriteButtonByIndex(int index)
+CP_Image* GetBuildingSpriteButtonByIndex(int index)
 {
 	switch (index)
 	{
 	case 1:
-		return button_grass;
+		return &button_grass;
 		
 	case 2:
-		return button_house;
+		return &button_house;
 	case 3:
-		return button_farm;
+		return &button_farm;
 	case 5:
-		return sprite_market;
+		return &sprite_market;
 	case 6:
-		return sprite_tavern;
+		return &sprite_tavern;
 	default:
-		return button_grass;
+		return &button_grass;
 	}
 }

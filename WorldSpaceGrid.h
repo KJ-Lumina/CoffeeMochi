@@ -7,6 +7,6 @@ void ScreenToWorldPosition(CP_Vector*W);
 void WorldToGridPosition(CP_Vector*);
 void GridToWorldPosition(CP_Vector*);
 void ReturnToCenter();
-void DrawAllTiles();
+void DrawBuildings();
 void DrawTileSet();
 

@@ -2,23 +2,22 @@
 #include <stdbool.h>
 #include "cprocessing.h"
 #include "WorldSpaceGrid.h"
-#include "game.h"
+#include "Common_Headers.h"
+#include "Buildings.h"
 
 
 float windowsWidth;
 float windowsHeight;
+
 //int landGrid[WORLDGRIDX][WORLDGRIDY] = { 0 };
 int buildingGrid[WORLDGRIDX][WORLDGRIDY] = { 0 };
 CP_Vector worldSpaceOrigin;
 CP_Vector tempTile;
 
-
-
 TILEMAP tilemap_world = { "TilesetGrass", 3, 3 };
 CP_Image tilemap;
 float tilesetWidth = 128;
 float tilesetHeight = 160;
-
 int varX = 0;
 int varY = 0;
 
@@ -53,7 +52,6 @@ void ScreenToWorldPosition(CP_Vector* position)
     position->x += worldSpaceOrigin.x + TILEWIDTH / 2;
     position->y += worldSpaceOrigin.y + TILEHEIGHT / 2;
 }
-
 void WorldToGridPosition(CP_Vector* position)
 {
     position->x -= worldSpaceOrigin.x + TILEWIDTH / 2;
@@ -65,7 +63,6 @@ void WorldToGridPosition(CP_Vector* position)
     position->x = (float)Math_Clamp_Int((int)position->x, 0, WORLDGRIDX);
     position->y = (float)Math_Clamp_Int((int)position->y, 0, WORLDGRIDY);
 }
-
 void GridToWorldPosition(CP_Vector* position)
 {
     position->x *= TILEWIDTH;
@@ -75,7 +72,6 @@ void GridToWorldPosition(CP_Vector* position)
     position->y += worldSpaceOrigin.y + TILEHEIGHT / 2;;
 
 }
-
 
 void SetNewBuilding(int x, int y, int buildingIndex)
 {
@@ -89,7 +85,7 @@ int GetOccupiedIndex(int x, int y)
 
 bool IsTileOccupied(CP_Vector position)
 {
-    if (buildingGrid[(int)position.x][(int)position.y] == 1)
+    if (buildingGrid[(int)position.x][(int)position.y] == 0)
     {
         return false;
     }
@@ -102,8 +98,8 @@ void ReturnToCenter()
     worldSpaceOrigin.y = windowsHeight / 2 - TILEHEIGHT * WORLDGRIDY / 2;
 }
 
-// traditional method on drawing tiles
-void DrawAllTiles(void)
+// Draw all structures
+void DrawBuildings()
 {
     for (int j = 0; j < WORLDGRIDY; ++j)
     {
@@ -118,25 +114,25 @@ void DrawAllTiles(void)
 
             case 1:
                 GridToWorldPosition(&tempTile);
-                CP_Image_Draw(GetBuildingSpriteByIndex(1), tempTile.x, tempTile.y, TILEWIDTH, TILEHEIGHT, 255);
+                CP_Image_Draw(*GetBuildingSpriteByIndex(1), tempTile.x, tempTile.y, TILEWIDTH, TILEHEIGHT, 255);
                 break;
 
             case 2:
                 GridToWorldPosition(&tempTile);
-                CP_Image_Draw(GetBuildingSpriteByIndex(2), tempTile.x, tempTile.y, TILEWIDTH, TILEHEIGHT, 255);
+                CP_Image_Draw(*GetBuildingSpriteByIndex(2), tempTile.x, tempTile.y, TILEWIDTH, TILEHEIGHT, 255);
                 break;
 
             case 3:
                 GridToWorldPosition(&tempTile);
-                CP_Image_Draw(GetBuildingSpriteByIndex(3), tempTile.x, tempTile.y, TILEWIDTH, TILEHEIGHT, 255);
+                CP_Image_Draw(*GetBuildingSpriteByIndex(3), tempTile.x, tempTile.y, TILEWIDTH, TILEHEIGHT, 255);
                 break;
             case 4:
                 GridToWorldPosition(&tempTile);
-                CP_Image_Draw(GetBuildingSpriteByIndex(4), tempTile.x, tempTile.y, TILEWIDTH, TILEHEIGHT, 255);
+                CP_Image_Draw(*GetBuildingSpriteByIndex(4), tempTile.x, tempTile.y, TILEWIDTH, TILEHEIGHT, 255);
                 break;
             case 5:
                 GridToWorldPosition(&tempTile);
-                CP_Image_Draw(GetBuildingSpriteByIndex(5), tempTile.x, tempTile.y, TILEWIDTH, TILEHEIGHT, 255);
+                CP_Image_Draw(*GetBuildingSpriteByIndex(5), tempTile.x, tempTile.y, TILEWIDTH, TILEHEIGHT, 255);
                 break;
             }
         }

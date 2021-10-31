@@ -1,13 +1,14 @@
 #include <stdio.h>
 #include "cprocessing.h"
-#include "game.h"
+#include "Common_Headers.h"
 #include "UI_mechanics.h"
+#include "Buildings.h"
 
 //TEMPPPPPPPPPPPPP FOR PROTOTYPE ONLY
 
 CP_Image basicEvent;
 CP_Image advancedEvent;
-CARDEVENTS currentEvent;
+CARDEVENTS* currentEvent;
 float windowWidth;
 float windowHeight;
 CP_Vector optionAPos;
@@ -66,7 +67,7 @@ void InitUI()
     optionBPos = CP_Vector_Set(windowWidth - 70, windowHeight - 300);
 }
 
-void UI_SetEvent(CARDEVENTS newEvent)
+void UI_SetEvent(CARDEVENTS* newEvent)
 {
     currentEvent = newEvent;
 }
@@ -85,12 +86,12 @@ void DrawUI()
         CP_Settings_TextSize(20);
         CP_Settings_Fill(CP_Color_Create(255, 255, 255, 255));
         char buffer[100];
-        sprintf_s(buffer, 100, "%s", currentEvent.description);
+        sprintf_s(buffer, 100, "%s", currentEvent->description);
 
         CP_Font_DrawText(buffer, 250, 100);
 
-        CP_Image_Draw(GetBuildingSpriteButtonByIndex(currentEvent.indexOptionA), optionAPos.x-5, optionAPos.y, TILEWIDTH, TILEHEIGHT/2, 255);
-        CP_Image_Draw(GetBuildingSpriteButtonByIndex(currentEvent.indexOptionB), optionBPos.x+5, optionBPos.y, TILEWIDTH, TILEHEIGHT/2, 255);
+        CP_Image_Draw(*GetBuildingSpriteButtonByIndex(currentEvent->indexOptionA), optionAPos.x-5, optionAPos.y, TILEWIDTH, TILEHEIGHT/2, 255);
+        CP_Image_Draw(*GetBuildingSpriteButtonByIndex(currentEvent->indexOptionB), optionBPos.x+5, optionBPos.y, TILEWIDTH, TILEHEIGHT/2, 255);
     }
     else
     {

@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include "cprocessing.h"
-#include "game.h"
+#include "Common_Headers.h"
 #include <stdlib.h>
 
 /* 
@@ -61,9 +61,9 @@ void InitAdvancedDeck(void)
 }
 
 
-CARDEVENTS GetBasicEvent()
+CARDEVENTS *GetBasicEvent()
 {
-	return basicDeck.cards[0];
+	return &basicDeck.cards[0];
 }
 
 
