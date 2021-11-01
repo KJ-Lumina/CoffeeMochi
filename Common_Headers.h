@@ -111,6 +111,7 @@ void MoveWorldSpaceOrigin(float positionChangeX, float positionChangeY);
 void DrawCursorTile(CP_Vector cursorPos);
 void SetNewBuilding(int xPos, int yPos, int buildingIndex);
 void SetCurrentBuilding(BUILDING* newBuilding);
+void SetCurrentAmountToBuild(int buildAmount);
 bool AttemptPlaceBuilding(CP_Vector cursorPos);
 bool IsTileOccupied(CP_Vector);
 void DrawUI();

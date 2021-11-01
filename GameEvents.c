@@ -14,7 +14,7 @@ typedef struct
 	int cardsInDeck;
 }CARDDECK;
 
-#define TOTALCARDCOUNT 3
+#define TOTALCARDCOUNT 5
 CARDEVENT* cardList[TOTALCARDCOUNT];
 
 CARDDECK tutorialDeck;
@@ -41,6 +41,8 @@ void InitCardList()
 	cardList[0] = &emptyCard;
 	cardList[1] = &b_BuildAHouse;
 	cardList[2] = &b_BuildAFarm;
+	cardList[3] = &b_BuildTwoHouse;
+	cardList[4] = &b_BuildThreeFarm;
 }
 
 void InitDecks()

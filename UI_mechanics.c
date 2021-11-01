@@ -40,6 +40,8 @@ int CheckUIClick(float xPos, float yPos)
         if (xPos >= optionAPos.x - TILEWIDTH / 2 && xPos <= optionAPos.x + TILEWIDTH / 2 && yPos >= optionBPos.y - TILEHEIGHT / 2 && yPos <= optionBPos.y + TILEHEIGHT / 2)
         {
             SetCurrentBuilding(GetBuildingByIndex(selectedEvent->indexOptionA));
+            SetCurrentAmountToBuild(selectedEvent->buildAmountA);
+          
             return 1;
             break;
         }
@@ -48,6 +50,8 @@ int CheckUIClick(float xPos, float yPos)
         else if (xPos >= optionBPos.x - TILEWIDTH/2  && xPos <= optionBPos.x+TILEWIDTH/2 && yPos >= optionBPos.y -TILEHEIGHT/2 && yPos <= optionBPos.y+TILEHEIGHT / 2)
         {
             SetCurrentBuilding(GetBuildingByIndex(selectedEvent->indexOptionB));
+            SetCurrentAmountToBuild(selectedEvent->buildAmountB);
+
             return 1;
             break;
         }
@@ -64,13 +68,13 @@ void DrawEventUI()
 {
     CP_Settings_TextSize(20);
     CP_Settings_Fill(CP_Color_Create(255, 255, 255, 255));
-    printf("test4");
-    printf("%d", selectedEvent->eventIndex);
+    //printf("test4");
+    //printf("%d", selectedEvent->eventIndex);
     //sprintf_s(textDescBuffer, 100, "%s", currentEvent->description);
     CP_Font_DrawTextBox(selectedEvent->description, windowWidth - 250, 300, 250);
-    printf("test5");
+    //printf("test5");
     CP_Image_Draw(*GetBuildingSpriteButtonByIndex(selectedEvent->indexOptionA), optionAPos.x - 5, optionAPos.y, TILEWIDTH, TILEHEIGHT / 2, 255);
-    printf("test6");
+    //printf("test6");
     CP_Image_Draw(*GetBuildingSpriteButtonByIndex(selectedEvent->indexOptionB), optionBPos.x + 5, optionBPos.y, TILEWIDTH, TILEHEIGHT / 2, 255);
 }
 

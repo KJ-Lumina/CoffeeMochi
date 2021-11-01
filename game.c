@@ -112,7 +112,8 @@ void MouseClick()
             gameState = State_PlaceYourBuilding;
         }
         break;
-    case State_PlaceYourBuilding:
+    case State_PlaceYourBuilding:     
+
         if (AttemptPlaceBuilding(currentMousePos))
         {
             EndTurn();
@@ -152,6 +153,8 @@ void MouseDragOrClick(void)
 
 void game_init(void)
 {    
+    CP_System_ShowConsole();
+
     CP_System_SetWindowSize(1600, 900);
     InitWorldSpaceGrid();
     InitBuildings();
