@@ -5,7 +5,7 @@
 
 /* 
 CARDEVENTS PARAMETERS
-EVENT INDEX, DIFFICULTY, DESCRIPTION (MAX 100), INDEX OPTION A, INDEX OPTION B, STRING OPTION A, STRING OPTION B
+EVENT INDEX, DIFFICULTY, DESCRIPTION (MAX 100), INDEX OPTION A, COST TYPE INDEX A, COST AMOUNT A, STRING OPTION A, INDEX OPTION B, COST TYPE INDEX B, COST AMOUNT B, STRING OPTION B
 */
 
 typedef struct
@@ -25,12 +25,14 @@ int currentCardIndex;
 
 
 #pragma region Card Events
-CARDEVENT emptyCard = { 0, NULL_EVENT, "This is a null event, for errors only", NULL_CHOICE, NULL_CHOICE, "", "" };
-CARDEVENT b_BuildAHouse = { 1, BASIC_EVENT, "Our citizens needs a place to sleep. Click on the house below and build it on the grid.", B_HOUSE_INDEX, NULL_CHOICE, "House", "Ignore" };
-CARDEVENT b_BuildAFarm = { 2, ADVANCED_EVENT, "Our city needs to eat. Click on the farm below and build it on the grid.", B_FARM_INDEX, NULL_CHOICE, "Farm", "Ignore" };
+CARDEVENT emptyCard = { 0, NULL_EVENT, "This is a null event, for errors only", NULL_CHOICE, 0,  NULL_CHOICE, 0 , "", NULL_CHOICE, 0, NULL_CHOICE, 0 , "" };
+
+CARDEVENT b_BuildAHouse = { 1, BASIC_EVENT, "Our citizens needs a place to sleep. Click on the house below and build it on the grid.", B_HOUSE_INDEX, 1 ,R_GOLD_INDEX, 50, "House", NULL_CHOICE,0, R_NULL_INDEX, 0 ,"Ignore"};
+CARDEVENT b_BuildAFarm = { 1, BASIC_EVENT, "Our city needs to eat. Click on the farm below and build it on the grid.", B_FARM_INDEX, 1 ,R_GOLD_INDEX, 25, "Farm", NULL_CHOICE, 0, R_NULL_INDEX, 0, "Ignore" };
 
 
-
+CARDEVENT b_BuildTwoHouse = { 2 , ADVANCED_EVENT, "Refugees are seeking shelter in your kingdom. Build two house to shelter them. ", B_HOUSE_INDEX, 2, R_GOLD_INDEX, 100, "Houses", NULL_CHOICE,0, R_NULL_INDEX, 0, "Ignore" };
+CARDEVENT b_BuildThreeFarm = { 2, ADVANCED_EVENT, "Famine have struck your kingdom, Build 3 farm to advert the crisis. ", B_FARM_INDEX, 3, R_GOLD_INDEX, 75, "Farm", NULL_CHOICE,0, R_NULL_INDEX, 0, "Ignore" };
 
 #pragma endregion
 
@@ -44,7 +46,7 @@ void InitCardList()
 void InitDecks()
 {
 	InitCardList();
-	for (int index = 0; index < 20; index++) 
+	for (int index = 0; index < TOTALCARDCOUNT; index++) 
 	{
 		tutorialDeck.cardIndexes[index] = CP_Random_RangeInt(1, TOTALCARDCOUNT - 1);
 	}
