@@ -3,6 +3,7 @@
 #include "Common_Headers.h"
 #include "UI_mechanics.h"
 #include "Buildings.h"
+#include "UI_Text.h"
 
 //TEMPPPPPPPPPPPPP FOR PROTOTYPE ONLY
 
@@ -13,6 +14,7 @@ float windowWidth;
 float windowHeight;
 CP_Vector optionAPos;
 CP_Vector optionBPos;
+char textDescBuffer[100];
 
 //SPRITESHEET tileset_testenemy = { setNextSprite,minX,maxX,minY,maxY,maxSprites,spriteSizeX,spritesizeY };
 SPRITESHEET tileset_testenemy = { 0,0,4,0,1,4,64,64 };
@@ -57,6 +59,18 @@ int CheckUIClick(float xPos, float yPos)
     return 0;
 }
 
+void DrawEvent()
+{
+    CP_Settings_TextSize(20);
+    CP_Settings_Fill(CP_Color_Create(255, 255, 255, 255));
+
+    //sprintf_s(textDescBuffer, 100, "%s", currentEvent->description);
+    CP_Font_DrawTextBox(currentEvent->description, windowWidth - 250, 300, 250);
+
+    CP_Image_Draw(*GetBuildingSpriteButtonByIndex(currentEvent->indexOptionA), optionAPos.x - 5, optionAPos.y, TILEWIDTH, TILEHEIGHT / 2, 255);
+    CP_Image_Draw(*GetBuildingSpriteButtonByIndex(currentEvent->indexOptionB), optionBPos.x + 5, optionBPos.y, TILEWIDTH, TILEHEIGHT / 2, 255);
+}
+
 void InitUI()
 {
     basicEvent = CP_Image_Load("./Assets/basiceventcard.png");
@@ -83,15 +97,7 @@ void DrawUI()
     }
     else if (GetGameState() == State_MakeAChoice)
     {
-        CP_Settings_TextSize(20);
-        CP_Settings_Fill(CP_Color_Create(255, 255, 255, 255));
-        char buffer[100];
-        sprintf_s(buffer, 100, "%s", currentEvent->description);
-
-        CP_Font_DrawText(buffer, 250, 100);
-
-        CP_Image_Draw(*GetBuildingSpriteButtonByIndex(currentEvent->indexOptionA), optionAPos.x-5, optionAPos.y, TILEWIDTH, TILEHEIGHT/2, 255);
-        CP_Image_Draw(*GetBuildingSpriteButtonByIndex(currentEvent->indexOptionB), optionBPos.x+5, optionBPos.y, TILEWIDTH, TILEHEIGHT/2, 255);
+        DrawEvent();
     }
     else
     {

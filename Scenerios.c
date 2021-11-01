@@ -32,6 +32,11 @@ void InitDeck()
 	for (int index = 0; index < 20; index++) {
 		basicDeck.cards[index] = b_BuildAHouse;
 	}
+
+	for (int i = 0; i < 100; ++i)
+	{
+		printf("%c", b_BuildAHouse.description[i]);
+	}
 }
 
 //Current Fix amount of Events = 20

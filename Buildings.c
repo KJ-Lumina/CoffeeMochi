@@ -26,10 +26,10 @@ CP_Image button_grass;
 void InitBuildings(void)
 {
 	sprite_grass = CP_Image_Load("./Assets/grasstile.png");
-	sprite_house = CP_Image_Load("./Assets/housetile.png");
-	sprite_farm = CP_Image_Load("./Assets/wheattile.png");
-	sprite_market = CP_Image_Load("./Assets/treetile.png");
-	sprite_tavern = CP_Image_Load("./Assets/TDgrasstile.png");
+	sprite_house = CP_Image_Load("./Assets/best_House.png");
+	sprite_farm = CP_Image_Load("./Assets/best_Farm.png");
+	sprite_market = CP_Image_Load("./Assets/best_Tree.png");
+	sprite_tavern = CP_Image_Load("./Assets/best_Tavern.png");
 	button_house = CP_Image_Load("./Assets/housebtn.png");
 	button_farm = CP_Image_Load("./Assets/farmbtn.png");
 	button_grass = CP_Image_Load("./Assets/grassbtn.png");
