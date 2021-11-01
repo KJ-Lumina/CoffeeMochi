@@ -9,7 +9,7 @@
 
 CP_Image basicEvent;
 CP_Image advancedEvent;
-CARDEVENTS* currentEvent;
+CARDEVENT* selectedEvent;
 float windowWidth;
 float windowHeight;
 CP_Vector optionAPos;
@@ -29,25 +29,26 @@ int CheckUIClick(float xPos, float yPos)
     case State_MainMenu:
         break;
     case State_Idle:
-        // click on basic card
+        // click on card
         if (xPos >= windowWidth - 238 && xPos <= windowWidth - 142 && yPos >= windowHeight - 180 && yPos <= windowHeight - 20)
         {
             return 1;
         }
-        // click on advanced card ?
         break;
     case State_MakeAChoice:
         // click on option A
         if (xPos >= optionAPos.x - TILEWIDTH / 2 && xPos <= optionAPos.x + TILEWIDTH / 2 && yPos >= optionBPos.y - TILEHEIGHT / 2 && yPos <= optionBPos.y + TILEHEIGHT / 2)
         {
-            return 2;
+            SetCurrentBuilding(GetBuildingByIndex(selectedEvent->indexOptionA));
+            return 1;
             break;
         }
         
         // click on option B?
         else if (xPos >= optionBPos.x - TILEWIDTH/2  && xPos <= optionBPos.x+TILEWIDTH/2 && yPos >= optionBPos.y -TILEHEIGHT/2 && yPos <= optionBPos.y+TILEHEIGHT / 2)
         {
-            return 3;
+            SetCurrentBuilding(GetBuildingByIndex(selectedEvent->indexOptionB));
+            return 1;
             break;
         }
         break;
@@ -59,16 +60,18 @@ int CheckUIClick(float xPos, float yPos)
     return 0;
 }
 
-void DrawEvent()
+void DrawEventUI()
 {
     CP_Settings_TextSize(20);
     CP_Settings_Fill(CP_Color_Create(255, 255, 255, 255));
-
+    printf("test4");
+    printf("%d", selectedEvent->eventIndex);
     //sprintf_s(textDescBuffer, 100, "%s", currentEvent->description);
-    CP_Font_DrawTextBox(currentEvent->description, windowWidth - 250, 300, 250);
-
-    CP_Image_Draw(*GetBuildingSpriteButtonByIndex(currentEvent->indexOptionA), optionAPos.x - 5, optionAPos.y, TILEWIDTH, TILEHEIGHT / 2, 255);
-    CP_Image_Draw(*GetBuildingSpriteButtonByIndex(currentEvent->indexOptionB), optionBPos.x + 5, optionBPos.y, TILEWIDTH, TILEHEIGHT / 2, 255);
+    CP_Font_DrawTextBox(selectedEvent->description, windowWidth - 250, 300, 250);
+    printf("test5");
+    CP_Image_Draw(*GetBuildingSpriteButtonByIndex(selectedEvent->indexOptionA), optionAPos.x - 5, optionAPos.y, TILEWIDTH, TILEHEIGHT / 2, 255);
+    printf("test6");
+    CP_Image_Draw(*GetBuildingSpriteButtonByIndex(selectedEvent->indexOptionB), optionBPos.x + 5, optionBPos.y, TILEWIDTH, TILEHEIGHT / 2, 255);
 }
 
 void InitUI()
@@ -81,9 +84,9 @@ void InitUI()
     optionBPos = CP_Vector_Set(windowWidth - 70, windowHeight - 300);
 }
 
-void UI_SetEvent(CARDEVENTS* newEvent)
+void UI_SetEvent(CARDEVENT* newEvent)
 {
-    currentEvent = newEvent;
+    selectedEvent = newEvent;
 }
 
 void DrawUI()
@@ -97,7 +100,7 @@ void DrawUI()
     }
     else if (GetGameState() == State_MakeAChoice)
     {
-        DrawEvent();
+        DrawEventUI();
     }
     else
     {

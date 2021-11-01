@@ -13,6 +13,8 @@ float windowsHeight;
 int buildingGrid[WORLDGRIDX][WORLDGRIDY] = { 0 };
 CP_Vector worldSpaceOrigin;
 CP_Vector tempTile;
+CP_Vector cursorTile;
+BUILDING* selectedBuilding;
 
 TILEMAP tilemap_world = { "TilesetGrass", 3, 3 };
 CP_Image tilemap;
@@ -52,6 +54,18 @@ void ScreenToWorldPosition(CP_Vector* position)
     position->x += worldSpaceOrigin.x + TILEWIDTH / 2;
     position->y += worldSpaceOrigin.y + TILEHEIGHT / 2;
 }
+void ScreenToGridPosition(CP_Vector* position)
+{
+    position->x -= worldSpaceOrigin.x;
+    position->y -= worldSpaceOrigin.y;
+
+    // Snap to box grid
+    position->x = (int)(position->x / TILEWIDTH) * TILEWIDTH;
+    position->y = (int)(position->y / TILEHEIGHT) * TILEHEIGHT;
+
+    position->x = (float)Math_Clamp_Int((int)position->x, 0, WORLDGRIDX);
+    position->y = (float)Math_Clamp_Int((int)position->y, 0, WORLDGRIDY);
+}
 void WorldToGridPosition(CP_Vector* position)
 {
     position->x -= worldSpaceOrigin.x + TILEWIDTH / 2;
@@ -77,6 +91,10 @@ void SetNewBuilding(int x, int y, int buildingIndex)
 {
     buildingGrid[x][y] = buildingIndex;
 }
+void SetCurrentBuilding(BUILDING* newBuilding)
+{
+    selectedBuilding = newBuilding;
+}
 
 int GetOccupiedIndex(int x, int y)
 {
@@ -92,10 +110,32 @@ bool IsTileOccupied(CP_Vector position)
     return true;
 }
 
+bool AttemptPlaceBuilding(CP_Vector cursorPosition)
+{
+    ScreenToWorldPosition(&cursorPosition);
+    WorldToGridPosition(&cursorPosition);
+    if (!IsTileOccupied(cursorPosition))
+    {
+        SetNewBuilding((int)cursorPosition.x, (int)cursorPosition.y, selectedBuilding->spriteIndex);
+        AddNewResourceBuilding(selectedBuilding->spriteIndex);
+        return 1;
+    }
+    else
+    {
+        return 0;
+    }
+}
+
 void ReturnToCenter()
 {
     worldSpaceOrigin.x = windowsWidth / 2 - TILEWIDTH * WORLDGRIDX / 2 - 130;
     worldSpaceOrigin.y = windowsHeight / 2 - TILEHEIGHT * WORLDGRIDY / 2;
+}
+
+void DrawCursorTile(CP_Vector cursorPosition)
+{
+    ScreenToWorldPosition(&cursorPosition);
+    CP_Image_Draw(*GetBuildingSpriteByIndex(selectedBuilding->spriteIndex), cursorPosition.x, cursorPosition.y, TILEWIDTH, TILEHEIGHT, 255);
 }
 
 // Draw all structures

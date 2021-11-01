@@ -12,6 +12,7 @@
 #define B_FARM_INDEX 3
 #define B_MARKET_INDEX 4
 
+#define NULL_EVENT 0
 #define BASIC_EVENT 1
 #define ADVANCED_EVENT 2
 #define NULL_CHOICE -1
@@ -29,21 +30,14 @@ typedef enum
 typedef struct
 {
 	int eventIndex;
-	int difficulty;
+	int eventType;
 	char description[100];
 	int indexOptionA;
 	int indexOptionB;
 	char* stringOptionA;
 	char* stringOptionB;
 
-}CARDEVENTS;
-
-typedef struct
-{
-	CARDEVENTS cards[20];
-	int cardsLeft;
-
-}CARDDECK;
+}CARDEVENT;
 
 typedef struct
 {
@@ -89,25 +83,34 @@ int Math_Clamp_Int(int target, int min, int max);
 
 GAMESTATE GetGameState();
 
+// Initialization
+void InitBuildings();
+void InitDecks();
+void InitUI();
+void GameOver();
+
+// WorldGridSpace
 void MoveWorldSpaceOrigin(float positionChangeX, float positionChangeY);
+void DrawCursorTile(CP_Vector cursorPos);
 void SetNewBuilding(int xPos, int yPos, int buildingIndex);
+void SetCurrentBuilding(BUILDING* newBuilding);
+bool AttemptPlaceBuilding(CP_Vector cursorPos);
 bool IsTileOccupied(CP_Vector);
 void DrawUI();
-void InitBuildings(void);
-void InitDeck(void);
-void InitUI();
+
 void DrawTempTextResources();
-void UI_SetEvent(CARDEVENTS*);
+void UI_SetEvent(CARDEVENT*);
 int Get_current_gold();
 int Get_current_food();
 int Get_current_population();
+void AddNewResourceBuilding(int buildingIndex);
 void AddMarket();
 void AddFarm();
 void AddHouse();
 void GenerateResourcesOnEndTurn();
 int CheckUIClick(float, float);
-CARDEVENTS* GetBasicEvent();
-CARDEVENTS* GetCurrentEvent();
+CARDEVENT* GetNextEvent();
+CARDEVENT* GetCurrentEvent();
 BUILDING* GetBuildingByIndex(int);
 CP_Image* GetBuildingSpriteByIndex(int);
 CP_Image* GetBuildingSpriteButtonByIndex(int);
