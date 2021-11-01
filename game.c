@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdbool.h>
-#include "game.h"
+#include "Common_Headers.h"
 #include "cprocessing.h"
 #include "TravessFunctions.h"
 #include "WorldSpaceGrid.h"
@@ -11,32 +11,11 @@
 GAMESTATE gameState = State_Idle;
 #pragma region Game Options Control
 bool AllowMouseDrag = true;
-bool AllowTileSet = true;
 #pragma endregion
 
-
-
-#pragma region  Grid Variables
-
-CP_Vector cursorTile;
-CP_Vector cursorGrid;
-BUILDING cursorBuilding;
-CARDEVENTS currentEvent;
 CP_Vector currentMousePos;
-
-bool mouseDrag = false;
 CP_Vector mouseDragPos;
-
-#pragma endregion
-
-#pragma region Sprite/Images Declaration
-CP_Image grasstile;
-CP_Image housetile;
-CP_Image wheattile;
-CP_Image treetile;
-CP_Image tdgrasstile;
-
-#pragma endregion
+bool mouseDrag = false;
 
 
 #pragma region Win & Lose Variable Declaration
@@ -44,20 +23,13 @@ int loseCondition_FoodValue;
 #pragma endregion
 
 
+#define ONEVENTCARDCLICK 1
+
 
 GAMESTATE GetGameState()
 {
     return gameState;
 }
-
-
-void DrawCursorTile(void)
-{
-    CP_Image_Draw(GetBuildingSpriteByIndex(cursorBuilding.spriteIndex), cursorTile.x, cursorTile.y, TILEWIDTH, TILEHEIGHT, 255);
-}
-
-
-
 
 #pragma region Turn & Win Lose Functions
 //Trigger Turn Start Functions Calls
@@ -70,6 +42,8 @@ void StartTurn(void)
 void GameOver(void) 
 {
     //Lose UI Pop Up
+    printf("The game has ended!");
+    gameState = State_GameOver;
 }
 
 void EndTurn(void) 
@@ -82,8 +56,7 @@ void UpdateMouseInput(void)
 {
     currentMousePos.x = CP_Input_GetMouseX();
     currentMousePos.y = CP_Input_GetMouseY();
-    cursorTile = ScreenToWorldPosition(currentMousePos);
-    cursorGrid = WorldToGridPosition(cursorTile);
+    
     //mouseDrag purpose
     if (CP_Input_MouseTriggered(0))
     {
@@ -91,62 +64,17 @@ void UpdateMouseInput(void)
     }
 }
 
-void AddNewResourceBuilding(int buildingIndex)
-{
-    switch (buildingIndex)
-    {
-    case 2:
-        AddHouse();
-        break;
-    case 3:
-        AddFarm();
-        break;
-    case 4:
-        AddMarket();
-        break;
-    }
-}
-
 void AdminControlInput()
 {
+    /*
     if (CP_Input_KeyDown(KEY_1))
     {
         if (!IsTileOccupied(cursorTile))
         {
-            SetNewBuilding((int)cursorGrid.x, (int)cursorGrid.y, 1);
+            SetNewBuilding((int)selectedGrid.x, (int)selectedGrid.y, 1);
         }
     }
-    else if (CP_Input_KeyDown(KEY_2))
-    {
-        if (!IsTileOccupied(cursorTile))
-        {
-            SetNewBuilding((int)cursorGrid.x, (int)cursorGrid.y, 2);
-            AddHouse();
-        }
-    }
-    else if (CP_Input_KeyDown(KEY_3))
-    {
-        if (!IsTileOccupied(cursorTile))
-        {
-            SetNewBuilding((int)cursorGrid.x, (int)cursorGrid.y, 3);
-            AddFarm();
-        }
-    }
-    else if (CP_Input_KeyDown(KEY_4))
-    {
-        if (!IsTileOccupied(cursorTile))
-        {
-            SetNewBuilding((int)cursorGrid.x, (int)cursorGrid.y, 4);
-            AddMarket();
-        }
-    }
-    else if (CP_Input_KeyDown(KEY_5))
-    {
-        if (!IsTileOccupied(cursorTile))
-        {
-            SetNewBuilding((int)cursorGrid.x, (int)cursorGrid.y, 5);
-        }
-    }
+    */
 }
 
 
@@ -165,41 +93,32 @@ void CheckKeyInput(void)
     AdminControlInput();
 }
 
-CARDEVENTS GetCurrentEvent()
-{
-    return currentEvent;
-}
-
 void MouseClick()
 {
-    if (gameState == State_PlaceYourBuilding)
+    switch (gameState)
     {
-        if (!IsTileOccupied(cursorTile))
+    case State_Idle:
+        if (CheckUIClick(currentMousePos.x, currentMousePos.y) == 1)
         {
-            SetNewBuilding((int)cursorGrid.x, (int)cursorGrid.y, cursorBuilding.spriteIndex);
-            AddNewResourceBuilding(cursorBuilding.spriteIndex);
+            gameState = State_MakeAChoice;
+            UI_SetEvent(GetNextEvent());
+        }
+        break;
+    case State_MakeAChoice:
+        //make specific functions for ui
+        printf("lolnew");
+        if (CheckUIClick(currentMousePos.x, currentMousePos.y) == 1)
+        {
+            gameState = State_PlaceYourBuilding;
+        }
+        break;
+    case State_PlaceYourBuilding:
+        if (AttemptPlaceBuilding(currentMousePos))
+        {
             EndTurn();
             gameState = State_Idle;
         }
-    }
-    else
-    {
-        switch (CheckUIClick(mouseDragPos.x, mouseDragPos.y))
-        {
-        case 1:
-            gameState = State_MakeAChoice;
-            currentEvent = GetBasicEvent();
-            UI_SetEvent(currentEvent);
-            break;
-        case 2:
-            gameState = State_PlaceYourBuilding;
-            cursorBuilding = GetBuildingByIndex(currentEvent.indexOptionA);
-            break;
-        case 3:
-            gameState = State_PlaceYourBuilding;
-            cursorBuilding = GetBuildingByIndex(currentEvent.indexOptionB);
-            break;
-        }
+        break;
     }
 }
 
@@ -237,7 +156,7 @@ void game_init(void)
     InitWorldSpaceGrid();
     InitBuildings();
     InitSpritesheets();
-    InitDeck();
+    InitDecks();
     InitUI();
 }
 
@@ -248,15 +167,14 @@ void game_update(void)
     CheckKeyInput();
 
     CP_Graphics_ClearBackground(CP_Color_Create(150, 150, 150, 255));
-
-    if (AllowTileSet) DrawTileSet();
-    else DrawAllTiles();
-
-    if (gameState == State_PlaceYourBuilding)
+    DrawTileSet();
+    DrawBuildings();
+    switch (gameState)
     {
-        DrawCursorTile();
+    case State_PlaceYourBuilding:
+        DrawCursorTile(currentMousePos);
+        break;
     }
-
     DrawUI();
     DrawTempTextResources();
 }

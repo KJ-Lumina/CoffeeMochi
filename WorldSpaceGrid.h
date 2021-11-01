@@ -3,10 +3,11 @@
 
 
 void InitWorldSpaceGrid();
-CP_Vector ScreenToWorldPosition(CP_Vector);
-CP_Vector WorldToGridPosition(CP_Vector);
-CP_Vector GridToWorldPosition(CP_Vector);
+void ScreenToWorldPosition(CP_Vector*);
+void ScreenToGridPosition(CP_Vector*);
+void WorldToGridPosition(CP_Vector*);
+void GridToWorldPosition(CP_Vector*);
 void ReturnToCenter();
-void DrawAllTiles();
+void DrawBuildings();
 void DrawTileSet();
 

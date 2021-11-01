@@ -167,4 +167,20 @@ void GenerateResourcesOnEndTurn()
 	Population_per_turn();
 }
 
+void AddNewResourceBuilding(int buildingIndex)
+{
+	switch (buildingIndex)
+	{
+	case 2:
+		AddHouse();
+		break;
+	case 3:
+		AddFarm();
+		break;
+	case 4:
+		AddMarket();
+		break;
+	}
+}
+
 
