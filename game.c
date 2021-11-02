@@ -20,6 +20,7 @@ bool mouseDrag = false;
 
 #pragma region Win & Lose Variable Declaration
 int loseCondition_FoodValue;
+int loseCondition_PopulationValue;
 #pragma endregion
 
 
@@ -49,6 +50,16 @@ void GameOver(void)
 void EndTurn(void) 
 {
     GenerateResourcesOnEndTurn();
+    /*if (LoseCondition_Resources())
+        GameOver();*/
+}
+
+bool LoseCondition_Resources() {
+    if (Get_current_food() <= loseCondition_FoodValue || Get_current_population() <= loseCondition_FoodValue) {
+        return 1;
+    }
+
+    return 0;
 }
 #pragma endregion
 

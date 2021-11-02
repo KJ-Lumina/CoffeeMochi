@@ -50,7 +50,7 @@ void InitDecks()
 	InitCardList();
 	for (int index = 0; index < TOTALCARDCOUNT; index++) 
 	{
-		tutorialDeck.cardIndexes[index] = CP_Random_RangeInt(1, TOTALCARDCOUNT - 1);
+		tutorialDeck.cardIndexes[index] = CP_Random_RangeInt(1, TOTALCARDCOUNT - 1); //Setting the index of card in each deck to reference in cardlist.
 	}
 
 	currentCardIndex = 0;
@@ -64,12 +64,12 @@ CARDEVENT* GetCurrentEvent()
 
 CARDEVENT* GetNextEvent() 
 {
-	++currentCardIndex;
 	if (currentCardIndex == currentDeck->cardsInDeck)
 	{
 		GameOver();
 	}
 	currentEvent = cardList[currentDeck->cardIndexes[currentCardIndex]];
+	++currentCardIndex; //Adding one counter to the Card Index after Drawing it
 	return currentEvent;
 }
 
@@ -79,6 +79,8 @@ int IsBasicEvent(CARDEVENT card) {
 
 	return FALSE;
 }
+
+
 
 CARDEVENT* GetEventByIndex(int index)
 {
