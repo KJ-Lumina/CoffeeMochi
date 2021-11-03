@@ -107,7 +107,7 @@ void CheckKeyInput(void)
 
 void MouseClick()
 {
-    if (gamePhase == PHASE_BUILDPHASE) {
+    if (gamePhase == PHASE_EVENTLOOP) {
         switch (gameState)
         {
         case State_Idle:
