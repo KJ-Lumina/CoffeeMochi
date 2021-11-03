@@ -28,11 +28,11 @@ int currentCardIndex;
 CARDEVENT emptyCard = { 0, NULL_EVENT, "This is a null event, for errors only", NULL_CHOICE, 0,  NULL_CHOICE, 0 , "", NULL_CHOICE, 0, NULL_CHOICE, 0 , "" };
 
 CARDEVENT b_BuildAHouse = { 1, BASIC_EVENT, "Our citizens needs a place to sleep. Click on the house below and build it on the grid.", B_HOUSE_INDEX, 1 ,R_GOLD_INDEX, 50, "House", NULL_CHOICE,0, R_NULL_INDEX, 0 ,"Ignore"};
-CARDEVENT b_BuildAFarm = { 1, BASIC_EVENT, "Our city needs to eat. Click on the farm below and build it on the grid.", B_FARM_INDEX, 1 ,R_GOLD_INDEX, 25, "Farm", NULL_CHOICE, 0, R_NULL_INDEX, 0, "Ignore" };
+CARDEVENT b_BuildAFarm = { 2, BASIC_EVENT, "Our city needs to eat. Click on the farm below and build it on the grid.", B_FARM_INDEX, 1 ,R_GOLD_INDEX, 25, "Farm", NULL_CHOICE, 0, R_NULL_INDEX, 0, "Ignore" };
 
 
-CARDEVENT b_BuildTwoHouse = { 2 , ADVANCED_EVENT, "Refugees are seeking shelter in your kingdom. Build two house to shelter them. ", B_HOUSE_INDEX, 2, R_GOLD_INDEX, 100, "Houses", NULL_CHOICE,0, R_NULL_INDEX, 0, "Ignore" };
-CARDEVENT b_BuildThreeFarm = { 2, ADVANCED_EVENT, "Famine have struck your kingdom, Build 3 farm to advert the crisis. ", B_FARM_INDEX, 3, R_GOLD_INDEX, 75, "Farm", NULL_CHOICE,0, R_NULL_INDEX, 0, "Ignore" };
+CARDEVENT b_BuildTwoHouse = { 3 , ADVANCED_EVENT, "Refugees are seeking shelter in your kingdom. Build two house to shelter them. ", B_HOUSE_INDEX, 2, R_GOLD_INDEX, 100, "Houses", NULL_CHOICE,0, R_NULL_INDEX, 0, "Ignore" };
+CARDEVENT b_BuildThreeFarm = { 4, ADVANCED_EVENT, "Famine have struck your kingdom, Build 3 farm to advert the crisis. ", B_FARM_INDEX, 3, R_GOLD_INDEX, 75, "Farm", NULL_CHOICE,0, R_NULL_INDEX, 0, "Ignore" };
 
 #pragma endregion
 
@@ -51,6 +51,7 @@ void InitDecks()
 	for (int index = 0; index < TOTALCARDCOUNT; index++) 
 	{
 		tutorialDeck.cardIndexes[index] = CP_Random_RangeInt(1, TOTALCARDCOUNT - 1); //Setting the index of card in each deck to reference in cardlist.
+		tutorialDeck.cardsInDeck++;
 	}
 
 	currentCardIndex = 0;
@@ -64,8 +65,10 @@ CARDEVENT* GetCurrentEvent()
 
 CARDEVENT* GetNextEvent() 
 {
+
 	if (currentCardIndex == currentDeck->cardsInDeck)
 	{
+		printf("Card Game Over");
 		GameOver();
 	}
 	currentEvent = cardList[currentDeck->cardIndexes[currentCardIndex]];
