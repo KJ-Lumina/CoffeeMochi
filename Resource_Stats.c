@@ -148,6 +148,11 @@ bool check_for_overpopulation(int curPopulation, int max_population)
 */
 
 //TEMPORARY FOR PROTOTYPE ONLYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
+
+void InitResources(int startingGold) {
+	curGold = startingGold;
+}
+
 void AddMarket()
 {
 	numMarkets++;

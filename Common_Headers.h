@@ -23,7 +23,10 @@
 #define ADVANCED_EVENT 2
 
 
-
+typedef enum {
+	PHASE_BUILDPHASE,
+	PHASE_EVENTLOOP
+}GAMEPHASE;
 
 typedef enum
 {
@@ -104,6 +107,7 @@ GAMESTATE GetGameState();
 void InitBuildings();
 void InitDecks();
 void InitUI();
+void InitResources(int startingGold);
 void GameOver();
 
 // WorldGridSpace
