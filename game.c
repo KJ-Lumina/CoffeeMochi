@@ -9,6 +9,7 @@
 
 
 GAMESTATE gameState = State_Idle;
+GAMEPHASE gamePhase = PHASE_EVENTLOOP; //Suppose to start with Build
 #pragma region Game Options Control
 bool AllowMouseDrag = true;
 #pragma endregion
@@ -20,6 +21,7 @@ bool mouseDrag = false;
 
 #pragma region Win & Lose Variable Declaration
 int loseCondition_FoodValue;
+int loseCondition_PopulationValue;
 #pragma endregion
 
 
@@ -49,6 +51,16 @@ void GameOver(void)
 void EndTurn(void) 
 {
     GenerateResourcesOnEndTurn();
+    /*if (LoseCondition_Resources())
+        GameOver();*/
+}
+
+bool LoseCondition_Resources() {
+    if (Get_current_food() <= loseCondition_FoodValue || Get_current_population() <= loseCondition_FoodValue) {
+        return 1;
+    }
+
+    return 0;
 }
 #pragma endregion
 
@@ -95,30 +107,33 @@ void CheckKeyInput(void)
 
 void MouseClick()
 {
-    switch (gameState)
-    {
-    case State_Idle:
-        if (CheckUIClick(currentMousePos.x, currentMousePos.y) == 1)
+    if (gamePhase == PHASE_EVENTLOOP) {
+        switch (gameState)
         {
-            gameState = State_MakeAChoice;
-            UI_SetEvent(GetNextEvent());
+        case State_Idle:
+            if (CheckUIClick(currentMousePos.x, currentMousePos.y) == 1)
+            {
+                gameState = State_MakeAChoice;
+                UI_SetEvent(GetNextEvent());
+            }
+            break;
+        case State_MakeAChoice:
+            //make specific functions for ui
+            printf("lolnew");
+            if (CheckUIClick(currentMousePos.x, currentMousePos.y) == 1)
+            {
+                gameState = State_PlaceYourBuilding;
+            }
+            break;
+        case State_PlaceYourBuilding:
+
+            if (AttemptPlaceBuilding(currentMousePos))
+            {
+                EndTurn();
+                gameState = State_Idle;
+            }
+            break;
         }
-        break;
-    case State_MakeAChoice:
-        //make specific functions for ui
-        printf("lolnew");
-        if (CheckUIClick(currentMousePos.x, currentMousePos.y) == 1)
-        {
-            gameState = State_PlaceYourBuilding;
-        }
-        break;
-    case State_PlaceYourBuilding:
-        if (AttemptPlaceBuilding(currentMousePos))
-        {
-            EndTurn();
-            gameState = State_Idle;
-        }
-        break;
     }
 }
 
@@ -152,7 +167,10 @@ void MouseDragOrClick(void)
 
 void game_init(void)
 {    
+    CP_System_ShowConsole();
+
     CP_System_SetWindowSize(1600, 900);
+    InitResources(100);
     InitWorldSpaceGrid();
     InitBuildings();
     InitSpritesheets();
