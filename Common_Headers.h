@@ -11,16 +11,26 @@
 #define R_NULL_INDEX 0
 #define R_GOLD_INDEX 1
 #define R_FOOD_INDEX 2
+#define R_POPULATION_INDEX 3
+
 
 #define NULL_CHOICE -1
 #define B_GRASS_INDEX 1
 #define B_HOUSE_INDEX 2
 #define B_FARM_INDEX 3
 #define B_MARKET_INDEX 4
+#define B_TAVERN_INDEX 5
+
+#define E_INCREASE_RESOURCE 1
+#define E_DECREASE_RESROUCE 2
 
 #define NULL_EVENT 0
 #define BASIC_EVENT 1
 #define ADVANCED_EVENT 2
+
+#define NULL_TYPE_EVENT 0
+#define BUILD_TYPE_EVENT 1
+#define RESOURCE_TYPE_EVENT 2
 
 
 typedef enum {
@@ -31,26 +41,31 @@ typedef enum {
 typedef enum
 {
 	State_MainMenu,
+	State_StartOfTurn,
 	State_Idle,
 	State_MakeAChoice,
 	State_PlaceYourBuilding,
+	State_EndOfTurn,
 	State_GameOver
 }GAMESTATE;
 
 typedef struct
 {
 	int eventIndex;
+	int eventDifficultyType;
 	int eventType;
 	char description[100];
 
 	int indexOptionA;
-	int buildAmountA;
+	int optionAmountA;
+	int optionTypeA;
 	int costTypeA;
 	int costAmountA;
 	char* descriptionA;
 
 	int indexOptionB;
-	int buildAmountB;
+	int optionAmountB;
+	int optionTypeB;
 	int costTypeB;
 	int costAmountB;
 	char* descriptionB;
@@ -122,6 +137,9 @@ void DrawUI();
 
 void DrawTempTextResources();
 void UI_SetEvent(CARDEVENT*);
+void Set_current_gold(int gold);
+void Set_current_food(int food);
+void Set_current_population(int population);
 int Get_current_gold();
 int Get_current_food();
 int Get_current_population();

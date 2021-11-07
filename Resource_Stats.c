@@ -49,7 +49,24 @@ int numFarms = 0;
 //Population Related Variables
 int numHouses = 0;
 
+/*--------------------
+SET RESOURCE FUNCTIONS
+---------------------*/
 
+void Set_current_gold(int gold)
+{
+	curGold = gold;
+}
+
+void Set_current_food(int food)
+{
+	curFood = food;
+}
+
+void Set_current_population(int population)
+{
+	curPopulation = population;
+}
 
 /*--------------------
 GET RESOURCE FUNCTIONS

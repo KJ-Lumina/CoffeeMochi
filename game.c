@@ -111,9 +111,14 @@ void MouseClick()
 
 
 
-    } else if (gamePhase == PHASE_EVENTLOOP) {
+    }else if (gamePhase == PHASE_EVENTLOOP) {
         switch (gameState)
         {
+        case State_StartOfTurn:
+            //Run Condition on Start of Turn
+            gameState = State_Idle;
+            break;
+
         case State_Idle:
             if (CheckUIClick(currentMousePos.x, currentMousePos.y) == 1)
             {
@@ -128,16 +133,53 @@ void MouseClick()
             {
                 gameState = State_PlaceYourBuilding;
             }
+            else if (CheckUIClick(currentMousePos.x, currentMousePos.y) == 2) {
+                gameState = State_EndOfTurn;
+            }
             break;
         case State_PlaceYourBuilding:
 
             if (AttemptPlaceBuilding(currentMousePos))
             {
-                EndTurn();
-                gameState = State_Idle;
+                gameState = State_EndOfTurn;
             }
             break;
+
+        case State_EndOfTurn:
+
+            EndTurn();
+            gameState = State_StartOfTurn;
+            break;
         }
+
+       
+    }
+}
+
+void GameStateControl() {
+
+    switch (gameState)
+    {
+    case State_StartOfTurn:
+        //Run Condition on Start of Turn
+        gameState = State_Idle;
+        break;
+
+    case State_Idle:
+
+        break;
+    case State_MakeAChoice:
+
+        break;
+    case State_PlaceYourBuilding:
+        DrawCursorTile(currentMousePos);
+        break;
+
+    case State_EndOfTurn:
+
+        EndTurn();
+        gameState = State_StartOfTurn;
+        break;
     }
 }
 
@@ -191,12 +233,7 @@ void game_update(void)
     CP_Graphics_ClearBackground(CP_Color_Create(150, 150, 150, 255));
     DrawTileSet();
     DrawBuildings();
-    switch (gameState)
-    {
-    case State_PlaceYourBuilding:
-        DrawCursorTile(currentMousePos);
-        break;
-    }
+    GameStateControl();
     DrawUI();
     DrawTempTextResources();
 }
