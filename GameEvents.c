@@ -14,7 +14,7 @@ typedef struct
 	int cardsInDeck;
 }CARDDECK;
 
-#define TOTALCARDCOUNT 5
+#define TOTALCARDCOUNT 6
 CARDEVENT* cardList[TOTALCARDCOUNT];
 
 CARDDECK tutorialDeck;
@@ -29,10 +29,10 @@ CARDEVENT emptyCard = { 0, NULL_EVENT, "This is a null event, for errors only", 
 
 CARDEVENT b_BuildAHouse = { 1, BASIC_EVENT, "Our citizens needs a place to sleep. Click on the house below and build it on the grid.", B_HOUSE_INDEX, 1 ,R_GOLD_INDEX, 50, "House", NULL_CHOICE,0, R_NULL_INDEX, 0 ,"Ignore"};
 CARDEVENT b_BuildAFarm = { 2, BASIC_EVENT, "Our city needs to eat. Click on the farm below and build it on the grid.", B_FARM_INDEX, 1 ,R_GOLD_INDEX, 25, "Farm", NULL_CHOICE, 0, R_NULL_INDEX, 0, "Ignore" };
+CARDEVENT b_BuildAMarket = { 3 , BASIC_EVENT, "Our economy is unstable. Click on the market below and build it on the grid.", B_MARKET_INDEX, 1 , R_GOLD_INDEX, 35, "Market", NULL_CHOICE, 0 ,R_NULL_INDEX, 0 , "Ignore" };
 
-
-CARDEVENT b_BuildTwoHouse = { 3 , ADVANCED_EVENT, "Refugees are seeking shelter in your kingdom. Build two house to shelter them. ", B_HOUSE_INDEX, 2, R_GOLD_INDEX, 100, "Houses", NULL_CHOICE,0, R_NULL_INDEX, 0, "Ignore" };
-CARDEVENT b_BuildThreeFarm = { 4, ADVANCED_EVENT, "Famine have struck your kingdom, Build 3 farm to advert the crisis. ", B_FARM_INDEX, 3, R_GOLD_INDEX, 75, "Farm", NULL_CHOICE,0, R_NULL_INDEX, 0, "Ignore" };
+CARDEVENT b_BuildTwoHouse = { 4 , ADVANCED_EVENT, "Refugees are seeking shelter in your kingdom. Build two house to shelter them. ", B_HOUSE_INDEX, 2, R_GOLD_INDEX, 100, "Houses", NULL_CHOICE,0, R_NULL_INDEX, 0, "Ignore" };
+CARDEVENT b_BuildThreeFarm = { 5, ADVANCED_EVENT, "Famine have struck your kingdom, Build 3 farm to advert the crisis. ", B_FARM_INDEX, 3, R_GOLD_INDEX, 75, "Farm", NULL_CHOICE,0, R_NULL_INDEX, 0, "Ignore" };
 
 #pragma endregion
 
@@ -41,8 +41,9 @@ void InitCardList()
 	cardList[0] = &emptyCard;
 	cardList[1] = &b_BuildAHouse;
 	cardList[2] = &b_BuildAFarm;
-	cardList[3] = &b_BuildTwoHouse;
-	cardList[4] = &b_BuildThreeFarm;
+	cardList[3] = &b_BuildAMarket;
+	cardList[4] = &b_BuildTwoHouse;
+	cardList[5] = &b_BuildThreeFarm;
 }
 
 void InitDecks()

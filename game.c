@@ -107,7 +107,11 @@ void CheckKeyInput(void)
 
 void MouseClick()
 {
-    if (gamePhase == PHASE_EVENTLOOP) {
+    if (gamePhase == PHASE_BUILDPHASE) { //For Starting Build Phase (2 Farms, 2 House, 2 Market)
+
+
+
+    } else if (gamePhase == PHASE_EVENTLOOP) {
         switch (gameState)
         {
         case State_Idle:
