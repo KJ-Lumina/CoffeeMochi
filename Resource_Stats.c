@@ -18,17 +18,22 @@ Buff/Debuff effects will be seperated to a different header file
 // For now Food generated from 'Farm' tiles and 'farmer' citizens 
 // and consumption amount is defaulted to the following values
 // Subject to adjustments if Levels/Ranks are to be implemented
-#define FOOD_AMT_FROM_FARMS 20
+#define FOOD_AMT_FROM_FARMS 10
 #define FOOD_AMT_FROM_FARMERS 5
 #define FOOD_CONSUMPTION_PER_PAX 2
 
-#define PAX_PER_HOUSING 3
+#define PAX_PER_HOUSING 5
 
 // Upkeep costs for every tile are defaulted to the following values
 // Subject to adjustments if Levels/Ranks are to be implemented
 #define MARKET_UPKEEP_COST 5
 #define FARM_UPKEEP_COST 5
 #define HOUSING_UPKEEP_COST 5
+
+// Building costs for every tile are defaulted to the following values
+#define MARKET_BUILD_COST 20
+#define FARM_BUILD_COST 20
+#define HOUSING_BUILD_COST 20
 
 int curGold;
 int curFood;
@@ -84,6 +89,7 @@ int house_pop_prediction()
 	return PAX_PER_HOUSING;
 }
 
+
 /*--------------------
 END OF TURN FUNCTIONS
 ---------------------*/
@@ -103,7 +109,7 @@ void Gold_generated_per_turn()
 	// Net total Gold generated
 	//curGold += gold_generated_by_markets + gold_generated_by_tax - gold_deducted_from_upkeep;
 
-	curGold += numMarkets;
+	curGold += (numMarkets * GOLD_AMT_FROM_MARKETS) + (numHouses * PAX_PER_HOUSING) - ((numFarms * FARM_UPKEEP_COST) + (numHouses * HOUSING_UPKEEP_COST));
 }
 
 // Function to check amount of Food resource generated per turn
@@ -118,13 +124,13 @@ void Food_generated_per_turn()
 	// Net total Food generated
 	//curFood += food_generated_by_farms - food_deducted_from_consumption;
 
-	curFood += numFarms;
+	curFood += (numFarms * FOOD_AMT_FROM_FARMS) - (numHouses * FOOD_CONSUMPTION_PER_PAX);
 }
 
 void Population_per_turn()
 {
 	//curPopulation = initPopulation + (numHouses * PAX_PER_HOUSING);
-	curPopulation = numHouses * 5;
+	curPopulation = numHouses * PAX_PER_HOUSING;
 }
 
 /*
