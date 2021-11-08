@@ -48,6 +48,8 @@ int CheckUIClick(float xPos, float yPos)
 
             case RESOURCE_TYPE_EVENT:
                 
+                printf("Test4");
+
                 switch (selectedEvent->optionTypeA) {
                 case R_GOLD_INDEX:
 
@@ -87,6 +89,10 @@ int CheckUIClick(float xPos, float yPos)
                 }
 
                 return 2;
+                break;
+
+            case ONGOING_TYPE_EVENT:
+
                 break;
 
             default:

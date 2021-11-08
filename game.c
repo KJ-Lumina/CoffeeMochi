@@ -129,11 +129,12 @@ void MouseClick()
         case State_MakeAChoice:
             //make specific functions for ui
             printf("lolnew");
-            if (CheckUIClick(currentMousePos.x, currentMousePos.y) == 1)
+            int UI_Click = CheckUIClick(currentMousePos.x, currentMousePos.y);
+            if (UI_Click == 1)
             {
                 gameState = State_PlaceYourBuilding;
             }
-            else if (CheckUIClick(currentMousePos.x, currentMousePos.y) == 2) {
+            else if (UI_Click == 2) {
                 gameState = State_EndOfTurn;
             }
             break;
@@ -147,8 +148,6 @@ void MouseClick()
 
         case State_EndOfTurn:
 
-            EndTurn();
-            gameState = State_StartOfTurn;
             break;
         }
 

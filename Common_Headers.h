@@ -31,6 +31,7 @@
 #define NULL_TYPE_EVENT 0
 #define BUILD_TYPE_EVENT 1
 #define RESOURCE_TYPE_EVENT 2
+#define ONGOING_TYPE_EVENT 3
 
 
 typedef enum {
@@ -48,6 +49,14 @@ typedef enum
 	State_EndOfTurn,
 	State_GameOver
 }GAMESTATE;
+
+
+typedef const struct {
+
+	int indexOption;
+	int optionType;
+
+}CARDOPTION;
 
 typedef struct
 {
