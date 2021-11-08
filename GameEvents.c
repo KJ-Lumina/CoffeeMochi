@@ -14,7 +14,7 @@ typedef struct
 	int cardsInDeck;
 }CARDDECK;
 
-#define TOTALCARDCOUNT 5
+#define TOTALCARDCOUNT 7
 CARDEVENT* cardList[TOTALCARDCOUNT];
 
 CARDDECK tutorialDeck;
@@ -25,24 +25,28 @@ int currentCardIndex;
 
 
 #pragma region Card Events
-CARDEVENT emptyCard = { 0, NULL_EVENT, "This is a null event, for errors only", NULL_CHOICE, 0,  NULL_CHOICE, 0 , "", NULL_CHOICE, 0, NULL_CHOICE, 0 , "" };
+CARDEVENT emptyCard = { 0, NULL_EVENT, NULL_TYPE_EVENT, "This is a null event, for errors only", NULL_CHOICE, 0, R_NULL_INDEX, NULL_CHOICE, 0 , "", NULL_CHOICE, 0, R_NULL_INDEX ,NULL_CHOICE, 0 , "" };
 
-CARDEVENT b_BuildAHouse = { 1, BASIC_EVENT, "Our citizens needs a place to sleep. Click on the house below and build it on the grid.", B_HOUSE_INDEX, 1 ,R_GOLD_INDEX, 50, "House", NULL_CHOICE,0, R_NULL_INDEX, 0 ,"Ignore"};
-CARDEVENT b_BuildAFarm = { 2, BASIC_EVENT, "Our city needs to eat. Click on the farm below and build it on the grid.", B_FARM_INDEX, 1 ,R_GOLD_INDEX, 25, "Farm", NULL_CHOICE, 0, R_NULL_INDEX, 0, "Ignore" };
+CARDEVENT E_BuildAHouse = { 1, BASIC_EVENT, BUILD_TYPE_EVENT, "Our citizens needs a place to sleep. Click on the house below and build it on the grid.", B_HOUSE_INDEX, 1 , R_POPULATION_INDEX , R_GOLD_INDEX, 50, "House", NULL_CHOICE, 0, R_NULL_INDEX , R_NULL_INDEX, 0 ,"Ignore"};
+CARDEVENT E_BuildAFarm = { 2, BASIC_EVENT, BUILD_TYPE_EVENT, "Our city needs to eat. Click on the farm below and build it on the grid.", B_FARM_INDEX, 1 , R_FOOD_INDEX ,R_GOLD_INDEX,  25, "Farm", NULL_CHOICE, 0, R_NULL_INDEX, R_NULL_INDEX, 0, "Ignore" };
+CARDEVENT E_BuildAMarket = { 3 , BASIC_EVENT, BUILD_TYPE_EVENT, "Our economy is unstable. Click on the market below and build it on the grid.", B_MARKET_INDEX, 1 , R_GOLD_INDEX , R_GOLD_INDEX, 35, "Market", NULL_CHOICE, 0 , R_NULL_INDEX, R_NULL_INDEX, 0 , "Ignore" };
 
+CARDEVENT E_RefugeesHouses = { 4 , ADVANCED_EVENT, BUILD_TYPE_EVENT,"Refugees are seeking shelter in your kingdom. Build two house to shelter them. ", B_HOUSE_INDEX, 2,R_POPULATION_INDEX, R_GOLD_INDEX, 100, "Houses", NULL_CHOICE,0, R_NULL_INDEX, R_NULL_INDEX, 0, "Ignore" };
+CARDEVENT E_FamineStrikes = { 5, ADVANCED_EVENT, BUILD_TYPE_EVENT,"Famine have struck your kingdom, Build 3 farm to advert the crisis. ", B_FARM_INDEX, 3, R_FOOD_INDEX, R_GOLD_INDEX, 75, "Farm", NULL_CHOICE,0, R_NULL_INDEX, R_NULL_INDEX, 0, "Ignore" };
 
-CARDEVENT b_BuildTwoHouse = { 3 , ADVANCED_EVENT, "Refugees are seeking shelter in your kingdom. Build two house to shelter them. ", B_HOUSE_INDEX, 2, R_GOLD_INDEX, 100, "Houses", NULL_CHOICE,0, R_NULL_INDEX, 0, "Ignore" };
-CARDEVENT b_BuildThreeFarm = { 4, ADVANCED_EVENT, "Famine have struck your kingdom, Build 3 farm to advert the crisis. ", B_FARM_INDEX, 3, R_GOLD_INDEX, 75, "Farm", NULL_CHOICE,0, R_NULL_INDEX, 0, "Ignore" };
+CARDEVENT E_FoodMerchantArrival = { 6, BASIC_EVENT, RESOURCE_TYPE_EVENT, "Food Peddlers have arrived at your kingdom, they wish to trade 200 Food for 100 Gold", E_INCREASE_RESOURCE, 200, R_FOOD_INDEX, R_GOLD_INDEX, 100, "Buy Food", NULL_CHOICE, 0 , R_NULL_INDEX, R_NULL_INDEX, 0, "Ignore" };
 
 #pragma endregion
 
 void InitCardList()
 {
 	cardList[0] = &emptyCard;
-	cardList[1] = &b_BuildAHouse;
-	cardList[2] = &b_BuildAFarm;
-	cardList[3] = &b_BuildTwoHouse;
-	cardList[4] = &b_BuildThreeFarm;
+	cardList[1] = &E_BuildAHouse;
+	cardList[2] = &E_BuildAFarm;
+	cardList[3] = &E_BuildAMarket;
+	cardList[4] = &E_RefugeesHouses;
+	cardList[5] = &E_FamineStrikes;
+	cardList[6] = &E_FoodMerchantArrival;
 }
 
 void InitDecks()

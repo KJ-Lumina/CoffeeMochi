@@ -28,7 +28,7 @@ void InitBuildings(void)
 	sprite_grass = CP_Image_Load("./Assets/grasstile.png");
 	sprite_house = CP_Image_Load("./Assets/best_House.png");
 	sprite_farm = CP_Image_Load("./Assets/best_Farm.png");
-	sprite_market = CP_Image_Load("./Assets/best_Tree.png");
+	sprite_market = CP_Image_Load("./Assets/best_Market.png");
 	sprite_tavern = CP_Image_Load("./Assets/best_Tavern.png");
 	button_house = CP_Image_Load("./Assets/housebtn.png");
 	button_farm = CP_Image_Load("./Assets/farmbtn.png");
@@ -39,15 +39,15 @@ BUILDING* GetBuildingByIndex(int index)
 {
 	switch (index)
 	{
-	case 1:
+	case B_GRASS_INDEX:
 		return &tile_base;
-	case 2:
+	case B_HOUSE_INDEX:
 		return &tile_house;
-	case 3:
+	case B_FARM_INDEX:
 		return &tile_farm;
-	case 4:
+	case B_MARKET_INDEX:
 		return &tile_market;
-	case 5:
+	case B_TAVERN_INDEX:
 		return &tile_tavern;
 	default:
 		return &tile_base;
@@ -59,16 +59,15 @@ CP_Image* GetBuildingSpriteByIndex(int index)
 {
 	switch (index)
 	{
-	case 1:
+	case B_GRASS_INDEX:
 		return &sprite_grass;
-
-	case 2:
+	case B_HOUSE_INDEX:
 		return &sprite_house;
-	case 3:
+	case B_FARM_INDEX:
 		return &sprite_farm;
-	case 5:
+	case B_MARKET_INDEX:
 		return &sprite_market;
-	case 6:
+	case B_TAVERN_INDEX:
 		return &sprite_tavern;
 	default:
 		return &sprite_grass;

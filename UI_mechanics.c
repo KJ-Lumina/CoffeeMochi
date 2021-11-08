@@ -39,10 +39,61 @@ int CheckUIClick(float xPos, float yPos)
         // click on option A
         if (xPos >= optionAPos.x - TILEWIDTH / 2 && xPos <= optionAPos.x + TILEWIDTH / 2 && yPos >= optionBPos.y - TILEHEIGHT / 2 && yPos <= optionBPos.y + TILEHEIGHT / 2)
         {
-            SetCurrentBuilding(GetBuildingByIndex(selectedEvent->indexOptionA));
-            SetCurrentAmountToBuild(selectedEvent->buildAmountA);
-          
-            return 1;
+            switch (selectedEvent->eventType) {
+            case BUILD_TYPE_EVENT:
+                SetCurrentBuilding(GetBuildingByIndex(selectedEvent->indexOptionA));
+                SetCurrentAmountToBuild(selectedEvent->optionAmountA);
+                return 1;
+                break;
+
+            case RESOURCE_TYPE_EVENT:
+                
+                switch (selectedEvent->optionTypeA) {
+                case R_GOLD_INDEX:
+
+                    if (selectedEvent->indexOptionA == E_INCREASE_RESOURCE) {
+                        Set_current_gold(Get_current_gold() + selectedEvent->optionAmountA);
+                    }
+                    else if (selectedEvent->indexOptionA == E_DECREASE_RESROUCE) {
+                        Set_current_gold(Get_current_gold() - selectedEvent->optionAmountA);
+                    }
+                 
+                    break;
+
+                case R_FOOD_INDEX:
+
+                    if (selectedEvent->indexOptionA == E_INCREASE_RESOURCE) {
+                        Set_current_food(Get_current_food() + selectedEvent->optionAmountA);
+                    }
+                    else if (selectedEvent->indexOptionA == E_DECREASE_RESROUCE) {
+                        Set_current_food(Get_current_food() - selectedEvent->optionAmountA);
+                    }
+
+                    break;
+
+                case R_POPULATION_INDEX:
+
+                    if (selectedEvent->indexOptionA == E_INCREASE_RESOURCE) {
+                        Set_current_population(Get_current_population() + selectedEvent->optionAmountA);
+                    }
+                    else if (selectedEvent->indexOptionA == E_DECREASE_RESROUCE) {
+                        Set_current_population(Get_current_population() - selectedEvent->optionAmountA);
+                    }
+
+                    break;
+                
+                default:
+                    break;
+                }
+
+                return 2;
+                break;
+
+            default:
+                break;
+
+            }
+             
             break;
         }
         
@@ -50,7 +101,7 @@ int CheckUIClick(float xPos, float yPos)
         else if (xPos >= optionBPos.x - TILEWIDTH/2  && xPos <= optionBPos.x+TILEWIDTH/2 && yPos >= optionBPos.y -TILEHEIGHT/2 && yPos <= optionBPos.y+TILEHEIGHT / 2)
         {
             SetCurrentBuilding(GetBuildingByIndex(selectedEvent->indexOptionB));
-            SetCurrentAmountToBuild(selectedEvent->buildAmountB);
+            SetCurrentAmountToBuild(selectedEvent->optionAmountB);
 
             return 1;
             break;
