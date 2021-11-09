@@ -35,12 +35,17 @@ Buff/Debuff effects will be seperated to a different header file
 #define FARM_BUILD_COST 20
 #define HOUSING_BUILD_COST 20
 
+#define HIGH_MORALE 0
+#define MEDIUM_MORALE 1
+#define LOW_MORALE 2
+
 
 int curGold;
 int curFood;
 int curPopulation;
 int initPopulation = 100;
 int curMorale;
+int additionalMorale;
 
 //Gold Related Variables
 int numMarkets = 0;
@@ -72,6 +77,10 @@ void Set_current_population(int population)
 	curPopulation = population;
 }
 
+void Set_additional_morale(int addMorale) {
+	additionalMorale = addMorale;
+}
+
 /*--------------------
 GET RESOURCE FUNCTIONS
 ---------------------*/
@@ -94,6 +103,11 @@ int Get_current_population()
 int Get_current_morale()
 {
 	return curMorale;
+}
+
+int Get_additional_morale() 
+{
+	return additionalMorale;
 }
 
 /*--------------------
@@ -162,17 +176,17 @@ void Population_per_turn()
 void Gold_check()
 {
 	if (curGold < 30)
-		isPoor = 1;
+		isPoor = TRUE;
 	else
-		isPoor = 0;
+		isPoor = FALSE;
 }
 
 void Food_check()
 {
 	if (curFood < (curPopulation * 2))
-		isStarved = 1;
+		isStarved = TRUE;
 	else
-		isStarved = 0;
+		isStarved = FALSE;
 }
 
 void Morale_per_turn()
@@ -181,13 +195,13 @@ void Morale_per_turn()
 	//event effects then we will just have to add a seperate counter for it
 	switch (isPoor + isStarved)
 	{
-		case 0:
+		case HIGH_MORALE:
 			curMorale = 100;
 			break;
-		case 1:
+		case MEDIUM_MORALE:
 			curMorale = 50;
 			break;
-		case 2:
+		case LOW_MORALE:
 			curMorale = 10;
 			break;
 	}
@@ -217,6 +231,7 @@ void GenerateResourcesOnEndTurn()
 	Gold_generated_per_turn();
 	Food_generated_per_turn();
 	Population_per_turn();
+	Morale_per_turn();
 }
 
 void AddNewResourceBuilding(int buildingIndex)
