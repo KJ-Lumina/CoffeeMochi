@@ -1,7 +1,1 @@
-﻿  Buildings.c
-  GameEvents.c
-  Resource_Stats.c
-  UI_mechanics.c
-  WorldSpaceGrid.c
-  game.c
-C:\Users\Seow Kai Jun\Documents\GitHub\CoffeeMochi\GameEvents.c(51,1): error C2628: 'CARDEVENT' followed by 'void' is illegal (did you forget a ';'?)
+﻿

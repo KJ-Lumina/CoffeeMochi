@@ -35,16 +35,20 @@ Buff/Debuff effects will be seperated to a different header file
 #define FARM_BUILD_COST 20
 #define HOUSING_BUILD_COST 20
 
+
 int curGold;
 int curFood;
 int curPopulation;
 int initPopulation = 100;
+int curMorale;
 
 //Gold Related Variables
 int numMarkets = 0;
+int isPoor = 0;
 
 //Food Related Variables
 int numFarms = 0;
+int isStarved = 0;
 
 //Population Related Variables
 int numHouses = 0;
@@ -85,6 +89,11 @@ int Get_current_food()
 int Get_current_population()
 {
 	return curPopulation;
+}
+
+int Get_current_morale()
+{
+	return curMorale;
 }
 
 /*--------------------
@@ -150,25 +159,40 @@ void Population_per_turn()
 	curPopulation = numHouses * PAX_PER_HOUSING;
 }
 
-/*
-float update_overpopulation_debuff_rate(int curPopulation, int max_population) {
-	return ((float)curPopulation / (float)max_population);
+void Gold_check()
+{
+	if (curGold < 30)
+		isPoor = 1;
+	else
+		isPoor = 0;
 }
 
-// Function to check if kingdom is Overpopulated
-bool check_for_overpopulation(int curPopulation, int max_population)
+void Food_check()
 {
-	// Checks curPopulation with max_population and toggles overpopulation debuff if overpopulated
-	if (curPopulation > max_population)
-	{
-		return true;
-	}
+	if (curFood < (curPopulation * 2))
+		isStarved = 1;
 	else
-	{
-		return false;
-	}
+		isStarved = 0;
 }
-*/
+
+void Morale_per_turn()
+{
+	//for now morale calculation is simply based on whether 2 conditions are true, if we want to add
+	//event effects then we will just have to add a seperate counter for it
+	switch (isPoor + isStarved)
+	{
+		case 0:
+			curMorale = 100;
+			break;
+		case 1:
+			curMorale = 50;
+			break;
+		case 2:
+			curMorale = 10;
+			break;
+	}
+	
+}
 
 //TEMPORARY FOR PROTOTYPE ONLYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
 
