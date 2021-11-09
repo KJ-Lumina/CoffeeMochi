@@ -39,6 +39,29 @@ int CheckUIClick(float xPos, float yPos)
         // click on option A
         if (xPos >= optionAPos.x - TILEWIDTH / 2 && xPos <= optionAPos.x + TILEWIDTH / 2 && yPos >= optionBPos.y - TILEHEIGHT / 2 && yPos <= optionBPos.y + TILEHEIGHT / 2)
         {
+            //Check for Pre-Requiste 
+            switch (selectedEvent->costTypeA)
+            {
+            case R_GOLD_INDEX:
+                if ((Get_current_gold() - selectedEvent->costAmountA) < 0) return 0;
+                Set_current_gold(Get_current_gold() - selectedEvent->costAmountA);
+                break;
+
+            case R_FOOD_INDEX:
+                if ((Get_current_food() - selectedEvent->costAmountA) < 0) return 0;
+                Set_current_food(Get_current_food() - selectedEvent->costAmountA);
+                break;
+
+            case R_POPULATION_INDEX:
+                if ((Get_current_population() - selectedEvent->costAmountA) < 0) return 0;
+                Set_current_population(Get_current_population() - selectedEvent->costAmountA);
+                break;
+
+            default:
+                break;
+            }
+
+            //Run the Event depending on the event type if the Pre-Requiste is met
             switch (selectedEvent->eventType) {
             case BUILD_TYPE_EVENT:
                 SetCurrentBuilding(GetBuildingByIndex(selectedEvent->indexOptionA));
@@ -46,9 +69,7 @@ int CheckUIClick(float xPos, float yPos)
                 return 1;
                 break;
 
-            case RESOURCE_TYPE_EVENT:
-                
-                printf("Test4");
+            case RESOURCE_TYPE_EVENT:              
 
                 switch (selectedEvent->optionTypeA) {
                 case R_GOLD_INDEX:
@@ -56,7 +77,7 @@ int CheckUIClick(float xPos, float yPos)
                     if (selectedEvent->indexOptionA == E_INCREASE_RESOURCE) {
                         Set_current_gold(Get_current_gold() + selectedEvent->optionAmountA);
                     }
-                    else if (selectedEvent->indexOptionA == E_DECREASE_RESROUCE) {
+                    else if (selectedEvent->indexOptionA == E_DECREASE_RESOURCE) {
                         Set_current_gold(Get_current_gold() - selectedEvent->optionAmountA);
                     }
                  
@@ -67,7 +88,7 @@ int CheckUIClick(float xPos, float yPos)
                     if (selectedEvent->indexOptionA == E_INCREASE_RESOURCE) {
                         Set_current_food(Get_current_food() + selectedEvent->optionAmountA);
                     }
-                    else if (selectedEvent->indexOptionA == E_DECREASE_RESROUCE) {
+                    else if (selectedEvent->indexOptionA == E_DECREASE_RESOURCE) {
                         Set_current_food(Get_current_food() - selectedEvent->optionAmountA);
                     }
 
@@ -78,7 +99,7 @@ int CheckUIClick(float xPos, float yPos)
                     if (selectedEvent->indexOptionA == E_INCREASE_RESOURCE) {
                         Set_current_population(Get_current_population() + selectedEvent->optionAmountA);
                     }
-                    else if (selectedEvent->indexOptionA == E_DECREASE_RESROUCE) {
+                    else if (selectedEvent->indexOptionA == E_DECREASE_RESOURCE) {
                         Set_current_population(Get_current_population() - selectedEvent->optionAmountA);
                     }
 
@@ -106,13 +127,94 @@ int CheckUIClick(float xPos, float yPos)
         // click on option B?
         else if (xPos >= optionBPos.x - TILEWIDTH/2  && xPos <= optionBPos.x+TILEWIDTH/2 && yPos >= optionBPos.y -TILEHEIGHT/2 && yPos <= optionBPos.y+TILEHEIGHT / 2)
         {
-            SetCurrentBuilding(GetBuildingByIndex(selectedEvent->indexOptionB));
-            SetCurrentAmountToBuild(selectedEvent->optionAmountB);
+            //Check for Pre-Requiste 
+            switch (selectedEvent->costTypeB)
+            {
+            case R_GOLD_INDEX:
+                if ((Get_current_gold() - selectedEvent->costAmountB) < 0) return 0;
+                Set_current_gold(Get_current_gold() - selectedEvent->costAmountB);
+                break;
 
-            return 1;
+            case R_FOOD_INDEX:
+                if ((Get_current_food() - selectedEvent->costAmountB) < 0) return 0;
+                Set_current_food(Get_current_food() - selectedEvent->costAmountB);
+                break;
+
+            case R_POPULATION_INDEX:
+                if ((Get_current_population() - selectedEvent->costAmountB) < 0) return 0;
+                Set_current_population(Get_current_population() - selectedEvent->costAmountB);
+                break;
+
+            default:
+                break;
+            }
+
+            //Run the Event depending on the event type if the Pre-Requiste is met
+            switch (selectedEvent->eventType) {
+            case BUILD_TYPE_EVENT:
+                SetCurrentBuilding(GetBuildingByIndex(selectedEvent->indexOptionB));
+                SetCurrentAmountToBuild(selectedEvent->optionAmountB);
+                return 1;
+                break;
+
+            case RESOURCE_TYPE_EVENT:
+
+                printf("Test4");
+
+                switch (selectedEvent->optionTypeA) {
+                case R_GOLD_INDEX:
+
+                    if (selectedEvent->indexOptionA == E_INCREASE_RESOURCE) {
+                        Set_current_gold(Get_current_gold() + selectedEvent->optionAmountB);
+                    }
+                    else if (selectedEvent->indexOptionA == E_DECREASE_RESOURCE) {
+                        Set_current_gold(Get_current_gold() - selectedEvent->optionAmountB);
+                    }
+
+                    break;
+
+                case R_FOOD_INDEX:
+
+                    if (selectedEvent->indexOptionA == E_INCREASE_RESOURCE) {
+                        Set_current_food(Get_current_food() + selectedEvent->optionAmountB);
+                    }
+                    else if (selectedEvent->indexOptionA == E_DECREASE_RESOURCE) {
+                        Set_current_food(Get_current_food() - selectedEvent->optionAmountB);
+                    }
+
+                    break;
+
+                case R_POPULATION_INDEX:
+
+                    if (selectedEvent->indexOptionA == E_INCREASE_RESOURCE) {
+                        Set_current_population(Get_current_population() + selectedEvent->optionAmountB);
+                    }
+                    else if (selectedEvent->indexOptionA == E_DECREASE_RESOURCE) {
+                        Set_current_population(Get_current_population() - selectedEvent->optionAmountB);
+                    }
+
+                    break;
+
+                default:
+                    break;
+                }
+
+                return 2;
+                break;
+
+            case ONGOING_TYPE_EVENT:
+
+                break;
+
+            default:
+                break;
+
+            }
+
             break;
         }
         break;
+
     case State_PlaceYourBuilding:
         break;
     default:

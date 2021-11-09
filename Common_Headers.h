@@ -12,6 +12,7 @@
 #define R_GOLD_INDEX 1
 #define R_FOOD_INDEX 2
 #define R_POPULATION_INDEX 3
+#define R_MORALE_INDEX 4
 
 
 #define NULL_CHOICE -1
@@ -22,7 +23,7 @@
 #define B_TAVERN_INDEX 5
 
 #define E_INCREASE_RESOURCE 1
-#define E_DECREASE_RESROUCE 2
+#define E_DECREASE_RESOURCE 2
 
 #define NULL_EVENT 0
 #define BASIC_EVENT 1
