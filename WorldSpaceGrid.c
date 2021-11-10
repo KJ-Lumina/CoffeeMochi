@@ -46,16 +46,9 @@ void ScreenToWorldPosition(CP_Vector* position)
 {
     position->x -= worldSpaceOrigin.x;
     position->y -= worldSpaceOrigin.y;
-
-    // Snap to box grid
-    position->x = (int)(position->x / TILEWIDTH) * TILEWIDTH;
-    position->y = (int)(position->y / TILEHEIGHT) * TILEHEIGHT;
-
-    position->x = Math_Clamp_Float(position->x, 0, (WORLDGRIDX - 1) * TILEWIDTH);
-    position->y = Math_Clamp_Float(position->y, 0, (WORLDGRIDY - 1) * TILEWIDTH);
-
-    position->x += worldSpaceOrigin.x + TILEWIDTH / 2;
-    position->y += worldSpaceOrigin.y + TILEHEIGHT / 2;
+    
+    position->x = CP_Math_ClampFloat(position->x, 0, (WORLDGRIDX - 0.5f) * TILEWIDTH);
+    position->y = CP_Math_ClampFloat(position->y, 0, (WORLDGRIDY - 0.5f) * TILEWIDTH);
 }
 void ScreenToGridPosition(CP_Vector* position)
 {
@@ -63,11 +56,9 @@ void ScreenToGridPosition(CP_Vector* position)
     position->y -= worldSpaceOrigin.y;
 
     // Snap to box grid
-    position->x = (int)(position->x / TILEWIDTH) * TILEWIDTH;
-    position->y = (int)(position->y / TILEHEIGHT) * TILEHEIGHT;
-
-    position->x = (float)Math_Clamp_Int((int)position->x, 0, WORLDGRIDX);
-    position->y = (float)Math_Clamp_Int((int)position->y, 0, WORLDGRIDY);
+    
+    position->x = (float)CP_Math_ClampInt((int)(position->x / TILEWIDTH), 0, WORLDGRIDX - 1);
+    position->y = (float)CP_Math_ClampInt((int)(position->y / TILEHEIGHT), 0, WORLDGRIDY - 1);
 }
 void WorldToGridPosition(CP_Vector* position)
 {
@@ -77,8 +68,8 @@ void WorldToGridPosition(CP_Vector* position)
     position->x /= TILEWIDTH;
     position->y /= TILEHEIGHT;
 
-    position->x = (float)Math_Clamp_Int((int)position->x, 0, WORLDGRIDX);
-    position->y = (float)Math_Clamp_Int((int)position->y, 0, WORLDGRIDY);
+    position->x = (float)CP_Math_ClampInt((int)position->x, 0, WORLDGRIDX - 1);
+    position->y = (float)CP_Math_ClampInt((int)position->y, 0, WORLDGRIDY - 1);
 }
 void GridToWorldPosition(CP_Vector* position)
 {
@@ -88,6 +79,29 @@ void GridToWorldPosition(CP_Vector* position)
     position->x += worldSpaceOrigin.x + TILEWIDTH / 2;
     position->y += worldSpaceOrigin.y + TILEHEIGHT / 2;;
 
+}
+
+float CalculateUnitsToBorder(CP_Vector position, CP_Vector directionUnit)
+{
+    float dirUnitsToXBorder = 0;
+    float dirUnitsToYBorder = 0;
+    if (directionUnit.x > 0)
+    {
+        dirUnitsToXBorder = (WORLDGRIDX * TILEWIDTH - position.x) / directionUnit.x;
+    }
+    else
+    {
+        dirUnitsToXBorder = position.x / Math_Abs(directionUnit.x);
+    }
+    if (directionUnit.y > 0)
+    {
+        dirUnitsToYBorder = (WORLDGRIDY * TILEHEIGHT - position.y) / directionUnit.y;
+    }
+    else
+    {
+        dirUnitsToYBorder = position.y / Math_Abs(directionUnit.y);
+    }
+    return dirUnitsToXBorder > dirUnitsToYBorder ? dirUnitsToYBorder : dirUnitsToXBorder;
 }
 
 void SetNewBuilding(int x, int y, int buildingIndex)
@@ -119,8 +133,7 @@ bool IsTileOccupied(CP_Vector position)
 
 bool AttemptPlaceBuilding(CP_Vector cursorPosition)
 {
-    ScreenToWorldPosition(&cursorPosition);
-    WorldToGridPosition(&cursorPosition);
+    ScreenToGridPosition(&cursorPosition);
     if (!IsTileOccupied(cursorPosition))
     {
         SetNewBuilding((int)cursorPosition.x, (int)cursorPosition.y, selectedBuilding->spriteIndex);
@@ -149,7 +162,8 @@ void ReturnToCenter()
 
 void DrawCursorTile(CP_Vector cursorPosition)
 {
-    ScreenToWorldPosition(&cursorPosition);
+    ScreenToGridPosition(&cursorPosition);
+    GridToWorldPosition(&cursorPosition);
     CP_Image_Draw(*GetBuildingSpriteByIndex(selectedBuilding->spriteIndex), cursorPosition.x, cursorPosition.y, TILEWIDTH, TILEHEIGHT, 255);
 }
 
