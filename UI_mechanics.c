@@ -42,6 +42,7 @@ int CheckUIClick(float xPos, float yPos)
             //Check for Pre-Requiste 
             switch (selectedEvent->costTypeA)
             {
+                //RESOURCE COST
             case R_GOLD_INDEX:
                 if ((Get_current_gold() - selectedEvent->costAmountA) < 0) return 0;
                 Set_current_gold(Get_current_gold() - selectedEvent->costAmountA);
@@ -55,6 +56,21 @@ int CheckUIClick(float xPos, float yPos)
             case R_POPULATION_INDEX:
                 if ((Get_current_population() - selectedEvent->costAmountA) < 0) return 0;
                 Set_current_population(Get_current_population() - selectedEvent->costAmountA);
+                break;
+
+            case R_MORALE_INDEX:
+                break;
+
+            case R_BUILDING_HOUSE_INDEX:
+                break;
+
+            case R_BUILDING_FARM_INDEX:
+                break;
+
+            case R_BUILDING_MARKET_INDEX:
+                break;
+
+            case R_BUILDING_TAVERN_INDEX:
                 break;
 
             default:
