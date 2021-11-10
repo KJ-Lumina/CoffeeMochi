@@ -11,16 +11,32 @@
 #define R_NULL_INDEX 0
 #define R_GOLD_INDEX 1
 #define R_FOOD_INDEX 2
+#define R_POPULATION_INDEX 3
+#define R_MORALE_INDEX 4
+#define R_BUILDING_HOUSE_INDEX 5
+#define R_BUILDING_FARM_INDEX 6
+#define R_BUILDING_MARKET_INDEX 7
+#define R_BUILDING_TAVERN_INDEX 8
+
 
 #define NULL_CHOICE -1
 #define B_GRASS_INDEX 1
 #define B_HOUSE_INDEX 2
 #define B_FARM_INDEX 3
 #define B_MARKET_INDEX 4
+#define B_TAVERN_INDEX 5
+
+#define E_INCREASE_RESOURCE 1
+#define E_DECREASE_RESOURCE 2
 
 #define NULL_EVENT 0
 #define BASIC_EVENT 1
 #define ADVANCED_EVENT 2
+
+#define NULL_TYPE_EVENT 0
+#define BUILD_TYPE_EVENT 1
+#define RESOURCE_TYPE_EVENT 2
+#define ONGOING_TYPE_EVENT 3
 
 
 typedef enum {
@@ -31,26 +47,39 @@ typedef enum {
 typedef enum
 {
 	State_MainMenu,
+	State_StartOfTurn,
 	State_Idle,
 	State_MakeAChoice,
 	State_PlaceYourBuilding,
+	State_EndOfTurn,
 	State_GameOver
 }GAMESTATE;
+
+
+typedef const struct {
+
+	int indexOption;
+	int optionType;
+
+}CARDOPTION;
 
 typedef struct
 {
 	int eventIndex;
+	int eventDifficultyType;
 	int eventType;
 	char description[100];
 
 	int indexOptionA;
-	int buildAmountA;
+	int optionAmountA;
+	int optionTypeA;
 	int costTypeA;
 	int costAmountA;
 	char* descriptionA;
 
 	int indexOptionB;
-	int buildAmountB;
+	int optionAmountB;
+	int optionTypeB;
 	int costTypeB;
 	int costAmountB;
 	char* descriptionB;
@@ -98,8 +127,8 @@ typedef struct
 
 }TILEMAP;
 
-float Math_Clamp_Float(float target, float min, float max);
-int Math_Clamp_Int(int target, int min, int max);
+float Math_Abs(float x);
+int Math_Abs_Int(int x);
 
 GAMESTATE GetGameState();
 
@@ -111,8 +140,10 @@ void InitResources(int startingGold);
 void GameOver();
 
 // WorldGridSpace
+CP_Vector GetWorldSpaceOrigin();
 void MoveWorldSpaceOrigin(float positionChangeX, float positionChangeY);
 void DrawCursorTile(CP_Vector cursorPos);
+float CalculateUnitsToBorder(CP_Vector position, CP_Vector directionUnit);
 void SetNewBuilding(int xPos, int yPos, int buildingIndex);
 void SetCurrentBuilding(BUILDING* newBuilding);
 void SetCurrentAmountToBuild(int buildAmount);
@@ -122,9 +153,15 @@ void DrawUI();
 
 void DrawTempTextResources();
 void UI_SetEvent(CARDEVENT*);
+void Set_current_gold(int gold);
+void Set_current_food(int food);
+void Set_current_population(int population);
+void Set_additional_morale(int addMorale);
 int Get_current_gold();
 int Get_current_food();
 int Get_current_population();
+int Get_current_morale();
+int Get_additional_morale();
 void AddNewResourceBuilding(int buildingIndex);
 void AddMarket();
 void AddFarm();

@@ -18,37 +18,15 @@ float Math_Abs(float x)
 	return x;
 }
 
-float Math_Clamp_Float(float target, float min, float max)
+int Math_Abs_Int(int x)
 {
-	if (target <= min)
+	if (x < 0)
 	{
-		return min;
+		return -x;
 	}
-	else if (target >= max)
-	{
-		return max;
-	}
-	else
-	{
-		return target;
-	}
+	return x;
 }
 
-int Math_Clamp_Int(int target, int min, int max)
-{
-	if (target <= min)
-	{
-		return min;
-	}
-	else if (target >= max)
-	{
-		return max;
-	}
-	else
-	{
-		return target;
-	}
-}
 
 
 

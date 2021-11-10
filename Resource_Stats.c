@@ -18,11 +18,11 @@ Buff/Debuff effects will be seperated to a different header file
 // For now Food generated from 'Farm' tiles and 'farmer' citizens 
 // and consumption amount is defaulted to the following values
 // Subject to adjustments if Levels/Ranks are to be implemented
-#define FOOD_AMT_FROM_FARMS 20
+#define FOOD_AMT_FROM_FARMS 10
 #define FOOD_AMT_FROM_FARMERS 5
 #define FOOD_CONSUMPTION_PER_PAX 2
 
-#define PAX_PER_HOUSING 3
+#define PAX_PER_HOUSING 5
 
 // Upkeep costs for every tile are defaulted to the following values
 // Subject to adjustments if Levels/Ranks are to be implemented
@@ -30,21 +30,56 @@ Buff/Debuff effects will be seperated to a different header file
 #define FARM_UPKEEP_COST 5
 #define HOUSING_UPKEEP_COST 5
 
+// Building costs for every tile are defaulted to the following values
+#define MARKET_BUILD_COST 20
+#define FARM_BUILD_COST 20
+#define HOUSING_BUILD_COST 20
+
+#define HIGH_MORALE 0
+#define MEDIUM_MORALE 1
+#define LOW_MORALE 2
+
+
 int curGold;
 int curFood;
 int curPopulation;
 int initPopulation = 100;
+int curMorale;
+int additionalMorale;
 
 //Gold Related Variables
 int numMarkets = 0;
+int isPoor = 0;
 
 //Food Related Variables
 int numFarms = 0;
+int isStarved = 0;
 
 //Population Related Variables
 int numHouses = 0;
 
+/*--------------------
+SET RESOURCE FUNCTIONS
+---------------------*/
 
+void Set_current_gold(int gold)
+{
+	curGold = gold;
+}
+
+void Set_current_food(int food)
+{
+	curFood = food;
+}
+
+void Set_current_population(int population)
+{
+	curPopulation = population;
+}
+
+void Set_additional_morale(int addMorale) {
+	additionalMorale = addMorale;
+}
 
 /*--------------------
 GET RESOURCE FUNCTIONS
@@ -63,6 +98,16 @@ int Get_current_food()
 int Get_current_population()
 {
 	return curPopulation;
+}
+
+int Get_current_morale()
+{
+	return curMorale;
+}
+
+int Get_additional_morale() 
+{
+	return additionalMorale;
 }
 
 /*--------------------
@@ -84,6 +129,7 @@ int house_pop_prediction()
 	return PAX_PER_HOUSING;
 }
 
+
 /*--------------------
 END OF TURN FUNCTIONS
 ---------------------*/
@@ -103,7 +149,7 @@ void Gold_generated_per_turn()
 	// Net total Gold generated
 	//curGold += gold_generated_by_markets + gold_generated_by_tax - gold_deducted_from_upkeep;
 
-	curGold += numMarkets;
+	curGold += (numMarkets * GOLD_AMT_FROM_MARKETS) + (numHouses * PAX_PER_HOUSING) - ((numFarms * FARM_UPKEEP_COST) + (numHouses * HOUSING_UPKEEP_COST));
 }
 
 // Function to check amount of Food resource generated per turn
@@ -118,34 +164,49 @@ void Food_generated_per_turn()
 	// Net total Food generated
 	//curFood += food_generated_by_farms - food_deducted_from_consumption;
 
-	curFood += numFarms;
+	curFood += (numFarms * FOOD_AMT_FROM_FARMS) - (numHouses * FOOD_CONSUMPTION_PER_PAX);
 }
 
 void Population_per_turn()
 {
 	//curPopulation = initPopulation + (numHouses * PAX_PER_HOUSING);
-	curPopulation = numHouses * 5;
+	curPopulation = numHouses * PAX_PER_HOUSING;
 }
 
-/*
-float update_overpopulation_debuff_rate(int curPopulation, int max_population) {
-	return ((float)curPopulation / (float)max_population);
-}
-
-// Function to check if kingdom is Overpopulated
-bool check_for_overpopulation(int curPopulation, int max_population)
+void Gold_check()
 {
-	// Checks curPopulation with max_population and toggles overpopulation debuff if overpopulated
-	if (curPopulation > max_population)
-	{
-		return true;
-	}
+	if (curGold < 30)
+		isPoor = TRUE;
 	else
-	{
-		return false;
-	}
+		isPoor = FALSE;
 }
-*/
+
+void Food_check()
+{
+	if (curFood < (curPopulation * 2))
+		isStarved = TRUE;
+	else
+		isStarved = FALSE;
+}
+
+void Morale_per_turn()
+{
+	//for now morale calculation is simply based on whether 2 conditions are true, if we want to add
+	//event effects then we will just have to add a seperate counter for it
+	switch (isPoor + isStarved)
+	{
+		case HIGH_MORALE:
+			curMorale = 100;
+			break;
+		case MEDIUM_MORALE:
+			curMorale = 50;
+			break;
+		case LOW_MORALE:
+			curMorale = 10;
+			break;
+	}
+	
+}
 
 //TEMPORARY FOR PROTOTYPE ONLYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
 
@@ -170,6 +231,7 @@ void GenerateResourcesOnEndTurn()
 	Gold_generated_per_turn();
 	Food_generated_per_turn();
 	Population_per_turn();
+	Morale_per_turn();
 }
 
 void AddNewResourceBuilding(int buildingIndex)

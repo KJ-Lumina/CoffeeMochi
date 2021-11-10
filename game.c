@@ -5,6 +5,7 @@
 #include "TravessFunctions.h"
 #include "WorldSpaceGrid.h"
 #include "UI_mechanics.h"
+#include "Npc.h"
 
 
 
@@ -78,6 +79,12 @@ void UpdateMouseInput(void)
 
 void AdminControlInput()
 {
+    if (CP_Input_KeyTriggered(KEY_Q))
+    {
+        CP_Vector spawnPoint = currentMousePos;
+        ScreenToWorldPosition(&spawnPoint);
+        SpawnNpc(spawnPoint, 1);
+    }
     /*
     if (CP_Input_KeyDown(KEY_1))
     {
@@ -107,9 +114,18 @@ void CheckKeyInput(void)
 
 void MouseClick()
 {
-    if (gamePhase == PHASE_EVENTLOOP) {
+    if (gamePhase == PHASE_BUILDPHASE) { //For Starting Build Phase (2 Farms, 2 House, 2 Market)
+
+
+
+    }else if (gamePhase == PHASE_EVENTLOOP) {
         switch (gameState)
         {
+        case State_StartOfTurn:
+            //Run Condition on Start of Turn
+            gameState = State_Idle;
+            break;
+
         case State_Idle:
             if (CheckUIClick(currentMousePos.x, currentMousePos.y) == 1)
             {
@@ -120,20 +136,56 @@ void MouseClick()
         case State_MakeAChoice:
             //make specific functions for ui
             printf("lolnew");
-            if (CheckUIClick(currentMousePos.x, currentMousePos.y) == 1)
+            int UI_Click = CheckUIClick(currentMousePos.x, currentMousePos.y);
+            if (UI_Click == 1)
             {
                 gameState = State_PlaceYourBuilding;
+            }
+            else if (UI_Click == 2) {
+                gameState = State_EndOfTurn;
             }
             break;
         case State_PlaceYourBuilding:
 
             if (AttemptPlaceBuilding(currentMousePos))
             {
-                EndTurn();
-                gameState = State_Idle;
+                gameState = State_EndOfTurn;
             }
             break;
+
+        case State_EndOfTurn:
+
+            break;
         }
+
+       
+    }
+}
+
+void GameStateControl() {
+
+    switch (gameState)
+    {
+    case State_StartOfTurn:
+        //Run Condition on Start of Turn
+        gameState = State_Idle;
+        break;
+
+    case State_Idle:
+
+        break;
+    case State_MakeAChoice:
+
+        break;
+    case State_PlaceYourBuilding:
+        DrawCursorTile(currentMousePos);
+        break;
+
+    case State_EndOfTurn:
+
+        EndTurn();
+        gameState = State_StartOfTurn;
+        break;
     }
 }
 
@@ -173,6 +225,7 @@ void game_init(void)
     InitResources(100);
     InitWorldSpaceGrid();
     InitBuildings();
+    InitNpc();
     InitSpritesheets();
     InitDecks();
     InitUI();
@@ -187,12 +240,8 @@ void game_update(void)
     CP_Graphics_ClearBackground(CP_Color_Create(150, 150, 150, 255));
     DrawTileSet();
     DrawBuildings();
-    switch (gameState)
-    {
-    case State_PlaceYourBuilding:
-        DrawCursorTile(currentMousePos);
-        break;
-    }
+    UpdateAllNpc();
+    GameStateControl();
     DrawUI();
     DrawTempTextResources();
 }
