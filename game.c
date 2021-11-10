@@ -5,6 +5,7 @@
 #include "TravessFunctions.h"
 #include "WorldSpaceGrid.h"
 #include "UI_mechanics.h"
+#include "Npc.h"
 
 
 
@@ -78,6 +79,12 @@ void UpdateMouseInput(void)
 
 void AdminControlInput()
 {
+    if (CP_Input_KeyTriggered(KEY_Q))
+    {
+        CP_Vector spawnPoint = currentMousePos;
+        ScreenToWorldPosition(&spawnPoint);
+        SpawnNpc(spawnPoint, 1);
+    }
     /*
     if (CP_Input_KeyDown(KEY_1))
     {
@@ -218,6 +225,7 @@ void game_init(void)
     InitResources(100);
     InitWorldSpaceGrid();
     InitBuildings();
+    InitNpc();
     InitSpritesheets();
     InitDecks();
     InitUI();
@@ -232,6 +240,7 @@ void game_update(void)
     CP_Graphics_ClearBackground(CP_Color_Create(150, 150, 150, 255));
     DrawTileSet();
     DrawBuildings();
+    UpdateAllNpc();
     GameStateControl();
     DrawUI();
     DrawTempTextResources();

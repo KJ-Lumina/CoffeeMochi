@@ -127,8 +127,8 @@ typedef struct
 
 }TILEMAP;
 
-float Math_Clamp_Float(float target, float min, float max);
-int Math_Clamp_Int(int target, int min, int max);
+float Math_Abs(float x);
+int Math_Abs_Int(int x);
 
 GAMESTATE GetGameState();
 
@@ -140,8 +140,10 @@ void InitResources(int startingGold);
 void GameOver();
 
 // WorldGridSpace
+CP_Vector GetWorldSpaceOrigin();
 void MoveWorldSpaceOrigin(float positionChangeX, float positionChangeY);
 void DrawCursorTile(CP_Vector cursorPos);
+float CalculateUnitsToBorder(CP_Vector position, CP_Vector directionUnit);
 void SetNewBuilding(int xPos, int yPos, int buildingIndex);
 void SetCurrentBuilding(BUILDING* newBuilding);
 void SetCurrentAmountToBuild(int buildAmount);
