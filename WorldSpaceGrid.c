@@ -246,7 +246,7 @@ void DrawTileSet()
                 break;
             }
 
-            CP_Image_DrawSubImage(tilemap, tempTile.x, tempTile.y, tilesetWidth, tilesetHeight, tilesetWidth * varX, tilesetHeight * varY, 
+            CP_Image_DrawSubImage(tilemap, tempTile.x, tempTile.y + 32, tilesetWidth, tilesetHeight, tilesetWidth * varX, tilesetHeight * varY, 
                 tilesetWidth * (varX + 1), tilesetHeight * (varY + 1), 255);
         }
     }
