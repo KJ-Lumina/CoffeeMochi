@@ -134,15 +134,14 @@ void MouseClick()
             }
             break;
         case State_MakeAChoice:
-            //make specific functions for ui
-            printf("lolnew");
-            int UI_Click = CheckUIClick(currentMousePos.x, currentMousePos.y);
-            if (UI_Click == 1)
+            switch (CheckUIClick(currentMousePos.x, currentMousePos.y))
             {
+            case 1:
                 gameState = State_PlaceYourBuilding;
-            }
-            else if (UI_Click == 2) {
+                break;
+            case 2:
                 gameState = State_EndOfTurn;
+                break;
             }
             break;
         case State_PlaceYourBuilding:
@@ -162,8 +161,9 @@ void MouseClick()
     }
 }
 
-void GameStateControl() {
-
+void GameStateControl() 
+{
+    DrawGridIndicator(currentMousePos);
     switch (gameState)
     {
     case State_StartOfTurn:

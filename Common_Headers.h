@@ -142,6 +142,7 @@ void GameOver();
 // WorldGridSpace
 CP_Vector GetWorldSpaceOrigin();
 void MoveWorldSpaceOrigin(float positionChangeX, float positionChangeY);
+void DrawGridIndicator(CP_Vector cursorPosition);
 void DrawCursorTile(CP_Vector cursorPos);
 float CalculateUnitsToBorder(CP_Vector position, CP_Vector directionUnit);
 void SetNewBuilding(int xPos, int yPos, int buildingIndex);

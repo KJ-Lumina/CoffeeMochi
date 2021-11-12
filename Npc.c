@@ -14,7 +14,7 @@ CP_Image npcSprite;
 
 void InitNpc()
 {
-	npcSprite = CP_Image_Load("./Assets/best_Tree.png");
+	npcSprite = CP_Image_Load("./Assets/best_npc.png");
 }
 
 void SpawnNpc(CP_Vector position, int amtToSpawn)
