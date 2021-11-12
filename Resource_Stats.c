@@ -35,16 +35,25 @@ Buff/Debuff effects will be seperated to a different header file
 #define FARM_BUILD_COST 20
 #define HOUSING_BUILD_COST 20
 
+#define HIGH_MORALE 0
+#define MEDIUM_MORALE 1
+#define LOW_MORALE 2
+
+
 int curGold;
 int curFood;
 int curPopulation;
 int initPopulation = 100;
+int curMorale;
+int additionalMorale;
 
 //Gold Related Variables
 int numMarkets = 0;
+int isPoor = 0;
 
 //Food Related Variables
 int numFarms = 0;
+int isStarved = 0;
 
 //Population Related Variables
 int numHouses = 0;
@@ -68,6 +77,10 @@ void Set_current_population(int population)
 	curPopulation = population;
 }
 
+void Set_additional_morale(int addMorale) {
+	additionalMorale = addMorale;
+}
+
 /*--------------------
 GET RESOURCE FUNCTIONS
 ---------------------*/
@@ -85,6 +98,16 @@ int Get_current_food()
 int Get_current_population()
 {
 	return curPopulation;
+}
+
+int Get_current_morale()
+{
+	return curMorale;
+}
+
+int Get_additional_morale() 
+{
+	return additionalMorale;
 }
 
 /*--------------------
@@ -150,25 +173,40 @@ void Population_per_turn()
 	curPopulation = numHouses * PAX_PER_HOUSING;
 }
 
-/*
-float update_overpopulation_debuff_rate(int curPopulation, int max_population) {
-	return ((float)curPopulation / (float)max_population);
+void Gold_check()
+{
+	if (curGold < 30)
+		isPoor = TRUE;
+	else
+		isPoor = FALSE;
 }
 
-// Function to check if kingdom is Overpopulated
-bool check_for_overpopulation(int curPopulation, int max_population)
+void Food_check()
 {
-	// Checks curPopulation with max_population and toggles overpopulation debuff if overpopulated
-	if (curPopulation > max_population)
-	{
-		return true;
-	}
+	if (curFood < (curPopulation * 2))
+		isStarved = TRUE;
 	else
-	{
-		return false;
-	}
+		isStarved = FALSE;
 }
-*/
+
+void Morale_per_turn()
+{
+	//for now morale calculation is simply based on whether 2 conditions are true, if we want to add
+	//event effects then we will just have to add a seperate counter for it
+	switch (isPoor + isStarved)
+	{
+		case HIGH_MORALE:
+			curMorale = 100;
+			break;
+		case MEDIUM_MORALE:
+			curMorale = 50;
+			break;
+		case LOW_MORALE:
+			curMorale = 10;
+			break;
+	}
+	
+}
 
 //TEMPORARY FOR PROTOTYPE ONLYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
 
@@ -193,6 +231,7 @@ void GenerateResourcesOnEndTurn()
 	Gold_generated_per_turn();
 	Food_generated_per_turn();
 	Population_per_turn();
+	Morale_per_turn();
 }
 
 void AddNewResourceBuilding(int buildingIndex)
