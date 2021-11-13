@@ -14,12 +14,12 @@ CP_Image npcSprite;
 
 void InitNpc()
 {
-	npcSprite = CP_Image_Load("./Assets/best_Tree.png");
+	npcSprite = CP_Image_Load("./Assets/best_npc.png");
 }
 
 void SpawnNpc(CP_Vector position, int amtToSpawn)
 {
-	NPC newNpc = { 1, position, CP_Vector_Set(0, 0), 0, 0, 0, 500, {0} };
+	NPC newNpc = { 1, position, CP_Vector_Set(0, 0), 0, 0, 0, 300, {0} };
 	for (int i = 0; i < 100; ++i)
 	{
 		if (npcList[i].spriteIndex == 0)
@@ -102,7 +102,6 @@ void CalculateNextPosition(NPC* npc)
 			npc->worldPosition.x += npc->direction.x * npc->distanceLeft;
 			npc->worldPosition.y += npc->direction.y * npc->distanceLeft;
 			npc->distanceLeft = 0;
-			printf("snap");
 		}
 		//Move NPC
 		else
@@ -111,9 +110,6 @@ void CalculateNextPosition(NPC* npc)
 			npc->worldPosition.y += npc->direction.y * npc->baseSpeed * deltaTime;
 			npc->distanceLeft -= npc->baseSpeed * deltaTime;
 		}
-
-
-
 
 		//reached destination
 		//set new destination
@@ -126,12 +122,10 @@ void CalculateNextPosition(NPC* npc)
 				npc->nextMoveTimer = 0;
 				//add nearest checkpoint
 				npc->checkPoints[1] = FindNearestCheckPoint(npc->worldPosition);
-				printf("Starting - %f, %f|", npc->checkPoints[1].x, npc->checkPoints[1].y);
 
 				//add other checkpoints
 				int finalCheckpointx = CP_Random_RangeInt(1, WORLDGRIDX * 2);
 				int finalCheckpointy = CP_Random_RangeInt(1, WORLDGRIDY * 2);
-				printf("final: %d,%d\n", finalCheckpointx, finalCheckpointy);
 
 				int checkpointDiffX = finalCheckpointx - (int)npc->checkPoints[1].x;
 				int checkpointDiffY = finalCheckpointy - (int)npc->checkPoints[1].y;
@@ -149,7 +143,6 @@ void CalculateNextPosition(NPC* npc)
 							int newXpoint = GetRandomCheckPoint(checkpointDiffX);
 							npc->checkPoints[turnCount + 1] = CP_Vector_Set(npc->checkPoints[turnCount].x + newXpoint, npc->checkPoints[turnCount].y);
 							checkpointDiffX -= newXpoint;
-							printf("X first - %f, %f|", npc->checkPoints[turnCount + 1].x, npc->checkPoints[turnCount + 1].y);
 							turnCount++;
 							newX = !newX;
 						}
@@ -158,7 +151,6 @@ void CalculateNextPosition(NPC* npc)
 							int newYpoint = GetRandomCheckPoint(checkpointDiffY);
 							npc->checkPoints[turnCount + 1] = CP_Vector_Set(npc->checkPoints[turnCount].x, npc->checkPoints[turnCount].y + newYpoint);
 							checkpointDiffY -= newYpoint;
-							printf("Y first - %f, %f|", npc->checkPoints[turnCount + 1].x, npc->checkPoints[turnCount + 1].y);
 							turnCount++;
 							newX = !newX;
 						}
@@ -167,11 +159,9 @@ void CalculateNextPosition(NPC* npc)
 					{
 						//last 2 turns are maxed
 						npc->checkPoints[turnCount + 1] = CP_Vector_Set(npc->checkPoints[turnCount].x + checkpointDiffX, npc->checkPoints[turnCount].y);
-						printf("X second - %f, %f|", npc->checkPoints[turnCount + 1].x, npc->checkPoints[turnCount + 1].y);
 						turnCount++;
 						checkpointDiffX = 0;
 						npc->checkPoints[turnCount + 1] = CP_Vector_Set(npc->checkPoints[turnCount].x, npc->checkPoints[turnCount].y + checkpointDiffY);
-						printf("Y second - %f, %f\n", npc->checkPoints[turnCount + 1].x, npc->checkPoints[turnCount + 1].y);
 						turnCount++;
 						checkpointDiffY = 0;
 					}
@@ -179,11 +169,9 @@ void CalculateNextPosition(NPC* npc)
 					{
 						//last 2 turns are maxed
 						npc->checkPoints[turnCount + 1] = CP_Vector_Set(npc->checkPoints[turnCount].x, npc->checkPoints[turnCount].y + checkpointDiffY);
-						printf("X second - %f, %f|", npc->checkPoints[turnCount + 1].x, npc->checkPoints[turnCount + 1].y);
 						turnCount++;
 						checkpointDiffY = 0;
 						npc->checkPoints[turnCount + 1] = CP_Vector_Set(npc->checkPoints[turnCount].x + checkpointDiffX, npc->checkPoints[turnCount].y);
-						printf("Y second - %f, %f\n", npc->checkPoints[turnCount + 1].x, npc->checkPoints[turnCount + 1].y);
 						checkpointDiffX = 0;
 					}
 				}
@@ -191,20 +179,17 @@ void CalculateNextPosition(NPC* npc)
 				if (checkpointDiffX == 0 && checkpointDiffY != 0)
 				{
 					npc->checkPoints[turnCount + 1] = CP_Vector_Set(npc->checkPoints[turnCount].x, npc->checkPoints[turnCount].y + checkpointDiffY);
-					printf("%f, %f", npc->checkPoints[turnCount + 1].x, npc->checkPoints[turnCount + 1].y);
 					turnCount++;
 					checkpointDiffY = 0;
 				}
 				if (checkpointDiffX != 0 && checkpointDiffY == 0)
 				{
 					npc->checkPoints[turnCount + 1] = CP_Vector_Set(npc->checkPoints[turnCount].x + checkpointDiffX, npc->checkPoints[turnCount].y);
-					printf("%f, %f\n", npc->checkPoints[turnCount + 1].x, npc->checkPoints[turnCount + 1].y);
 					turnCount++;
 					checkpointDiffX = 0;
 				}
 
 				npc->checkPointsLeft += turnCount;
-				printf(" total checkpoints : %d/", npc->checkPointsLeft);
 			}
 			if (npc->checkPointsLeft > 0)
 			{
@@ -214,9 +199,7 @@ void CalculateNextPosition(NPC* npc)
 				npc->checkPoints[3] = npc->checkPoints[4];
 				npc->checkPoints[4] = npc->checkPoints[5];
 				npc->checkPointsLeft -= 1;
-				printf("before convert||%f,%f||", npc->checkPoints[0].x, npc->checkPoints[0].y);
 				CheckpointToWorldPosition(&npc->checkPoints[0]);
-				printf("after convert||%f,%f||", npc->checkPoints[0].x, npc->checkPoints[0].y);
 				//new direction
 				npc->direction.x = npc->checkPoints[0].x - npc->worldPosition.x;
 				npc->direction.y = npc->checkPoints[0].y - npc->worldPosition.y;
@@ -234,9 +217,6 @@ void CalculateNextPosition(NPC* npc)
 				{
 					npc->distanceLeft = 0;
 				}
-				printf(" difference x|y: %f, %f", Math_Abs(npc->checkPoints[0].x - npc->worldPosition.x), Math_Abs(npc->checkPoints[0].y - npc->worldPosition.y));
-				printf(" direction x|y: %f, %f", npc->direction.x, npc->direction.y);
-				printf(" distance left:%f|", npc->distanceLeft);
 			}
 		}
 	}
@@ -263,17 +243,6 @@ float CalculateMoveDistance(float baseSpeed, float distance)
 		baseSpeed *= distance / 3;
 	}
 	return 1;
-}
-
-CP_Vector MoveNpc(CP_Vector position, CP_Vector destination, float distance)
-{
-	CP_Vector direction;
-	direction.x = destination.x - position.x;
-	direction.y = destination.y - position.y;
-	//float magnitude = CP_Vector_Distance(position, destination);
-
-	return CP_Vector_Set(0, 0);
-
 }
 
 void UpdateAllNpc()

@@ -14,6 +14,7 @@ int buildingGrid[WORLDGRIDX][WORLDGRIDY] = { 0 };
 CP_Vector worldSpaceOrigin;
 CP_Vector tempTile;
 CP_Vector cursorTile;
+CP_Image gridIndicator;
 
 BUILDING* selectedBuilding;
 int amountToBuild;
@@ -32,6 +33,7 @@ void InitWorldSpaceGrid()
     windowsHeight = (float)CP_System_GetWindowHeight();
     ReturnToCenter();
     tilemap = CP_Image_Load("./Assets/TilesetGrass.png");
+    gridIndicator = CP_Image_Load("./Assets/GridIndicator.png");
 }
 CP_Vector GetWorldSpaceOrigin()
 {
@@ -160,6 +162,14 @@ void ReturnToCenter()
     worldSpaceOrigin.y = windowsHeight / 2 - TILEHEIGHT * WORLDGRIDY / 2;
 }
 
+void DrawGridIndicator(CP_Vector cursorPosition)
+{
+
+    ScreenToGridPosition(&cursorPosition);
+    GridToWorldPosition(&cursorPosition);
+    CP_Image_Draw(gridIndicator, cursorPosition.x, cursorPosition.y, TILEWIDTH, TILEHEIGHT, 255);
+}
+
 void DrawCursorTile(CP_Vector cursorPosition)
 {
     ScreenToGridPosition(&cursorPosition);
@@ -246,7 +256,7 @@ void DrawTileSet()
                 break;
             }
 
-            CP_Image_DrawSubImage(tilemap, tempTile.x, tempTile.y, tilesetWidth, tilesetHeight, tilesetWidth * varX, tilesetHeight * varY, 
+            CP_Image_DrawSubImage(tilemap, tempTile.x, tempTile.y + 16, tilesetWidth, tilesetHeight, tilesetWidth * varX, tilesetHeight * varY, 
                 tilesetWidth * (varX + 1), tilesetHeight * (varY + 1), 255);
         }
     }

@@ -207,6 +207,7 @@ xcopy "$(ProjectDir)Assets\*" "$(OutDir)Assets\" /s /r /y /q</Command>
     <ClInclude Include="Buildings.h" />
     <ClInclude Include="Common_Headers.h" />
     <ClInclude Include="Npc.h" />
+    <ClInclude Include="population.h" />
     <ClInclude Include="UI_Text.h" />
     <ClInclude Include="WorldSpaceGrid.h" />
     <ClInclude Include="TravessFunctions.h" />
