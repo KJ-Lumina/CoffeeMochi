@@ -7,6 +7,8 @@
 #define TILEWIDTH 128.0f
 #define TILEHEIGHT 128.0f
 
+#define MAXTILECOUNT (WORLDGRIDX * WORLDGRIDY)
+
 
 #define R_NULL_INDEX 0
 #define R_GOLD_INDEX 1
@@ -129,6 +131,13 @@ typedef struct
 
 }TILEMAP;
 
+typedef struct
+{
+	int positionX;
+	int positionY;
+
+}TILEPOSITION;
+
 float Math_Abs(float x);
 int Math_Abs_Int(int x);
 
@@ -153,6 +162,7 @@ void SetCurrentAmountToBuild(int buildAmount);
 bool AttemptPlaceBuilding(CP_Vector cursorPos);
 bool IsTileOccupied(CP_Vector);
 void DrawUI();
+int GetAllBuildingsPositionByIndex(int index, TILEPOSITION position[]);
 
 void DrawTempTextResources();
 void UI_SetEvent(CARDEVENT*);

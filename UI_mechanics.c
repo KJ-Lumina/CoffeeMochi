@@ -39,6 +39,12 @@ int CheckUIClick(float xPos, float yPos)
         // click on option A
         if (xPos >= optionAPos.x - TILEWIDTH / 2 && xPos <= optionAPos.x + TILEWIDTH / 2 && yPos >= optionBPos.y - TILEHEIGHT / 2 && yPos <= optionBPos.y + TILEHEIGHT / 2)
         {
+            TILEPOSITION tile_positions[MAXTILECOUNT];
+            int randIndex = 0;
+            unsigned int upperBounds = 0;
+            unsigned int lowerBounds = 0;
+            int length;
+
             //Check for Pre-Requiste 
             switch (selectedEvent->costTypeA)
             {
@@ -59,18 +65,58 @@ int CheckUIClick(float xPos, float yPos)
                 break;
 
             case R_MORALE_INDEX:
+                if ((Get_current_morale() - selectedEvent->costAmountA) < 0) return 0;
+                Set_additional_morale(Get_additional_morale() - selectedEvent->costAmountA);
                 break;
 
             case R_BUILDING_HOUSE_INDEX:
+                SubtractHouse();           
+
+                length = GetAllBuildingsPositionByIndex(B_HOUSE_INDEX, tile_positions);
+
+                if (length > 0) {
+                    lowerBounds = 0;
+                    upperBounds = length - 1;
+
+                    randIndex = CP_Random_RangeInt(lowerBounds, upperBounds);
+
+                    SetNewBuilding((tile_positions + randIndex)->positionX, (tile_positions + randIndex)->positionY, B_GRASS_INDEX);
+                }
+
                 break;
 
             case R_BUILDING_FARM_INDEX:
+                SubtractFarm();
+
+                length = GetAllBuildingsPositionByIndex(B_HOUSE_INDEX, tile_positions);
+
+                if (length > 0) {
+                    lowerBounds = 0;
+                    upperBounds = length - 1;
+
+                    randIndex = CP_Random_RangeInt(lowerBounds, upperBounds);
+
+                    SetNewBuilding((tile_positions + randIndex)->positionX, (tile_positions + randIndex)->positionY, B_GRASS_INDEX);
+                }
                 break;
 
             case R_BUILDING_MARKET_INDEX:
+                SubtractMarket();
+
+                length = GetAllBuildingsPositionByIndex(B_HOUSE_INDEX, tile_positions);
+
+                if (length > 0) {
+                    lowerBounds = 0;
+                    upperBounds = length - 1;
+
+                    randIndex = CP_Random_RangeInt(lowerBounds, upperBounds);
+
+                    SetNewBuilding((tile_positions + randIndex)->positionX, (tile_positions + randIndex)->positionY, B_GRASS_INDEX);
+                }
                 break;
 
             case R_BUILDING_TAVERN_INDEX:
+                //Subtract Tavern
                 break;
 
             default:
@@ -143,9 +189,16 @@ int CheckUIClick(float xPos, float yPos)
         // click on option B?
         else if (xPos >= optionBPos.x - TILEWIDTH/2  && xPos <= optionBPos.x+TILEWIDTH/2 && yPos >= optionBPos.y -TILEHEIGHT/2 && yPos <= optionBPos.y+TILEHEIGHT / 2)
         {
+            TILEPOSITION tile_positions[MAXTILECOUNT];
+            int randIndex = 0;
+            unsigned int upperBounds = 0;
+            unsigned int lowerBounds = 0;
+            int length;
+
             //Check for Pre-Requiste 
             switch (selectedEvent->costTypeB)
             {
+            //RESOURECE RELATED TYPE COST
             case R_GOLD_INDEX:
                 if ((Get_current_gold() - selectedEvent->costAmountB) < 0) return 0;
                 Set_current_gold(Get_current_gold() - selectedEvent->costAmountB);
@@ -159,6 +212,63 @@ int CheckUIClick(float xPos, float yPos)
             case R_POPULATION_INDEX:
                 if ((Get_current_population() - selectedEvent->costAmountB) < 0) return 0;
                 Set_current_population(Get_current_population() - selectedEvent->costAmountB);
+                break;
+
+            case R_MORALE_INDEX:
+                if ((Get_current_morale() - selectedEvent->costAmountB) < 0) return 0;
+                Set_additional_morale(Get_additional_morale() - selectedEvent->costAmountB);
+                break;
+
+
+            //BUILDING RELATED TYPE COST
+            case R_BUILDING_HOUSE_INDEX:
+                SubtractHouse();
+
+                length = GetAllBuildingsPositionByIndex(B_HOUSE_INDEX, tile_positions);
+
+                if (length > 0) {
+                    lowerBounds = 0;
+                    upperBounds = length - 1;
+
+                    randIndex = CP_Random_RangeInt(lowerBounds, upperBounds);
+
+                    SetNewBuilding((tile_positions + randIndex)->positionX, (tile_positions + randIndex)->positionY, B_GRASS_INDEX);
+                }
+
+                break;
+
+            case R_BUILDING_FARM_INDEX:
+                SubtractFarm();
+
+                length = GetAllBuildingsPositionByIndex(B_HOUSE_INDEX, tile_positions);
+
+                if (length > 0) {
+                    lowerBounds = 0;
+                    upperBounds = length - 1;
+
+                    randIndex = CP_Random_RangeInt(lowerBounds, upperBounds);
+
+                    SetNewBuilding((tile_positions + randIndex)->positionX, (tile_positions + randIndex)->positionY, B_GRASS_INDEX);
+                }
+                break;
+
+            case R_BUILDING_MARKET_INDEX:
+                SubtractMarket();
+
+                length = GetAllBuildingsPositionByIndex(B_HOUSE_INDEX, tile_positions);
+
+                if (length > 0) {
+                    lowerBounds = 0;
+                    upperBounds = length - 1;
+
+                    randIndex = CP_Random_RangeInt(lowerBounds, upperBounds);
+
+                    SetNewBuilding((tile_positions + randIndex)->positionX, (tile_positions + randIndex)->positionY, B_GRASS_INDEX);
+                }
+                break;
+
+            case R_BUILDING_TAVERN_INDEX:
+                //Subtract Tavern
                 break;
 
             default:
@@ -242,6 +352,8 @@ int CheckUIClick(float xPos, float yPos)
                         break;
 
                     case R_BUILDING_TAVERN_INDEX:
+
+                        //ADD IN TAVERN SUBTRACT
 
                         break;
                 }

@@ -177,6 +177,29 @@ void DrawCursorTile(CP_Vector cursorPosition)
     CP_Image_Draw(*GetBuildingSpriteByIndex(selectedBuilding->spriteIndex), cursorPosition.x, cursorPosition.y, TILEWIDTH, TILEHEIGHT, 255);
 }
 
+int GetAllBuildingsPositionByIndex(int index, TILEPOSITION position[]) {
+
+    int arrayIndex = 0;
+
+
+    for (int j = 0; j < WORLDGRIDY; ++j)
+    {
+        for (int i = 0; i < WORLDGRIDX; ++i)
+        {
+            if (buildingGrid[i][j] == index) {
+
+                position[arrayIndex].positionY = j;
+                position[arrayIndex].positionX = i;
+                ++arrayIndex;
+
+            }
+        }
+    }
+
+    return arrayIndex;
+
+}
+
 // Draw all structures
 void DrawBuildings()
 {
