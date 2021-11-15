@@ -218,6 +218,36 @@ int CheckUIClick(float xPos, float yPos)
                 return 2;
                 break;
 
+
+            case DESTROY_TYPE_EVENT:
+
+                switch (selectedEvent->optionTypeA) {
+
+                    case R_BUILDING_HOUSE_INDEX:
+
+                        SubtractHouse();
+
+                        break;
+                    
+                    case R_BUILDING_FARM_INDEX:
+
+                        SubtractFarm();
+
+                        break;
+
+                    case R_BUILDING_MARKET_INDEX:
+
+                        SubtractMarket();
+
+                        break;
+
+                    case R_BUILDING_TAVERN_INDEX:
+
+                        break;
+                }
+
+                break;
+
             case ONGOING_TYPE_EVENT:
 
                 break;

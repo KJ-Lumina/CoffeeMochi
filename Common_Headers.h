@@ -37,7 +37,8 @@
 #define NULL_TYPE_EVENT 0
 #define BUILD_TYPE_EVENT 1
 #define RESOURCE_TYPE_EVENT 2
-#define ONGOING_TYPE_EVENT 3
+#define DESTROY_TYPE_EVENT 3
+#define ONGOING_TYPE_EVENT 4
 
 
 typedef enum {
@@ -168,6 +169,9 @@ void AddNewResourceBuilding(int buildingIndex);
 void AddMarket();
 void AddFarm();
 void AddHouse();
+void SubtractMarket();
+void SubtractFarm();
+void SubtractHouse();
 void GenerateResourcesOnEndTurn();
 int CheckUIClick(float, float);
 CARDEVENT* GetNextEvent();

@@ -226,6 +226,25 @@ void AddHouse()
 {
 	numHouses++;
 }
+
+void SubtractMarket()
+{
+	if (numMarkets > 0) {
+		numMarkets--;
+	}
+}
+void SubtractFarm()
+{
+	if (numFarms > 0) {
+		numFarms--;
+	}
+}
+void SubtractHouse()
+{
+	if (numHouses > 0) {
+		numHouses--;
+	}
+}
 void GenerateResourcesOnEndTurn()
 {
 	Gold_generated_per_turn();
