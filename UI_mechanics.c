@@ -16,9 +16,14 @@ CP_Vector optionAPos;
 CP_Vector optionBPos;
 char textDescBuffer[100];
 
-//SPRITESHEET tileset_testenemy = { setNextSprite,minX,maxX,minY,maxY,maxSprites,spriteSizeX,spritesizeY };
-SPRITESHEET tileset_testenemy = { 0,0,4,0,1,4,64,64 };
+//SPRITESHEET tileset_testenemy = { setNextSprite,minX,maxX,minY,maxY,maxSprites,spriteSizeX,spritesizeY,timeToDeath,posX,PosY,scaleX,scaleY,timeElapse,index,isInfiniteLoop };
+SPRITESHEET tileset_testenemy = { 0,0,4,0,1,4,64,64,10,100,100,200,200,0,1,0 };
 CP_Image testenemy;
+//Button normalinitialize = {width,height,xPos,yPos,isSplashScreenActive,isSettingActive,index}
+BUTTON start_game = { 100,100,200,200,1,0,START_GAME };
+
+//using for testing spawner anims
+float delta = 0;
 
 
 
@@ -430,71 +435,78 @@ void DrawUI()
 }
 
 
-void OpenPopup(int identity);
-
 
 // all structs are temporarily initialized to 3 in array
-Button StartMenu[3];
-Button Main[3] = { { 100,100,200,200,21,"Building" }, { 100,100,900,900,22,"Citizen" }, { 100,100,900,900,23,"Settings" } };
-Button Popup[1] = { { 256,128,500,500,30,"Popup" } };
+BUTTON AllButtons[3];
+//Button Main[3] = { { 100,100,200,200,0,0,"Building" }, { 100,100,900,900,22,"Citizen" }, { 100,100,900,900,23,"Settings" } };
 
-//Main[3] = { { 100,100,900,900,21,"Building" }, { 100,100,100,100,22,"Citizen" }, { 100,100,100,100,23,"Settings" } };
-//Popup[1] = { { 256,128,500,500,30,"Popup" } };
+BUTTON GetButtonIndex(int index)
+{
+    switch (index)
+    {
+    case 0:
+        return start_game;
+    default:
+        return start_game;
+    }
 
+}
 
+void InitButtons(void)
+{
+    int numOfButtons = 1;
+
+    for (int i = 0; i < numOfButtons; ++i)
+    {
+        AllButtons[i].width = GetButtonIndex(i).width;
+        AllButtons[i].height = GetButtonIndex(i).height;
+        AllButtons[i].xPos = GetButtonIndex(i).xPos;
+        AllButtons[i].yPos = GetButtonIndex(i).yPos;
+        AllButtons[i].isSplashScreenActive = GetButtonIndex(i).isSplashScreenActive;
+        AllButtons[i].isSettingsActive = GetButtonIndex(i).isSettingsActive;
+        AllButtons[i].index = GetButtonIndex(i).index;
+
+    }
+
+}
 
 //requires onmouseclick event to call
-int CheckMouseColliding(Button array[])
+int CheckMouseColliding(BUTTON array[], CP_Vector mousePos, int isSplashScreenActive, int isSettingsActive)
 {
-    float mousePosX = CP_Input_GetMouseX();
-    float mousePosY = CP_Input_GetMouseY();
-    int result = 0;
-    int i;
-    //int arraysize = sizeof(array)/sizeof(array[0]);
+    float mousePosX = mousePos.x;
+    float mousePosY = mousePos.y;
+    int arraysize = sizeof(array) / sizeof(int);
+    int mouseClickFailed = 0;
 
 
-    //loop is temp set to 3 due to array temp size
-    for (i = 0; i < 3; i++)
+    for (int i = 0; i < arraysize; i++)
+    {
         if (mousePosX >= array[i].xPos && mousePosX <= array[i].xPos + array[i].width &&
-            mousePosY >= array[i].yPos && mousePosY <= array[i].yPos + array[i].height)
+            mousePosY >= array[i].yPos && mousePosY <= array[i].yPos + array[i].height &&
+            array[i].isSplashScreenActive == isSplashScreenActive &&
+            array[i].isSettingsActive == isSettingsActive)
         {
-            result = array[i].identity;
-            break;
+            if (isSplashScreenActive == 1)
+            {
+                //SplashScreenButtons(array[i].imagename);
+                return array[i].index;
+            }
+            else if (isSettingsActive == 1)
+            {
+                //SettingsButtons(array[i].imagename);
+                return array[i].index;
+            }
+            else if (isSplashScreenActive == 0 && isSettingsActive == 0)
+            {
+                //MainButtons(array[i].imagename);
+                return array[i].index;
+            }
         }
-        else
-            result = 0;
-    
-    return result;
-        //OpenPopup(result);
+    }
 
+    return mouseClickFailed;
 }
 
-void MouseCollidingState(int zgamestate)
-{
-    int result = 0;
-    if (zgamestate == 1)
-        result = CheckMouseColliding(StartMenu);
-    else if (zgamestate == 2)
-        result = CheckMouseColliding(Main);
-    else if (zgamestate == 3)
-        result = CheckMouseColliding(Popup);
-
-    //return result;
-}
-
-void OpenPopup(int identity)
-{
-    int i = 0;
-    if (identity == 21)
-        i = 0;
-    else if (identity == 22)
-        i = 1;
-    else if (identity == 23)
-        i = 2;
-
-    CP_Image_Draw(Popup[i].imagename, 300, 300, Popup[i].width, Popup[i].height, 255);
-
-}
 
 void InitSpritesheets(void)
 {
@@ -503,7 +515,7 @@ void InitSpritesheets(void)
 
     testenemy = CP_Image_Load("./Assets/testenemy.png");
 
-    
+
 
     for (int i = 0; i < numOfSpritesheets; ++i)
     {
@@ -540,7 +552,7 @@ CP_Image GetSpriteSheetByIndex(int index)
     }
 }
 
-// Draws Animation, float x and y for position, float scale pixel size, delay is animation time, index is enum spritesheet
+// Draws Animation without stopping, float x and y for position, float scale pixel size, delay is animation time, index is enum spritesheet
 void DrawAnimation(float x, float y, float scaleX, float scaleY, float delay, int index)
 {
 
@@ -581,6 +593,163 @@ void DrawAnimation(float x, float y, float scaleX, float scaleY, float delay, in
 
 }
 
+SPRITESHEET AllAnims[100] = { 0 };
+
+// Saves an animation into the AllAnims array to be rendered. If infiniteLoop put 1. timeToDeath is how long 1 cycle of animation will take in case of infiniteloop.
+void SpawnAnimation(float x, float y, float scaleX, float scaleY, int index, float timeToDeath, int isInfinteLoop)
+{
+    int i = 0;
+    for (i = 0; i < 99; ++i)
+    {
+        if (AllAnims[i].timeToDeath == 0)
+        {
+            break;
+        }
+    }
+
+    AllAnims[i].timeToDeath = timeToDeath;
+    AllAnims[i].posX = x;
+    AllAnims[i].posY = y;
+    AllAnims[i].scaleX = scaleX;
+    AllAnims[i].scaleY = scaleY;
+    AllAnims[i].setNextSprite = GetSpriteAnimationByIndex(index).setNextSprite;
+    AllAnims[i].minX = GetSpriteAnimationByIndex(index).minX;
+    AllAnims[i].minY = GetSpriteAnimationByIndex(index).minY;
+    AllAnims[i].maxX = GetSpriteAnimationByIndex(index).maxX;
+    AllAnims[i].maxY = GetSpriteAnimationByIndex(index).maxY;
+    AllAnims[i].maxSprites = GetSpriteAnimationByIndex(index).maxSprites;
+    AllAnims[i].spriteSizeX = GetSpriteAnimationByIndex(index).spriteSizeX;
+    AllAnims[i].spriteSizeY = GetSpriteAnimationByIndex(index).spriteSizeY;
+    AllAnims[i].timeElapse = GetSpriteAnimationByIndex(index).timeElapse;
+    AllAnims[i].index = index;
+    AllAnims[i].isInfiniteLoop = 0;
+
+    if (isInfinteLoop)
+    {
+        AllAnims[i].isInfiniteLoop = 1;
+        AllAnims[i].timeElapse = 0;
+    }
+}
+
+float getDelta = 0;
+float delay = 0;
+int animSize = 99;
+int currentSprite = 0;
+
+// Draws out all Anims in the array until the animation's death, where it will be removed
+void DrawAllAnimations(void)
+{
+
+    for (int i = 0; i < animSize; ++i)
+    {
+        if (AllAnims[i].spriteSizeX > 0 && (AllAnims[i].timeElapse >= AllAnims[i].timeToDeath))
+        {
+            AllAnims[i].timeToDeath = 0;
+            AllAnims[i].posX = 0;
+            AllAnims[i].posY = 0;
+            AllAnims[i].scaleX = 0;
+            AllAnims[i].scaleY = 0;
+            AllAnims[i].setNextSprite = 0;
+            AllAnims[i].minX = 0;
+            AllAnims[i].minY = 0;
+            AllAnims[i].maxX = 0;
+            AllAnims[i].maxY = 0;
+            AllAnims[i].maxSprites = 0;
+            AllAnims[i].spriteSizeX = 0;
+            AllAnims[i].spriteSizeY = 0;
+            AllAnims[i].timeElapse = 0;
+            AllAnims[i].index = 0;
+            AllAnims[i].isInfiniteLoop = 0;
+        }
+
+        if (AllAnims[i].isInfiniteLoop == 0)
+        {
+            delay = AllAnims[i].timeToDeath / (AllAnims[i].maxSprites);
+            getDelta = CP_System_GetDt();
+            AllAnims[i].timeElapse += getDelta;
+
+            currentSprite = (int)(AllAnims[i].timeElapse / delay);
+
+            if (currentSprite >= 1)
+            {
+                for (int j = 0; j < currentSprite; j++)
+                {
+                    AllAnims[i].minX = (float)currentSprite;
+                    AllAnims[i].minY = (float)currentSprite;
+
+                    if (AllAnims[i].minX >= AllAnims[i].maxX - 1)
+                    {
+                        AllAnims[i].minX = 0;
+                    }
+
+                    if (AllAnims[i].minY >= AllAnims[i].maxY - 1)
+                    {
+                        AllAnims[i].minY = 0;
+                    }
+
+                }
+            }
+
+            if ((currentSprite + 1) <= AllAnims[i].maxSprites)
+            {
+                //CP_Image_DrawSubImage(GetBuildingSpriteByIndex(7), WORLDGRIDX, WORLDGRIDY, TILEWIDTH, TILEHEIGHT, 0, 512, 128, 672, 255);
+                CP_Image_DrawSubImage(GetSpriteSheetByIndex(AllAnims[i].index), AllAnims[i].posX, AllAnims[i].posY, AllAnims[i].scaleX, AllAnims[i].scaleY, AllAnims[i].spriteSizeX * AllAnims[i].minX, AllAnims[i].spriteSizeY * AllAnims[i].minY, AllAnims[i].spriteSizeX * (AllAnims[i].minX + 1), AllAnims[i].spriteSizeY * (AllAnims[i].minY + 1), 255);
+            }
+        }
+
+        else if (AllAnims[i].isInfiniteLoop == 1)
+        {
+            AllAnims[i].timeElapse += getDelta;
+            delay = AllAnims[i].timeToDeath / (AllAnims[i].maxSprites);
+
+            if (AllAnims[i].timeElapse >= delay)
+            {
+                AllAnims[i].timeElapse -= delay;
+                AllAnims[i].setNextSprite = 1;
+            }
+
+            if (AllAnims[i].setNextSprite == 1)
+            {
+                if (AllAnims[i].minX == AllAnims[i].maxX - 1)
+                {
+                    AllAnims[i].minX = 0;
+                }
+                else
+                {
+                    AllAnims[i].minX++;
+                }
+
+                if (AllAnims[i].minY == AllAnims[i].maxY - 1)
+                {
+                    AllAnims[i].minY = 0;
+                }
+                else
+                {
+                    AllAnims[i].minY++;
+                }
+
+                AllAnims[i].setNextSprite = 0;
+            }
+
+            CP_Image_DrawSubImage(GetSpriteSheetByIndex(AllAnims[i].index), AllAnims[i].posX, AllAnims[i].posY, AllAnims[i].scaleX, AllAnims[i].scaleY, AllAnims[i].spriteSizeX * AllAnims[i].minX, AllAnims[i].spriteSizeY * AllAnims[i].minY, AllAnims[i].spriteSizeX * (AllAnims[i].minX + 1), AllAnims[i].spriteSizeY * (AllAnims[i].minY + 1), 255);
+
+        }
+
+    }
+}
+
+//testing animation fucntion
+void ConstantAnimSpawner(float time)
+{
+    delta += CP_System_GetDt();
+    if (delta >= time)
+    {
+        delta -= time;
+        SpawnAnimation(100, 100, 200, 200, 1, 4, 0);
+    }
+}
+
+
 void DrawTempTextResources()
 {
     CP_Settings_TextSize(20);
@@ -589,7 +758,4 @@ void DrawTempTextResources()
     sprintf_s(buffer, 100, "Gold: %d\t\tFood: %d\t\tPopulation: %d\t\tMorale: %d", Get_current_gold(), Get_current_food(), Get_current_population(), (Get_current_morale() + Get_additional_morale()));
     CP_Font_DrawText(buffer, 20, 20);
 }
-
-
-
 

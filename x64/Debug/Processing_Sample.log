@@ -1,6 +1,14 @@
-﻿  UI_mechanics.c
-  LINK : C:\Users\Seow Kai Jun\Documents\GitHub\CoffeeMochi\x64\Debug\Processing_Sample.exe not found or not built by the last incremental link; performing full link
-  Processing_Sample.vcxproj -> C:\Users\Seow Kai Jun\Documents\GitHub\CoffeeMochi\x64\Debug\Processing_Sample.exe
-  1 File(s) copied
-  1 File(s) copied
+﻿  Buildings.c
+  GameEvents.c
+  Npc.c
+  Resource_Stats.c
+  UI_mechanics.c
+  WorldSpaceGrid.c
+  game.c
+  LINK : C:\Users\windy\Documents\GitHub\CoffeeMochi\x64\Debug\Processing_Sample.exe not found or not built by the last incremental link; performing full link
+  Processing_Sample.vcxproj -> C:\Users\windy\Documents\GitHub\CoffeeMochi\x64\Debug\Processing_Sample.exe
+  File not found - CProcessingd.dll
+  0 File(s) copied
+  File not found - fmodL.dll
+  0 File(s) copied
   24 File(s) copied

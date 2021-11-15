@@ -85,6 +85,11 @@ void AdminControlInput()
         ScreenToWorldPosition(&spawnPoint);
         SpawnNpc(spawnPoint, 1);
     }
+    //testing animations
+    if (CP_Input_KeyTriggered(KEY_W))
+    {
+        SpawnAnimation(currentMousePos.x, currentMousePos.y, 200, 200, 1, 0.5f, 1);
+    }
     /*
     if (CP_Input_KeyDown(KEY_1))
     {
@@ -244,6 +249,9 @@ void game_update(void)
     GameStateControl();
     DrawUI();
     DrawTempTextResources();
+
+    DrawAllAnimations();
+
 }
 
 void game_exit(void)
