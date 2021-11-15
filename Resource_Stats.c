@@ -34,6 +34,7 @@ Buff/Debuff effects will be seperated to a different header file
 #define MARKET_BUILD_COST 20
 #define FARM_BUILD_COST 20
 #define HOUSING_BUILD_COST 20
+#define TAVERN_BUILD_COST 20
 
 #define HIGH_MORALE 0
 #define MEDIUM_MORALE 1
@@ -57,6 +58,10 @@ int isStarved = 0;
 
 //Population Related Variables
 int numHouses = 0;
+
+//Morale Related Variables
+int numTaverns = 0;
+int tavernModifier = 4;
 
 /*--------------------
 SET RESOURCE FUNCTIONS
@@ -189,23 +194,29 @@ void Food_check()
 		isStarved = FALSE;
 }
 
+
 void Morale_per_turn()
 {
 	//for now morale calculation is simply based on whether 2 conditions are true, if we want to add
 	//event effects then we will just have to add a seperate counter for it
+	//Tavern morale modifier affected by Morale debuff i.e. More debuff, lower Morale increase
+
 	switch (isPoor + isStarved)
 	{
 		case HIGH_MORALE:
-			curMorale = 100;
+			curMorale = 80 + (numTaverns * tavernModifier);
 			break;
 		case MEDIUM_MORALE:
-			curMorale = 50;
+			curMorale = 50 + (numTaverns * (tavernModifier - MEDIUM_MORALE));
 			break;
 		case LOW_MORALE:
-			curMorale = 10;
+			curMorale = 10 + (numTaverns * (tavernModifier - LOW_MORALE));
 			break;
 	}
-	
+	if (curMorale > 100)
+	{
+		curMorale = 100;
+	}
 }
 
 //TEMPORARY FOR PROTOTYPE ONLYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
@@ -226,6 +237,10 @@ void AddHouse()
 {
 	numHouses++;
 }
+void AddTavern()
+{
+	numTaverns++;
+}
 
 void SubtractMarket()
 {
@@ -245,6 +260,13 @@ void SubtractHouse()
 		numHouses--;
 	}
 }
+void SubtractTavern()
+{
+	if (numTaverns > 0) {
+		numTaverns--;
+	}
+}
+
 void GenerateResourcesOnEndTurn()
 {
 	Gold_generated_per_turn();
@@ -265,6 +287,9 @@ void AddNewResourceBuilding(int buildingIndex)
 		break;
 	case 4:
 		AddMarket();
+		break;
+	case 5:
+		AddTavern();
 		break;
 	}
 }
