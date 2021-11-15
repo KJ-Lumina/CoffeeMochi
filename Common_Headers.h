@@ -7,6 +7,8 @@
 #define TILEWIDTH 128.0f
 #define TILEHEIGHT 128.0f
 
+#define MAXTILECOUNT (WORLDGRIDX * WORLDGRIDY)
+
 
 #define R_NULL_INDEX 0
 #define R_GOLD_INDEX 1
@@ -28,6 +30,7 @@
 
 #define E_INCREASE_RESOURCE 1
 #define E_DECREASE_RESOURCE 2
+#define E_DESTROY_BUILDING 3
 
 #define NULL_EVENT 0
 #define BASIC_EVENT 1
@@ -36,7 +39,8 @@
 #define NULL_TYPE_EVENT 0
 #define BUILD_TYPE_EVENT 1
 #define RESOURCE_TYPE_EVENT 2
-#define ONGOING_TYPE_EVENT 3
+#define DESTROY_TYPE_EVENT 3
+#define ONGOING_TYPE_EVENT 4
 
 
 typedef enum {
@@ -127,6 +131,13 @@ typedef struct
 
 }TILEMAP;
 
+typedef struct
+{
+	int positionX;
+	int positionY;
+
+}TILEPOSITION;
+
 float Math_Abs(float x);
 int Math_Abs_Int(int x);
 
@@ -151,6 +162,7 @@ void SetCurrentAmountToBuild(int buildAmount);
 bool AttemptPlaceBuilding(CP_Vector cursorPos);
 bool IsTileOccupied(CP_Vector);
 void DrawUI();
+int GetAllBuildingsPositionByIndex(int index, TILEPOSITION position[]);
 
 void DrawTempTextResources();
 void UI_SetEvent(CARDEVENT*);
@@ -167,6 +179,9 @@ void AddNewResourceBuilding(int buildingIndex);
 void AddMarket();
 void AddFarm();
 void AddHouse();
+void SubtractMarket();
+void SubtractFarm();
+void SubtractHouse();
 void GenerateResourcesOnEndTurn();
 int CheckUIClick(float, float);
 CARDEVENT* GetNextEvent();
