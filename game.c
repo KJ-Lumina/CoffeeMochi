@@ -10,7 +10,7 @@
 
 
 GAMESTATE gameState = State_Idle;
-GAMEPHASE gamePhase = PHASE_EVENTLOOP; //Suppose to start with Build
+GAMEPHASE gamePhase = PHASE_GAMEPHASE; //Suppose to start with Build
 #pragma region Game Options Control
 bool AllowMouseDrag = true;
 #pragma endregion
@@ -118,7 +118,7 @@ void MouseClick()
 
 
 
-    }else if (gamePhase == PHASE_EVENTLOOP) {
+    }else if (gamePhase == PHASE_GAMEPHASE) {
         switch (gameState)
         {
         case State_StartOfTurn:

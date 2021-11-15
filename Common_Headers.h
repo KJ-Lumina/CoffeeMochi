@@ -45,7 +45,7 @@
 
 typedef enum {
 	PHASE_BUILDPHASE,
-	PHASE_EVENTLOOP
+	PHASE_GAMEPHASE
 }GAMEPHASE;
 
 typedef enum
