@@ -42,6 +42,9 @@
 #define DESTROY_TYPE_EVENT 3
 #define ONGOING_TYPE_EVENT 4
 
+//buttons names in-progress
+#define START_GAME 0
+
 
 typedef enum {
 	PHASE_BUILDPHASE,
@@ -101,15 +104,16 @@ typedef struct
 	int moraleGen;
 }BUILDING;
 
-typedef struct 
+typedef struct
 {
 	float width;
 	float height;
 	float xPos;
 	float yPos;
-	int identity;
-	const char* imagename;
-}Button;
+	int isSplashScreenActive;
+	int isSettingsActive;
+	int index;
+}BUTTON;
 
 typedef struct
 {
@@ -121,6 +125,14 @@ typedef struct
 	int maxSprites; //number of sprites in a spritesheet
 	float spriteSizeX; //pixels on a sprite grid x-axis
 	float spriteSizeY; //pixels on a sprite grid y-axis
+	float timeToDeath; //time drawn on screen before it disappears
+	float posX;
+	float posY;
+	float scaleX;
+	float scaleY;
+	float timeElapse;
+	int index;
+	int isInfiniteLoop;
 }SPRITESHEET;
 
 typedef struct
