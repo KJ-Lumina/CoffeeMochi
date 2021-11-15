@@ -10,7 +10,7 @@
 
 
 GAMESTATE gameState = State_Idle;
-GAMEPHASE gamePhase = PHASE_GAMEPHASE; //Suppose to start with Build
+GAMEPHASE gamePhase = PHASE_BUILDPHASE; //Suppose to start with Build
 #pragma region Game Options Control
 bool AllowMouseDrag = true;
 #pragma endregion
@@ -46,12 +46,17 @@ void GameOver(void)
 {
     //Lose UI Pop Up
     printf("The game has ended!");
-    gameState = State_GameOver;
 }
 
 void EndTurn(void) 
 {
-    GenerateResourcesOnEndTurn();
+    if (gamePhase == PHASE_GAMEPHASE) {
+        GenerateResourcesOnEndTurn();
+    }
+
+    if (gamePhase == PHASE_ENDPHASE) {
+        GameOver();
+    }
     /*if (LoseCondition_Resources())
         GameOver();*/
 }
@@ -119,11 +124,6 @@ void CheckKeyInput(void)
 
 void MouseClick()
 {
-    if (gamePhase == PHASE_BUILDPHASE) { //For Starting Build Phase (2 Farms, 2 House, 2 Market)
-
-
-
-    }else if (gamePhase == PHASE_GAMEPHASE) {
         switch (gameState)
         {
         case State_StartOfTurn:
@@ -133,9 +133,22 @@ void MouseClick()
 
         case State_Idle:
             if (CheckUIClick(currentMousePos.x, currentMousePos.y) == 1)
-            {
-                gameState = State_MakeAChoice;
-                UI_SetEvent(GetNextEvent());
+            {              
+                CARDEVENT* nextEvent = GetNextEvent(gamePhase);
+                if (nextEvent->eventIndex != 0) {
+                    gameState = State_MakeAChoice;
+                    UI_SetEvent(nextEvent);
+                }
+                else {
+                    ++gamePhase;
+                    if (gamePhase == PHASE_ENDPHASE) {
+                        gameState = State_EndOfTurn;
+                    }
+                    else {
+                        gameState = State_MakeAChoice;
+                        UI_SetEvent(GetNextEvent(gamePhase));
+                    }
+                }
             }
             break;
         case State_MakeAChoice:
@@ -160,10 +173,7 @@ void MouseClick()
         case State_EndOfTurn:
 
             break;
-        }
-
-       
-    }
+        }      
 }
 
 void GameStateControl() 

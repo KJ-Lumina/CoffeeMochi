@@ -471,35 +471,35 @@ void InitButtons(void)
 }
 
 //requires onmouseclick event to call
-int CheckMouseColliding(BUTTON array[], CP_Vector mousePos, int isSplashScreenActive, int isSettingsActive)
+int CheckMouseColliding(BUTTON buttonArray[], CP_Vector mousePos, int isSplashScreenActive, int isSettingsActive)
 {
     float mousePosX = mousePos.x;
     float mousePosY = mousePos.y;
-    int arraysize = sizeof(array) / sizeof(int);
+    int arraysize = sizeof(buttonArray)/ sizeof(buttonArray[0]); //Length of the arraySize should already be defined somewhere, So can just get that intead of doing this and popping a error.
     int mouseClickFailed = 0;
 
 
     for (int i = 0; i < arraysize; i++)
     {
-        if (mousePosX >= array[i].xPos && mousePosX <= array[i].xPos + array[i].width &&
-            mousePosY >= array[i].yPos && mousePosY <= array[i].yPos + array[i].height &&
-            array[i].isSplashScreenActive == isSplashScreenActive &&
-            array[i].isSettingsActive == isSettingsActive)
+        if (mousePosX >= buttonArray[i].xPos && mousePosX <= buttonArray[i].xPos + buttonArray[i].width &&
+            mousePosY >= buttonArray[i].yPos && mousePosY <= buttonArray[i].yPos + buttonArray[i].height &&
+            buttonArray[i].isSplashScreenActive == isSplashScreenActive &&
+            buttonArray[i].isSettingsActive == isSettingsActive)
         {
             if (isSplashScreenActive == 1)
             {
                 //SplashScreenButtons(array[i].imagename);
-                return array[i].index;
+                return buttonArray[i].index;
             }
             else if (isSettingsActive == 1)
             {
                 //SettingsButtons(array[i].imagename);
-                return array[i].index;
+                return buttonArray[i].index;
             }
             else if (isSplashScreenActive == 0 && isSettingsActive == 0)
             {
                 //MainButtons(array[i].imagename);
-                return array[i].index;
+                return buttonArray[i].index;
             }
         }
     }

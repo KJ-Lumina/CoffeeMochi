@@ -48,7 +48,8 @@
 
 typedef enum {
 	PHASE_BUILDPHASE,
-	PHASE_GAMEPHASE
+	PHASE_GAMEPHASE,
+	PHASE_ENDPHASE
 }GAMEPHASE;
 
 typedef enum
@@ -59,7 +60,6 @@ typedef enum
 	State_MakeAChoice,
 	State_PlaceYourBuilding,
 	State_EndOfTurn,
-	State_GameOver
 }GAMESTATE;
 
 
@@ -113,6 +113,7 @@ typedef struct
 	int isSplashScreenActive;
 	int isSettingsActive;
 	int index;
+
 }BUTTON;
 
 typedef struct
@@ -196,7 +197,7 @@ void SubtractFarm();
 void SubtractHouse();
 void GenerateResourcesOnEndTurn();
 int CheckUIClick(float, float);
-CARDEVENT* GetNextEvent();
+CARDEVENT* GetNextEvent(GAMEPHASE gamePhase);
 CARDEVENT* GetCurrentEvent();
 BUILDING* GetBuildingByIndex(int);
 CP_Image* GetBuildingSpriteByIndex(int);

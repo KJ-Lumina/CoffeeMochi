@@ -15,12 +15,13 @@ typedef struct
 }CARDDECK;
 
 
-#define TOTALCARDCOUNT 11
+#define TOTALCARDCOUNT 10
 #define TOTALTUTORIALCARDSCOUNT 3
 CARDEVENT* cardList[TOTALCARDCOUNT];
 CARDEVENT* tutCardList[TOTALTUTORIALCARDSCOUNT];
 
 CARDDECK tutorialDeck;
+CARDDECK cardDeck;
 
 
 CARDDECK* currentDeck;
@@ -33,9 +34,9 @@ CARDEVENT emptyCard = { 0, NULL_EVENT, NULL_TYPE_EVENT, "This is a null event, f
 
 
 //TUTORIALS EVENTS [CARD INDEX STARTS WITH 0X]
-CARDEVENT E_TutBuildAHouse = { 01, BASIC_EVENT, BUILD_TYPE_EVENT, "Our citizens needs a place to sleep. Click on the house below and build it on the grid.", B_HOUSE_INDEX, 2 , R_POPULATION_INDEX, R_GOLD_INDEX, 0, "House", NULL_CHOICE, 0 ,R_NULL_INDEX, R_NULL_INDEX, 0 ,"Ignore" };
-CARDEVENT E_TutBuildAFarm = { 02, BASIC_EVENT, BUILD_TYPE_EVENT, "Our kingdom needs to food to survive. Click on the farm below and build it on the grid.", B_FARM_INDEX, 2 , R_FOOD_INDEX ,R_GOLD_INDEX,  0, "Farm", NULL_CHOICE, 0, R_NULL_INDEX, R_NULL_INDEX, 0, "Ignore" };
-CARDEVENT E_TutBuildAMarket = { 03 , BASIC_EVENT, BUILD_TYPE_EVENT, "Our kingdom's economy is unstable. Click on the market below and build it on the grid.", B_MARKET_INDEX, 2 , R_GOLD_INDEX , R_GOLD_INDEX, 0, "Market", NULL_CHOICE, 0 , R_NULL_INDEX, R_NULL_INDEX, 0 , "Ignore" };
+CARDEVENT E_TutBuildAHouse = { 1, BASIC_EVENT, BUILD_TYPE_EVENT, "Our citizens needs a place to sleep. Click on the grid and build 2 houses.", B_HOUSE_INDEX, 2 , R_POPULATION_INDEX, R_GOLD_INDEX, 0, "House", NULL_CHOICE, 0 ,R_NULL_INDEX, R_NULL_INDEX, 0 ,"Ignore" };
+CARDEVENT E_TutBuildAFarm = { 2, BASIC_EVENT, BUILD_TYPE_EVENT, "Our kingdom needs to food to survive. Click on the grid and build 2 farms.", B_FARM_INDEX, 2 , R_FOOD_INDEX ,R_GOLD_INDEX,  0, "Farm", NULL_CHOICE, 0, R_NULL_INDEX, R_NULL_INDEX, 0, "Ignore" };
+CARDEVENT E_TutBuildAMarket = { 3 , BASIC_EVENT, BUILD_TYPE_EVENT, "Our kingdom's economy is unstable. Click on the grid and build 2 market.", B_MARKET_INDEX, 2 , R_GOLD_INDEX , R_GOLD_INDEX, 0, "Market", NULL_CHOICE, 0 , R_NULL_INDEX, R_NULL_INDEX, 0 , "Ignore" };
 
 /*----------------------------------------------------------*/
 
@@ -75,37 +76,38 @@ CARDEVENT E_ArsonistAttack = { 11, ADVANCED_EVENT, RESOURCE_TYPE_EVENT, "An arso
 void InitCardList()
 {
 	//Init Tutorial Card List
-	tutCardList[0] = &emptyCard;
-	tutCardList[1] = &E_TutBuildAHouse;
-	tutCardList[2] = &E_TutBuildAFarm;
-	tutCardList[3] = &E_TutBuildAMarket;
+	tutCardList[0] = &E_TutBuildAHouse;
+	tutCardList[1] = &E_TutBuildAFarm;
+	tutCardList[2] = &E_TutBuildAMarket;
 
 	//Init Card List
-	cardList[0] = &emptyCard;
-	cardList[1] = &E_BuildAHouse;
-	cardList[2] = &E_BuildAFarm;
-	cardList[3] = &E_BuildAMarket;
-	cardList[4] = &E_RefugeesHouses;
-	cardList[5] = &E_FamineStrikes;
-	cardList[6] = &E_FoodMerchantArrival;
-	cardList[7] = &E_StolenFood;
-	cardList[8] = &E_CircusTroupeVisit;
-	cardList[9] = &E_HeavyStorm;
-	cardList[10] = &E_GoldMineDiscovered;
+	cardList[0] = &E_BuildAHouse;
+	cardList[1] = &E_BuildAFarm;
+	cardList[2] = &E_BuildAMarket;
+	cardList[3] = &E_RefugeesHouses;
+	cardList[4] = &E_FamineStrikes;
+	cardList[5] = &E_FoodMerchantArrival;
+	cardList[6] = &E_StolenFood;
+	cardList[7] = &E_CircusTroupeVisit;
+	cardList[8] = &E_HeavyStorm;
+	cardList[9] = &E_GoldMineDiscovered;
 }
 
 void InitDecks()
 {
 
+	
+	InitCardList();
+
 	for (int index = 0; index < TOTALTUTORIALCARDSCOUNT; index++) {
-		tutorialDeck.cardIndexes[index] = index+1;
+		tutorialDeck.cardIndexes[index] = index;
+		tutorialDeck.cardsInDeck++;
 	}
 
-	InitCardList();
 	for (int index = 0; index < TOTALCARDCOUNT; index++) 
 	{
-		tutorialDeck.cardIndexes[index] = CP_Random_RangeInt(1, TOTALCARDCOUNT - 1); //Setting the index of card in each deck to reference in cardlist.
-		tutorialDeck.cardsInDeck++;
+		cardDeck.cardIndexes[index] = CP_Random_RangeInt(0, TOTALCARDCOUNT - 1); //Setting the index of card in each deck to reference in cardlist.
+		cardDeck.cardsInDeck++;
 	}
 
 	currentCardIndex = 0;
@@ -125,7 +127,16 @@ CARDEVENT* GetNextEvent(GAMEPHASE gamePhase)
 
 	case PHASE_BUILDPHASE:
 
-
+		if (currentCardIndex == currentDeck->cardsInDeck)
+		{
+			printf("Reset");
+			*currentEvent = emptyCard;
+			currentDeck = &cardDeck;
+			currentCardIndex = 0;
+			return currentEvent;
+		}
+		currentEvent = tutCardList[currentDeck->cardIndexes[currentCardIndex]];
+		++currentCardIndex; //Adding one counter to the Card Index after Drawing it
 
 		break;
 
@@ -133,15 +144,17 @@ CARDEVENT* GetNextEvent(GAMEPHASE gamePhase)
 
 		if (currentCardIndex == currentDeck->cardsInDeck)
 		{
+			printf("exit");
 			*currentEvent = emptyCard;
 			return currentEvent;
 		}
 		currentEvent = cardList[currentDeck->cardIndexes[currentCardIndex]];
 		++currentCardIndex; //Adding one counter to the Card Index after Drawing it
-		return currentEvent;
 
 		break;
 	}
+
+	return currentEvent;
 
 }
 
