@@ -213,6 +213,7 @@ CARDEVENT* GetCurrentEvent();
 BUILDING* GetBuildingByIndex(int);
 CP_Image* GetBuildingSpriteByIndex(int);
 CP_Image* GetBuildingSpriteButtonByIndex(int);
+void ChangeDeckByPhase(GAMEPHASE currentGamePhase);
 
 
 

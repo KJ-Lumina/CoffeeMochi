@@ -134,7 +134,7 @@ void MouseClick()
     case State_Idle:
         if (CheckUIClick(currentMousePos.x, currentMousePos.y) == 1)
         {
-            if (GetCardsLeft == 0) 
+            if (GetCardsLeft() != 0) 
             {
                 gameState = State_MakeAChoice;
                 UI_SetEvent(GetNextEvent(gamePhase));
@@ -142,6 +142,7 @@ void MouseClick()
             else 
             {
                 ++gamePhase;
+                ChangeDeckByPhase(gamePhase);
                 if (gamePhase == PHASE_ENDPHASE) 
                 {
                     gameState = State_EndOfTurn;

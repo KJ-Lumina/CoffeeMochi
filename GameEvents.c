@@ -146,7 +146,7 @@ CARDEVENT* GetCurrentEvent()
 
 int GetCardsLeft()
 {
-	return currentDeck->cardsInDeck - currentCardIndex - 1;
+	return currentDeck->cardsInDeck - currentCardIndex;
 }
 
 CARDEVENT* GetNextEvent(GAMEPHASE gamePhase)
@@ -156,14 +156,17 @@ CARDEVENT* GetNextEvent(GAMEPHASE gamePhase)
 
 	case PHASE_BUILDPHASE:
 
-		if (currentCardIndex == currentDeck->cardsInDeck)
+		/*if (currentCardIndex == currentDeck->cardsInDeck)
 		{
 			printf("Reset");
 			*currentEvent = emptyCard;
 			currentDeck = &cardDeck;
 			currentCardIndex = 0;
 			return currentEvent;
-		}
+		}*/
+
+		printf("Card Left:%d",GetCardsLeft());
+		printf("Card Index:%d", currentCardIndex);
 		currentEvent = tutCardList[currentDeck->cardIndexes[currentCardIndex]];
 		++currentCardIndex; //Adding one counter to the Card Index after Drawing it
 
@@ -171,12 +174,14 @@ CARDEVENT* GetNextEvent(GAMEPHASE gamePhase)
 
 	case PHASE_GAMEPHASE:
 
-		if (currentCardIndex == currentDeck->cardsInDeck)
-		{
-			printf("exit");
-			*currentEvent = emptyCard;
-			return currentEvent;
-		}
+		//if (currentCardIndex == currentDeck->cardsInDeck)
+		//{
+		//	printf("exit");
+		//	*currentEvent = emptyCard;
+		//	return currentEvent;
+		//}
+
+		printf("Get Game Phase Event");
 		currentEvent = cardList[currentDeck->cardIndexes[currentCardIndex]];
 		++currentCardIndex; //Adding one counter to the Card Index after Drawing it
 
@@ -184,6 +189,28 @@ CARDEVENT* GetNextEvent(GAMEPHASE gamePhase)
 	}
 
 	return currentEvent;
+
+}
+
+void ChangeDeckByPhase(GAMEPHASE currentGamePhase) {
+
+	currentCardIndex = 0;
+
+	switch (currentGamePhase) {
+
+	case PHASE_BUILDPHASE:
+		currentDeck = &tutorialDeck;
+		break;
+
+	case PHASE_GAMEPHASE:
+		printf("Changed Phase");
+		currentDeck = &cardDeck;
+		break;
+
+	case PHASE_ENDPHASE:
+		break;
+
+	}
 
 }
 
