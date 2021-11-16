@@ -9,6 +9,10 @@
 
 #define MAXTILECOUNT (WORLDGRIDX * WORLDGRIDY)
 
+//Menu & Music
+#define BGM CP_SOUND_GROUP_0
+#define SFX CP_SOUND_GROUP_1
+
 //Building Related Definitions
 #define NULL_CHOICE -1
 #define B_EMPTY_INDEX 0
