@@ -9,7 +9,6 @@
 float windowsWidth;
 float windowsHeight;
 
-//int landGrid[WORLDGRIDX][WORLDGRIDY] = { 0 };
 int buildingGrid[WORLDGRIDX][WORLDGRIDY] = { 0 };
 CP_Vector worldSpaceOrigin;
 CP_Vector tempTile;

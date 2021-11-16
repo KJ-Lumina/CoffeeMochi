@@ -2,8 +2,6 @@
 #include "cprocessing.h"
 
 
-
-
 typedef struct {
 	int spriteIndex;
 	CP_Vector worldPosition;
@@ -14,6 +12,7 @@ typedef struct {
 	float baseSpeed;
 	CP_Vector checkPoints[6];
 }NPC;
+
 
 void InitNpc();
 void SpawnNpc(CP_Vector position, int amtToSpawn);
