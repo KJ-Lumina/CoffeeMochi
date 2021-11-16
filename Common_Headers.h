@@ -106,6 +106,7 @@ typedef struct
 
 typedef struct
 {
+	bool isUsed;
 	float width;
 	float height;
 	float xPos;
@@ -174,11 +175,17 @@ void SetCurrentBuilding(BUILDING* newBuilding);
 void SetCurrentAmountToBuild(int buildAmount);
 bool AttemptPlaceBuilding(CP_Vector cursorPos);
 bool IsTileOccupied(CP_Vector);
-void DrawUI();
 int GetAllBuildingsPositionByIndex(int index, TILEPOSITION position[]);
 
+// UI_Mechanics
+void DrawUI_Deck();
+void DrawUI_CardDrawn();
+void DrawUI_Constructing();
 void DrawTempTextResources();
 void UI_SetEvent(CARDEVENT*);
+int CheckUIClick(float, float);
+
+// Resources
 void Set_current_gold(int gold);
 void Set_current_food(int food);
 void Set_current_population(int population);
@@ -196,7 +203,9 @@ void SubtractMarket();
 void SubtractFarm();
 void SubtractHouse();
 void GenerateResourcesOnEndTurn();
-int CheckUIClick(float, float);
+
+// Card Events
+int GetCardsLeft();
 CARDEVENT* GetNextEvent(GAMEPHASE gamePhase);
 CARDEVENT* GetCurrentEvent();
 BUILDING* GetBuildingByIndex(int);

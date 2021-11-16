@@ -1,14 +1,16 @@
 #include <stdio.h>
+#include <stdbool.h>
 #include "cprocessing.h"
 #include "Common_Headers.h"
 #include "UI_mechanics.h"
 #include "Buildings.h"
 #include "UI_Text.h"
 
-//TEMPPPPPPPPPPPPP FOR PROTOTYPE ONLY
+#define BUTTONARRAYSIZE 3
 
-CP_Image basicEvent;
-CP_Image advancedEvent;
+CP_Image EventCardButton;
+CP_Image EventCardA;
+CP_Image EventCardB;
 CARDEVENT* selectedEvent;
 float windowWidth;
 float windowHeight;
@@ -20,7 +22,7 @@ char textDescBuffer[100];
 SPRITESHEET tileset_testenemy = { 0,0,4,0,1,4,64,64,10,100,100,200,200,0,1,0 };
 CP_Image testenemy;
 //Button normalinitialize = {width,height,xPos,yPos,isSplashScreenActive,isSettingActive,index}
-BUTTON start_game = { 100,100,200,200,1,0,START_GAME };
+BUTTON start_game = { true,100,100,200,200,1,0,START_GAME };
 
 //using for testing spawner anims
 float delta = 0;
@@ -35,14 +37,14 @@ int CheckUIClick(float xPos, float yPos)
         break;
     case State_Idle:
         // click on card
-        if (xPos >= windowWidth - 238 && xPos <= windowWidth - 142 && yPos >= windowHeight - 180 && yPos <= windowHeight - 20)
+        if (xPos >= windowWidth - 250 && xPos <= windowWidth - 10 && yPos >= windowHeight / 2 - 160 && yPos <= windowHeight / 2 + 160)
         {
             return 1;
         }
         break;
     case State_MakeAChoice:
         // click on option A
-        if (xPos >= optionAPos.x - TILEWIDTH / 2 && xPos <= optionAPos.x + TILEWIDTH / 2 && yPos >= optionBPos.y - TILEHEIGHT / 2 && yPos <= optionBPos.y + TILEHEIGHT / 2)
+        if (xPos >= optionAPos.x - 60 && xPos <= optionAPos.x + 60 && yPos >= optionBPos.y - 160 && yPos <= optionBPos.y + 160)
         {
             TILEPOSITION tile_positions[MAXTILECOUNT];
             int randIndex = 0;
@@ -192,7 +194,7 @@ int CheckUIClick(float xPos, float yPos)
         }
         
         // click on option B?
-        else if (xPos >= optionBPos.x - TILEWIDTH/2  && xPos <= optionBPos.x+TILEWIDTH/2 && yPos >= optionBPos.y -TILEHEIGHT/2 && yPos <= optionBPos.y+TILEHEIGHT / 2)
+        else if (xPos >= optionBPos.x - 60  && xPos <= optionBPos.x + 60 && yPos >= optionBPos.y - 160 && yPos <= optionBPos.y + 160)
         {
             TILEPOSITION tile_positions[MAXTILECOUNT];
             int randIndex = 0;
@@ -386,28 +388,15 @@ int CheckUIClick(float xPos, float yPos)
     return 0;
 }
 
-void DrawEventUI()
-{
-    CP_Settings_TextSize(20);
-    CP_Settings_Fill(CP_Color_Create(255, 255, 255, 255));
-    //printf("test4");
-    //printf("%d", selectedEvent->eventIndex);
-    //sprintf_s(textDescBuffer, 100, "%s", currentEvent->description);
-    CP_Font_DrawTextBox(selectedEvent->description, windowWidth - 250, 300, 250);
-    //printf("test5");
-    CP_Image_Draw(*GetBuildingSpriteButtonByIndex(selectedEvent->indexOptionA), optionAPos.x - 5, optionAPos.y, TILEWIDTH, TILEHEIGHT / 2, 255);
-    //printf("test6");
-    CP_Image_Draw(*GetBuildingSpriteButtonByIndex(selectedEvent->indexOptionB), optionBPos.x + 5, optionBPos.y, TILEWIDTH, TILEHEIGHT / 2, 255);
-}
-
 void InitUI()
 {
-    basicEvent = CP_Image_Load("./Assets/basiceventcard.png");
-    advancedEvent = CP_Image_Load("./Assets/advancedeventcard.png");
+    EventCardButton = CP_Image_Load("./Assets/best_darkencard.png");
+    EventCardA = CP_Image_Load("./Assets/best_cardblue.png");
+    EventCardB = CP_Image_Load("./Assets/best_cardred.png");
     windowWidth = (float)CP_System_GetWindowWidth();
     windowHeight = (float)CP_System_GetWindowHeight();
-    optionAPos = CP_Vector_Set(windowWidth - 190, windowHeight - 300);
-    optionBPos = CP_Vector_Set(windowWidth - 70, windowHeight - 300);
+    optionAPos = CP_Vector_Set(windowWidth - 190, windowHeight / 2);
+    optionBPos = CP_Vector_Set(windowWidth - 70, windowHeight / 2);
 }
 
 void UI_SetEvent(CARDEVENT* newEvent)
@@ -415,29 +404,61 @@ void UI_SetEvent(CARDEVENT* newEvent)
     selectedEvent = newEvent;
 }
 
-void DrawUI()
+void DrawUI_Deck()
 {
+    // Create black background
     CP_Settings_Fill(CP_Color_Create(0, 0, 0, 255));
     CP_Graphics_DrawRect(windowWidth - 260, 0, windowWidth, windowHeight);
-    if (GetGameState() == State_Idle)
+    // Draw back of card
+    CP_Image_Draw(EventCardButton, windowWidth - 130, windowHeight / 2, 320, 320, 255);
+}
+
+void DrawUI_CardDrawn()
+{
+    // Create black background
+    CP_Settings_Fill(CP_Color_Create(0, 0, 0, 255));
+    CP_Graphics_DrawRect(windowWidth - 260, 0, windowWidth, windowHeight);
+    // dual card colours
+    float mouseX = CP_Input_GetMouseX();
+    float mouseY = CP_Input_GetMouseY();
+
+    // Hovering A
+    if (mouseX >= optionAPos.x - 60 && mouseX <= optionAPos.x + 60 && mouseY >= optionBPos.y - 160 && mouseY <= optionBPos.y + 160)
     {
-        CP_Image_Draw(basicEvent, windowWidth - 190, windowHeight - 100, 160, 160, 255);
-        CP_Image_Draw(advancedEvent, windowWidth - 70, windowHeight - 100, 160, 160, 255);
+        CP_Image_Draw(EventCardA, windowWidth - 130, windowHeight / 2, 320, 320, 255);
+        CP_Settings_TextSize(20);
+        CP_Settings_Fill(CP_Color_Create(255, 255, 255, 255));
+        CP_Font_DrawTextBox(selectedEvent->descriptionA, windowWidth - 250, 140, 250);
     }
-    else if (GetGameState() == State_MakeAChoice)
+    // Hovering B
+    else if (mouseX >= optionBPos.x - 60 && mouseX <= optionBPos.x + 60 && mouseY >= optionBPos.y - 160 && mouseY <= optionBPos.y + 160)
     {
-        DrawEventUI();
+        CP_Image_Draw(EventCardB, windowWidth - 130, windowHeight / 2, 320, 320, 255);
+        CP_Settings_TextSize(20);
+        CP_Settings_Fill(CP_Color_Create(255, 255, 255, 255));
+        CP_Font_DrawTextBox(selectedEvent->descriptionB, windowWidth - 250, 140, 250);
     }
+    // Not Hovering
     else
     {
-        
+        CP_Image_Draw(EventCardButton, windowWidth - 130, windowHeight / 2, 320, 320, 255);
+        CP_Settings_TextSize(20);
+        CP_Settings_Fill(CP_Color_Create(255, 255, 255, 255));
+
+        CP_Font_DrawTextBox(selectedEvent->description, windowWidth - 250, 140, 250);
     }
 }
 
+void DrawUI_Constructing()
+{
+    // Create black background
+    CP_Settings_Fill(CP_Color_Create(0, 0, 0, 255));
+    CP_Graphics_DrawRect(windowWidth - 260, 0, windowWidth, windowHeight);
+}
 
 
 // all structs are temporarily initialized to 3 in array
-BUTTON AllButtons[3];
+BUTTON AllButtons[BUTTONARRAYSIZE];
 //Button Main[3] = { { 100,100,200,200,0,0,"Building" }, { 100,100,900,900,22,"Citizen" }, { 100,100,900,900,23,"Settings" } };
 
 BUTTON GetButtonIndex(int index)
@@ -475,31 +496,33 @@ int CheckMouseColliding(BUTTON buttonArray[], CP_Vector mousePos, int isSplashSc
 {
     float mousePosX = mousePos.x;
     float mousePosY = mousePos.y;
-    int arraysize = sizeof(buttonArray)/ sizeof(buttonArray[0]); //Length of the arraySize should already be defined somewhere, So can just get that intead of doing this and popping a error.
     int mouseClickFailed = 0;
 
 
-    for (int i = 0; i < arraysize; i++)
+    for (int i = 0; i < BUTTONARRAYSIZE; i++)
     {
-        if (mousePosX >= buttonArray[i].xPos && mousePosX <= buttonArray[i].xPos + buttonArray[i].width &&
-            mousePosY >= buttonArray[i].yPos && mousePosY <= buttonArray[i].yPos + buttonArray[i].height &&
-            buttonArray[i].isSplashScreenActive == isSplashScreenActive &&
-            buttonArray[i].isSettingsActive == isSettingsActive)
+        if (buttonArray[i].isUsed)
         {
-            if (isSplashScreenActive == 1)
+            if (mousePosX >= buttonArray[i].xPos && mousePosX <= buttonArray[i].xPos + buttonArray[i].width &&
+                mousePosY >= buttonArray[i].yPos && mousePosY <= buttonArray[i].yPos + buttonArray[i].height &&
+                buttonArray[i].isSplashScreenActive == isSplashScreenActive &&
+                buttonArray[i].isSettingsActive == isSettingsActive)
             {
-                //SplashScreenButtons(array[i].imagename);
-                return buttonArray[i].index;
-            }
-            else if (isSettingsActive == 1)
-            {
-                //SettingsButtons(array[i].imagename);
-                return buttonArray[i].index;
-            }
-            else if (isSplashScreenActive == 0 && isSettingsActive == 0)
-            {
-                //MainButtons(array[i].imagename);
-                return buttonArray[i].index;
+                if (isSplashScreenActive == 1)
+                {
+                    //SplashScreenButtons(array[i].imagename);
+                    return buttonArray[i].index;
+                }
+                else if (isSettingsActive == 1)
+                {
+                    //SettingsButtons(array[i].imagename);
+                    return buttonArray[i].index;
+                }
+                else if (isSplashScreenActive == 0 && isSettingsActive == 0)
+                {
+                    //MainButtons(array[i].imagename);
+                    return buttonArray[i].index;
+                }
             }
         }
     }
@@ -756,6 +779,6 @@ void DrawTempTextResources()
     CP_Settings_Fill(CP_Color_Create(255, 255, 255, 255));
     char buffer[100];
     sprintf_s(buffer, 100, "Gold: %d\t\tFood: %d\t\tPopulation: %d\t\tMorale: %d", Get_current_gold(), Get_current_food(), Get_current_population(), (Get_current_morale() + Get_additional_morale()));
-    CP_Font_DrawText(buffer, 20, 20);
+    CP_Font_DrawText(buffer, 100, 20);
 }
 

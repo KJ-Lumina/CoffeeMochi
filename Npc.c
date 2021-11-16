@@ -6,6 +6,16 @@
 #include <stdbool.h>
 
 
+/*typedef struct {
+	int spriteIndex;
+	CP_Vector worldPosition;
+	CP_Vector direction;
+	int checkPointsLeft;
+	float distanceLeft;
+	float nextMoveTimer;
+	float baseSpeed;
+	CP_Vector checkPoints[6];
+}NPC;*/
 
 NPC npcList[100] = { 0 };
 float deltaTime;
@@ -264,6 +274,5 @@ void UpdateAllNpc()
 			CP_Image_Draw(npcSprite, npcList[i].worldPosition.x + worldSpaceOrigin.x , npcList[i].worldPosition.y + worldSpaceOrigin.y, 100, 100, 255);
 		}
 	}
-	CP_Image_Draw(npcSprite, worldSpaceOrigin.x, worldSpaceOrigin.y, 100, 100, 255);
 }
 

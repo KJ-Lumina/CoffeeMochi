@@ -124,56 +124,59 @@ void CheckKeyInput(void)
 
 void MouseClick()
 {
-        switch (gameState)
+    switch (gameState)
+    {
+    case State_StartOfTurn:
+        //Run Condition on Start of Turn
+        gameState = State_Idle;
+        break;
+
+    case State_Idle:
+        if (CheckUIClick(currentMousePos.x, currentMousePos.y) == 1)
         {
-        case State_StartOfTurn:
-            //Run Condition on Start of Turn
-            gameState = State_Idle;
-            break;
-
-        case State_Idle:
-            if (CheckUIClick(currentMousePos.x, currentMousePos.y) == 1)
-            {              
-                CARDEVENT* nextEvent = GetNextEvent(gamePhase);
-                if (nextEvent->eventIndex != 0) {
+            if (GetCardsLeft == 0) 
+            {
+                gameState = State_MakeAChoice;
+                UI_SetEvent(GetNextEvent(gamePhase));
+            }
+            else 
+            {
+                ++gamePhase;
+                if (gamePhase == PHASE_ENDPHASE) 
+                {
+                    gameState = State_EndOfTurn;
+                }
+                else 
+                {
                     gameState = State_MakeAChoice;
-                    UI_SetEvent(nextEvent);
-                }
-                else {
-                    ++gamePhase;
-                    if (gamePhase == PHASE_ENDPHASE) {
-                        gameState = State_EndOfTurn;
-                    }
-                    else {
-                        gameState = State_MakeAChoice;
-                        UI_SetEvent(GetNextEvent(gamePhase));
-                    }
+                    UI_SetEvent(GetNextEvent(gamePhase));
                 }
             }
+        }
+        break;
+    case State_MakeAChoice:
+        switch (CheckUIClick(currentMousePos.x, currentMousePos.y))
+        {
+        case 1:
+            gameState = State_PlaceYourBuilding;
             break;
-        case State_MakeAChoice:
-            switch (CheckUIClick(currentMousePos.x, currentMousePos.y))
-            {
-            case 1:
-                gameState = State_PlaceYourBuilding;
-                break;
-            case 2:
-                gameState = State_EndOfTurn;
-                break;
-            }
+        case 2:
+            gameState = State_EndOfTurn;
             break;
-        case State_PlaceYourBuilding:
+        }
+        break;
+    case State_PlaceYourBuilding:
 
-            if (AttemptPlaceBuilding(currentMousePos))
-            {
-                gameState = State_EndOfTurn;
-            }
-            break;
+        if (AttemptPlaceBuilding(currentMousePos))
+        {
+            gameState = State_EndOfTurn;
+        }
+        break;
 
-        case State_EndOfTurn:
+    case State_EndOfTurn:
 
-            break;
-        }      
+        break;
+    }
 }
 
 void GameStateControl() 
@@ -187,13 +190,14 @@ void GameStateControl()
         break;
 
     case State_Idle:
-
+        DrawUI_Deck();
         break;
     case State_MakeAChoice:
-
+        DrawUI_CardDrawn();
         break;
     case State_PlaceYourBuilding:
         DrawCursorTile(currentMousePos);
+        DrawUI_Constructing();
         break;
 
     case State_EndOfTurn:
@@ -206,6 +210,7 @@ void GameStateControl()
 
 void MouseDragOrClick(void)
 {
+    /*
     if (AllowMouseDrag)
     {
         if (CP_Input_MouseDragged(0))
@@ -229,14 +234,20 @@ void MouseDragOrClick(void)
     {
         MouseClick();
     }
+    */
+    if (CP_Input_MouseClicked())
+    {
+        MouseClick();
+    }
     
 }
 
 void game_init(void)
 {    
     CP_System_ShowConsole();
-
     CP_System_SetWindowSize(1600, 900);
+    CP_Settings_TextAlignment(CP_TEXT_ALIGN_H_CENTER, CP_TEXT_ALIGN_V_TOP);
+
     InitResources(100);
     InitWorldSpaceGrid();
     InitBuildings();
@@ -251,17 +262,14 @@ void game_update(void)
     UpdateMouseInput();
     MouseDragOrClick();
     CheckKeyInput();
-
+    // Graphics
     CP_Graphics_ClearBackground(CP_Color_Create(150, 150, 150, 255));
     DrawTileSet();
     DrawBuildings();
     UpdateAllNpc();
     GameStateControl();
-    DrawUI();
     DrawTempTextResources();
-
     DrawAllAnimations();
-
 }
 
 void game_exit(void)

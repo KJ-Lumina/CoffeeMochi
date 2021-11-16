@@ -7,6 +7,31 @@
 CARDEVENTS PARAMETERS
 EVENT INDEX, DIFFICULTY, DESCRIPTION (MAX 100), INDEX OPTION A, COST TYPE INDEX A, COST AMOUNT A, STRING OPTION A, INDEX OPTION B, COST TYPE INDEX B, COST AMOUNT B, STRING OPTION B
 */
+/*
+typedef struct
+{
+	int eventIndex;
+	int eventDifficultyType;
+	int eventType;
+	char description[100];
+
+	int indexOptionA;
+	int optionAmountA;
+	int optionTypeA;
+	int costTypeA;
+	int costAmountA;
+	char* descriptionA;
+
+	int indexOptionB;
+	int optionAmountB;
+	int optionTypeB;
+	int costTypeB;
+	int costAmountB;
+	char* descriptionB;
+
+
+}CARDEVENT;
+*/
 
 typedef struct
 {
@@ -119,6 +144,10 @@ CARDEVENT* GetCurrentEvent()
 	return currentEvent;
 }
 
+int GetCardsLeft()
+{
+	return currentDeck->cardsInDeck - currentCardIndex - 1;
+}
 
 CARDEVENT* GetNextEvent(GAMEPHASE gamePhase)
 {
