@@ -32,4 +32,8 @@ void ChangeVolume(float vol, CP_SOUND_GROUP soundGroup) {
 
 }
 
+void ExitGame() {
+	CP_Engine_Terminate();
+}
+
 
