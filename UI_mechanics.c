@@ -46,15 +46,18 @@ int CheckUIClick(float xPos, float yPos)
         // click on option A
         if (xPos >= optionAPos.x - 60 && xPos <= optionAPos.x + 60 && yPos >= optionBPos.y - 160 && yPos <= optionBPos.y + 160)
         {
-            TILEPOSITION tile_positions[MAXTILECOUNT];
+            /*TILEPOSITION tile_positions[MAXTILECOUNT];
             int randIndex = 0;
             unsigned int upperBounds = 0;
             unsigned int lowerBounds = 0;
-            int length;
+            int length;*/
 
             //Check for Pre-Requiste 
             switch (selectedEvent->costTypeA)
             {
+            case R_NULL_INDEX:
+                //Do Nothing
+                break;
                 //RESOURCE COST
             case R_GOLD_INDEX:
                 if ((Get_current_gold() - selectedEvent->costAmountA) < 0) return 0;
@@ -77,53 +80,27 @@ int CheckUIClick(float xPos, float yPos)
                 break;
 
             case R_BUILDING_HOUSE_INDEX:
-                SubtractHouse();           
-
-                length = GetAllBuildingsPositionByIndex(B_HOUSE_INDEX, tile_positions);
-
-                if (length > 0) {
-                    lowerBounds = 0;
-                    upperBounds = length - 1;
-
-                    randIndex = CP_Random_RangeInt(lowerBounds, upperBounds);
-
-                    SetNewBuilding((tile_positions + randIndex)->positionX, (tile_positions + randIndex)->positionY, B_GRASS_INDEX);
-                }
+                SubtractHouse();
+                DestroyBuildingByIndex(B_HOUSE_INDEX);
 
                 break;
 
             case R_BUILDING_FARM_INDEX:
                 SubtractFarm();
+                DestroyBuildingByIndex(B_FARM_INDEX);
 
-                length = GetAllBuildingsPositionByIndex(B_HOUSE_INDEX, tile_positions);
-
-                if (length > 0) {
-                    lowerBounds = 0;
-                    upperBounds = length - 1;
-
-                    randIndex = CP_Random_RangeInt(lowerBounds, upperBounds);
-
-                    SetNewBuilding((tile_positions + randIndex)->positionX, (tile_positions + randIndex)->positionY, B_GRASS_INDEX);
-                }
                 break;
 
             case R_BUILDING_MARKET_INDEX:
                 SubtractMarket();
+                DestroyBuildingByIndex(B_MARKET_INDEX);
 
-                length = GetAllBuildingsPositionByIndex(B_HOUSE_INDEX, tile_positions);
-
-                if (length > 0) {
-                    lowerBounds = 0;
-                    upperBounds = length - 1;
-
-                    randIndex = CP_Random_RangeInt(lowerBounds, upperBounds);
-
-                    SetNewBuilding((tile_positions + randIndex)->positionX, (tile_positions + randIndex)->positionY, B_GRASS_INDEX);
-                }
                 break;
 
             case R_BUILDING_TAVERN_INDEX:
-                //Subtract Tavern
+                SubtractTavern();
+                DestroyBuildingByIndex(B_TAVERN_INDEX);
+
                 break;
 
             default:
@@ -181,6 +158,37 @@ int CheckUIClick(float xPos, float yPos)
                 return 2;
                 break;
 
+            case DESTROY_TYPE_EVENT:
+
+                switch (selectedEvent->optionTypeA) {
+
+                case R_BUILDING_HOUSE_INDEX:
+                    SubtractHouse();
+                    DestroyBuildingByIndex(B_HOUSE_INDEX);
+
+                    break;
+
+                case R_BUILDING_FARM_INDEX:
+                    SubtractFarm();
+                    DestroyBuildingByIndex(B_FARM_INDEX);
+
+                    break;
+
+                case R_BUILDING_MARKET_INDEX:
+                    SubtractMarket();
+                    DestroyBuildingByIndex(B_MARKET_INDEX);
+
+                    break;
+
+                case R_BUILDING_TAVERN_INDEX:
+                    SubtractTavern();
+                    DestroyBuildingByIndex(B_TAVERN_INDEX);
+
+                    break;
+                }
+                return 2;
+                break;
+
             case ONGOING_TYPE_EVENT:
 
                 break;
@@ -196,15 +204,19 @@ int CheckUIClick(float xPos, float yPos)
         // click on option B?
         else if (xPos >= optionBPos.x - 60  && xPos <= optionBPos.x + 60 && yPos >= optionBPos.y - 160 && yPos <= optionBPos.y + 160)
         {
-            TILEPOSITION tile_positions[MAXTILECOUNT];
+           /* TILEPOSITION tile_positions[MAXTILECOUNT];
             int randIndex = 0;
             unsigned int upperBounds = 0;
             unsigned int lowerBounds = 0;
-            int length;
+            int length = 0;*/
 
             //Check for Pre-Requiste 
             switch (selectedEvent->costTypeB)
             {
+            case R_NULL_INDEX:
+                //Do Nothing
+                break;
+                    
             //RESOURECE RELATED TYPE COST
             case R_GOLD_INDEX:
                 if ((Get_current_gold() - selectedEvent->costAmountB) < 0) return 0;
@@ -230,55 +242,30 @@ int CheckUIClick(float xPos, float yPos)
             //BUILDING RELATED TYPE COST
             case R_BUILDING_HOUSE_INDEX:
                 SubtractHouse();
-
-                length = GetAllBuildingsPositionByIndex(B_HOUSE_INDEX, tile_positions);
-
-                if (length > 0) {
-                    lowerBounds = 0;
-                    upperBounds = length - 1;
-
-                    randIndex = CP_Random_RangeInt(lowerBounds, upperBounds);
-
-                    SetNewBuilding((tile_positions + randIndex)->positionX, (tile_positions + randIndex)->positionY, B_GRASS_INDEX);
-                }
-
+                DestroyBuildingByIndex(B_HOUSE_INDEX);
+                
                 break;
 
             case R_BUILDING_FARM_INDEX:
                 SubtractFarm();
-
-                length = GetAllBuildingsPositionByIndex(B_HOUSE_INDEX, tile_positions);
-
-                if (length > 0) {
-                    lowerBounds = 0;
-                    upperBounds = length - 1;
-
-                    randIndex = CP_Random_RangeInt(lowerBounds, upperBounds);
-
-                    SetNewBuilding((tile_positions + randIndex)->positionX, (tile_positions + randIndex)->positionY, B_GRASS_INDEX);
-                }
+                DestroyBuildingByIndex(B_FARM_INDEX);
+               
                 break;
 
             case R_BUILDING_MARKET_INDEX:
                 SubtractMarket();
-
-                length = GetAllBuildingsPositionByIndex(B_HOUSE_INDEX, tile_positions);
-
-                if (length > 0) {
-                    lowerBounds = 0;
-                    upperBounds = length - 1;
-
-                    randIndex = CP_Random_RangeInt(lowerBounds, upperBounds);
-
-                    SetNewBuilding((tile_positions + randIndex)->positionX, (tile_positions + randIndex)->positionY, B_GRASS_INDEX);
-                }
+                DestroyBuildingByIndex(B_MARKET_INDEX);
+               
                 break;
 
             case R_BUILDING_TAVERN_INDEX:
-                //Subtract Tavern
+                SubtractTavern();
+                DestroyBuildingByIndex(B_TAVERN_INDEX);
+                
                 break;
 
             default:
+
                 break;
             }
 
@@ -341,30 +328,31 @@ int CheckUIClick(float xPos, float yPos)
                 switch (selectedEvent->optionTypeA) {
 
                     case R_BUILDING_HOUSE_INDEX:
-
                         SubtractHouse();
+                        DestroyBuildingByIndex(B_HOUSE_INDEX);
 
                         break;
-                    
-                    case R_BUILDING_FARM_INDEX:
 
+                    case R_BUILDING_FARM_INDEX:
                         SubtractFarm();
+                        DestroyBuildingByIndex(B_FARM_INDEX);
 
                         break;
 
                     case R_BUILDING_MARKET_INDEX:
-
                         SubtractMarket();
+                        DestroyBuildingByIndex(B_MARKET_INDEX);
 
                         break;
 
                     case R_BUILDING_TAVERN_INDEX:
-
-                        //ADD IN TAVERN SUBTRACT
+                        SubtractTavern();
+                        DestroyBuildingByIndex(B_TAVERN_INDEX);
 
                         break;
                 }
 
+                return 2;
                 break;
 
             case ONGOING_TYPE_EVENT:
@@ -777,8 +765,8 @@ void DrawTempTextResources()
 {
     CP_Settings_TextSize(20);
     CP_Settings_Fill(CP_Color_Create(255, 255, 255, 255));
-    char buffer[100];
+    char buffer[200];
     sprintf_s(buffer, 100, "Gold: %d\t\tFood: %d\t\tPopulation: %d\t\tMorale: %d", Get_current_gold(), Get_current_food(), Get_current_population(), (Get_current_morale() + Get_additional_morale()));
-    CP_Font_DrawText(buffer, 100, 20);
+    CP_Font_DrawText(buffer, 200, 20);
 }
 

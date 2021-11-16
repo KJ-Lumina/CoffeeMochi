@@ -9,7 +9,16 @@
 
 #define MAXTILECOUNT (WORLDGRIDX * WORLDGRIDY)
 
+//Building Related Definitions
+#define NULL_CHOICE -1
+#define B_EMPTY_INDEX 0
+#define B_GRASS_INDEX 1
+#define B_HOUSE_INDEX 2
+#define B_FARM_INDEX 3
+#define B_MARKET_INDEX 4
+#define B_TAVERN_INDEX 5
 
+//Events Resource Index
 #define R_NULL_INDEX 0
 #define R_GOLD_INDEX 1
 #define R_FOOD_INDEX 2
@@ -20,13 +29,6 @@
 #define R_BUILDING_MARKET_INDEX 7
 #define R_BUILDING_TAVERN_INDEX 8
 
-
-#define NULL_CHOICE -1
-#define B_GRASS_INDEX 1
-#define B_HOUSE_INDEX 2
-#define B_FARM_INDEX 3
-#define B_MARKET_INDEX 4
-#define B_TAVERN_INDEX 5
 
 #define E_INCREASE_RESOURCE 1
 #define E_DECREASE_RESOURCE 2
@@ -41,6 +43,13 @@
 #define RESOURCE_TYPE_EVENT 2
 #define DESTROY_TYPE_EVENT 3
 #define ONGOING_TYPE_EVENT 4
+
+//Resources
+// Building costs for every tile are defaulted to the following values
+#define MARKET_BUILD_COST 20
+#define FARM_BUILD_COST 20
+#define HOUSING_BUILD_COST 20
+#define TAVERN_BUILD_COST 20
 
 //buttons names in-progress
 #define START_GAME 0
@@ -178,6 +187,7 @@ void SetCurrentAmountToBuild(int buildAmount);
 bool AttemptPlaceBuilding(CP_Vector cursorPos);
 bool IsTileOccupied(CP_Vector);
 int GetAllBuildingsPositionByIndex(int index, TILEPOSITION position[]);
+void DestroyBuildingByIndex(int buidlingIndex);
 
 // UI_Mechanics
 void DrawUI_Deck();
@@ -201,9 +211,11 @@ void AddNewResourceBuilding(int buildingIndex);
 void AddMarket();
 void AddFarm();
 void AddHouse();
+void AddTavern();
 void SubtractMarket();
 void SubtractFarm();
 void SubtractHouse();
+void SubtractTavern();
 void GenerateResourcesOnEndTurn();
 
 // Card Events

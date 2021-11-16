@@ -30,11 +30,6 @@ Buff/Debuff effects will be seperated to a different header file
 #define FARM_UPKEEP_COST 5
 #define HOUSING_UPKEEP_COST 5
 
-// Building costs for every tile are defaulted to the following values
-#define MARKET_BUILD_COST 20
-#define FARM_BUILD_COST 20
-#define HOUSING_BUILD_COST 20
-#define TAVERN_BUILD_COST 20
 
 #define HIGH_MORALE 0
 #define MEDIUM_MORALE 1

@@ -105,6 +105,21 @@ float CalculateUnitsToBorder(CP_Vector position, CP_Vector directionUnit)
     return dirUnitsToXBorder > dirUnitsToYBorder ? dirUnitsToYBorder : dirUnitsToXBorder;
 }
 
+void DestroyBuildingByIndex(int buidlingIndex) {
+
+    TILEPOSITION tile_positions[MAXTILECOUNT];
+    int length = GetAllBuildingsPositionByIndex(B_HOUSE_INDEX, tile_positions);
+
+    if (length > 0) {
+        unsigned int lowerBounds = 0;
+        unsigned int upperBounds = length - 1;
+
+        unsigned int randIndex = CP_Random_RangeInt(lowerBounds, upperBounds);
+
+        SetNewBuilding((tile_positions + randIndex)->positionX, (tile_positions + randIndex)->positionY, B_EMPTY_INDEX);
+    }
+}
+
 void SetNewBuilding(int x, int y, int buildingIndex)
 {
     buildingGrid[x][y] = buildingIndex;
