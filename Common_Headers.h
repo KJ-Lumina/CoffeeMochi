@@ -47,9 +47,11 @@
 
 
 typedef enum {
+	PHASE_MAINMENU,
 	PHASE_BUILDPHASE,
 	PHASE_GAMEPHASE,
 	PHASE_ENDPHASE
+
 }GAMEPHASE;
 
 typedef enum
