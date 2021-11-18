@@ -90,7 +90,7 @@ typedef struct
 	int eventIndex;
 	int eventDifficultyType;
 	int eventType;
-	char description[300];
+	char* description;
 
 	int indexOptionA;
 	int optionAmountA;
