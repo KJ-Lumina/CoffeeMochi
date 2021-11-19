@@ -8,9 +8,18 @@
 
 #define BUTTONARRAYSIZE 3
 
-CP_Image EventCardButton;
+// SPRITES
+CP_Image EventCard;
+MOVINGSPRITES EventCardAnim;
+CP_Image EventCardBack;
 CP_Image EventCardA;
 CP_Image EventCardB;
+CP_Image EventCardDeck;
+CP_Image EventGauntletClose;
+CP_Image EventGauntletOpen;
+CP_Image EventGauntletA;
+CP_Image EventGauntletB;
+
 CARDEVENT* selectedEvent;
 float windowWidth;
 float windowHeight;
@@ -29,6 +38,45 @@ float delta = 0;
 
 
 
+
+
+void InitUI()
+{
+    windowWidth = (float)CP_System_GetWindowWidth();
+    windowHeight = (float)CP_System_GetWindowHeight();
+    EventCardBack = CP_Image_Load("./Assets/best_cardback.png");
+    EventCard = CP_Image_Load("./Assets/best_darkencard.png");
+    EventCardA = CP_Image_Load("./Assets/best_cardblue.png");
+    EventCardB = CP_Image_Load("./Assets/best_cardred.png");
+    EventCardDeck = CP_Image_Load("./Assets/WIP CARDDECK.png");
+    EventCardAnim = (MOVINGSPRITES){ EventCardBack, CP_Vector_Set(windowWidth - 130, (windowHeight / 2) + 230), CP_Vector_Set(windowWidth - 130, (windowHeight / 2) - 60), 0.6f, 0 };
+    EventGauntletClose = CP_Image_Load("./Assets/gauntletclose.png");
+    EventGauntletOpen = CP_Image_Load("./Assets/gauntletopen.png");
+    EventGauntletA = CP_Image_Load("./Assets/gauntletA.png");
+    EventGauntletB = CP_Image_Load("./Assets/gauntletB.png");
+
+
+    optionAPos = CP_Vector_Set(windowWidth - 170, windowHeight / 2 - 60);
+    optionBPos = CP_Vector_Set(windowWidth - 90, windowHeight / 2 - 60);
+}
+
+void UI_SetEvent(CARDEVENT* newEvent)
+{
+    selectedEvent = newEvent;
+}
+
+bool CheckWithinBounds(CP_Vector position, float width, float height)
+{
+    float mouseX = CP_Input_GetMouseX();
+    float mouseY = CP_Input_GetMouseY();
+
+    if (mouseX >= position.x - (width/2) && mouseX <= position.x + (width / 2) && mouseY >= position.y - (height / 2) && mouseY <= position.y + (height / 2))
+    {
+        return true;
+    }
+    return false;
+}
+
 int CheckUIClick(float xPos, float yPos)
 {
     switch (GetGameState())
@@ -37,7 +85,7 @@ int CheckUIClick(float xPos, float yPos)
         break;
     case State_Idle:
         // click on card
-        if (xPos >= windowWidth - 250 && xPos <= windowWidth - 10 && yPos >= windowHeight / 2 - 160 && yPos <= windowHeight / 2 + 160)
+        if (CheckWithinBounds(EventCardAnim.startingPos, 240, 240))
         {
             return 1;
         }
@@ -115,7 +163,7 @@ int CheckUIClick(float xPos, float yPos)
                 return 1;
                 break;
 
-            case RESOURCE_TYPE_EVENT:              
+            case RESOURCE_TYPE_EVENT:
 
                 switch (selectedEvent->optionTypeA) {
                 case R_GOLD_INDEX:
@@ -126,7 +174,7 @@ int CheckUIClick(float xPos, float yPos)
                     else if (selectedEvent->indexOptionA == E_DECREASE_RESOURCE) {
                         Set_current_gold(Get_current_gold() - selectedEvent->optionAmountA);
                     }
-                 
+
                     break;
 
                 case R_FOOD_INDEX:
@@ -150,7 +198,7 @@ int CheckUIClick(float xPos, float yPos)
                     }
 
                     break;
-                
+
                 default:
                     break;
                 }
@@ -197,27 +245,27 @@ int CheckUIClick(float xPos, float yPos)
                 break;
 
             }
-             
+
             break;
         }
-        
-        // click on option B?
-        else if (xPos >= optionBPos.x - 60  && xPos <= optionBPos.x + 60 && yPos >= optionBPos.y - 160 && yPos <= optionBPos.y + 160)
-        {
-           /* TILEPOSITION tile_positions[MAXTILECOUNT];
-            int randIndex = 0;
-            unsigned int upperBounds = 0;
-            unsigned int lowerBounds = 0;
-            int length = 0;*/
 
-            //Check for Pre-Requiste 
+        // click on option B?
+        else if (xPos >= optionBPos.x - 60 && xPos <= optionBPos.x + 60 && yPos >= optionBPos.y - 160 && yPos <= optionBPos.y + 160)
+        {
+            /* TILEPOSITION tile_positions[MAXTILECOUNT];
+             int randIndex = 0;
+             unsigned int upperBounds = 0;
+             unsigned int lowerBounds = 0;
+             int length = 0;*/
+
+             //Check for Pre-Requiste 
             switch (selectedEvent->costTypeB)
             {
             case R_NULL_INDEX:
                 //Do Nothing
                 break;
-                    
-            //RESOURECE RELATED TYPE COST
+
+                //RESOURECE RELATED TYPE COST
             case R_GOLD_INDEX:
                 if ((Get_current_gold() - selectedEvent->costAmountB) < 0) return 0;
                 Set_current_gold(Get_current_gold() - selectedEvent->costAmountB);
@@ -239,29 +287,29 @@ int CheckUIClick(float xPos, float yPos)
                 break;
 
 
-            //BUILDING RELATED TYPE COST
+                //BUILDING RELATED TYPE COST
             case R_BUILDING_HOUSE_INDEX:
                 SubtractHouse();
                 DestroyBuildingByIndex(B_HOUSE_INDEX);
-                
+
                 break;
 
             case R_BUILDING_FARM_INDEX:
                 SubtractFarm();
                 DestroyBuildingByIndex(B_FARM_INDEX);
-               
+
                 break;
 
             case R_BUILDING_MARKET_INDEX:
                 SubtractMarket();
                 DestroyBuildingByIndex(B_MARKET_INDEX);
-               
+
                 break;
 
             case R_BUILDING_TAVERN_INDEX:
                 SubtractTavern();
                 DestroyBuildingByIndex(B_TAVERN_INDEX);
-                
+
                 break;
 
             default:
@@ -327,29 +375,29 @@ int CheckUIClick(float xPos, float yPos)
 
                 switch (selectedEvent->optionTypeA) {
 
-                    case R_BUILDING_HOUSE_INDEX:
-                        SubtractHouse();
-                        DestroyBuildingByIndex(B_HOUSE_INDEX);
+                case R_BUILDING_HOUSE_INDEX:
+                    SubtractHouse();
+                    DestroyBuildingByIndex(B_HOUSE_INDEX);
 
-                        break;
+                    break;
 
-                    case R_BUILDING_FARM_INDEX:
-                        SubtractFarm();
-                        DestroyBuildingByIndex(B_FARM_INDEX);
+                case R_BUILDING_FARM_INDEX:
+                    SubtractFarm();
+                    DestroyBuildingByIndex(B_FARM_INDEX);
 
-                        break;
+                    break;
 
-                    case R_BUILDING_MARKET_INDEX:
-                        SubtractMarket();
-                        DestroyBuildingByIndex(B_MARKET_INDEX);
+                case R_BUILDING_MARKET_INDEX:
+                    SubtractMarket();
+                    DestroyBuildingByIndex(B_MARKET_INDEX);
 
-                        break;
+                    break;
 
-                    case R_BUILDING_TAVERN_INDEX:
-                        SubtractTavern();
-                        DestroyBuildingByIndex(B_TAVERN_INDEX);
+                case R_BUILDING_TAVERN_INDEX:
+                    SubtractTavern();
+                    DestroyBuildingByIndex(B_TAVERN_INDEX);
 
-                        break;
+                    break;
                 }
 
                 return 2;
@@ -376,72 +424,115 @@ int CheckUIClick(float xPos, float yPos)
     return 0;
 }
 
-void InitUI()
+void DrawUI_GauntletClose()
 {
-    EventCardButton = CP_Image_Load("./Assets/best_darkencard.png");
-    EventCardA = CP_Image_Load("./Assets/best_cardblue.png");
-    EventCardB = CP_Image_Load("./Assets/best_cardred.png");
-    windowWidth = (float)CP_System_GetWindowWidth();
-    windowHeight = (float)CP_System_GetWindowHeight();
-    optionAPos = CP_Vector_Set(windowWidth - 190, windowHeight / 2);
-    optionBPos = CP_Vector_Set(windowWidth - 70, windowHeight / 2);
+    // Draw Gauntlet
+    CP_Image_Draw(EventGauntletClose, windowWidth - 130, windowHeight / 2 - 60, 240, 255, 255);
 }
 
-void UI_SetEvent(CARDEVENT* newEvent)
+void DrawUI_GauntletOpen()
 {
-    selectedEvent = newEvent;
-}
-
-void DrawUI_Deck()
-{
-    // Create black background
-    CP_Settings_Fill(CP_Color_Create(0, 0, 0, 255));
-    CP_Graphics_DrawRect(windowWidth - 260, 0, windowWidth, windowHeight);
-    // Draw back of card
-    CP_Image_Draw(EventCardButton, windowWidth - 130, windowHeight / 2, 320, 320, 255);
-}
-
-void DrawUI_CardDrawn()
-{
-    // Create black background
-    CP_Settings_Fill(CP_Color_Create(0, 0, 0, 255));
-    CP_Graphics_DrawRect(windowWidth - 260, 0, windowWidth, windowHeight);
-    // dual card colours
-    float mouseX = CP_Input_GetMouseX();
-    float mouseY = CP_Input_GetMouseY();
-
+    // Draw Gauntlet
     // Hovering A
-    if (mouseX >= optionAPos.x - 60 && mouseX <= optionAPos.x + 60 && mouseY >= optionBPos.y - 160 && mouseY <= optionBPos.y + 160)
+    if (CheckWithinBounds(optionAPos, 90, 240))
     {
-        CP_Image_Draw(EventCardA, windowWidth - 130, windowHeight / 2, 320, 320, 255);
+        CP_Image_Draw(EventGauntletA, windowWidth - 130, windowHeight / 2 - 60, 240, 255, 255);
         CP_Settings_TextSize(20);
         CP_Settings_Fill(CP_Color_Create(255, 255, 255, 255));
-        CP_Font_DrawTextBox(selectedEvent->descriptionA, windowWidth - 250, 140, 250);
+        CP_Font_DrawTextBox(selectedEvent->descriptionA, windowWidth - 255, 140, 250);
     }
     // Hovering B
-    else if (mouseX >= optionBPos.x - 60 && mouseX <= optionBPos.x + 60 && mouseY >= optionBPos.y - 160 && mouseY <= optionBPos.y + 160)
+    else if (CheckWithinBounds(optionBPos, 90, 240))
     {
-        CP_Image_Draw(EventCardB, windowWidth - 130, windowHeight / 2, 320, 320, 255);
+        CP_Image_Draw(EventGauntletB, windowWidth - 130, windowHeight / 2 - 60, 240, 255, 255);
         CP_Settings_TextSize(20);
         CP_Settings_Fill(CP_Color_Create(255, 255, 255, 255));
-        CP_Font_DrawTextBox(selectedEvent->descriptionB, windowWidth - 250, 140, 250);
+        CP_Font_DrawTextBox(selectedEvent->descriptionB, windowWidth - 255, 140, 250);
     }
     // Not Hovering
     else
     {
-        CP_Image_Draw(EventCardButton, windowWidth - 130, windowHeight / 2, 320, 320, 255);
+        CP_Image_Draw(EventGauntletOpen, windowWidth - 130, windowHeight / 2 - 60, 240, 255, 255);
         CP_Settings_TextSize(20);
         CP_Settings_Fill(CP_Color_Create(255, 255, 255, 255));
-
-        CP_Font_DrawTextBox(selectedEvent->description, windowWidth - 250, 140, 250);
+        CP_Font_DrawTextBox(selectedEvent->description, windowWidth - 255, 140, 250);
     }
 }
 
-void DrawUI_Constructing()
+void DrawUI_Deck()
+{
+    // Draw back of card
+    CP_Image_Draw(EventCardDeck, windowWidth - 130, (windowHeight / 2) + 240, 240, 360, 255);
+}
+
+void DrawUI_TopPile()
+{
+    // Hovering Deck
+    if (CheckWithinBounds(EventCardAnim.startingPos, 240, 240))
+    {
+        EventCardAnim.currentTime += CP_System_GetDt();
+    }
+    else
+    {
+        EventCardAnim.currentTime -= CP_System_GetDt();
+    }
+    EventCardAnim.currentTime = CP_Math_ClampFloat(EventCardAnim.currentTime, 0, EventCardAnim.totalTime / 8);
+    CP_Image_Draw(EventCardAnim.image, EventCardAnim.startingPos.x , CP_Math_LerpFloat(EventCardAnim.startingPos.y, EventCardAnim.endingPos.y, EventCardAnim.currentTime / EventCardAnim.totalTime), 240, 240, 255);
+}
+
+void DrawUI_TopPileInsert()
+{
+    EventCardAnim.currentTime += CP_System_GetDt();
+    EventCardAnim.currentTime = CP_Math_ClampFloat(EventCardAnim.currentTime, 0, EventCardAnim.totalTime);
+    CP_Image_Draw(EventCardAnim.image, EventCardAnim.startingPos.x, CP_Math_LerpFloat(EventCardAnim.startingPos.y, EventCardAnim.endingPos.y, EventCardAnim.currentTime / EventCardAnim.totalTime), 240, 240, 255);
+}
+
+void DrawUI_Default()
 {
     // Create black background
     CP_Settings_Fill(CP_Color_Create(0, 0, 0, 255));
     CP_Graphics_DrawRect(windowWidth - 260, 0, windowWidth, windowHeight);
+}
+
+void DrawUI(GAMESTATE state)
+{
+    switch (state)
+    {
+    case State_StartOfTurn:
+        DrawUI_Default();
+        DrawUI_Deck();
+        DrawUI_TopPile();
+        DrawUI_GauntletClose();
+        break;
+    case State_Idle:
+        DrawUI_Default();
+        DrawUI_Deck();
+        DrawUI_TopPile();
+        DrawUI_GauntletClose();
+        break;
+    case State_CardDraw:
+        DrawUI_Default();
+        DrawUI_Deck();
+        DrawUI_TopPileInsert();
+        DrawUI_GauntletClose();
+        break;
+    case State_MakeAChoice:
+        DrawUI_Default();
+        DrawUI_Deck();
+        DrawUI_GauntletOpen();
+        break;
+    case State_PlaceYourBuilding:
+        DrawUI_Default();
+        DrawUI_Deck();
+        DrawUI_GauntletClose();
+        break;
+    case State_EndOfTurn:
+        DrawUI_Default();
+        DrawUI_Deck();
+        DrawUI_GauntletClose();
+        EventCardAnim.currentTime = 0;
+        break;
+    }
 }
 
 
