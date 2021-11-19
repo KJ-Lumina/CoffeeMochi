@@ -94,11 +94,6 @@ int CheckUIClick(float xPos, float yPos)
         // click on option A
         if (xPos >= optionAPos.x - 60 && xPos <= optionAPos.x + 60 && yPos >= optionBPos.y - 160 && yPos <= optionBPos.y + 160)
         {
-            /*TILEPOSITION tile_positions[MAXTILECOUNT];
-            int randIndex = 0;
-            unsigned int upperBounds = 0;
-            unsigned int lowerBounds = 0;
-            int length;*/
 
             //Check for Pre-Requiste 
             switch (selectedEvent->costTypeA)
@@ -158,14 +153,24 @@ int CheckUIClick(float xPos, float yPos)
             //Run the Event depending on the event type if the Pre-Requiste is met
             switch (selectedEvent->eventType) {
             case BUILD_TYPE_EVENT:
-                SetCurrentBuilding(GetBuildingByIndex(selectedEvent->indexOptionA));
-                SetCurrentAmountToBuild(selectedEvent->optionAmountA);
-                return 1;
+                if (selectedEvent->indexOptionA != NULL_CHOICE) {
+                    SetCurrentBuilding(GetBuildingByIndex(selectedEvent->indexOptionA));
+                    SetCurrentAmountToBuild(selectedEvent->optionAmountA);
+                    return 1;
+                }
+                else {
+                    return 2;
+                }           
                 break;
 
             case RESOURCE_TYPE_EVENT:
 
                 switch (selectedEvent->optionTypeA) {
+
+                case R_NULL_INDEX:
+
+                    break;
+
                 case R_GOLD_INDEX:
 
                     if (selectedEvent->indexOptionA == E_INCREASE_RESOURCE) {
@@ -252,11 +257,6 @@ int CheckUIClick(float xPos, float yPos)
         // click on option B?
         else if (xPos >= optionBPos.x - 60 && xPos <= optionBPos.x + 60 && yPos >= optionBPos.y - 160 && yPos <= optionBPos.y + 160)
         {
-            /* TILEPOSITION tile_positions[MAXTILECOUNT];
-             int randIndex = 0;
-             unsigned int upperBounds = 0;
-             unsigned int lowerBounds = 0;
-             int length = 0;*/
 
              //Check for Pre-Requiste 
             switch (selectedEvent->costTypeB)
@@ -320,16 +320,24 @@ int CheckUIClick(float xPos, float yPos)
             //Run the Event depending on the event type if the Pre-Requiste is met
             switch (selectedEvent->eventType) {
             case BUILD_TYPE_EVENT:
-                SetCurrentBuilding(GetBuildingByIndex(selectedEvent->indexOptionB));
-                SetCurrentAmountToBuild(selectedEvent->optionAmountB);
-                return 1;
+                if (selectedEvent->indexOptionA != NULL_CHOICE) {
+                    SetCurrentBuilding(GetBuildingByIndex(selectedEvent->indexOptionB));
+                    SetCurrentAmountToBuild(selectedEvent->optionAmountB);
+                    return 1;
+                }
+                else {
+                    return 2;
+                }        
                 break;
 
             case RESOURCE_TYPE_EVENT:
 
-                printf("Test4");
-
                 switch (selectedEvent->optionTypeA) {
+
+                case R_NULL_INDEX:
+
+                    break;
+                
                 case R_GOLD_INDEX:
 
                     if (selectedEvent->indexOptionA == E_INCREASE_RESOURCE) {
