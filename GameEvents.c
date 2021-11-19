@@ -69,8 +69,9 @@ CARDEVENT E_TutBuildAMarket = { 3 , BASIC_EVENT, BUILD_TYPE_EVENT, "Gorvernor, o
 CARDEVENT E_BuildAHouse = { 1, BASIC_EVENT, BUILD_TYPE_EVENT, "Gorvernor, our population have grown and citizen are requesting for more houses to be build", B_HOUSE_INDEX, 1 , R_POPULATION_INDEX, R_GOLD_INDEX, 5, "Proceed with the construction of a house in our vacant plot of land", NULL_CHOICE, 0 ,R_NULL_INDEX, R_MORALE_INDEX, 2 ,"There is enough Houses for everyone, those resource can be used for a better purpose." };
 CARDEVENT E_BuildAMarket = { 2 , BASIC_EVENT, BUILD_TYPE_EVENT, "Gorvernor, our markets are getting too packed, constructing another market would help to spread the traffic.", B_MARKET_INDEX, 1 , R_GOLD_INDEX , R_GOLD_INDEX, 7, "Spreading the traffic would increase our income production, proceed ahead with the consturction.", NULL_CHOICE, 0, R_NULL_INDEX, R_MORALE_INDEX, 2 , "A market packed with traffic shows that our economy is good, there is not a need to construct another market." };
 CARDEVENT E_ScarceFood = { 3, BASIC_EVENT, BUILD_TYPE_EVENT, "Gorvernor, there is a food shortage in our kingdom. We advice you to build a farm to solve the food shortage.", B_FARM_INDEX, 1, R_FOOD_INDEX, R_GOLD_INDEX, 3, "Get our workers to start with the construction of the farm", NULL_CHOICE, 0, R_NULL_INDEX, R_MORALE_INDEX, 2, "We have enough food supplies, there is not a need for another farm to be build" };
-CARDEVENT E_MerchantSetUp = { 4, BASIC_EVENT, BUILD_TYPE_EVENT, "Gorvernor, with our kingdom reputation growth, various merchant have shown interest in settling down in our kingdom. We advice you to construct 2 markets to create market space for the new merchants", B_MARKET_INDEX, 2, R_GOLD_INDEX, R_GOLD_INDEX , 15, "Open our gates and invite the merchants in and set up 2 market spot for them.", NULL_CHOICE,0 , R_NULL_INDEX, R_NULL_INDEX, 0, "We dont have enough manpower on our hand now to construct markets right now." };
-CARDEVENT E_NeedEntertainment = {5, BASIC_EVENT, BUILD_TYPE_EVENT, "Gorvernor, there is a lack of entertainment in our kingdom, our citizen are getting restless and bored. Construct a tavern to alleviate the lack of entertainment.", B_TAVERN_INDEX, 2 , R_GOLD_INDEX, R_GOLD_INDEX, 20, "Entertainment would increase our morale of our citizens, get our builders on it and proceed to construct the tavern", NULL_CHOICE, 0, R_NULL_INDEX, R_MORALE_INDEX ,5 ,"We need to focus on our necessities, entertainment can wait till those are settled." };
+CARDEVENT E_MerchantSetUp = { 4, BASIC_EVENT, BUILD_TYPE_EVENT, "Gorvernor, with our kingdom reputation growth, various merchant have shown interest in settling down in our kingdom. We advice you to construct 2 markets to create market space for the new merchants", B_MARKET_INDEX, 2, R_GOLD_INDEX, R_GOLD_INDEX , 15, "Open our gates and invite the merchants in and set up 2 market spot for them.", NULL_CHOICE, 0 , R_NULL_INDEX, R_NULL_INDEX, 0, "We dont have enough manpower on our hand now to construct markets right now." };
+CARDEVENT E_BuidldATavern = {5, BASIC_EVENT, BUILD_TYPE_EVENT, "Gorvernor, there is a lack of entertainment in our kingdom, our citizen are getting restless and bored. Construct a tavern to alleviate the lack of entertainment.", B_TAVERN_INDEX, 1 , R_GOLD_INDEX, R_GOLD_INDEX, 10, "Entertainment would increase our morale of our citizens, get our builders on it and proceed to construct the tavern", NULL_CHOICE, 0, R_NULL_INDEX, R_NULL_INDEX ,0 ,"We need to focus on our necessities, entertainment can wait till those are settled." };
+
 
 //BASIC EVENT - RESOURCE TYPE
 CARDEVENT E_FoodMerchantArrival = { 6, BASIC_EVENT, RESOURCE_TYPE_EVENT, "Gorvernor, multiple food peddlers have arrived at your kingdom, they wish to sell us their wares", E_INCREASE_RESOURCE, 20, R_FOOD_INDEX, R_GOLD_INDEX, 10, "Inform them that we will be purchasing taking their wares and send carts over to deliver the wares to our granaries for storage.", NULL_CHOICE, 0 , R_NULL_INDEX, R_NULL_INDEX, 0, "We have a substantial amount of food in our granaries, there is not a need to purchase anymore." };
@@ -84,17 +85,17 @@ CARDEVENT E_MagnificentHunt = { 12, BASIC_EVENT, RESOURCE_TYPE_EVENT, "Gorvernor
 
 //ADVANCED EVENTS - BUILD TYPE
 CARDEVENT E_RefugeesHouses = { 13 , ADVANCED_EVENT, BUILD_TYPE_EVENT,"Gorvernor, multiple refugees are seeking shelter in your kingdom. What is your verdict on letting them into our kingdom.", B_HOUSE_INDEX, 2,R_POPULATION_INDEX, R_GOLD_INDEX, 10, "Houses", NULL_CHOICE,0, R_NULL_INDEX, R_NULL_INDEX, 0, "Ignore" };
-
+CARDEVENT E_NeedEntertainment = { 14, ADVANCED_EVENT, BUILD_TYPE_EVENT, "Gorvernor, our population have grown and the citizen desperately needs entertainment to have a place to relieve their stress level. We advice you to construct 2 taverns for the citzen to relax in.", B_TAVERN_INDEX, 2, R_MORALE_INDEX,R_GOLD_INDEX, 20, "Our citizen have work hard and deserve a place to relax after their working hours. Proceed with the construction of the 2 taverns and finish it as soon as possible.", NULL_CHOICE, 0 , R_NULL_INDEX, R_MORALE_INDEX, 5, "Our citizen are hard working, however there are other part of the kingdom that needs to be focus on now." };
 
 //ADVANCED EVENTS - RESOURCE TYPE
-CARDEVENT E_FamineStrikes = { 14, ADVANCED_EVENT, RESOURCE_TYPE_EVENT,"Gorvernor, a famine have struck your kingdom, we advice to distribute our backup food supplies to every household to prevent any further crisis from happening.", E_DECREASE_RESOURCE, 20, R_MORALE_INDEX, R_FOOD_INDEX, 30, "Distribute Food", E_DECREASE_RESOURCE, 10, R_MORALE_INDEX, R_POPULATION_INDEX, 5, "Ignore" };
-CARDEVENT E_ArsonistAttack = { 15, ADVANCED_EVENT, RESOURCE_TYPE_EVENT, "Gorvernor, our farms are on fire and reports have came in that there is an arsonist on the loose.", E_INCREASE_RESOURCE, 10 , R_MORALE_INDEX, R_GOLD_INDEX, 20 , "Send Assistances to extinguish the fire", E_DECREASE_RESOURCE, 10, R_MORALE_INDEX, R_BUILDING_FARM_INDEX, 1, "Ignore and Let the fire extinguish by itself" };
-CARDEVENT E_CircusTroupeVisit = { 16 , ADVANCED_EVENT, RESOURCE_TYPE_EVENT, "Gorvernor, an wandering circus troupe have arrived at our kingdom and is offering their services to brighten the mood of the kingdom.", E_INCREASE_RESOURCE, 50, R_MORALE_INDEX, R_GOLD_INDEX, 70, "Hire their services", NULL_CHOICE, 0, R_NULL_INDEX, R_NULL_INDEX, 0, "Decline their services" };
-CARDEVENT E_CivilRevolt = { 17, ADVANCED_EVENT, RESOURCE_TYPE_EVENT, "Gorvernor, a revolt have broken out and citizens are demanding for more food and gold while threating to leave the kingdom if they do not receive them.", E_DECREASE_RESOURCE, 20, R_FOOD_INDEX, R_GOLD_INDEX, 10, "Please your citizen by giving into their demands.", E_DECREASE_RESOURCE, 10, R_POPULATION_INDEX, R_MORALE_INDEX, 3,  "Ignore their demands." };
-CARDEVENT E_DiseaseSpread = { 18, ADVANCED_EVENT, RESOURCE_TYPE_EVENT, "Gorvernor, a disease have spread through our kingdom and we currently have no cure for it. However, there is information that a nearby allied kingdom have developed a cure for it.", E_INCREASE_RESOURCE, 5, R_MORALE_INDEX, R_GOLD_INDEX, 50, "Purchase Cure from external source", E_DECREASE_RESOURCE, 10, R_POPULATION_INDEX, R_MORALE_INDEX, 5, "Confine and seclude the diseased." };
+CARDEVENT E_FamineStrikes = { 15, ADVANCED_EVENT, RESOURCE_TYPE_EVENT,"Gorvernor, a famine have struck your kingdom, we advice to distribute our backup food supplies to every household to prevent any further crisis from happening.", E_DECREASE_RESOURCE, 20, R_MORALE_INDEX, R_FOOD_INDEX, 30, "Distribute Food", E_DECREASE_RESOURCE, 10, R_MORALE_INDEX, R_POPULATION_INDEX, 5, "Ignore" };
+CARDEVENT E_ArsonistAttack = { 16, ADVANCED_EVENT, RESOURCE_TYPE_EVENT, "Gorvernor, our farms are on fire and reports have came in that there is an arsonist on the loose.", E_INCREASE_RESOURCE, 10 , R_MORALE_INDEX, R_GOLD_INDEX, 20 , "Send Assistances to extinguish the fire", E_DECREASE_RESOURCE, 10, R_MORALE_INDEX, R_BUILDING_FARM_INDEX, 1, "Ignore and Let the fire extinguish by itself" };
+CARDEVENT E_CircusTroupeVisit = { 17 , ADVANCED_EVENT, RESOURCE_TYPE_EVENT, "Gorvernor, an wandering circus troupe have arrived at our kingdom and is offering their services to brighten the mood of the kingdom.", E_INCREASE_RESOURCE, 50, R_MORALE_INDEX, R_GOLD_INDEX, 70, "Hire their services", NULL_CHOICE, 0, R_NULL_INDEX, R_NULL_INDEX, 0, "Decline their services" };
+CARDEVENT E_CivilRevolt = { 18, ADVANCED_EVENT, RESOURCE_TYPE_EVENT, "Gorvernor, a revolt have broken out and citizens are demanding for more food and gold while threating to leave the kingdom if they do not receive them.", E_DECREASE_RESOURCE, 20, R_FOOD_INDEX, R_GOLD_INDEX, 10, "Please your citizen by giving into their demands.", E_DECREASE_RESOURCE, 10, R_POPULATION_INDEX, R_MORALE_INDEX, 3,  "Ignore their demands." };
+CARDEVENT E_DiseaseSpread = { 19, ADVANCED_EVENT, RESOURCE_TYPE_EVENT, "Gorvernor, a disease have spread through our kingdom and we currently have no cure for it. However, there is information that a nearby allied kingdom have developed a cure for it.", E_INCREASE_RESOURCE, 5, R_MORALE_INDEX, R_GOLD_INDEX, 50, "Purchase Cure from external source", E_DECREASE_RESOURCE, 10, R_POPULATION_INDEX, R_MORALE_INDEX, 5, "Confine and seclude the diseased." };
 
 //DESTROY TYPE EVENTS
-CARDEVENT E_EarthquakeIncoming = { 19, ADVANCED_EVENT, DESTROY_TYPE_EVENT, "Gorvernor, news from nearby kingdom have reach our ears that a earthquake is coming and would striking our kingdom soon. There is an urgent need to make preparation for it when it arrives.", E_DESTROY_BUILDING, 1, R_BUILDING_HOUSE_INDEX, R_BUILDING_MARKET_INDEX, 1, "Reinforce our Farms and Taverns", E_DESTROY_BUILDING, 1, R_BUILDING_FARM_INDEX, R_BUILDING_TAVERN_INDEX, 1, "Reinforce our Houses and Market" };
+CARDEVENT E_EarthquakeIncoming = { 20, ADVANCED_EVENT, DESTROY_TYPE_EVENT, "Gorvernor, news from nearby kingdom have reach our ears that a earthquake is coming and would striking our kingdom soon. There is an urgent need to make preparation for it when it arrives.", E_DESTROY_BUILDING, 1, R_BUILDING_HOUSE_INDEX, R_BUILDING_MARKET_INDEX, 1, "Reinforce our Farms and Taverns", E_DESTROY_BUILDING, 1, R_BUILDING_FARM_INDEX, R_BUILDING_TAVERN_INDEX, 1, "Reinforce our Houses and Market" };
 
 #pragma endregion
 
@@ -107,7 +108,7 @@ void InitCardList()
 	tutCardList[2] = &E_TutBuildAMarket;
 
 	//Init Card List
-	cardList[0] = &E_NeedEntertainment;
+	cardList[0] = &E_BuidldATavern;
 	cardList[1] = &E_GoldMineDiscovered;
 	cardList[2] = &E_FoodMerchantArrival;
 	cardList[3] = &E_StolenFood;
@@ -120,13 +121,14 @@ void InitCardList()
 	cardList[10] = &E_FoodMerchantArrival;
 	cardList[11] = &E_MerchantSetUp;
 	cardList[12] = &E_CircusTroupeVisit;
-	cardList[13] = &E_MagnificentHunt;
+	cardList[13] = &E_MagnificentHunt;	
 	cardList[14] = &E_EarthquakeIncoming;
-	cardList[15] = &E_CivilRevolt;
-	cardList[16] = &E_RefugeesHouses;
-	cardList[17] = &E_BuildAHouse;
-	cardList[18] = &E_VillagersKidnapped;
-	cardList[19] = &E_DiseaseSpread;
+	cardList[15] = &E_RefugeesHouses;
+	cardList[16] = &E_NeedEntertainment;
+	cardList[17] = &E_CivilRevolt;
+	cardList[18] = &E_BuildAHouse;
+	cardList[19] = &E_VillagersKidnapped;
+	cardList[20] = &E_DiseaseSpread;
 }
 
 void InitDecks()

@@ -320,7 +320,7 @@ int CheckUIClick(float xPos, float yPos)
             //Run the Event depending on the event type if the Pre-Requiste is met
             switch (selectedEvent->eventType) {
             case BUILD_TYPE_EVENT:
-                if (selectedEvent->indexOptionA != NULL_CHOICE) {
+                if (selectedEvent->indexOptionB != NULL_CHOICE) {
                     SetCurrentBuilding(GetBuildingByIndex(selectedEvent->indexOptionB));
                     SetCurrentAmountToBuild(selectedEvent->optionAmountB);
                     return 1;
@@ -332,7 +332,7 @@ int CheckUIClick(float xPos, float yPos)
 
             case RESOURCE_TYPE_EVENT:
 
-                switch (selectedEvent->optionTypeA) {
+                switch (selectedEvent->optionTypeB) {
 
                 case R_NULL_INDEX:
 
@@ -381,7 +381,7 @@ int CheckUIClick(float xPos, float yPos)
 
             case DESTROY_TYPE_EVENT:
 
-                switch (selectedEvent->optionTypeA) {
+                switch (selectedEvent->optionTypeB) {
 
                 case R_BUILDING_HOUSE_INDEX:
                     SubtractHouse();
