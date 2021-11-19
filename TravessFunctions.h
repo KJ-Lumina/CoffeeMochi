@@ -27,6 +27,11 @@ int Math_Abs_Int(int x)
 	return x;
 }
 
+void LerpTowards()
+{
+
+}
+
 
 
 

@@ -9,7 +9,6 @@
 float windowsWidth;
 float windowsHeight;
 
-//int landGrid[WORLDGRIDX][WORLDGRIDY] = { 0 };
 int buildingGrid[WORLDGRIDX][WORLDGRIDY] = { 0 };
 CP_Vector worldSpaceOrigin;
 CP_Vector tempTile;
@@ -106,6 +105,21 @@ float CalculateUnitsToBorder(CP_Vector position, CP_Vector directionUnit)
     return dirUnitsToXBorder > dirUnitsToYBorder ? dirUnitsToYBorder : dirUnitsToXBorder;
 }
 
+void DestroyBuildingByIndex(int buidlingIndex) {
+
+    TILEPOSITION tile_positions[MAXTILECOUNT];
+    int length = GetAllBuildingsPositionByIndex(B_HOUSE_INDEX, tile_positions);
+
+    if (length > 0) {
+        unsigned int lowerBounds = 0;
+        unsigned int upperBounds = length - 1;
+
+        unsigned int randIndex = CP_Random_RangeInt(lowerBounds, upperBounds);
+
+        SetNewBuilding((tile_positions + randIndex)->positionX, (tile_positions + randIndex)->positionY, B_EMPTY_INDEX);
+    }
+}
+
 void SetNewBuilding(int x, int y, int buildingIndex)
 {
     buildingGrid[x][y] = buildingIndex;
@@ -175,6 +189,29 @@ void DrawCursorTile(CP_Vector cursorPosition)
     ScreenToGridPosition(&cursorPosition);
     GridToWorldPosition(&cursorPosition);
     CP_Image_Draw(*GetBuildingSpriteByIndex(selectedBuilding->spriteIndex), cursorPosition.x, cursorPosition.y, TILEWIDTH, TILEHEIGHT, 255);
+}
+
+int GetAllBuildingsPositionByIndex(int index, TILEPOSITION position[]) {
+
+    int arrayIndex = 0;
+
+
+    for (int j = 0; j < WORLDGRIDY; ++j)
+    {
+        for (int i = 0; i < WORLDGRIDX; ++i)
+        {
+            if (buildingGrid[i][j] == index) {
+
+                position[arrayIndex].positionY = j;
+                position[arrayIndex].positionX = i;
+                ++arrayIndex;
+
+            }
+        }
+    }
+
+    return arrayIndex;
+
 }
 
 // Draw all structures

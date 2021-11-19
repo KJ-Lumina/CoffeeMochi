@@ -10,9 +10,9 @@
 
 
 GAMESTATE gameState = State_Idle;
-GAMEPHASE gamePhase = PHASE_EVENTLOOP; //Suppose to start with Build
+GAMEPHASE gamePhase = PHASE_BUILDPHASE; //Suppose to start with Build
 #pragma region Game Options Control
-bool AllowMouseDrag = true;
+bool AllowMouseDrag = false;
 #pragma endregion
 
 CP_Vector currentMousePos;
@@ -27,6 +27,8 @@ int loseCondition_PopulationValue;
 
 
 #define ONEVENTCARDCLICK 1
+
+float AnimTimer = 1;
 
 
 GAMESTATE GetGameState()
@@ -46,12 +48,17 @@ void GameOver(void)
 {
     //Lose UI Pop Up
     printf("The game has ended!");
-    gameState = State_GameOver;
 }
 
 void EndTurn(void) 
 {
-    GenerateResourcesOnEndTurn();
+    if (gamePhase == PHASE_GAMEPHASE) {
+        GenerateResourcesOnEndTurn();
+    }
+
+    if (gamePhase == PHASE_ENDPHASE) {
+        GameOver();
+    }
     /*if (LoseCondition_Resources())
         GameOver();*/
 }
@@ -85,15 +92,11 @@ void AdminControlInput()
         ScreenToWorldPosition(&spawnPoint);
         SpawnNpc(spawnPoint, 1);
     }
-    /*
-    if (CP_Input_KeyDown(KEY_1))
+    //testing animations
+    if (CP_Input_KeyTriggered(KEY_W))
     {
-        if (!IsTileOccupied(cursorTile))
-        {
-            SetNewBuilding((int)selectedGrid.x, (int)selectedGrid.y, 1);
-        }
+        SpawnAnimation(currentMousePos.x, currentMousePos.y, 200, 200, 1, 0.5f, 1);
     }
-    */
 }
 
 
@@ -114,13 +117,10 @@ void CheckKeyInput(void)
 
 void MouseClick()
 {
-    if (gamePhase == PHASE_BUILDPHASE) { //For Starting Build Phase (2 Farms, 2 House, 2 Market)
+    if (gamePhase == PHASE_MAINMENU) return; //Run Main Menu UI stuff
 
-
-
-    }else if (gamePhase == PHASE_EVENTLOOP) {
-        switch (gameState)
-        {
+    switch (gameState)
+    {
         case State_StartOfTurn:
             //Run Condition on Start of Turn
             gameState = State_Idle;
@@ -129,9 +129,12 @@ void MouseClick()
         case State_Idle:
             if (CheckUIClick(currentMousePos.x, currentMousePos.y) == 1)
             {
-                gameState = State_MakeAChoice;
-                UI_SetEvent(GetNextEvent());
+                AnimTimer = 0.6f;
+                gameState = State_CardDraw;
             }
+            break;
+        case State_CardDraw:
+            
             break;
         case State_MakeAChoice:
             switch (CheckUIClick(currentMousePos.x, currentMousePos.y))
@@ -155,9 +158,6 @@ void MouseClick()
         case State_EndOfTurn:
 
             break;
-        }
-
-       
     }
 }
 
@@ -166,26 +166,51 @@ void GameStateControl()
     DrawGridIndicator(currentMousePos);
     switch (gameState)
     {
-    case State_StartOfTurn:
-        //Run Condition on Start of Turn
-        gameState = State_Idle;
-        break;
-
-    case State_Idle:
-
-        break;
-    case State_MakeAChoice:
-
-        break;
-    case State_PlaceYourBuilding:
-        DrawCursorTile(currentMousePos);
-        break;
-
-    case State_EndOfTurn:
-
-        EndTurn();
-        gameState = State_StartOfTurn;
-        break;
+        case State_StartOfTurn:
+            DrawUI(gameState);
+            gameState = State_Idle;
+            break;
+        case State_Idle:
+            DrawUI(gameState);
+            break;
+        case State_CardDraw:
+            AnimTimer -= CP_System_GetDt();
+            if (AnimTimer <= 0)
+            {
+                if (GetCardsLeft() != 0)
+                {
+                    gameState = State_MakeAChoice;
+                    UI_SetEvent(GetNextEvent(gamePhase));
+                }
+                else
+                {
+                    ++gamePhase;
+                    ChangeDeckByPhase(gamePhase);
+                    if (gamePhase == PHASE_ENDPHASE)
+                    {
+                        gameState = State_EndOfTurn;
+                    }
+                    else
+                    {
+                        gameState = State_MakeAChoice;
+                        UI_SetEvent(GetNextEvent(gamePhase));
+                    }
+                }
+            }
+            DrawUI(gameState);
+            break;
+        case State_MakeAChoice:
+            DrawUI(gameState);
+            break;
+        case State_PlaceYourBuilding:
+            DrawCursorTile(currentMousePos);
+            DrawUI(gameState);
+            break;
+        case State_EndOfTurn:
+            EndTurn();
+            DrawUI(gameState);
+            gameState = State_StartOfTurn;
+            break;
     }
 }
 
@@ -210,18 +235,18 @@ void MouseDragOrClick(void)
             mouseDrag = false;
         }
     }
-    else
+    else if (CP_Input_MouseClicked())
     {
         MouseClick();
     }
-    
 }
 
 void game_init(void)
 {    
     CP_System_ShowConsole();
-
     CP_System_SetWindowSize(1600, 900);
+    CP_Settings_TextAlignment(CP_TEXT_ALIGN_H_CENTER, CP_TEXT_ALIGN_V_TOP);
+
     InitResources(100);
     InitWorldSpaceGrid();
     InitBuildings();
@@ -236,14 +261,14 @@ void game_update(void)
     UpdateMouseInput();
     MouseDragOrClick();
     CheckKeyInput();
-
+    // Graphics
     CP_Graphics_ClearBackground(CP_Color_Create(150, 150, 150, 255));
     DrawTileSet();
     DrawBuildings();
     UpdateAllNpc();
     GameStateControl();
-    DrawUI();
     DrawTempTextResources();
+    DrawAllAnimations();
 }
 
 void game_exit(void)

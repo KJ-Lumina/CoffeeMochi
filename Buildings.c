@@ -5,13 +5,19 @@
 
 
 
-
+typedef struct
+{
+	CP_Vector position;
+	int buildingIndex;
+} CONSTBUILDING;
 
 BUILDING tile_base		= { "grass",	B_GRASS_INDEX, 0, 0, 0 };
 BUILDING tile_house		= { "House",	B_HOUSE_INDEX, 0, 0, 0 };
 BUILDING tile_farm		= { "Farm",		B_FARM_INDEX, 0, 1, 0 };
 BUILDING tile_market	= { "Market",	B_MARKET_INDEX, 1, 0, 0 };
 BUILDING tile_tavern	= { "Tavern",	5, 0, 0, 10 };
+
+CONSTBUILDING buildingArray[WORLDGRIDX * WORLDGRIDY] = { 0 };
 
 CP_Image sprite_grass;
 CP_Image sprite_house;
@@ -21,7 +27,6 @@ CP_Image sprite_tavern;
 CP_Image button_house;
 CP_Image button_farm;
 CP_Image button_grass;
-
 
 void InitBuildings(void)
 {
@@ -33,6 +38,53 @@ void InitBuildings(void)
 	button_house = CP_Image_Load("./Assets/housebtn.png");
 	button_farm = CP_Image_Load("./Assets/farmbtn.png");
 	button_grass = CP_Image_Load("./Assets/grassbtn.png");
+}
+
+void AddBuilding(int index, CP_Vector pos)
+{
+	for (int i = 0; i < (WORLDGRIDX * WORLDGRIDY); i++)
+	{
+		if (buildingArray[i].buildingIndex == 0)
+		{
+			buildingArray[i].buildingIndex = index;
+			buildingArray[i].position = pos;
+		}
+	}
+}
+
+void RemoveBuilding(CP_Vector pos)
+{
+	for (int i = 0; i < (WORLDGRIDX * WORLDGRIDY); i++)
+	{
+		if (buildingArray[i].position.x == pos.x && buildingArray[i].position.y == pos.y)
+			buildingArray[i].buildingIndex = 0;
+	}
+}
+
+CONSTBUILDING FindNearestBuilding(int index, CP_Vector location)
+{
+	float closestDist = 1000.0f;
+	int nearest = 0;
+	for (int i = 0; i < (WORLDGRIDX * WORLDGRIDY); i++)
+	{
+		if (buildingArray[i].buildingIndex == index && CP_Vector_Distance(location, buildingArray[i].position) < closestDist)
+		{
+			closestDist = CP_Vector_Distance(location, buildingArray[i].position);
+			nearest = i;
+		}
+	}
+	return buildingArray[nearest];
+}
+
+int CountBuilding(int index)
+{
+	int count = 0;
+	for (int i = 0; i < (WORLDGRIDX * WORLDGRIDY); i++)
+	{
+		if (buildingArray[i].buildingIndex == index)
+			count++;
+	}
+	return count;
 }
 
 BUILDING* GetBuildingByIndex(int index)
