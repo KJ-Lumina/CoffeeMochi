@@ -12,7 +12,7 @@
 GAMESTATE gameState = State_Idle;
 GAMEPHASE gamePhase = PHASE_BUILDPHASE; //Suppose to start with Build
 #pragma region Game Options Control
-bool AllowMouseDrag = true;
+bool AllowMouseDrag = false;
 #pragma endregion
 
 CP_Vector currentMousePos;
@@ -27,6 +27,8 @@ int loseCondition_PopulationValue;
 
 
 #define ONEVENTCARDCLICK 1
+
+float AnimTimer = 1;
 
 
 GAMESTATE GetGameState()
@@ -95,15 +97,6 @@ void AdminControlInput()
     {
         SpawnAnimation(currentMousePos.x, currentMousePos.y, 200, 200, 1, 0.5f, 1);
     }
-    /*
-    if (CP_Input_KeyDown(KEY_1))
-    {
-        if (!IsTileOccupied(cursorTile))
-        {
-            SetNewBuilding((int)selectedGrid.x, (int)selectedGrid.y, 1);
-        }
-    }
-    */
 }
 
 
@@ -136,26 +129,12 @@ void MouseClick()
         case State_Idle:
             if (CheckUIClick(currentMousePos.x, currentMousePos.y) == 1)
             {
-                if (GetCardsLeft() != 0) 
-                {
-                    gameState = State_MakeAChoice;
-                    UI_SetEvent(GetNextEvent(gamePhase));
-                }
-                else 
-                {
-                    ++gamePhase;
-                    ChangeDeckByPhase(gamePhase);
-                    if (gamePhase == PHASE_ENDPHASE) 
-                    {
-                        gameState = State_EndOfTurn;
-                    }
-                    else 
-                    {
-                        gameState = State_MakeAChoice;
-                        UI_SetEvent(GetNextEvent(gamePhase));
-                    }
-                }
+                AnimTimer = 0.6f;
+                gameState = State_CardDraw;
             }
+            break;
+        case State_CardDraw:
+            
             break;
         case State_MakeAChoice:
             switch (CheckUIClick(currentMousePos.x, currentMousePos.y))
@@ -182,30 +161,54 @@ void MouseClick()
     }
 }
 
-void GameControl() 
+void GameStateControl() 
 {
     DrawGridIndicator(currentMousePos);
     switch (gameState)
     {
         case State_StartOfTurn:
-            //Run Condition on Start of Turn
+            DrawUI(gameState);
             gameState = State_Idle;
             break;
-
         case State_Idle:
-            DrawUI_Deck();
+            DrawUI(gameState);
+            break;
+        case State_CardDraw:
+            AnimTimer -= CP_System_GetDt();
+            if (AnimTimer <= 0)
+            {
+                if (GetCardsLeft() != 0)
+                {
+                    gameState = State_MakeAChoice;
+                    UI_SetEvent(GetNextEvent(gamePhase));
+                }
+                else
+                {
+                    ++gamePhase;
+                    ChangeDeckByPhase(gamePhase);
+                    if (gamePhase == PHASE_ENDPHASE)
+                    {
+                        gameState = State_EndOfTurn;
+                    }
+                    else
+                    {
+                        gameState = State_MakeAChoice;
+                        UI_SetEvent(GetNextEvent(gamePhase));
+                    }
+                }
+            }
+            DrawUI(gameState);
             break;
         case State_MakeAChoice:
-            DrawUI_CardDrawn();
+            DrawUI(gameState);
             break;
         case State_PlaceYourBuilding:
             DrawCursorTile(currentMousePos);
-            DrawUI_Constructing();
+            DrawUI(gameState);
             break;
-
         case State_EndOfTurn:
-
             EndTurn();
+            DrawUI(gameState);
             gameState = State_StartOfTurn;
             break;
     }
@@ -213,7 +216,6 @@ void GameControl()
 
 void MouseDragOrClick(void)
 {
-    /*
     if (AllowMouseDrag)
     {
         if (CP_Input_MouseDragged(0))
@@ -233,16 +235,10 @@ void MouseDragOrClick(void)
             mouseDrag = false;
         }
     }
-    else
+    else if (CP_Input_MouseClicked())
     {
         MouseClick();
     }
-    */
-    if (CP_Input_MouseClicked())
-    {
-        MouseClick();
-    }
-    
 }
 
 void game_init(void)
@@ -270,7 +266,7 @@ void game_update(void)
     DrawTileSet();
     DrawBuildings();
     UpdateAllNpc();
-    GameControl();
+    GameStateControl();
     DrawTempTextResources();
     DrawAllAnimations();
 }

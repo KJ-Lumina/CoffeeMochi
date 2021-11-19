@@ -66,25 +66,22 @@ typedef enum {
 	PHASE_ENDPHASE
 
 }GAMEPHASE;
-
 typedef enum
 {
 	State_MainMenu,
 	State_StartOfTurn,
 	State_Idle,
+	State_CardDraw,
 	State_MakeAChoice,
 	State_PlaceYourBuilding,
 	State_EndOfTurn,
 }GAMESTATE;
-
-
 typedef const struct {
 
 	int indexOption;
 	int optionType;
 
 }CARDOPTION;
-
 typedef struct
 {
 	int eventIndex;
@@ -108,8 +105,6 @@ typedef struct
 
 
 }CARDEVENT;
-
-
 typedef struct
 {
 	const char* name;
@@ -118,7 +113,6 @@ typedef struct
 	int foodGen;
 	int moraleGen;
 }BUILDING;
-
 typedef struct
 {
 	bool isUsed;
@@ -131,7 +125,6 @@ typedef struct
 	int index;
 
 }BUTTON;
-
 typedef struct
 {
 	int setNextSprite;
@@ -151,7 +144,6 @@ typedef struct
 	int index;
 	int isInfiniteLoop;
 }SPRITESHEET;
-
 typedef struct
 {
 	const char* imagename;
@@ -159,14 +151,20 @@ typedef struct
 	int maxSpritesY;
 
 }TILEMAP;
-
 typedef struct
 {
 	int positionX;
 	int positionY;
 
 }TILEPOSITION;
-
+typedef struct 
+{
+	CP_Image image;
+	CP_Vector startingPos;
+	CP_Vector endingPos;
+	float totalTime;
+	float currentTime;
+}MOVINGSPRITES;
 float Math_Abs(float x);
 int Math_Abs_Int(int x);
 
@@ -196,7 +194,8 @@ void DestroyBuildingByIndex(int buidlingIndex);
 // UI_Mechanics
 void DrawUI_Deck();
 void DrawUI_CardDrawn();
-void DrawUI_Constructing();
+void DrawUI_Default();
+void DrawUI(GAMESTATE state);
 void DrawTempTextResources();
 void UI_SetEvent(CARDEVENT*);
 int CheckUIClick(float, float);
