@@ -2,7 +2,7 @@
 #include <stdbool.h>
 #include "cprocessing.h"
 
-#define WORLDGRIDX 10
+#define WORLDGRIDX 5
 #define WORLDGRIDY 5
 #define TILEWIDTH 128.0f
 #define TILEHEIGHT 128.0f
