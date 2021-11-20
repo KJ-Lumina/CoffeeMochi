@@ -33,7 +33,7 @@ ONGOING currentEvent[10] = { 0 };
 
 void InitEvents() {
 
-	sprite_rat = CP_Image_load();
+	sprite_rat = CP_Image_Load("./Assets/workinprogress.png");
 	//sprite_one = CP_Image_load();
 	//sprite_two = CP_Image_load();
 	//sprite_three = CP_Image_load();
@@ -50,7 +50,7 @@ void GenerateEvents(int eventIndex, CP_Vector currentPosition) {
 			switch (eventIndex)
 			{
 			case 1:
-				currentEvent[i] = (ONGOING){1, sprite_rat, CP_Vector_set(0,0), CP_Vector_set(currentPosition.x,currentPosition.y), R_BUILDING_FARM_INDEX, 5, ISALIVE,"Rat has infiltrated the city , food will be compromised every turn "};//store into array
+				currentEvent[i] = (ONGOING){1, sprite_rat, CP_Vector_Set(0,0), CP_Vector_Set(currentPosition.x,currentPosition.y), R_BUILDING_FARM_INDEX, 5, ISALIVE,"Rat has infiltrated the city , food will be compromised every turn "};//store into array
 				return;
 			case 2:
 				//currentEvent[i] = { 2,sprite_one, CP_Vector_set(0,0), position, FARM, AreaOfEffect,0,5,"Rat has infiltrated the city , food will be compromised every turn ", ISALIVE };
@@ -69,7 +69,7 @@ void GenerateEvents(int eventIndex, CP_Vector currentPosition) {
 				//currentEvent[i] = { 6,sprite_five, CP_Vector_set(0,0), position, FARM, AreaOfEffect,0,5,"Rat has infiltrated the city , food will be compromised every turn " , ISALIVE };
 				return;
 			default:
-				return 0;
+				return;
 			}
 		}
 	}
@@ -81,18 +81,18 @@ void RemoveEvent(int i)
 	//remove current event when turn hit 0
 	currentEvent[i].alive = ISDEAD;
 }
-void EndTurn()
+void OnEndUpdateEvents()
 {
 	//turn minus one when called
 	for (int i = 0; i < EVENTLIMIT; i++)
 	{
-		if (currentEvent[i].alive != ISDEAD) {
+		if (currentEvent[i].alive == ISALIVE) {
 
 			currentEvent[i].turn -= 1;
 
 			if (currentEvent[i].turn == 0) {
 
-				removeEvent(i);
+				RemoveEvent(i);
 			}
 		}
 	}
