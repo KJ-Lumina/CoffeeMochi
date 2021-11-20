@@ -12,7 +12,7 @@
 CP_Image EventCard;
 MOVINGSPRITES EventCardAnim;
 CP_Image image_CardBack;
-CP_Image EventCardDeck;
+CP_Image image_CardDeck;
 //CP_Image EventGauntletClose;
 CP_Image image_CardFlipped;
 CP_Image image_CardA;
@@ -47,7 +47,7 @@ void InitUI()
     windowWidth = (float)CP_System_GetWindowWidth();
     windowHeight = (float)CP_System_GetWindowHeight();
     image_CardBack = CP_Image_Load("./ImperoArtAssets/Impero_CardBack.png");
-    EventCardDeck = CP_Image_Load("./Assets/WIP CARDDECK.png");
+    image_CardDeck = CP_Image_Load("./ImperoArtAssets/Impero_CardDeck.png");
     EventCardAnim = (MOVINGSPRITES){ image_CardBack, CP_Vector_Set(windowWidth - 130, (windowHeight / 2) + 230), CP_Vector_Set(windowWidth - 130, (windowHeight / 2) - 60), 0.6f, 0 };
     //EventGauntletClose = CP_Image_Load("./Assets/gauntletclose.png");
     image_CardFlipped = CP_Image_Load("./ImperoArtAssets/Impero_CardFlip.png");
@@ -172,7 +172,7 @@ void DrawUI_GauntletOpen()
 void DrawUI_Deck()
 {
     // Draw back of card
-    CP_Image_Draw(EventCardDeck, windowWidth - 130, (windowHeight / 2) + 240, 240, 360, 255);
+    CP_Image_Draw(image_CardDeck, windowWidth - 130, (windowHeight / 2) + 400, 228, 309, 255);
 }
 
 void DrawUI_TopPile()
@@ -197,13 +197,6 @@ void DrawUI_TopPileInsert()
     CP_Image_Draw(EventCardAnim.image, EventCardAnim.startingPos.x, CP_Math_LerpFloat(EventCardAnim.startingPos.y, EventCardAnim.endingPos.y, EventCardAnim.currentTime / EventCardAnim.totalTime), 185, 243, 255);
 }
 
-void DrawUI_Default()
-{
-    // Create black background
-    CP_Settings_Fill(CP_Color_Create(0, 0, 0, 255));
-    CP_Graphics_DrawRect(windowWidth - 260, 0, windowWidth, windowHeight);
-}
-
 void DrawUI_RewardCards()
 {
     CP_Image_Draw(*GetCardSpriteByIndex(selectedReward->eventIndex), windowWidth - 130, windowHeight / 2 - 60, 185, 243, 255);
@@ -211,7 +204,6 @@ void DrawUI_RewardCards()
 
 void DrawUI(GAMESTATE state)
 {
-    DrawUI_Default();
     switch (state)
     {
     case State_StartOfTurn:

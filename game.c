@@ -15,6 +15,7 @@ bool mouseDrag = false;
 
 GAMEPHASE gamePhase;
 GAMESTATE gameState;
+CP_Image game_Background;
 CP_Vector currentMousePos;
 CP_Vector mouseDragPos;
 int loseCondition_FoodValue;
@@ -60,6 +61,11 @@ bool LoseCondition_Resources() {
     return 0;
 }
 #pragma endregion
+
+void DrawBackground()
+{
+    CP_Image_Draw(game_Background, 800, 450, 1600, 900, 255);
+}
 
 void UpdateMouseInput()
 {
@@ -279,6 +285,7 @@ void MouseDragOrClick(void)
 void MainGame_Initialize(void)
 {   
     gameState = State_Idle;
+    game_Background = CP_Image_Load("./ImperoArtAssets/Impero_GameBG.png");
     InitResources(100);
     InitWorldSpaceGrid();
     InitBuildings();
@@ -294,6 +301,7 @@ void MainGame_Update(void)
     MouseDragOrClick();
     CheckKeyInput();
     // Graphics
+    DrawBackground();
     DrawTileSet();
     DrawBuildings();
     UpdateAllNpc();
