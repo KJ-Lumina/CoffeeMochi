@@ -8,27 +8,19 @@
 #include "Npc.h"
 
 
-
-GAMESTATE gameState = State_Idle;
-GAMEPHASE gamePhase = PHASE_BUILDPHASE; //Suppose to start with Build
 #pragma region Game Options Control
 bool AllowMouseDrag = false;
+bool mouseDrag = false;
 #pragma endregion
 
+GAMESTATE gameState;
+GAMEPHASE gamePhase;
 CP_Vector currentMousePos;
 CP_Vector mouseDragPos;
-bool mouseDrag = false;
-
-
-#pragma region Win & Lose Variable Declaration
 int loseCondition_FoodValue;
 int loseCondition_PopulationValue;
-#pragma endregion
-
-
-#define ONEVENTCARDCLICK 1
-
 float AnimTimer = 1;
+
 
 
 GAMESTATE GetGameState()
@@ -38,19 +30,19 @@ GAMESTATE GetGameState()
 
 #pragma region Turn & Win Lose Functions
 //Trigger Turn Start Functions Calls
-void StartTurn(void) 
+void StartTurn() 
 {
 
 }
 
 //Trigger Turn End Functions Calls
-void GameOver(void) 
+void GameOver() 
 {
     //Lose UI Pop Up
     printf("The game has ended!");
 }
 
-void EndTurn(void) 
+void EndTurn() 
 {
     if (gamePhase == PHASE_GAMEPHASE) {
         GenerateResourcesOnEndTurn();
@@ -72,7 +64,7 @@ bool LoseCondition_Resources() {
 }
 #pragma endregion
 
-void UpdateMouseInput(void)
+void UpdateMouseInput()
 {
     currentMousePos.x = CP_Input_GetMouseX();
     currentMousePos.y = CP_Input_GetMouseY();
@@ -84,6 +76,7 @@ void UpdateMouseInput(void)
     }
 }
 
+//Debug instant commands
 void AdminControlInput()
 {
     if (CP_Input_KeyTriggered(KEY_Q))
@@ -100,7 +93,7 @@ void AdminControlInput()
 }
 
 
-void CheckKeyInput(void)
+void CheckKeyInput()
 {
     if (CP_Input_KeyTriggered(KEY_F))
     {
@@ -111,7 +104,7 @@ void CheckKeyInput(void)
         EndTurn();
     }
     
-    // PLAYTESTING
+    // Debugging
     AdminControlInput();
 }
 
@@ -127,17 +120,34 @@ void MouseClick()
             break;
 
         case State_Idle:
-            if (CheckUIClick(currentMousePos.x, currentMousePos.y) == 1)
+            if (ClickCheckCardDraw())
             {
-                AnimTimer = 0.6f;
-                gameState = State_CardDraw;
+                if (GetCardsLeft() == 0)
+                {
+                    ++gamePhase;
+                    ChangeDeckByPhase(gamePhase);
+                    if (gamePhase == PHASE_ENDPHASE)
+                    {
+                        gameState = State_EndOfTurn;
+                    }
+                    else
+                    {
+                        gameState = State_MakeAChoice;
+                        UI_SetEvent(GetNextEvent(gamePhase));
+                    }
+                }
+                else
+                {
+                    AnimTimer = 0.6f;
+                    gameState = State_CardDraw;
+                }
             }
             break;
         case State_CardDraw:
             
             break;
         case State_MakeAChoice:
-            switch (CheckUIClick(currentMousePos.x, currentMousePos.y))
+            switch (ClickCheckCardChoice())
             {
             case 1:
                 gameState = State_PlaceYourBuilding;
@@ -167,48 +177,25 @@ void GameStateControl()
     switch (gameState)
     {
         case State_StartOfTurn:
-            DrawUI(gameState);
             gameState = State_Idle;
             break;
         case State_Idle:
-            DrawUI(gameState);
             break;
         case State_CardDraw:
             AnimTimer -= CP_System_GetDt();
             if (AnimTimer <= 0)
             {
-                if (GetCardsLeft() != 0)
-                {
-                    gameState = State_MakeAChoice;
-                    UI_SetEvent(GetNextEvent(gamePhase));
-                }
-                else
-                {
-                    ++gamePhase;
-                    ChangeDeckByPhase(gamePhase);
-                    if (gamePhase == PHASE_ENDPHASE)
-                    {
-                        gameState = State_EndOfTurn;
-                    }
-                    else
-                    {
-                        gameState = State_MakeAChoice;
-                        UI_SetEvent(GetNextEvent(gamePhase));
-                    }
-                }
+                gameState = State_MakeAChoice;
+                UI_SetEvent(GetNextEvent(gamePhase));
             }
-            DrawUI(gameState);
             break;
         case State_MakeAChoice:
-            DrawUI(gameState);
             break;
         case State_PlaceYourBuilding:
             DrawCursorTile(currentMousePos);
-            DrawUI(gameState);
             break;
         case State_EndOfTurn:
             EndTurn();
-            DrawUI(gameState);
             gameState = State_StartOfTurn;
             break;
     }
@@ -246,7 +233,8 @@ void game_init(void)
     CP_System_ShowConsole();
     CP_System_SetWindowSize(1600, 900);
     CP_Settings_TextAlignment(CP_TEXT_ALIGN_H_CENTER, CP_TEXT_ALIGN_V_TOP);
-
+    gameState = State_Idle;
+    gamePhase = PHASE_BUILDPHASE;
     InitResources(100);
     InitWorldSpaceGrid();
     InitBuildings();
@@ -267,6 +255,7 @@ void game_update(void)
     DrawBuildings();
     UpdateAllNpc();
     GameStateControl();
+    DrawUI(gameState);
     DrawTempTextResources();
     DrawAllAnimations();
 }

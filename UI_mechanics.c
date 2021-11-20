@@ -25,6 +25,8 @@ float windowWidth;
 float windowHeight;
 CP_Vector optionAPos;
 CP_Vector optionBPos;
+bool IsAViable;
+bool IsBViable;
 char textDescBuffer[100];
 
 //SPRITESHEET tileset_testenemy = { setNextSprite,minX,maxX,minY,maxY,maxSprites,spriteSizeX,spritesizeY,timeToDeath,posX,PosY,scaleX,scaleY,timeElapse,index,isInfiniteLoop };
@@ -55,7 +57,6 @@ void InitUI()
     EventGauntletA = CP_Image_Load("./Assets/gauntletA.png");
     EventGauntletB = CP_Image_Load("./Assets/gauntletB.png");
 
-
     optionAPos = CP_Vector_Set(windowWidth - 170, windowHeight / 2 - 60);
     optionBPos = CP_Vector_Set(windowWidth - 90, windowHeight / 2 - 60);
 }
@@ -63,6 +64,8 @@ void InitUI()
 void UI_SetEvent(CARDEVENT* newEvent)
 {
     selectedEvent = newEvent;
+    IsAViable = IsCostPayable(selectedEvent->costTypeA, selectedEvent->costAmountA);
+    IsBViable = IsCostPayable(selectedEvent->costTypeB, selectedEvent->costAmountB);
 }
 
 bool CheckWithinBounds(CP_Vector position, float width, float height)
@@ -77,357 +80,40 @@ bool CheckWithinBounds(CP_Vector position, float width, float height)
     return false;
 }
 
-int CheckUIClick(float xPos, float yPos)
+bool ClickCheckCardDraw()
 {
-    switch (GetGameState())
+    if (CheckWithinBounds(EventCardAnim.startingPos, 240, 240))
     {
-    case State_MainMenu:
-        break;
-    case State_Idle:
-        // click on card
-        if (CheckWithinBounds(EventCardAnim.startingPos, 240, 240))
+        return true;
+    }
+    return false;
+}
+
+int ClickCheckCardChoice()
+{
+    if (CheckWithinBounds(optionAPos, 120, 320))
+    {
+        if (IsAViable)
         {
             return 1;
         }
-        break;
-    case State_MakeAChoice:
-        // click on option A
-        if (xPos >= optionAPos.x - 60 && xPos <= optionAPos.x + 60 && yPos >= optionBPos.y - 160 && yPos <= optionBPos.y + 160)
+        else
         {
-
-            //Check for Pre-Requiste 
-            switch (selectedEvent->costTypeA)
-            {
-            case R_NULL_INDEX:
-                //Do Nothing
-                break;
-                //RESOURCE COST
-            case R_GOLD_INDEX:
-                if ((Get_current_gold() - selectedEvent->costAmountA) < 0) return 0;
-                Set_current_gold(Get_current_gold() - selectedEvent->costAmountA);
-                break;
-
-            case R_FOOD_INDEX:
-                if ((Get_current_food() - selectedEvent->costAmountA) < 0) return 0;
-                Set_current_food(Get_current_food() - selectedEvent->costAmountA);
-                break;
-
-            case R_POPULATION_INDEX:
-                if ((Get_current_population() - selectedEvent->costAmountA) < 0) return 0;
-                Set_current_population(Get_current_population() - selectedEvent->costAmountA);
-                break;
-
-            case R_MORALE_INDEX:
-                if ((Get_current_morale() - selectedEvent->costAmountA) < 0) return 0;
-                Set_additional_morale(Get_additional_morale() - selectedEvent->costAmountA);
-                break;
-
-            case R_BUILDING_HOUSE_INDEX:
-                SubtractHouse();
-                DestroyBuildingByIndex(B_HOUSE_INDEX);
-
-                break;
-
-            case R_BUILDING_FARM_INDEX:
-                SubtractFarm();
-                DestroyBuildingByIndex(B_FARM_INDEX);
-
-                break;
-
-            case R_BUILDING_MARKET_INDEX:
-                SubtractMarket();
-                DestroyBuildingByIndex(B_MARKET_INDEX);
-
-                break;
-
-            case R_BUILDING_TAVERN_INDEX:
-                SubtractTavern();
-                DestroyBuildingByIndex(B_TAVERN_INDEX);
-
-                break;
-
-            default:
-                break;
-            }
-
-            //Run the Event depending on the event type if the Pre-Requiste is met
-            switch (selectedEvent->eventType) {
-            case BUILD_TYPE_EVENT:
-                if (selectedEvent->indexOptionA != NULL_CHOICE) {
-                    SetCurrentBuilding(GetBuildingByIndex(selectedEvent->indexOptionA));
-                    SetCurrentAmountToBuild(selectedEvent->optionAmountA);
-                    return 1;
-                }
-                else {
-                    return 2;
-                }           
-                break;
-
-            case RESOURCE_TYPE_EVENT:
-
-                switch (selectedEvent->optionTypeA) {
-
-                case R_NULL_INDEX:
-
-                    break;
-
-                case R_GOLD_INDEX:
-
-                    if (selectedEvent->indexOptionA == E_INCREASE_RESOURCE) {
-                        Set_current_gold(Get_current_gold() + selectedEvent->optionAmountA);
-                    }
-                    else if (selectedEvent->indexOptionA == E_DECREASE_RESOURCE) {
-                        Set_current_gold(Get_current_gold() - selectedEvent->optionAmountA);
-                    }
-
-                    break;
-
-                case R_FOOD_INDEX:
-
-                    if (selectedEvent->indexOptionA == E_INCREASE_RESOURCE) {
-                        Set_current_food(Get_current_food() + selectedEvent->optionAmountA);
-                    }
-                    else if (selectedEvent->indexOptionA == E_DECREASE_RESOURCE) {
-                        Set_current_food(Get_current_food() - selectedEvent->optionAmountA);
-                    }
-
-                    break;
-
-                case R_POPULATION_INDEX:
-
-                    if (selectedEvent->indexOptionA == E_INCREASE_RESOURCE) {
-                        Set_current_population(Get_current_population() + selectedEvent->optionAmountA);
-                    }
-                    else if (selectedEvent->indexOptionA == E_DECREASE_RESOURCE) {
-                        Set_current_population(Get_current_population() - selectedEvent->optionAmountA);
-                    }
-
-                    break;
-
-                default:
-                    break;
-                }
-
-                return 2;
-                break;
-
-            case DESTROY_TYPE_EVENT:
-
-                switch (selectedEvent->optionTypeA) {
-
-                case R_BUILDING_HOUSE_INDEX:
-                    SubtractHouse();
-                    DestroyBuildingByIndex(B_HOUSE_INDEX);
-
-                    break;
-
-                case R_BUILDING_FARM_INDEX:
-                    SubtractFarm();
-                    DestroyBuildingByIndex(B_FARM_INDEX);
-
-                    break;
-
-                case R_BUILDING_MARKET_INDEX:
-                    SubtractMarket();
-                    DestroyBuildingByIndex(B_MARKET_INDEX);
-
-                    break;
-
-                case R_BUILDING_TAVERN_INDEX:
-                    SubtractTavern();
-                    DestroyBuildingByIndex(B_TAVERN_INDEX);
-
-                    break;
-                }
-                return 2;
-                break;
-
-            case ONGOING_TYPE_EVENT:
-
-                break;
-
-            default:
-                break;
-
-            }
-
-            break;
+            printf("u broke dude");
+            return 0;
         }
-
-        // click on option B?
-        else if (xPos >= optionBPos.x - 60 && xPos <= optionBPos.x + 60 && yPos >= optionBPos.y - 160 && yPos <= optionBPos.y + 160)
+    }
+    else if (CheckWithinBounds(optionBPos, 120, 320))
+    {
+        if (IsBViable)
         {
-
-             //Check for Pre-Requiste 
-            switch (selectedEvent->costTypeB)
-            {
-            case R_NULL_INDEX:
-                //Do Nothing
-                break;
-
-                //RESOURECE RELATED TYPE COST
-            case R_GOLD_INDEX:
-                if ((Get_current_gold() - selectedEvent->costAmountB) < 0) return 0;
-                Set_current_gold(Get_current_gold() - selectedEvent->costAmountB);
-                break;
-
-            case R_FOOD_INDEX:
-                if ((Get_current_food() - selectedEvent->costAmountB) < 0) return 0;
-                Set_current_food(Get_current_food() - selectedEvent->costAmountB);
-                break;
-
-            case R_POPULATION_INDEX:
-                if ((Get_current_population() - selectedEvent->costAmountB) < 0) return 0;
-                Set_current_population(Get_current_population() - selectedEvent->costAmountB);
-                break;
-
-            case R_MORALE_INDEX:
-                if ((Get_current_morale() - selectedEvent->costAmountB) < 0) return 0;
-                Set_additional_morale(Get_additional_morale() - selectedEvent->costAmountB);
-                break;
-
-
-                //BUILDING RELATED TYPE COST
-            case R_BUILDING_HOUSE_INDEX:
-                SubtractHouse();
-                DestroyBuildingByIndex(B_HOUSE_INDEX);
-
-                break;
-
-            case R_BUILDING_FARM_INDEX:
-                SubtractFarm();
-                DestroyBuildingByIndex(B_FARM_INDEX);
-
-                break;
-
-            case R_BUILDING_MARKET_INDEX:
-                SubtractMarket();
-                DestroyBuildingByIndex(B_MARKET_INDEX);
-
-                break;
-
-            case R_BUILDING_TAVERN_INDEX:
-                SubtractTavern();
-                DestroyBuildingByIndex(B_TAVERN_INDEX);
-
-                break;
-
-            default:
-
-                break;
-            }
-
-            //Run the Event depending on the event type if the Pre-Requiste is met
-            switch (selectedEvent->eventType) {
-            case BUILD_TYPE_EVENT:
-                if (selectedEvent->indexOptionB != NULL_CHOICE) {
-                    SetCurrentBuilding(GetBuildingByIndex(selectedEvent->indexOptionB));
-                    SetCurrentAmountToBuild(selectedEvent->optionAmountB);
-                    return 1;
-                }
-                else {
-                    return 2;
-                }        
-                break;
-
-            case RESOURCE_TYPE_EVENT:
-
-                switch (selectedEvent->optionTypeB) {
-
-                case R_NULL_INDEX:
-
-                    break;
-                
-                case R_GOLD_INDEX:
-
-                    if (selectedEvent->indexOptionA == E_INCREASE_RESOURCE) {
-                        Set_current_gold(Get_current_gold() + selectedEvent->optionAmountB);
-                    }
-                    else if (selectedEvent->indexOptionA == E_DECREASE_RESOURCE) {
-                        Set_current_gold(Get_current_gold() - selectedEvent->optionAmountB);
-                    }
-
-                    break;
-
-                case R_FOOD_INDEX:
-
-                    if (selectedEvent->indexOptionA == E_INCREASE_RESOURCE) {
-                        Set_current_food(Get_current_food() + selectedEvent->optionAmountB);
-                    }
-                    else if (selectedEvent->indexOptionA == E_DECREASE_RESOURCE) {
-                        Set_current_food(Get_current_food() - selectedEvent->optionAmountB);
-                    }
-
-                    break;
-
-                case R_POPULATION_INDEX:
-
-                    if (selectedEvent->indexOptionA == E_INCREASE_RESOURCE) {
-                        Set_current_population(Get_current_population() + selectedEvent->optionAmountB);
-                    }
-                    else if (selectedEvent->indexOptionA == E_DECREASE_RESOURCE) {
-                        Set_current_population(Get_current_population() - selectedEvent->optionAmountB);
-                    }
-
-                    break;
-
-                default:
-                    break;
-                }
-
-                return 2;
-                break;
-
-
-            case DESTROY_TYPE_EVENT:
-
-                switch (selectedEvent->optionTypeB) {
-
-                case R_BUILDING_HOUSE_INDEX:
-                    SubtractHouse();
-                    DestroyBuildingByIndex(B_HOUSE_INDEX);
-
-                    break;
-
-                case R_BUILDING_FARM_INDEX:
-                    SubtractFarm();
-                    DestroyBuildingByIndex(B_FARM_INDEX);
-
-                    break;
-
-                case R_BUILDING_MARKET_INDEX:
-                    SubtractMarket();
-                    DestroyBuildingByIndex(B_MARKET_INDEX);
-
-                    break;
-
-                case R_BUILDING_TAVERN_INDEX:
-                    SubtractTavern();
-                    DestroyBuildingByIndex(B_TAVERN_INDEX);
-
-                    break;
-                }
-
-                return 2;
-                break;
-
-            case ONGOING_TYPE_EVENT:
-
-                break;
-
-            default:
-                break;
-
-            }
-
-            break;
+            return 2;
         }
-        break;
-
-    case State_PlaceYourBuilding:
-        break;
-    default:
-        return 0;
+        else
+        {
+            printf("u broke dude");
+            return 0;
+        }
     }
     return 0;
 }

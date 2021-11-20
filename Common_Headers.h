@@ -47,6 +47,7 @@
 #define RESOURCE_TYPE_EVENT 2
 #define DESTROY_TYPE_EVENT 3
 #define ONGOING_TYPE_EVENT 4
+#define EVENT_TYPE_REWARD 5
 
 //Resources
 // Building costs for every tile are defaulted to the following values
@@ -84,27 +85,25 @@ typedef const struct {
 }CARDOPTION;
 typedef struct
 {
-	int eventIndex;
-	int eventDifficultyType;
-	int eventType;
+	int eventIndex; // unique ID
+	int eventType; //
 	char* description;
-
-	int indexOptionA;
-	int optionAmountA;
-	int optionTypeA;
-	int costTypeA;
-	int costAmountA;
+	int resourceChangeA[4];
+	int resourceRewardA[2];
 	char* descriptionA;
-
-	int indexOptionB;
-	int optionAmountB;
-	int optionTypeB;
-	int costTypeB;
-	int costAmountB;
+	int resourceChangeB[4];
+	int resourceRewardB[2];
 	char* descriptionB;
-
-
 }CARDEVENT;
+typedef struct
+{
+	int eventIndex;
+	int cardType;
+	int resourceType;
+	int resourceAmt;
+	char* description;
+}REWARDCARD;
+
 typedef struct
 {
 	const char* name;
@@ -192,13 +191,13 @@ int GetAllBuildingsPositionByIndex(int index, TILEPOSITION position[]);
 void DestroyBuildingByIndex(int buidlingIndex);
 
 // UI_Mechanics
+bool ClickCheckCardDraw();
+int ClickCheckCardChoice();
 void DrawUI_Deck();
-void DrawUI_CardDrawn();
 void DrawUI_Default();
 void DrawUI(GAMESTATE state);
 void DrawTempTextResources();
 void UI_SetEvent(CARDEVENT*);
-int CheckUIClick(float, float);
 
 // Resources
 void Set_current_gold(int gold);
@@ -229,6 +228,9 @@ BUILDING* GetBuildingByIndex(int);
 CP_Image* GetBuildingSpriteByIndex(int);
 CP_Image* GetBuildingSpriteButtonByIndex(int);
 void ChangeDeckByPhase(GAMEPHASE currentGamePhase);
+
+// Resources
+bool IsCostPayable(int costType, int costAmt);
 
 
 
