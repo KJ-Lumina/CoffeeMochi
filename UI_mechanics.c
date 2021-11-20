@@ -99,7 +99,7 @@ int ClickCheckCardChoice()
         }
         else
         {
-            printf("u broke dude");
+            printf("u broke dude LMAO");
             return 0;
         }
     }
@@ -111,7 +111,7 @@ int ClickCheckCardChoice()
         }
         else
         {
-            printf("u broke dude");
+            printf("u broke dude LMAO");
             return 0;
         }
     }
