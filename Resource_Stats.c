@@ -38,9 +38,9 @@ Buff/Debuff effects will be seperated to a different header file
 #define LOW_MORALE 2
 
 
-int curGold;
-int curFood;
-int curPopulation;
+int curGold = 0;
+int curFood = 0;
+int curPopulation = 0;
 int initPopulation = 100;
 int curMorale;
 int additionalMorale;
@@ -291,28 +291,26 @@ void AddNewResourceBuilding(int buildingIndex)
 	}
 }
 
-bool IsCostPayable(int costType, int costAmt)
+void ApplyEventResult(int resourceChange[4])
 {
-	switch (costType)
+    curGold += resourceChange[0];
+    curFood += resourceChange[1];
+    curPopulation += resourceChange[2];
+    curMorale += resourceChange[3];
+
+    /*if (resourceChange[0] != 0)
+    {
+        resourceChange[0] > 0 ? DrawanimgoldIncrease : Drawnimgolddecrease
+    }*/
+}
+
+bool IsCostPayable(int costAmt)
+{
+	if (curGold >= costAmt)
 	{
-	case R_GOLD_INDEX:
-		if (curGold >= costAmt)
-		{
-			return true;
-		}
-		return false;
-		break;
-	case R_FOOD_INDEX:
-		if (curFood >= costAmt)
-		{
-			return true;
-		}
-		return false;
-		break;
-	default:
 		return true;
-		break;
 	}
+	return false;
 }
 
 

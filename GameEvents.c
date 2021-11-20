@@ -24,10 +24,17 @@ typedef struct
 	char* descriptionB;
 }CARDEVENT; */
 
+CP_Image HouseCardSprite;
+CP_Image FarmCardSprite;
+CP_Image MarketCardSprite;
+CP_Image TavernCardSprite;
+
 #define TOTALCARDCOUNT 21
 #define TOTALTUTORIALCARDSCOUNT 3
+#define TOTALREWARDCARDCOUNT 5
 CARDEVENT* cardList[TOTALCARDCOUNT];
 CARDEVENT* tutCardList[TOTALTUTORIALCARDSCOUNT];
+REWARDCARD* rewardCardList[TOTALREWARDCARDCOUNT];
 
 CARDDECK tutorialDeck;
 CARDDECK cardDeck;
@@ -36,10 +43,10 @@ CARDDECK* currentDeck;
 CARDEVENT* currentEvent;
 int currentCardIndex;
 #pragma region Reward Cards
-REWARDCARD R_House		= { 1, BUILD_TYPE_EVENT, B_HOUSE_INDEX , 1, "Click on the grid to place the house."};
-REWARDCARD R_Farm		= { 2, BUILD_TYPE_EVENT, B_FARM_INDEX , 1, "Click on the grid to place the farm." };
-REWARDCARD R_Market		= { 3, BUILD_TYPE_EVENT, B_MARKET_INDEX , 1, "Click on the grid to place the market." };
-REWARDCARD R_Tavern		= { 4, BUILD_TYPE_EVENT, B_TAVERN_INDEX , 1, "Click on the grid to place the tavern." };
+REWARDCARD R_HouseCard	= { 1, BUILD_TYPE_EVENT, B_HOUSE_INDEX , 1, "Click on the grid to place the house."};
+REWARDCARD R_FarmCard	= { 2, BUILD_TYPE_EVENT, B_FARM_INDEX , 1, "Click on the grid to place the farm." };
+REWARDCARD R_MarketCard	= { 3, BUILD_TYPE_EVENT, B_MARKET_INDEX , 1, "Click on the grid to place the market." };
+REWARDCARD R_TavernCard	= { 4, BUILD_TYPE_EVENT, B_TAVERN_INDEX , 1, "Click on the grid to place the tavern." };
 
 #pragma endregion
 
@@ -131,7 +138,7 @@ CARDEVENT E_DiseaseSpread = { 19, RESOURCE_TYPE_EVENT, "Gorvernor, a disease hav
 //DESTROY TYPE EVENTS
 CARDEVENT E_EarthquakeIncoming = { 20, DESTROY_TYPE_EVENT, "Gorvernor, news from nearby kingdom have reach our ears that a earthquake is coming and would striking our kingdom soon. There is an urgent need to make preparation for it when it arrives."
 ,{0,0,0,0}, {5, -1}, "Sound the emergency alarm. Get all of our citizen to start reinforcing all our building but focus on the Farms and Taverns."
-,{0,0,0,0}, {6, -1], "Sound the emergency alarm. Get all of our citizen to start reinforcing all our building but focus on the Farms and Taverns." };
+,{0,0,0,0}, {6, -1}, "Sound the emergency alarm. Get all of our citizen to start reinforcing all our building but focus on the Farms and Taverns." };
 
 #pragma endregion
 
@@ -144,6 +151,7 @@ void InitCardList()
 	tutCardList[2] = &E_TutBuildAMarket;
 
 	//Init Card List
+
 	cardList[0] = &E_BuidldATavern;
 	cardList[1] = &E_GoldMineDiscovered;
 	cardList[2] = &E_FoodMerchantArrival;
@@ -165,6 +173,16 @@ void InitCardList()
 	cardList[18] = &E_BuildAHouse;
 	cardList[19] = &E_VillagersKidnapped;
 	cardList[20] = &E_DiseaseSpread;
+
+	rewardCardList[0] = &R_HouseCard;
+	rewardCardList[1] = &R_FarmCard;
+	rewardCardList[2] = &R_MarketCard;
+	rewardCardList[3] = &R_TavernCard;
+
+	HouseCardSprite = CP_Image_Load("./ImperoArtAssets/Impero_HouseRewardCard.png");
+	FarmCardSprite = CP_Image_Load("./ImperoArtAssets/Impero_HouseRewardCard.png");
+	MarketCardSprite = CP_Image_Load("./ImperoArtAssets/Impero_HouseRewardCard.png");
+	TavernCardSprite = CP_Image_Load("./ImperoArtAssets/Impero_HouseRewardCard.png");
 }
 
 void InitDecks()
@@ -281,4 +299,25 @@ CARDEVENT* GetEventByIndex(int index)
 	return cardList[index];
 }
 
+REWARDCARD* GetRewardByIndex(int index)
+{
+	return rewardCardList[index];
+}
+
+CP_Image* GetCardSpriteByIndex(int index)
+{
+	switch (index)
+	{
+	case 1:
+		return &HouseCardSprite;
+	case 2:
+		return &FarmCardSprite;
+	case 3:
+		return &MarketCardSprite;
+	case 4:
+		return &TavernCardSprite;
+	default:
+		return &HouseCardSprite;
+	}
+}
 

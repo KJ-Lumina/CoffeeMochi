@@ -2,6 +2,9 @@
 #include <stdbool.h>
 #include "cprocessing.h"
 
+
+
+
 #define WORLDGRIDX 5
 #define WORLDGRIDY 5
 #define TILEWIDTH 128.0f
@@ -60,12 +63,20 @@
 #define START_GAME 0
 
 
-typedef enum {
-	PHASE_MAINMENU,
+typedef enum 
+{
+	SCENE_MAINMENU,
+	SCENE_GAMEENTRY,
+	SCENE_GAMELEAVEENTRY,
+	SCENE_GAMEPHASE,
+	SCENE_ENDPHASE,
+}GAMESCENE;
+
+typedef enum
+{
 	PHASE_BUILDPHASE,
 	PHASE_GAMEPHASE,
-	PHASE_ENDPHASE
-
+	PHASE_ENDPHASE,
 }GAMEPHASE;
 typedef enum
 {
@@ -74,8 +85,10 @@ typedef enum
 	State_Idle,
 	State_CardDraw,
 	State_MakeAChoice,
+	State_CollectRewards,
 	State_PlaceYourBuilding,
 	State_EndOfTurn,
+	State_GameOver
 }GAMESTATE;
 typedef const struct {
 
@@ -167,7 +180,9 @@ typedef struct
 float Math_Abs(float x);
 int Math_Abs_Int(int x);
 
-GAMESTATE GetGameState();
+/* Forward declarations */
+void MainGame_Initialize(void);
+void MainGame_Update(void);
 
 // Initialization
 void InitBuildings();
@@ -184,19 +199,21 @@ void DrawCursorTile(CP_Vector cursorPos);
 float CalculateUnitsToBorder(CP_Vector position, CP_Vector directionUnit);
 void SetNewBuilding(int xPos, int yPos, int buildingIndex);
 void SetCurrentBuilding(BUILDING* newBuilding);
-void SetCurrentAmountToBuild(int buildAmount);
 bool AttemptPlaceBuilding(CP_Vector cursorPos);
 bool IsTileOccupied(CP_Vector);
 int GetAllBuildingsPositionByIndex(int index, TILEPOSITION position[]);
 void DestroyBuildingByIndex(int buidlingIndex);
 
 // UI_Mechanics
-bool ClickCheckCardDraw();
-int ClickCheckCardChoice();
+bool CheckWithinBounds(CP_Vector position, float width, float height);
+bool ClickCheck_CardDraw();
+int ClickCheck_CardChoice();
+int ClickCheck_Rewards();
 void DrawUI_Deck();
 void DrawUI_Default();
 void DrawUI(GAMESTATE state);
 void DrawTempTextResources();
+void UI_SetReward(CARDEVENT* newEvent, bool optionA);
 void UI_SetEvent(CARDEVENT*);
 
 // Resources
@@ -219,18 +236,21 @@ void SubtractFarm();
 void SubtractHouse();
 void SubtractTavern();
 void GenerateResourcesOnEndTurn();
+void ApplyEventResult(int resourceChange[4]);
 
 // Card Events
 int GetCardsLeft();
 CARDEVENT* GetNextEvent(GAMEPHASE gamePhase);
 CARDEVENT* GetCurrentEvent();
 BUILDING* GetBuildingByIndex(int);
+REWARDCARD* GetRewardByIndex(int index);
 CP_Image* GetBuildingSpriteByIndex(int);
 CP_Image* GetBuildingSpriteButtonByIndex(int);
+CP_Image* GetCardSpriteByIndex(int index);
 void ChangeDeckByPhase(GAMEPHASE currentGamePhase);
 
 // Resources
-bool IsCostPayable(int costType, int costAmt);
+bool IsCostPayable(int costAmt);
 
 
 

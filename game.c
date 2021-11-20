@@ -13,20 +13,19 @@ bool AllowMouseDrag = false;
 bool mouseDrag = false;
 #pragma endregion
 
-GAMESTATE gameState;
 GAMEPHASE gamePhase;
+GAMESTATE gameState;
 CP_Vector currentMousePos;
 CP_Vector mouseDragPos;
 int loseCondition_FoodValue;
 int loseCondition_PopulationValue;
+
+
 float AnimTimer = 1;
+CARDEVENT* selectedEvent;
+REWARDCARD* selectedReward;
+int rewardCardsLeft = 0;
 
-
-
-GAMESTATE GetGameState()
-{
-    return gameState;
-}
 
 #pragma region Turn & Win Lose Functions
 //Trigger Turn Start Functions Calls
@@ -44,11 +43,9 @@ void GameOver()
 
 void EndTurn() 
 {
-    if (gamePhase == PHASE_GAMEPHASE) {
-        GenerateResourcesOnEndTurn();
-    }
+    GenerateResourcesOnEndTurn();
 
-    if (gamePhase == PHASE_ENDPHASE) {
+    if (gameState == State_GameOver) {
         GameOver();
     }
     /*if (LoseCondition_Resources())
@@ -110,8 +107,6 @@ void CheckKeyInput()
 
 void MouseClick()
 {
-    if (gamePhase == PHASE_MAINMENU) return; //Run Main Menu UI stuff
-
     switch (gameState)
     {
         case State_StartOfTurn:
@@ -120,7 +115,7 @@ void MouseClick()
             break;
 
         case State_Idle:
-            if (ClickCheckCardDraw())
+            if (ClickCheck_CardDraw())
             {
                 if (GetCardsLeft() == 0)
                 {
@@ -133,7 +128,8 @@ void MouseClick()
                     else
                     {
                         gameState = State_MakeAChoice;
-                        UI_SetEvent(GetNextEvent(gamePhase));
+                        selectedEvent = GetNextEvent(gamePhase);
+                        UI_SetEvent(selectedEvent);
                     }
                 }
                 else
@@ -147,13 +143,56 @@ void MouseClick()
             
             break;
         case State_MakeAChoice:
-            switch (ClickCheckCardChoice())
+            // made a choice
+            switch (ClickCheck_CardChoice())
             {
             case 1:
+                // clicked on optionA
+                ApplyEventResult(selectedEvent->resourceChangeA);
+                selectedReward = GetRewardByIndex(selectedEvent->resourceRewardA[0]);
+                rewardCardsLeft = selectedEvent->resourceRewardA[1];
+                if (rewardCardsLeft)
+                {
+                    // reward cards exist
+                    UI_SetReward(selectedEvent, true);
+                    gameState = State_CollectRewards;
+                }
+                else
+                {
+                    // no reward cards
+                    gameState = State_EndOfTurn;
+                }
+                break;
+            case 2:
+                // clicked on optionB
+                ApplyEventResult(selectedEvent->resourceChangeB);
+                selectedReward = GetRewardByIndex(selectedEvent->resourceRewardB[0]);
+                rewardCardsLeft = selectedEvent->resourceRewardB[1];
+                if (rewardCardsLeft)
+                {
+                    // reward cards exist
+                    UI_SetReward(selectedEvent, false);
+                    gameState = State_CollectRewards;
+                }
+                else
+                {
+                    // no reward cards
+                    gameState = State_EndOfTurn;
+                }
+                break;
+            }
+            break;
+        case State_CollectRewards:
+            switch (ClickCheck_Rewards())
+            {
+            case 1:
+                // reward is construction
+                SetCurrentBuilding(GetBuildingByIndex(selectedReward->eventIndex));
+                --rewardCardsLeft;
                 gameState = State_PlaceYourBuilding;
                 break;
             case 2:
-                gameState = State_EndOfTurn;
+                // reward is ongoing?
                 break;
             }
             break;
@@ -161,7 +200,16 @@ void MouseClick()
 
             if (AttemptPlaceBuilding(currentMousePos))
             {
-                gameState = State_EndOfTurn;
+                // there is more rewards to collect
+                if (rewardCardsLeft)
+                {
+                    gameState = State_CollectRewards;
+                }
+                // there is no more rewards
+                else
+                {
+                    gameState = State_EndOfTurn;
+                }
             }
             break;
 
@@ -228,13 +276,9 @@ void MouseDragOrClick(void)
     }
 }
 
-void game_init(void)
-{    
-    CP_System_ShowConsole();
-    CP_System_SetWindowSize(1600, 900);
-    CP_Settings_TextAlignment(CP_TEXT_ALIGN_H_CENTER, CP_TEXT_ALIGN_V_TOP);
+void MainGame_Initialize(void)
+{   
     gameState = State_Idle;
-    gamePhase = PHASE_BUILDPHASE;
     InitResources(100);
     InitWorldSpaceGrid();
     InitBuildings();
@@ -244,23 +288,17 @@ void game_init(void)
     InitUI();
 }
 
-void game_update(void)
+void MainGame_Update(void)
 {
     UpdateMouseInput();
     MouseDragOrClick();
     CheckKeyInput();
     // Graphics
-    CP_Graphics_ClearBackground(CP_Color_Create(150, 150, 150, 255));
     DrawTileSet();
     DrawBuildings();
     UpdateAllNpc();
-    GameStateControl();
     DrawUI(gameState);
+    GameStateControl();
     DrawTempTextResources();
     DrawAllAnimations();
-}
-
-void game_exit(void)
-{
-
 }
