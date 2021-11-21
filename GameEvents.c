@@ -199,10 +199,7 @@ void InitDecks()
 		tutorialDeck.cardsInDeck++;
 	}
 
-
-	
 	char cardDeckIndexes[] = { 5,9,6,7,16,2,8,10,3,15,4,17,12,20,13,14,18,1,11,19 };
-
 
 	for (int index = 0; index < sizeof(cardDeckIndexes); index++)
 	{	
@@ -225,64 +222,60 @@ int GetCardsLeft()
 	return currentDeck->cardsInDeck - currentCardIndex;
 }
 
-CARDEVENT* GetNextEvent(GAMEPHASE gamePhase)
+CARDEVENT* GetNextEvent(bool isTutorial)
 {
-
-	switch (gamePhase) {
-
-	case PHASE_BUILDPHASE:
-
-		/*if (currentCardIndex == currentDeck->cardsInDeck)
-		{
-			printf("Reset");
-			*currentEvent = emptyCard;
-			currentDeck = &cardDeck;
-			currentCardIndex = 0;
-			return currentEvent;
-		}*/
-
+	if (isTutorial == true) {
 		currentEvent = tutCardList[currentDeck->cardIndexes[currentCardIndex]];
-		++currentCardIndex; //Adding one counter to the Card Index after Drawing it
-
-		break;
-
-	case PHASE_GAMEPHASE:
-
-		//if (currentCardIndex == currentDeck->cardsInDeck)
-		//{
-		//	printf("exit");
-		//	*currentEvent = emptyCard;
-		//	return currentEvent;
-		//}
-
-		currentEvent = GetEventByIndex(currentDeck->cardIndexes[currentCardIndex]);
-		++currentCardIndex; //Adding one counter to the Card Index after Drawing it
-
-		break;
 	}
+	else {
+		currentEvent = GetEventByIndex(currentDeck->cardIndexes[currentCardIndex]);
+	}
+
+	++currentCardIndex;
 
 	return currentEvent;
 
+	//switch (gamePhase) {
+
+	//case PHASE_BUILDPHASE:
+
+	//	/*if (currentCardIndex == currentDeck->cardsInDeck)
+	//	{
+	//		printf("Reset");
+	//		*currentEvent = emptyCard;
+	//		currentDeck = &cardDeck;
+	//		currentCardIndex = 0;
+	//		return currentEvent;
+	//	}*/
+
+	//	
+	//	++currentCardIndex; //Adding one counter to the Card Index after Drawing it
+
+	//	break;
+
+	//case PHASE_GAMEPHASE:
+
+	//	//if (currentCardIndex == currentDeck->cardsInDeck)
+	//	//{
+	//	//	printf("exit");
+	//	//	*currentEvent = emptyCard;
+	//	//	return currentEvent;
+	//	//}
+
+	//	
+	//	++currentCardIndex; //Adding one counter to the Card Index after Drawing it
+
+	//	break;
+	//}
 }
 
-void ChangeDeckByPhase(GAMEPHASE currentGamePhase) {
+void SwapDeckToMain(bool isTutorial) {
 
 	currentCardIndex = 0;
 
-	switch (currentGamePhase) {
+	if (isTutorial == false) return;
 
-	case PHASE_BUILDPHASE:
-		currentDeck = &tutorialDeck;
-		break;
-
-	case PHASE_GAMEPHASE:
-		currentDeck = &cardDeck;
-		break;
-
-	case PHASE_ENDPHASE:
-		break;
-
-	}
+	currentDeck = &cardDeck;
 
 }
 
