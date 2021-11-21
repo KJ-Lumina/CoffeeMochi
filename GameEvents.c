@@ -225,6 +225,7 @@ int GetCardsLeft()
 CARDEVENT* GetNextEvent(bool isTutorial)
 {
 	if (isTutorial == true) {
+		printf("tessssssssssssst");
 		currentEvent = tutCardList[currentDeck->cardIndexes[currentCardIndex]];
 	}
 	else {

@@ -312,7 +312,8 @@ void GameStateControl()
             if (AnimTimer <= 0)
             {
                 gameState = State_MakeAChoice;
-                UI_SetEvent(GetNextEvent(isTutorial));
+                selectedEvent = GetNextEvent(isTutorial);
+                UI_SetEvent(selectedEvent);
             }
             break;
         case State_MakeAChoice:
