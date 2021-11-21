@@ -434,7 +434,7 @@ void MouseDragOrClick(void)
 
 void MainGame_Initialize(void)
 {   
-    CP_System_ShowConsole();
+    //CP_System_ShowConsole();
     gameState = State_Idle;
     game_Background = CP_Image_Load("./ImperoArtAssets/Impero_GameBG.png");
     InitResources(100);

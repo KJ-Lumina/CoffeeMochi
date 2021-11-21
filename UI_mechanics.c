@@ -20,9 +20,9 @@ CP_Image image_CardFlipped;
 CP_Image image_CardA;
 CP_Image image_CardB;
 
-CARDEVENT* selectedEvent;
-REWARDCARD* selectedReward;
-int rewardCardsLeft;
+CARDEVENT* UIselectedEvent;
+REWARDCARD* UIselectedReward;
+int UIrewardCardsLeft;
 float rewardCardGap = 30;
 float windowWidth;
 float windowHeight;
@@ -73,7 +73,7 @@ void InitUI()
 
 void UI_SetEvent(CARDEVENT* newEvent)
 {
-    selectedEvent = newEvent;
+    UIselectedEvent = newEvent;
     IsAViable = true;   // IsCostPayable(selectedEvent->resourceChangeA[0]);
     IsBViable = true;   // IsCostPayable(selectedEvent->resourceChangeB[0]);
 }
@@ -81,8 +81,8 @@ void UI_SetEvent(CARDEVENT* newEvent)
 void UI_SetReward(REWARDCARD* rewardCard, int cardsLeft)
 {
     
-        selectedReward = rewardCard;
-        rewardCardsLeft = cardsLeft;
+    UIselectedReward = rewardCard;
+    UIrewardCardsLeft = cardsLeft;
  
 }
 
@@ -126,13 +126,13 @@ int ClickCheck_CardChoice()
 
 int ClickCheck_Rewards()
 {
-    if (CheckWithinBounds(CP_Vector_Set(1485 - 15.0f * rewardCardsLeft, 390), 150 + rewardCardsLeft * rewardCardGap, 240))
+    if (CheckWithinBounds(CP_Vector_Set(1485 - 15.0f * UIrewardCardsLeft, 390), 150 + UIrewardCardsLeft * rewardCardGap, 240))
     {
-        if (selectedReward->cardType == BUILD_TYPE_EVENT)
+        if (UIselectedReward->cardType == BUILD_TYPE_EVENT)
         {
             return 1;
         }
-        else if (selectedReward->cardType == ONGOING_TYPE_EVENT)
+        else if (UIselectedReward->cardType == ONGOING_TYPE_EVENT)
         {
             return 2;
         }
@@ -156,7 +156,7 @@ void DrawUI_GauntletOpen()
         CP_Image_Draw(image_CardA, windowWidth - 130, windowHeight / 2 - 60, 185, 243, 255);
         CP_Settings_TextSize(20);
         CP_Settings_Fill(CP_Color_Create(255, 255, 255, 255));
-        CP_Font_DrawTextBox(selectedEvent->descriptionA, 1330, 140, 250);
+        CP_Font_DrawTextBox(UIselectedEvent->descriptionA, 1330, 140, 250);
     }
     // Hovering B
     else if (CheckWithinBounds(optionBPos, 90, 243))
@@ -164,7 +164,7 @@ void DrawUI_GauntletOpen()
         CP_Image_Draw(image_CardB, windowWidth - 130, windowHeight / 2 - 60, 185, 243, 255);
         CP_Settings_TextSize(20);
         CP_Settings_Fill(CP_Color_Create(255, 255, 255, 255));
-        CP_Font_DrawTextBox(selectedEvent->descriptionB, 1330, 140, 250);
+        CP_Font_DrawTextBox(UIselectedEvent->descriptionB, 1330, 140, 250);
     }
     // Not Hovering
     else
@@ -172,7 +172,7 @@ void DrawUI_GauntletOpen()
         CP_Image_Draw(image_CardFlipped, windowWidth - 130, windowHeight / 2 - 60, 185, 243, 255);
         CP_Settings_TextSize(20);
         CP_Settings_Fill(CP_Color_Create(255, 255, 255, 255));
-        CP_Font_DrawTextBox(selectedEvent->description, 1330, 140, 250);
+        CP_Font_DrawTextBox(UIselectedEvent->description, 1330, 140, 250);
     }
 }
 
@@ -206,14 +206,14 @@ void DrawUI_TopPileInsert()
 
 void DrawUI_RewardCards(bool rewardPicked)
 {
-    float offsetX = -(abs(rewardCardsLeft) - 1) * rewardCardGap / 2;
+    float offsetX = -(abs(UIrewardCardsLeft) - 1) * rewardCardGap / 2;
     float deltaTime = CP_System_GetDt();
-    for (int i = 0; i < abs(rewardCardsLeft); ++i)
+    for (int i = 0; i < abs(UIrewardCardsLeft); ++i)
     {
-        CP_Image_Draw(*GetCardSpriteByIndex(selectedReward->eventIndex), 1470 + offsetX + rewardCardGap * i, 390, 185, 243, 255);
+        CP_Image_Draw(*GetCardSpriteByIndex(UIselectedReward->eventIndex), 1470 + offsetX + rewardCardGap * i, 390, 185, 243, 255);
         cardflashTimer += deltaTime;
         CP_Image_Draw(image_CardFlash, 1470 + offsetX + rewardCardGap * i, 390, 185, 243, CP_Math_LerpInt(255, 0, cardflashTimer));
-        if (i != abs(rewardCardsLeft) - 1)
+        if (i != abs(UIrewardCardsLeft) - 1)
         {
             if (CheckWithinBounds(CP_Vector_Set(1470 + offsetX + rewardCardGap * i - 77.5f, 390), 30, 243) && cardhighlightTimer[i] <= 1)
             {
@@ -244,7 +244,7 @@ void DrawUI_RewardCards(bool rewardPicked)
     {
         CP_Settings_TextSize(20);
         CP_Settings_Fill(CP_Color_Create(255, 255, 255, 255));
-        CP_Font_DrawTextBox(selectedReward->description, 1330, 140, 250);
+        CP_Font_DrawTextBox(UIselectedReward->description, 1330, 140, 250);
     }
     else
     {

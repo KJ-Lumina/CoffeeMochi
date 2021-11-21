@@ -199,7 +199,6 @@ xcopy "$(ProjectDir)Assets\*" "$(OutDir)Assets\" /s /r /y /q</Command>
     <ClCompile Include="main.c" />
     <ClCompile Include="Menu.c" />
     <ClCompile Include="Npc.c" />
-    <ClCompile Include="OngoingEvents.c" />
     <ClCompile Include="Resource_Stats.c" />
     <ClCompile Include="GameEvents.c" />
     <ClCompile Include="UI_Animations.c" />
@@ -211,7 +210,6 @@ xcopy "$(ProjectDir)Assets\*" "$(OutDir)Assets\" /s /r /y /q</Command>
     <ClInclude Include="Common_Headers.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="Npc.h" />
-    <ClInclude Include="OngoingEvents.h" />
     <ClInclude Include="population.h" />
     <ClInclude Include="UI_Animations.h" />
     <ClInclude Include="UI_Text.h" />
