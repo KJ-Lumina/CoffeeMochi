@@ -17,13 +17,13 @@
 #define SFX CP_SOUND_GROUP_1
 
 //Building Related Definitions
+#define B_GRASS_INDEX -2 // TO BE DELETED
 #define NULL_CHOICE -1
 #define B_EMPTY_INDEX 0
-#define B_GRASS_INDEX 1
-#define B_HOUSE_INDEX 2
-#define B_FARM_INDEX 3
-#define B_MARKET_INDEX 4
-#define B_TAVERN_INDEX 5
+#define B_HOUSE_INDEX 1
+#define B_FARM_INDEX 2
+#define B_MARKET_INDEX 3
+#define B_TAVERN_INDEX 4
 
 //Events Resource Index
 #define R_NULL_INDEX 0
@@ -80,6 +80,7 @@ typedef enum
 }GAMEPHASE;
 typedef enum
 {
+	State_MainMenu,
 	State_StartOfTurn,
 	State_Idle,
 	State_CardDraw,
@@ -245,13 +246,9 @@ BUILDING* GetBuildingByIndex(int);
 REWARDCARD* GetRewardByIndex(int index);
 CP_Image* GetBuildingSpriteByIndex(int);
 CP_Image* GetBuildingSpriteButtonByIndex(int);
-<<<<<<< HEAD
 CP_Image* GetCardSpriteByIndex(int index);
-void SwapToMainDeck(GAMEPHASE currentGamePhase);
-CARDEVENT* GetEventByIndex(int index);
-=======
 void ChangeDeckByPhase(GAMEPHASE currentGamePhase);
->>>>>>> parent of 6fcbcc8 ()
+CARDEVENT* GetEventByIndex(int index);
 
 // Resources
 bool IsCostPayable(int costAmt);

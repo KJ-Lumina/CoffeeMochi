@@ -13,14 +13,14 @@ bool AllowMouseDrag = false;
 bool mouseDrag = false;
 #pragma endregion
 
+GAMEPHASE gamePhase;
 GAMESTATE gameState;
 CP_Image game_Background;
 CP_Vector currentMousePos;
 CP_Vector mouseDragPos;
-int loseCondition_FoodValue; //Delete if not used later
-int loseCondition_PopulationValue; //Delete if not used later
+int loseCondition_FoodValue;
+int loseCondition_PopulationValue;
 
-bool isTutorial = true;
 
 float AnimTimer = 1;
 CARDEVENT* selectedEvent;
@@ -125,13 +125,18 @@ void MouseClick()
             {
                 if (GetCardsLeft() == 0)
                 {
-                    SwapToMainDeck(isTutorial);
-
-                    //Run Exit Game If No more cards
-
-                    gameState = State_MakeAChoice;
-                    selectedEvent = GetNextEvent(isTutorial);
-                    UI_SetEvent(selectedEvent);
+                    ++gamePhase;
+                    ChangeDeckByPhase(gamePhase);
+                    if (gamePhase == PHASE_ENDPHASE)
+                    {
+                        gameState = State_EndOfTurn;
+                    }
+                    else
+                    {
+                        gameState = State_MakeAChoice;
+                        selectedEvent = GetNextEvent(gamePhase);
+                        UI_SetEvent(selectedEvent);
+                    }
                 }
                 else
                 {
@@ -235,7 +240,7 @@ void GameStateControl()
             if (AnimTimer <= 0)
             {
                 gameState = State_MakeAChoice;
-                UI_SetEvent(GetNextEvent(isTutorial));
+                UI_SetEvent(GetNextEvent(gamePhase));
             }
             break;
         case State_MakeAChoice:

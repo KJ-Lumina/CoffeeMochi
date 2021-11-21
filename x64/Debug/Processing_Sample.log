@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
 ﻿  Buildings.c
   GameEvents.c
   Menu.c
@@ -9,14 +7,7 @@
   UI_mechanics.c
   WorldSpaceGrid.c
   game.c
-=======
-﻿  UI_mechanics.c
->>>>>>> parent of 6fcbcc8 ()
   Processing_Sample.vcxproj -> C:\Users\Seow Kai Jun\Documents\GitHub\CoffeeMochi\x64\Debug\Processing_Sample.exe
-=======
-﻿  UI_mechanics.c
-  Processing_Sample.vcxproj -> C:\Users\trave\Documents\GitHub\CoffeeMochi\x64\Debug\Processing_Sample.exe
->>>>>>> parent of bcfc390 (Fixed up Event to workable state)
   1 File(s) copied
   1 File(s) copied
   45 File(s) copied

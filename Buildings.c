@@ -15,7 +15,7 @@ BUILDING tile_base		= { "grass",	B_GRASS_INDEX, 0, 0, 0 };
 BUILDING tile_house		= { "House",	B_HOUSE_INDEX, 0, 0, 0 };
 BUILDING tile_farm		= { "Farm",		B_FARM_INDEX, 0, 1, 0 };
 BUILDING tile_market	= { "Market",	B_MARKET_INDEX, 1, 0, 0 };
-BUILDING tile_tavern	= { "Tavern",	5, 0, 0, 10 };
+BUILDING tile_tavern	= { "Tavern",	B_TAVERN_INDEX, 0, 0, 10 };
 
 CONSTBUILDING buildingArray[WORLDGRIDX * WORLDGRIDY] = { 0 };
 
@@ -91,8 +91,6 @@ BUILDING* GetBuildingByIndex(int index)
 {
 	switch (index)
 	{
-	case B_GRASS_INDEX:
-		return &tile_base;
 	case B_HOUSE_INDEX:
 		return &tile_house;
 	case B_FARM_INDEX:
@@ -111,8 +109,6 @@ CP_Image* GetBuildingSpriteByIndex(int index)
 {
 	switch (index)
 	{
-	case B_GRASS_INDEX:
-		return &sprite_grass;
 	case B_HOUSE_INDEX:
 		return &sprite_house;
 	case B_FARM_INDEX:

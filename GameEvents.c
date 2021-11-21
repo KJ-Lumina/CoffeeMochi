@@ -40,7 +40,6 @@ CARDDECK tutorialDeck;
 CARDDECK cardDeck;
 
 
-<<<<<<< HEAD
 
 CARDDECK* currentDeck;
 CARDEVENT* currentEvent;
@@ -52,11 +51,6 @@ REWARDCARD R_HouseCard	= { 1, BUILD_TYPE_EVENT, B_HOUSE_INDEX , 1, "Click on the
 REWARDCARD R_FarmCard	= { 2, BUILD_TYPE_EVENT, B_FARM_INDEX , 1, "Click on the grid to place the farm." };
 REWARDCARD R_MarketCard	= { 3, BUILD_TYPE_EVENT, B_MARKET_INDEX , 1, "Click on the grid to place the market." };
 REWARDCARD R_TavernCard	= { 4, BUILD_TYPE_EVENT, B_TAVERN_INDEX , 1, "Click on the grid to place the tavern." };
-=======
-CARDDECK* currentDeck;
-CARDEVENT* currentEvent;
-int currentCardIndex;
->>>>>>> parent of 6fcbcc8 ()
 
 #pragma endregion
 
@@ -161,7 +155,6 @@ void InitCardList()
 	tutCardList[2] = &E_TutBuildAMarket;
 
 	//Init Card List
-<<<<<<< HEAD
 
 	cardList[0] = &emptyCard;
 	cardList[1] = &E_BuildAHouse;
@@ -195,29 +188,6 @@ void InitCardList()
 	FarmCardSprite = CP_Image_Load("./ImperoArtAssets/Impero_HouseRewardCard.png");
 	MarketCardSprite = CP_Image_Load("./ImperoArtAssets/Impero_HouseRewardCard.png");
 	TavernCardSprite = CP_Image_Load("./ImperoArtAssets/Impero_HouseRewardCard.png");
-=======
-	cardList[0] = &E_BuidldATavern;
-	cardList[1] = &E_GoldMineDiscovered;
-	cardList[2] = &E_FoodMerchantArrival;
-	cardList[3] = &E_StolenFood;
-	cardList[4] = &E_ArsonistAttack;
-	cardList[5] = &E_BuildAMarket;
-	cardList[6] = &E_HeavyStorm;
-	cardList[7] = &E_ContaminatedFood;
-	cardList[8] = &E_ScarceFood;
-	cardList[9] = &E_FamineStrikes;
-	cardList[10] = &E_FoodMerchantArrival;
-	cardList[11] = &E_MerchantSetUp;
-	cardList[12] = &E_CircusTroupeVisit;
-	cardList[13] = &E_MagnificentHunt;	
-	cardList[14] = &E_EarthquakeIncoming;
-	cardList[15] = &E_RefugeesHouses;
-	cardList[16] = &E_NeedEntertainment;
-	cardList[17] = &E_CivilRevolt;
-	cardList[18] = &E_BuildAHouse;
-	cardList[19] = &E_VillagersKidnapped;
-	cardList[20] = &E_DiseaseSpread;
->>>>>>> parent of 6fcbcc8 ()
 }
 
 void InitDecks()
@@ -230,16 +200,16 @@ void InitDecks()
 	}
 
 
-	for (int index = 0; index < TOTALCARDCOUNT; index++)
-	{
-		cardDeck.cardIndexes[index] = index; //Setting the index of card in each deck to reference in cardlist, in accordance
+	
+	char cardDeckIndexes[] = { 5,9,6,7,16,2,8,10,3,15,4,17,12,20,13,14,18,1,11,19 };
+
+
+	for (int index = 0; index < sizeof(cardDeckIndexes); index++)
+	{	
+		cardDeck.cardIndexes[index] = (int)cardDeckIndexes[index];
+		//cardDeck.cardIndexes[index] = index; //Setting the index of card in each deck to reference in cardlist, in accordance
 		cardDeck.cardsInDeck++;
 	}
-	//for (int index = 0; index < TOTALCARDCOUNT; index++) 
-	//{
-	//	cardDeck.cardIndexes[index] = CP_Random_RangeInt(0, TOTALCARDCOUNT - 1); //Setting the index of card in each deck to reference in cardlist.
-	//	cardDeck.cardsInDeck++;
-	//}
 
 	currentCardIndex = 0;
 	currentDeck = &tutorialDeck;
@@ -255,88 +225,64 @@ int GetCardsLeft()
 	return currentDeck->cardsInDeck - currentCardIndex;
 }
 
-CARDEVENT* GetNextEvent(bool isTutorial)
+CARDEVENT* GetNextEvent(GAMEPHASE gamePhase)
 {
-	if (isTutorial == true) {
-		currentEvent = tutCardList[currentDeck->cardIndexes[currentCardIndex]];
-	}
-	else {
-		currentEvent = GetEventByIndex(currentDeck->cardIndexes[currentCardIndex]);
-	}
 
-	++currentCardIndex;
+	switch (gamePhase) {
+
+	case PHASE_BUILDPHASE:
+
+		/*if (currentCardIndex == currentDeck->cardsInDeck)
+		{
+			printf("Reset");
+			*currentEvent = emptyCard;
+			currentDeck = &cardDeck;
+			currentCardIndex = 0;
+			return currentEvent;
+		}*/
+
+		currentEvent = tutCardList[currentDeck->cardIndexes[currentCardIndex]];
+		++currentCardIndex; //Adding one counter to the Card Index after Drawing it
+
+		break;
+
+	case PHASE_GAMEPHASE:
+
+		//if (currentCardIndex == currentDeck->cardsInDeck)
+		//{
+		//	printf("exit");
+		//	*currentEvent = emptyCard;
+		//	return currentEvent;
+		//}
+
+		currentEvent = GetEventByIndex(currentDeck->cardIndexes[currentCardIndex]);
+		++currentCardIndex; //Adding one counter to the Card Index after Drawing it
+
+		break;
+	}
 
 	return currentEvent;
 
-	//switch (gamePhase) {
-
-<<<<<<< HEAD
-	//case PHASE_BUILDPHASE:
-=======
-		printf("Card Left:%d",GetCardsLeft());
-		printf("Card Index:%d", currentCardIndex);
-		currentEvent = tutCardList[currentDeck->cardIndexes[currentCardIndex]];
-		++currentCardIndex; //Adding one counter to the Card Index after Drawing it
->>>>>>> parent of 6fcbcc8 ()
-
-	//	/*if (currentCardIndex == currentDeck->cardsInDeck)
-	//	{
-	//		printf("Reset");
-	//		*currentEvent = emptyCard;
-	//		currentDeck = &cardDeck;
-	//		currentCardIndex = 0;
-	//		return currentEvent;
-	//	}*/
-
-	//	 //Adding one counter to the Card Index after Drawing it
-
-	//	break;
-
-<<<<<<< HEAD
-	//case PHASE_GAMEPHASE:
-=======
-		printf("Get Game Phase Event");
-		currentEvent = cardList[currentDeck->cardIndexes[currentCardIndex]];
-		++currentCardIndex; //Adding one counter to the Card Index after Drawing it
->>>>>>> parent of 6fcbcc8 ()
-
-	//	//if (currentCardIndex == currentDeck->cardsInDeck)
-	//	//{
-	//	//	printf("exit");
-	//	//	*currentEvent = emptyCard;
-	//	//	return currentEvent;
-	//	//}
-
-	//	 //Adding one counter to the Card Index after Drawing it
-
-	//	break;
-	//}
 }
 
-void SwapToMainDeck(bool isTutorial) {
+void ChangeDeckByPhase(GAMEPHASE currentGamePhase) {
 
-	currentCardIndex = 0; //Reset Card Index Counter
+	currentCardIndex = 0;
 
-	if (isTutorial == false) return; 
-
-	currentDeck = &cardDeck;
-	
-
-	/*switch (currentGamePhase) {
+	switch (currentGamePhase) {
 
 	case PHASE_BUILDPHASE:
 		currentDeck = &tutorialDeck;
 		break;
 
 	case PHASE_GAMEPHASE:
-		printf("Changed Phase");
 		currentDeck = &cardDeck;
 		break;
 
 	case PHASE_ENDPHASE:
 		break;
 
-	}*/
+	}
 
 }
 
