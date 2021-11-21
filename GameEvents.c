@@ -199,7 +199,7 @@ void InitDecks()
 		tutorialDeck.cardsInDeck++;
 	}
 
-	char cardDeckIndexes[] = { 20,9,6,7,16,2,8,10,3,15,4,17,12,20,13,14,18,1,11,19 };
+	char cardDeckIndexes[] = { 5,9,6,7,16,2,8,10,3,15,4,17,12,20,13,14,18,1,11,19 };
 
 	for (int index = 0; index < sizeof(cardDeckIndexes); index++)
 	{	

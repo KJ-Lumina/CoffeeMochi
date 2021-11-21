@@ -42,8 +42,8 @@ int curGold = 0;
 int curFood = 0;
 int curPopulation = 0;
 int initPopulation = 100;
-int curMorale;
-int additionalMorale;
+int curMorale = 0;
+int additionalMorale = 0;
 
 //Gold Related Variables
 int numMarkets = 0;
@@ -296,7 +296,7 @@ void ApplyEventResult(int resourceChange[4])
     curGold += resourceChange[0];
     curFood += resourceChange[1];
     curPopulation += resourceChange[2];
-    curMorale += resourceChange[3];
+    additionalMorale += resourceChange[3];
 
     /*if (resourceChange[0] != 0)
     {
