@@ -17,3 +17,14 @@ enum SpriteAnimationIndex
 {
     TILESET_TESTENEMY = 1
 };
+
+typedef struct
+{
+    int spriteIndex;
+    CP_Vector startPos;
+    CP_Vector endPos;
+    float curlifetime;
+    float lifetime;
+    CP_Vector size;
+    float spawnDelay;
+}LINEARVFX;
