@@ -136,6 +136,18 @@ int house_pop_prediction()
 END OF TURN FUNCTIONS
 ---------------------*/
 
+//int Lerp_Resources(int start, int end, float duration)
+//{   
+//    float dt = duration / CP_System_GetDt();
+//    float t = 0;
+//    while (t <= duration)
+//    {
+//        t += dt;
+//        return (int)((end - start)/dt);
+//    }
+//    return 0;
+//}
+
 // Function to check amount of Gold resource generated per turn
 void Gold_generated_per_turn()
 {
@@ -293,6 +305,8 @@ void AddNewResourceBuilding(int buildingIndex)
 
 void ApplyEventResult(int resourceChange[4])
 {
+    
+    //curGold += Lerp_Resources(curGold, curGold + resourceChange[0], 2.0f);
     curGold += resourceChange[0];
     curFood += resourceChange[1];
     curPopulation += resourceChange[2];
