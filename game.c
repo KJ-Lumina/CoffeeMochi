@@ -109,7 +109,7 @@ void AdminControlInput()
 }
 
 
-void CheckKeyInput()
+/*void CheckKeyInput()
 {
     if (CP_Input_KeyTriggered(KEY_F))
     {
@@ -122,7 +122,7 @@ void CheckKeyInput()
     
     // Debugging
     AdminControlInput();
-}
+}*/
 
 void MouseClick()
 {
@@ -452,7 +452,7 @@ void MainGame_Update(void)
 {
     UpdateMouseInput();
     MouseDragOrClick();
-    CheckKeyInput();
+    //CheckKeyInput();
     // Graphics
     DrawBackground();
     DrawTileSet();
