@@ -5,7 +5,9 @@
 #include "TravessFunctions.h"
 #include "WorldSpaceGrid.h"
 #include "UI_mechanics.h"
+#include "UI_Animations.h"
 #include "Npc.h"
+
 
 
 #pragma region Game Options Control
