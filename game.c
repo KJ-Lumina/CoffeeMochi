@@ -188,9 +188,16 @@ void MouseClick()
             {
             case 1:
                 // reward is construction
-                SetCurrentBuilding(GetBuildingByIndex(selectedReward->eventIndex));
-                --rewardCardsLeft;
-                gameState = State_PlaceYourBuilding;
+                if (rewardCardsLeft > 0){
+                     SetCurrentBuilding(GetBuildingByIndex(selectedReward->eventIndex));
+                    --rewardCardsLeft;
+                    gameState = State_PlaceYourBuilding;
+                }
+                else if (rewardCardsLeft < 0) {
+                    SetCurrentBuilding(GetBuildingByIndex(selectedReward->eventIndex));
+                    ++rewardCardsLeft;
+                    gameState = State_DestroyBuilding;                   
+                 }
                 break;
             case 2:
                 // reward is ongoing?
@@ -212,6 +219,21 @@ void MouseClick()
                     gameState = State_EndOfTurn;
                 }
             }
+            break;
+        case State_DestroyBuilding:
+            
+            DestroyBuildingBySelectedBuilding();
+            //there is more building to destroy
+            if (rewardCardsLeft)
+            {
+                gameState = State_CollectRewards;
+            }
+            // there is no more rewards
+            else
+            {
+                gameState = State_EndOfTurn;
+            }
+
             break;
 
         case State_EndOfTurn:

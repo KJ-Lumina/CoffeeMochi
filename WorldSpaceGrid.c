@@ -119,10 +119,10 @@ float CalculateUnitsToBorder(CP_Vector position, CP_Vector directionUnit)
     return dirUnitsToXBorder > dirUnitsToYBorder ? dirUnitsToYBorder : dirUnitsToXBorder;
 }
 
-void DestroyBuildingByIndex(int buidlingIndex) {
+void DestroyBuildingBySelectedBuilding() {
 
     TILEPOSITION tile_positions[MAXTILECOUNT];
-    int length = GetAllBuildingsPositionByIndex(B_HOUSE_INDEX, tile_positions);
+    int length = GetAllBuildingsPositionByIndex(selectedBuilding->spriteIndex, tile_positions);
 
     if (length > 0) {
         unsigned int lowerBounds = 0;
@@ -130,7 +130,7 @@ void DestroyBuildingByIndex(int buidlingIndex) {
 
         unsigned int randIndex = CP_Random_RangeInt(lowerBounds, upperBounds);
 
-        SetNewBuilding((tile_positions + randIndex)->positionX, (tile_positions + randIndex)->positionY, B_EMPTY_INDEX);
+        SetNewBuilding((tile_positions + randIndex)->positionX, (tile_positions + randIndex)->positionY, B_EMPTY_INDEX); //Replace it with nothing (Empty Sqaure)
     }
 }
 
@@ -171,6 +171,7 @@ bool AttemptPlaceBuilding(CP_Vector cursorPosition)
     }
     return 0;
 }
+
 
 void ReturnToCenter()
 {

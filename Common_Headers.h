@@ -77,13 +77,13 @@ typedef enum
 
 typedef enum
 {
-	State_MainMenu,
 	State_StartOfTurn,
 	State_Idle,
 	State_CardDraw,
 	State_MakeAChoice,
 	State_CollectRewards,
 	State_PlaceYourBuilding,
+	State_DestroyBuilding,
 	State_EndOfTurn,
 	State_GameOver
 }GAMESTATE;
@@ -199,7 +199,7 @@ void SetCurrentBuilding(BUILDING* newBuilding);
 bool AttemptPlaceBuilding(CP_Vector cursorPos);
 bool IsTileOccupied(CP_Vector);
 int GetAllBuildingsPositionByIndex(int index, TILEPOSITION position[]);
-void DestroyBuildingByIndex(int buidlingIndex);
+void DestroyBuildingBySelectedBuilding();
 
 // UI_Mechanics
 bool CheckWithinBounds(CP_Vector position, float width, float height);
