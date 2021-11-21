@@ -184,10 +184,10 @@ void InitCardList()
 	rewardCardList[3] = &R_MarketCard;
 	rewardCardList[4] = &R_TavernCard;
 
-	HouseCardSprite = CP_Image_Load("./ImperoArtAssets/Impero_HouseRewardCard.png");
-	FarmCardSprite = CP_Image_Load("./ImperoArtAssets/Impero_HouseRewardCard.png");
-	MarketCardSprite = CP_Image_Load("./ImperoArtAssets/Impero_HouseRewardCard.png");
-	TavernCardSprite = CP_Image_Load("./ImperoArtAssets/Impero_HouseRewardCard.png");
+	HouseCardSprite = CP_Image_Load("./ImperoArtAssets/Impero_CardBuild.png");
+	FarmCardSprite = CP_Image_Load("./ImperoArtAssets/Impero_CardBuild.png");
+	MarketCardSprite = CP_Image_Load("./ImperoArtAssets/Impero_CardBuild.png");
+	TavernCardSprite = CP_Image_Load("./ImperoArtAssets/Impero_CardBuild.png");
 }
 
 void InitDecks()

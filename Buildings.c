@@ -31,7 +31,7 @@ CP_Image button_grass;
 void InitBuildings(void)
 {
 	sprite_grass = CP_Image_Load("./Assets/grasstile.png");
-	sprite_house = CP_Image_Load("./Assets/best_House.png");
+	sprite_house = CP_Image_Load("./Assets/Impero_House.png");
 	sprite_farm = CP_Image_Load("./Assets/best_Farm.png");
 	sprite_market = CP_Image_Load("./Assets/best_Market.png");
 	sprite_tavern = CP_Image_Load("./Assets/best_Tavern.png");

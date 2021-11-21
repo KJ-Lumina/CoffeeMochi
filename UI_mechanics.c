@@ -162,7 +162,7 @@ void DrawUI_GauntletOpen()
         CP_Image_Draw(image_CardA, windowWidth - 130, windowHeight / 2 - 60, 185, 243, 255);
         CP_Settings_TextSize(20);
         CP_Settings_Fill(CP_Color_Create(255, 255, 255, 255));
-        CP_Font_DrawTextBox(selectedEvent->descriptionA, windowWidth - 255, 140, 250);
+        CP_Font_DrawTextBox(selectedEvent->descriptionA, 1330, 140, 250);
     }
     // Hovering B
     else if (CheckWithinBounds(optionBPos, 90, 243))
@@ -170,7 +170,7 @@ void DrawUI_GauntletOpen()
         CP_Image_Draw(image_CardB, windowWidth - 130, windowHeight / 2 - 60, 185, 243, 255);
         CP_Settings_TextSize(20);
         CP_Settings_Fill(CP_Color_Create(255, 255, 255, 255));
-        CP_Font_DrawTextBox(selectedEvent->descriptionB, windowWidth - 255, 140, 250);
+        CP_Font_DrawTextBox(selectedEvent->descriptionB, 1330, 140, 250);
     }
     // Not Hovering
     else
@@ -178,7 +178,7 @@ void DrawUI_GauntletOpen()
         CP_Image_Draw(image_CardFlipped, windowWidth - 130, windowHeight / 2 - 60, 185, 243, 255);
         CP_Settings_TextSize(20);
         CP_Settings_Fill(CP_Color_Create(255, 255, 255, 255));
-        CP_Font_DrawTextBox(selectedEvent->description, windowWidth - 255, 140, 250);
+        CP_Font_DrawTextBox(selectedEvent->description, 1330, 140, 250);
     }
 }
 
@@ -611,16 +611,16 @@ void DrawTempTextResources()
     CP_Settings_Fill(CP_Color_Create(255, 255, 255, 255));
 
     sprintf_s(resourceBuffer, 10, "%d", Get_current_gold());
-    CP_Font_DrawText(resourceBuffer, 170, 68);
+    CP_Font_DrawText(resourceBuffer, 150, 68);
 
     sprintf_s(resourceBuffer, 10, "%d", Get_current_food());
-    CP_Font_DrawText(resourceBuffer, 170, 156);
+    CP_Font_DrawText(resourceBuffer, 150, 156);
 
     sprintf_s(resourceBuffer, 10, "%d", Get_current_population());
-    CP_Font_DrawText(resourceBuffer, 170, 243);
+    CP_Font_DrawText(resourceBuffer, 150, 243);
 
     sprintf_s(resourceBuffer, 10, "%d", Get_current_morale() + Get_additional_morale());
-    CP_Font_DrawText(resourceBuffer, 170, 332);
+    CP_Font_DrawText(resourceBuffer, 150, 332);
 
 }
 
