@@ -32,9 +32,9 @@ void InitBuildings(void)
 {
 	sprite_grass = CP_Image_Load("./Assets/grasstile.png");
 	sprite_house = CP_Image_Load("./Assets/Impero_House.png");
-	sprite_farm = CP_Image_Load("./Assets/best_Farm.png");
-	sprite_market = CP_Image_Load("./Assets/best_Market.png");
-	sprite_tavern = CP_Image_Load("./Assets/best_Tavern.png");
+	sprite_farm = CP_Image_Load("./ImperoArtAssets/Impero_ShittyFarm.png");
+	sprite_market = CP_Image_Load("./ImperoArtAssets/Impero_Market.png");
+	sprite_tavern = CP_Image_Load("./ImperoArtAssets/Impero_Tavern.png");
 	button_house = CP_Image_Load("./Assets/housebtn.png");
 	button_farm = CP_Image_Load("./Assets/farmbtn.png");
 	button_grass = CP_Image_Load("./Assets/grassbtn.png");

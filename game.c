@@ -52,6 +52,17 @@ void GameOver()
     //Lose UI Pop Up
     gameState = State_GameOver;
     printf("You lose. Ran out of ****");
+
+}
+
+bool LoseCondition_Resources()
+{
+
+    if (Get_current_food() <= loseCondition_FoodValue || Get_current_population() <= loseCondition_PopulationValue) {
+        return true;
+    }
+
+    return false;
 }
 
 void EndTurn() 
@@ -61,14 +72,6 @@ void EndTurn()
     if (LoseCondition_Resources()) {
         GameOver();
     }
-}
-
-bool LoseCondition_Resources() {
-    if (Get_current_food() <= loseCondition_FoodValue || Get_current_population() <= loseCondition_PopulationValue) {
-        return 1;
-    }
-
-    return 0;
 }
 #pragma endregion
 
@@ -141,7 +144,8 @@ void MouseClick()
                         SwapDeckToMain(isTutorial);
                         isTutorial = false;
                     }
-                    else {
+                    else 
+                    {
                         GameEnd();
                         gameState = State_EndOfTurn;
                         break;
@@ -395,6 +399,9 @@ void GameStateControl()
                     gameState = State_StartOfTurn;
                 }
             }
+            break;
+        case State_GameOver:
+            SetGameSceneEndPhase();
             break;
     }
 }

@@ -378,7 +378,7 @@ int CheckMouseColliding(BUTTON buttonArray[], CP_Vector mousePos, int isSplashSc
     return mouseClickFailed;
 }
 
-char resourceBuffer[10];
+char resourceBuffer[20];
 void DrawTempTextResources()
 {
     CP_Image_Draw(image_ResourceBars, 800, 450, 1600, 900, 255);
@@ -390,25 +390,31 @@ void DrawTempTextResources()
     if (Get_current_gold() < 0)
     {
         CP_Settings_Fill(CP_Color_Create(200, 0, 0, 255));
-        sprintf_s(resourceBuffer, 10, "(In Debt)");
+        sprintf_s(resourceBuffer, 20, "(In Debt)");
         CP_Font_DrawText(resourceBuffer, 100, 68);
     }
 
     CP_Settings_Fill(CP_Color_Create(255, 255, 255, 255));
 
-    sprintf_s(resourceBuffer, 10, "%d", Get_current_gold());
+    sprintf_s(resourceBuffer, 20, "%d", Get_current_gold());
     CP_Font_DrawText(resourceBuffer, 150, 68);
 
     
 
-    sprintf_s(resourceBuffer, 10, "%d", Get_current_food());
+    sprintf_s(resourceBuffer, 20, "%d", Get_current_food());
     CP_Font_DrawText(resourceBuffer, 150, 156);
 
-    sprintf_s(resourceBuffer, 10, "%d", Get_current_population());
+    sprintf_s(resourceBuffer, 20, "%d", Get_current_population());
     CP_Font_DrawText(resourceBuffer, 150, 243);
 
-    sprintf_s(resourceBuffer, 10, "%d", Get_current_morale() + Get_additional_morale());
+    sprintf_s(resourceBuffer, 20, "%d", Get_current_morale() + Get_additional_morale());
     CP_Font_DrawText(resourceBuffer, 150, 332);
+
+
+    // LUL
+    sprintf_s(resourceBuffer, 20, "Cards Left: %d", GetCardsLeft());
+    CP_Font_DrawText(resourceBuffer, 1500, 850);
+
 
 }
 

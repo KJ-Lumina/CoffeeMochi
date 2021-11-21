@@ -60,7 +60,7 @@ CARDEVENT emptyCard = { 0, NULL_TYPE_EVENT, "This is a null event, for errors on
 , {0,0,0,0}, {0,0}, "You are looking at a bug right now. Please ignore." };
 
 //TUTORIALS EVENTS [CARD INDEX STARTS WITH 0X]
-CARDEVENT E_TutBuildAHouse = { 1, BUILD_TYPE_EVENT,"Gorvernor, there is no houses for our citizen to stay. Build 2 houses by clicking on the grid."
+CARDEVENT E_TutBuildAHouse = { 1, BUILD_TYPE_EVENT,"Gorvernor, there is no houses for our citizen to stay. Please click on the card below to decide on a plan."
 , {0,0,0,0}, { {1, 2}, {0,0} } ,"Get our workers to gather up materials and start working on constructing 2 houses"
 , {0,0,0,0}, { {1, 2}, {0,0} },"There are some damaged house nearby, we can repair them to a usable condition. Send our workers to build materails and start on the repairs on them. " };
 CARDEVENT E_TutBuildAFarm = { 2, BUILD_TYPE_EVENT, "Gorvernor, there is currently no food source in our kingdom and our citizen are starving. Build 2 farm by clicking on the grid"

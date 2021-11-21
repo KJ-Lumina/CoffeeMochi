@@ -8,6 +8,9 @@
 float windowsWidth;
 float windowsHeight;
 GAMESCENE gameScene;
+
+CP_Image Splash_Digipen;
+CP_Image Splash_CoffeeMochi;
 CP_Image mainScreenImage;
 CP_Image titleImage;
 CP_Image StartButtonImage;
@@ -17,6 +20,8 @@ CP_Image SettingsButtonImageHover;
 CP_Image ExitButtonImage;
 CP_Image ExitButtonImageHover;
 
+float splashdigipentimer = 0;
+float splashcoffeemochitimer = 0;
 
 float mainScreenYLerpStart = 1350;
 float mainScreenYLerpEnd = -600;
@@ -42,12 +47,14 @@ void game_init(void)
 	windowsHeight = (float)CP_System_GetWindowHeight();
 
 	//START FROM BEGINNING
-	//gameScene = SCENE_MAINMENU;
+	gameScene = SCENE_SPLASH_DIGIPEN;
 	//SKIP TO GAME
-	MainGame_Initialize();
-	gameScene = SCENE_GAMEPHASE;
+	//MainGame_Initialize();
+	//gameScene = SCENE_GAMEPHASE;
 	//CHANGEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
-	
+	Splash_Digipen = CP_Image_Load("./ImperoArtAssets/MainMenuAssets/Impero_MainMenu_BG.png");
+	Splash_CoffeeMochi = CP_Image_Load("./ImperoArtAssets/CoffeeMochi_BG.png");
+
 
 	mainScreenImage = CP_Image_Load("./ImperoArtAssets/MainMenuAssets/Impero_MainMenu_BG.png");
 	titleImage = CP_Image_Load("./ImperoArtAssets/MainMenuAssets/Impero_TitleTrim.png");
@@ -59,8 +66,6 @@ void game_init(void)
 	ExitButtonImage = CP_Image_Load("./ImperoArtAssets/MainMenuAssets/Impero_ExitButton.png");
 	ExitButtonImageHover = CP_Image_Load("./ImperoArtAssets/MainMenuAssets/Impero_ExitButtonHover.png");
 
-
-
 	whiteFlash = CP_Image_Load("./Assets/WhiteFlash.png");
 }
 
@@ -70,6 +75,48 @@ void game_update(void)
 	if (gameScene == SCENE_GAMEPHASE)
 	{
 		MainGame_Update();
+	}
+	else if (gameScene == SCENE_SPLASH_DIGIPEN)
+	{
+		CP_Graphics_ClearBackground(CP_Color_Create(0, 0, 0, 255));
+		splashdigipentimer += CP_System_GetDt();
+		if (splashdigipentimer < 1)
+		{
+			CP_Image_Draw(Splash_Digipen, 800, 450, 1600, 900, CP_Math_LerpInt(0, 255, splashdigipentimer / 1));
+		}
+		else if (splashdigipentimer < 3)
+		{
+			CP_Image_Draw(Splash_Digipen, 800, 450, 1600, 900, 255);
+		}
+		else if (splashdigipentimer < 4)
+		{
+			CP_Image_Draw(Splash_Digipen, 800, 450, 1600, 900, CP_Math_LerpInt(255, 0, (splashdigipentimer - 3) / 1));
+		}
+		else
+		{
+			gameScene = SCENE_SPLASH_COFFEEMOCHI;
+		}
+	}
+	else if (gameScene == SCENE_SPLASH_COFFEEMOCHI)
+	{
+		CP_Graphics_ClearBackground(CP_Color_Create(0, 0, 0, 255));
+		splashcoffeemochitimer += CP_System_GetDt();
+		if (splashcoffeemochitimer < 1)
+		{
+			CP_Image_Draw(Splash_CoffeeMochi, 800, 450, 1600, 900, CP_Math_LerpInt(0, 255, splashcoffeemochitimer / 1));
+		}
+		else if (splashcoffeemochitimer < 3)
+		{
+			CP_Image_Draw(Splash_CoffeeMochi, 800, 450, 1600, 900, 255);
+		}
+		else if (splashcoffeemochitimer < 4)
+		{
+			CP_Image_Draw(Splash_CoffeeMochi, 800, 450, 1600, 900, CP_Math_LerpInt(255, 0, (splashcoffeemochitimer - 3) / 1));
+		}
+		else
+		{
+			gameScene = SCENE_MAINMENU;
+		}
 	}
 	else if (gameScene == SCENE_MAINMENU)
 	{
@@ -141,11 +188,27 @@ void game_update(void)
 			gameScene = SCENE_GAMEPHASE;
 		}
 	}
+	else if (gameScene == SCENE_ENDPHASE)
+	{
+		currentTimer += CP_System_GetDt();
+		CP_Image_Draw(whiteFlash, windowsWidth / 2, windowsHeight / 2, 1600, 900, CP_Math_LerpInt(0, 255, (currentTimer)));
+		if (currentTimer >= 1)
+		{
+			currentTimer = 0;
+			gameScene = SCENE_MAINMENU;
+		}
+	}
 }
 
 void game_exit(void)
 {
 
+}
+
+void SetGameSceneEndPhase()
+{
+	currentTimer = 0;
+	gameScene = SCENE_ENDPHASE;
 }
 
 int OptionsOpen = FALSE;

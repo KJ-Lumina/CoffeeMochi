@@ -68,9 +68,12 @@
 //buttons names in-progress
 #define START_GAME 0
 
+void SetGameSceneEndPhase();
 
 typedef enum 
 {
+	SCENE_SPLASH_DIGIPEN,
+	SCENE_SPLASH_COFFEEMOCHI,
 	SCENE_MAINMENU,
 	SCENE_GAMEENTRY,
 	SCENE_GAMELEAVEENTRY,
