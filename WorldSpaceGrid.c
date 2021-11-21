@@ -173,6 +173,8 @@ bool AttemptPlaceBuilding(CP_Vector cursorPosition)
 }
 
 
+
+
 void ReturnToCenter()
 {
     worldSpaceOrigin.x = windowsWidth / 2 - TILEWIDTH * WORLDGRIDX / 2 + MAPOFFSETX;

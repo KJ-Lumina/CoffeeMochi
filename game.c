@@ -5,27 +5,31 @@
 #include "TravessFunctions.h"
 #include "WorldSpaceGrid.h"
 #include "UI_mechanics.h"
+#include "UI_Animations.h"
 #include "Npc.h"
+
 
 
 #pragma region Game Options Control
 bool AllowMouseDrag = false;
 bool mouseDrag = false;
+float MouseCounter = 0;
 #pragma endregion
 
 GAMESTATE gameState;
 CP_Image game_Background;
 CP_Vector currentMousePos;
 CP_Vector mouseDragPos;
-int loseCondition_FoodValue;
-int loseCondition_PopulationValue;
+int loseCondition_FoodValue = 0;
+int loseCondition_PopulationValue = 0;
 
 bool isTutorial = true;
 
 float AnimTimer = 1;
 CARDEVENT* selectedEvent;
-REWARDCARD* selectedReward;
-int rewardCardsLeft = 0;
+REWARDCARD* selectedReward[NUMBER_OF_MAX_REWARDS];
+int rewardCardsLeft[NUMBER_OF_MAX_REWARDS];
+int rewardIndex = 0;
 
 
 #pragma region Turn & Win Lose Functions
@@ -35,22 +39,26 @@ void StartTurn()
 
 }
 
-//Trigger Turn End Functions Calls
+//End Game Functions
+void GameEnd() {
+    gameState = State_GameOver;
+    printf("The game has ended.");
+}
+
 void GameOver() 
 {
     //Lose UI Pop Up
-    printf("The game has ended!");
+    gameState = State_GameOver;
+    printf("You lose. Ran out of ****");
 }
 
 void EndTurn() 
 {
     GenerateResourcesOnEndTurn();
 
-    if (gameState == State_GameOver) {
+  /*  if (LoseCondition_Resources()) {
         GameOver();
-    }
-    /*if (LoseCondition_Resources())
-        GameOver();*/
+    }*/
 }
 
 bool LoseCondition_Resources() {
@@ -113,7 +121,9 @@ void CheckKeyInput()
 
 void MouseClick()
 {
-    switch (gameState)
+   // if (MouseCounter > 0) return;
+
+        switch (gameState)
     {
         case State_StartOfTurn:
             //Run Condition on Start of Turn
@@ -125,9 +135,16 @@ void MouseClick()
             {
                 if (GetCardsLeft() == 0)
                 {
-                    SwapDeckToMain(isTutorial);
-                    if (isTutorial == true) isTutorial = false;
-                    //Check if End Game
+                    if (isTutorial) {
+                        SwapDeckToMain(isTutorial);
+                        isTutorial = false;
+                    }
+                    else {
+                        GameEnd();
+                        gameState = State_EndOfTurn;
+                        break;
+                    }
+
                     gameState = State_MakeAChoice;
                     selectedEvent = GetNextEvent(isTutorial);
                     UI_SetEvent(selectedEvent);
@@ -150,12 +167,18 @@ void MouseClick()
             case 1:
                 // clicked on optionA
                 ApplyEventResult(selectedEvent->resourceChangeA);
-                selectedReward = GetRewardByIndex(selectedEvent->resourceRewardA[0]);
-                rewardCardsLeft = selectedEvent->resourceRewardA[1];
-                if (rewardCardsLeft)
+                for (int index = 0; index < NUMBER_OF_MAX_REWARDS; ++index)
+                {
+                    selectedReward[index] = GetRewardByIndex(selectedEvent->resourceRewardA[index].rewardIndex);
+                    rewardCardsLeft[index] = selectedEvent->resourceRewardA[index].rewardAmount;
+                }
+                
+                if (rewardCardsLeft[rewardIndex])
                 {
                     // reward cards exist
-                    UI_SetReward(selectedEvent, true);
+                    printf("reward exist");
+                    printf(" reward number: %d ", rewardCardsLeft[rewardIndex]);
+                    UI_SetReward(selectedReward[rewardIndex], rewardCardsLeft[rewardIndex]);
                     gameState = State_CollectRewards;
                 }
                 else
@@ -167,12 +190,18 @@ void MouseClick()
             case 2:
                 // clicked on optionB
                 ApplyEventResult(selectedEvent->resourceChangeB);
-                selectedReward = GetRewardByIndex(selectedEvent->resourceRewardB[0]);
-                rewardCardsLeft = selectedEvent->resourceRewardB[1];
-                if (rewardCardsLeft)
+                for (int index = 0; index < NUMBER_OF_MAX_REWARDS; ++index)
                 {
-                    // reward cards exist
-                    UI_SetReward(selectedEvent, false);
+                    selectedReward[index] = GetRewardByIndex(selectedEvent->resourceRewardB[index].rewardIndex);
+                    rewardCardsLeft[index] = selectedEvent->resourceRewardB[index].rewardAmount;
+                }
+
+                if (rewardCardsLeft[rewardIndex])
+                {
+                    // reward cards exist              
+                    printf("reward exist");
+                    printf(" reward number: %d ", rewardCardsLeft[rewardIndex]);
+                    UI_SetReward(selectedReward[rewardIndex], rewardCardsLeft[rewardIndex]);
                     gameState = State_CollectRewards;
                 }
                 else
@@ -184,20 +213,35 @@ void MouseClick()
             }
             break;
         case State_CollectRewards:
+
+            //Fail Safe Check
+            if (rewardCardsLeft[rewardIndex] == 0) {
+                rewardIndex = 0;
+                gameState = State_EndOfTurn; 
+            }
+
+            UI_SetReward(selectedReward[rewardIndex], rewardCardsLeft[rewardIndex]);
+            printf(" reward number 2: %d ", rewardCardsLeft[rewardIndex]);
             switch (ClickCheck_Rewards())
             {
             case 1:
                 // reward is construction
-                if (rewardCardsLeft > 0){
-                     SetCurrentBuilding(GetBuildingByIndex(selectedReward->eventIndex));
-                    --rewardCardsLeft;
+          
+                if (rewardCardsLeft[rewardIndex] > 0) {
+                    printf("Place building");
+                    SetCurrentBuilding(GetBuildingByIndex(selectedReward[rewardIndex]->eventIndex));
+                    --rewardCardsLeft[rewardIndex];
+                    UI_SetReward(selectedReward[rewardIndex], rewardCardsLeft[rewardIndex]);
                     gameState = State_PlaceYourBuilding;
                 }
-                else if (rewardCardsLeft < 0) {
-                    SetCurrentBuilding(GetBuildingByIndex(selectedReward->eventIndex));
-                    ++rewardCardsLeft;
-                    gameState = State_DestroyBuilding;                   
-                 }
+                else if (rewardCardsLeft[rewardIndex] < 0) {
+                    printf("Destroy Building");
+                    SetCurrentBuilding(GetBuildingByIndex(selectedReward[rewardIndex]->eventIndex));
+                    ++rewardCardsLeft[rewardIndex];
+                    UI_SetReward(selectedReward[rewardIndex], rewardCardsLeft[rewardIndex]);
+                    gameState = State_DestroyBuilding;
+                }
+                    
                 break;
             case 2:
                 // reward is ongoing?
@@ -206,33 +250,35 @@ void MouseClick()
             break;
         case State_PlaceYourBuilding:
 
+            printf("reward card left: %d" ,rewardCardsLeft[rewardIndex]);
+
             if (AttemptPlaceBuilding(currentMousePos))
             {
                 // there is more rewards to collect
-                if (rewardCardsLeft)
+                if (rewardCardsLeft[rewardIndex])
                 {
                     gameState = State_CollectRewards;
                 }
                 // there is no more rewards
                 else
                 {
-                    gameState = State_EndOfTurn;
+                    ++rewardIndex;
+                    if (rewardIndex != NUMBER_OF_MAX_REWARDS) {
+                        gameState = State_CollectRewards;
+                        MouseClick();
+                        printf("Enter");
+                    }
+                    else {
+                        rewardIndex = 0; //Reset Reward Index
+                        gameState = State_EndOfTurn;
+                    }
+                   
                 }
             }
             break;
         case State_DestroyBuilding:
             
-            DestroyBuildingBySelectedBuilding();
-            //there is more building to destroy
-            if (rewardCardsLeft)
-            {
-                gameState = State_CollectRewards;
-            }
-            // there is no more rewards
-            else
-            {
-                gameState = State_EndOfTurn;
-            }
+          
 
             break;
 
@@ -240,18 +286,22 @@ void MouseClick()
 
             break;
     }
+   // MouseCounter = 0.5f;
 }
 
 void GameStateControl() 
 {
     DrawGridIndicator(currentMousePos);
+
     switch (gameState)
     {
         case State_StartOfTurn:
             gameState = State_Idle;
             break;
+
         case State_Idle:
             break;
+
         case State_CardDraw:
             AnimTimer -= CP_System_GetDt();
             if (AnimTimer <= 0)
@@ -264,6 +314,30 @@ void GameStateControl()
             break;
         case State_PlaceYourBuilding:
             DrawCursorTile(currentMousePos);
+            break;
+        case State_DestroyBuilding:
+
+            DestroyBuildingBySelectedBuilding();
+
+            //there is more building to destroy
+            if (rewardCardsLeft[rewardIndex])
+            {
+                gameState = State_CollectRewards;
+            }
+            // there is no more rewards
+            else
+            {
+                ++rewardIndex;
+                if (rewardIndex != NUMBER_OF_MAX_REWARDS) {
+                    gameState = State_CollectRewards;
+                    MouseClick();
+                }
+                else {
+                    rewardIndex = 0; //Reset Reward Index
+                    gameState = State_EndOfTurn;
+                }
+            }
+
             break;
         case State_EndOfTurn:
             EndTurn();
@@ -301,6 +375,7 @@ void MouseDragOrClick(void)
 
 void MainGame_Initialize(void)
 {   
+    CP_System_ShowConsole();
     gameState = State_Idle;
     game_Background = CP_Image_Load("./ImperoArtAssets/Impero_GameBG.png");
     InitResources(100);

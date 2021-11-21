@@ -29,6 +29,8 @@
 #define B_TAVERN_INDEX 4
 
 //Events Resource Index
+#define NUMBER_OF_MAX_REWARDS 2
+
 #define R_NULL_INDEX 0
 #define R_GOLD_INDEX 1
 #define R_FOOD_INDEX 2
@@ -54,6 +56,7 @@
 #define DESTROY_TYPE_EVENT 3
 #define ONGOING_TYPE_EVENT 4
 #define EVENT_TYPE_REWARD 5
+
 
 //Resources
 // Building costs for every tile are defaulted to the following values
@@ -86,25 +89,31 @@ typedef enum
 	State_DestroyBuilding,
 	State_EndOfTurn,
 	State_GameOver
+
 }GAMESTATE;
-typedef const struct {
 
-	int indexOption;
-	int optionType;
+typedef struct
+{
+	int rewardIndex;
+	int rewardAmount;
 
-}CARDOPTION;
+}REWARD;
+
 typedef struct
 {
 	int eventIndex; // unique ID
 	int eventType; //
 	char* description;
 	int resourceChangeA[4];
-	int resourceRewardA[2];
+	REWARD resourceRewardA[NUMBER_OF_MAX_REWARDS];
 	char* descriptionA;
 	int resourceChangeB[4];
-	int resourceRewardB[2];
+	REWARD resourceRewardB[NUMBER_OF_MAX_REWARDS];
 	char* descriptionB;
 }CARDEVENT;
+
+
+
 typedef struct
 {
 	int eventIndex;
@@ -210,7 +219,7 @@ void DrawUI_Deck();
 void DrawUI_Default();
 void DrawUI(GAMESTATE state);
 void DrawTempTextResources();
-void UI_SetReward(CARDEVENT* newEvent, bool optionA);
+void UI_SetReward(REWARDCARD* rewardCard, int cardsLeft);
 void UI_SetEvent(CARDEVENT*);
 
 // Resources
@@ -244,7 +253,7 @@ REWARDCARD* GetRewardByIndex(int index);
 CP_Image* GetBuildingSpriteByIndex(int);
 CP_Image* GetBuildingSpriteButtonByIndex(int);
 CP_Image* GetCardSpriteByIndex(int index);
-void SwapDeckToMain(bool isTutorial);
+void SwapDeckToMain();
 CARDEVENT* GetEventByIndex(int index);
 
 // Resources
