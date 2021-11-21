@@ -8,55 +8,45 @@
 #include "Npc.h"
 
 
-
-GAMESTATE gameState = State_Idle;
-GAMEPHASE gamePhase = PHASE_BUILDPHASE; //Suppose to start with Build
 #pragma region Game Options Control
 bool AllowMouseDrag = false;
+bool mouseDrag = false;
 #pragma endregion
 
+GAMESTATE gameState;
+CP_Image game_Background;
 CP_Vector currentMousePos;
 CP_Vector mouseDragPos;
-bool mouseDrag = false;
+int loseCondition_FoodValue; //Delete if not used later
+int loseCondition_PopulationValue; //Delete if not used later
 
-
-#pragma region Win & Lose Variable Declaration
-int loseCondition_FoodValue;
-int loseCondition_PopulationValue;
-#pragma endregion
-
-
-#define ONEVENTCARDCLICK 1
+bool isTutorial = true;
 
 float AnimTimer = 1;
+CARDEVENT* selectedEvent;
+REWARDCARD* selectedReward;
+int rewardCardsLeft = 0;
 
-
-GAMESTATE GetGameState()
-{
-    return gameState;
-}
 
 #pragma region Turn & Win Lose Functions
 //Trigger Turn Start Functions Calls
-void StartTurn(void) 
+void StartTurn() 
 {
 
 }
 
 //Trigger Turn End Functions Calls
-void GameOver(void) 
+void GameOver() 
 {
     //Lose UI Pop Up
     printf("The game has ended!");
 }
 
-void EndTurn(void) 
+void EndTurn() 
 {
-    if (gamePhase == PHASE_GAMEPHASE) {
-        GenerateResourcesOnEndTurn();
-    }
+    GenerateResourcesOnEndTurn();
 
-    if (gamePhase == PHASE_ENDPHASE) {
+    if (gameState == State_GameOver) {
         GameOver();
     }
     /*if (LoseCondition_Resources())
@@ -72,7 +62,12 @@ bool LoseCondition_Resources() {
 }
 #pragma endregion
 
-void UpdateMouseInput(void)
+void DrawBackground()
+{
+    CP_Image_Draw(game_Background, 800, 450, 1600, 900, 255);
+}
+
+void UpdateMouseInput()
 {
     currentMousePos.x = CP_Input_GetMouseX();
     currentMousePos.y = CP_Input_GetMouseY();
@@ -84,6 +79,7 @@ void UpdateMouseInput(void)
     }
 }
 
+//Debug instant commands
 void AdminControlInput()
 {
     if (CP_Input_KeyTriggered(KEY_Q))
@@ -100,7 +96,7 @@ void AdminControlInput()
 }
 
 
-void CheckKeyInput(void)
+void CheckKeyInput()
 {
     if (CP_Input_KeyTriggered(KEY_F))
     {
@@ -111,14 +107,12 @@ void CheckKeyInput(void)
         EndTurn();
     }
     
-    // PLAYTESTING
+    // Debugging
     AdminControlInput();
 }
 
 void MouseClick()
 {
-    if (gamePhase == PHASE_MAINMENU) return; //Run Main Menu UI stuff
-
     switch (gameState)
     {
         case State_StartOfTurn:
@@ -127,23 +121,79 @@ void MouseClick()
             break;
 
         case State_Idle:
-            if (CheckUIClick(currentMousePos.x, currentMousePos.y) == 1)
+            if (ClickCheck_CardDraw())
             {
-                AnimTimer = 0.6f;
-                gameState = State_CardDraw;
+                if (GetCardsLeft() == 0)
+                {
+                    SwapToMainDeck(isTutorial);
+
+                    //Run Exit Game If No more cards
+
+                    gameState = State_MakeAChoice;
+                    selectedEvent = GetNextEvent(isTutorial);
+                    UI_SetEvent(selectedEvent);
+                }
+                else
+                {
+                    AnimTimer = 0.6f;
+                    gameState = State_CardDraw;
+                }
             }
             break;
         case State_CardDraw:
             
             break;
         case State_MakeAChoice:
-            switch (CheckUIClick(currentMousePos.x, currentMousePos.y))
+            // made a choice
+            switch (ClickCheck_CardChoice())
             {
             case 1:
+                // clicked on optionA
+                ApplyEventResult(selectedEvent->resourceChangeA);
+                selectedReward = GetRewardByIndex(selectedEvent->resourceRewardA[0]);
+                rewardCardsLeft = selectedEvent->resourceRewardA[1];
+                if (rewardCardsLeft)
+                {
+                    // reward cards exist
+                    UI_SetReward(selectedEvent, true);
+                    gameState = State_CollectRewards;
+                }
+                else
+                {
+                    // no reward cards
+                    gameState = State_EndOfTurn;
+                }
+                break;
+            case 2:
+                // clicked on optionB
+                ApplyEventResult(selectedEvent->resourceChangeB);
+                selectedReward = GetRewardByIndex(selectedEvent->resourceRewardB[0]);
+                rewardCardsLeft = selectedEvent->resourceRewardB[1];
+                if (rewardCardsLeft)
+                {
+                    // reward cards exist
+                    UI_SetReward(selectedEvent, false);
+                    gameState = State_CollectRewards;
+                }
+                else
+                {
+                    // no reward cards
+                    gameState = State_EndOfTurn;
+                }
+                break;
+            }
+            break;
+        case State_CollectRewards:
+            switch (ClickCheck_Rewards())
+            {
+            case 1:
+                // reward is construction
+                SetCurrentBuilding(GetBuildingByIndex(selectedReward->eventIndex));
+                --rewardCardsLeft;
                 gameState = State_PlaceYourBuilding;
                 break;
             case 2:
-                gameState = State_EndOfTurn;
+                // reward is ongoing?
                 break;
             }
             break;
@@ -151,7 +201,16 @@ void MouseClick()
 
             if (AttemptPlaceBuilding(currentMousePos))
             {
-                gameState = State_EndOfTurn;
+                // there is more rewards to collect
+                if (rewardCardsLeft)
+                {
+                    gameState = State_CollectRewards;
+                }
+                // there is no more rewards
+                else
+                {
+                    gameState = State_EndOfTurn;
+                }
             }
             break;
 
@@ -167,48 +226,25 @@ void GameStateControl()
     switch (gameState)
     {
         case State_StartOfTurn:
-            DrawUI(gameState);
             gameState = State_Idle;
             break;
         case State_Idle:
-            DrawUI(gameState);
             break;
         case State_CardDraw:
             AnimTimer -= CP_System_GetDt();
             if (AnimTimer <= 0)
             {
-                if (GetCardsLeft() != 0)
-                {
-                    gameState = State_MakeAChoice;
-                    UI_SetEvent(GetNextEvent(gamePhase));
-                }
-                else
-                {
-                    ++gamePhase;
-                    ChangeDeckByPhase(gamePhase);
-                    if (gamePhase == PHASE_ENDPHASE)
-                    {
-                        gameState = State_EndOfTurn;
-                    }
-                    else
-                    {
-                        gameState = State_MakeAChoice;
-                        UI_SetEvent(GetNextEvent(gamePhase));
-                    }
-                }
+                gameState = State_MakeAChoice;
+                UI_SetEvent(GetNextEvent(isTutorial));
             }
-            DrawUI(gameState);
             break;
         case State_MakeAChoice:
-            DrawUI(gameState);
             break;
         case State_PlaceYourBuilding:
             DrawCursorTile(currentMousePos);
-            DrawUI(gameState);
             break;
         case State_EndOfTurn:
             EndTurn();
-            DrawUI(gameState);
             gameState = State_StartOfTurn;
             break;
     }
@@ -241,12 +277,10 @@ void MouseDragOrClick(void)
     }
 }
 
-void game_init(void)
-{    
-    CP_System_ShowConsole();
-    CP_System_SetWindowSize(1600, 900);
-    CP_Settings_TextAlignment(CP_TEXT_ALIGN_H_CENTER, CP_TEXT_ALIGN_V_TOP);
-
+void MainGame_Initialize(void)
+{   
+    gameState = State_Idle;
+    game_Background = CP_Image_Load("./ImperoArtAssets/Impero_GameBG.png");
     InitResources(100);
     InitWorldSpaceGrid();
     InitBuildings();
@@ -256,22 +290,18 @@ void game_init(void)
     InitUI();
 }
 
-void game_update(void)
+void MainGame_Update(void)
 {
     UpdateMouseInput();
     MouseDragOrClick();
     CheckKeyInput();
     // Graphics
-    CP_Graphics_ClearBackground(CP_Color_Create(150, 150, 150, 255));
+    DrawBackground();
     DrawTileSet();
     DrawBuildings();
     UpdateAllNpc();
+    DrawUI(gameState);
     GameStateControl();
     DrawTempTextResources();
     DrawAllAnimations();
-}
-
-void game_exit(void)
-{
-
 }

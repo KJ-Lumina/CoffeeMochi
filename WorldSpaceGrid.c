@@ -16,8 +16,6 @@ CP_Vector cursorTile;
 CP_Image gridIndicator;
 
 BUILDING* selectedBuilding;
-int amountToBuild;
-int builtAmount;
 
 TILEMAP tilemap_world = { "TilesetGrass", 3, 3 };
 CP_Image tilemap;
@@ -129,10 +127,6 @@ void SetCurrentBuilding(BUILDING* newBuilding)
     selectedBuilding = newBuilding;
 }
 
-void SetCurrentAmountToBuild(int buildAmount) {
-    amountToBuild = buildAmount;
-}
-
 int GetOccupiedIndex(int x, int y)
 {
     return buildingGrid[x][y];
@@ -154,15 +148,7 @@ bool AttemptPlaceBuilding(CP_Vector cursorPosition)
     {
         SetNewBuilding((int)cursorPosition.x, (int)cursorPosition.y, selectedBuilding->spriteIndex);
         AddNewResourceBuilding(selectedBuilding->spriteIndex);
-        builtAmount++;
-        printf("built Amount:%d, amountToBuild:%d", builtAmount, amountToBuild);
-        if (builtAmount < amountToBuild) {
-            return 0;
-        }
-        else {
-            builtAmount = 0;
-            return 1;
-        }   
+        return 1;
     }
     else
     {
