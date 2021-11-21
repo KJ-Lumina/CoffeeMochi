@@ -243,6 +243,7 @@ void SubtractHouse();
 void SubtractTavern();
 void GenerateResourcesOnEndTurn();
 void ApplyEventResult(int resourceChange[4]);
+bool LoseCondition_Resources();
 
 // Card Events
 int GetCardsLeft();
