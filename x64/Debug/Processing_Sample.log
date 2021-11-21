@@ -1,5 +1,13 @@
-﻿  UI_mechanics.c
-  Processing_Sample.vcxproj -> C:\Users\trave\Documents\GitHub\CoffeeMochi\x64\Debug\Processing_Sample.exe
+﻿  Buildings.c
+  GameEvents.c
+  Menu.c
+  Npc.c
+  OngoingEvents.c
+  Resource_Stats.c
+  UI_mechanics.c
+  WorldSpaceGrid.c
+  game.c
+  Processing_Sample.vcxproj -> C:\Users\Seow Kai Jun\Documents\GitHub\CoffeeMochi\x64\Debug\Processing_Sample.exe
   1 File(s) copied
   1 File(s) copied
   45 File(s) copied
