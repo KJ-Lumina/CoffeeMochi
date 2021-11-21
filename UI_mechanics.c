@@ -21,6 +21,7 @@ CP_Image image_CardB;
 CARDEVENT* selectedEvent;
 REWARDCARD* selectedReward;
 int rewardCardsLeft;
+float rewardCardGap = 30;
 float windowWidth;
 float windowHeight;
 CP_Vector optionAPos;
@@ -35,10 +36,18 @@ CP_Image testenemy;
 //Button normalinitialize = {width,height,xPos,yPos,isSplashScreenActive,isSettingActive,index}
 BUTTON start_game = { true,100,100,200,200,1,0,START_GAME };
 
-//using for testing spawner anims
+// using for testing spawner anims
 float delta = 0;
 
 
+// reward card effect, to be optimized later
+CP_Image image_CardFlash;
+CP_Image image_CardHighlight;
+float cardflashTimer = 0;
+float cardhighlightTimer[5];
+
+// resource bars
+CP_Image image_ResourceBars;
 
 
 
@@ -56,6 +65,10 @@ void InitUI()
 
     optionAPos = CP_Vector_Set(windowWidth - 176, windowHeight / 2 - 60);
     optionBPos = CP_Vector_Set(windowWidth - 90, windowHeight / 2 - 60);
+
+    image_CardFlash = CP_Image_Load("./ImperoArtAssets/Impero_Cardflash.png");
+    image_CardHighlight = CP_Image_Load("./ImperoArtAssets/Impero_Cardhighlight.png");
+    image_ResourceBars = CP_Image_Load("./ImperoArtAssets/ResourceBarAssets/Impero_ResourceBars.png");
 }
 
 void UI_SetEvent(CARDEVENT* newEvent)
@@ -119,7 +132,7 @@ int ClickCheck_CardChoice()
 
 int ClickCheck_Rewards()
 {
-    if (CheckWithinBounds(CP_Vector_Set(windowWidth - 130, windowHeight / 2 - 60), 180, 240))
+    if (CheckWithinBounds(CP_Vector_Set(1485 - 15.0f * rewardCardsLeft, 390), 150 + rewardCardsLeft * rewardCardGap, 240))
     {
         if (selectedReward->cardType == BUILD_TYPE_EVENT)
         {
@@ -199,7 +212,39 @@ void DrawUI_TopPileInsert()
 
 void DrawUI_RewardCards()
 {
-    CP_Image_Draw(*GetCardSpriteByIndex(selectedReward->eventIndex), windowWidth - 130, windowHeight / 2 - 60, 185, 243, 255);
+    float offsetX = -(rewardCardsLeft - 1) * rewardCardGap / 2;
+    float deltaTime = CP_System_GetDt();
+    for (int i = 0; i < rewardCardsLeft; ++i)
+    {
+        CP_Image_Draw(*GetCardSpriteByIndex(selectedReward->eventIndex), 1470 + offsetX + rewardCardGap * i, 390, 185, 243, 255);
+        cardflashTimer += deltaTime;
+        CP_Image_Draw(image_CardFlash, 1470 + offsetX + rewardCardGap * i, 390, 185, 243, CP_Math_LerpInt(255, 0, cardflashTimer));
+        if (i != rewardCardsLeft - 1)
+        {
+            if (CheckWithinBounds(CP_Vector_Set(1470 + offsetX + rewardCardGap * i - 77.5f, 390), 30, 243) && cardhighlightTimer[i] <= 1)
+            {
+                cardhighlightTimer[i] += deltaTime;
+            }
+            else if (cardhighlightTimer[i] > 0)
+            {
+                cardhighlightTimer[i] -= deltaTime;
+            }
+            CP_Image_Draw(image_CardHighlight, 1470 + offsetX + rewardCardGap * i, 390, 185, 243, CP_Math_LerpInt(0, 255, cardhighlightTimer[i]));
+        }
+        // First reward card
+        else
+        {
+            if (CheckWithinBounds(CP_Vector_Set(1470 + offsetX + rewardCardGap * i, 390), 185, 243) && cardhighlightTimer[i] <= 1)
+            {
+                cardhighlightTimer[i] += deltaTime;
+            }
+            else if (cardhighlightTimer[i] > 0)
+            {
+                cardhighlightTimer[i] -= deltaTime;
+            }
+            CP_Image_Draw(image_CardHighlight, 1470 + offsetX + rewardCardGap * i, 390, 185, 243, CP_Math_LerpInt(0, 255, cardhighlightTimer[i]));
+        }
+    }
 }
 
 void DrawUI(GAMESTATE state)
@@ -219,6 +264,12 @@ void DrawUI(GAMESTATE state)
     case State_CardDraw:
         DrawUI_Deck();
         DrawUI_TopPileInsert();
+        cardflashTimer = 0;
+        cardhighlightTimer[0] = 0;
+        cardhighlightTimer[1] = 0;
+        cardhighlightTimer[2] = 0;
+        cardhighlightTimer[3] = 0;
+        cardhighlightTimer[4] = 0;
         //DrawUI_GauntletClose();
         break;
     case State_MakeAChoice:
@@ -231,6 +282,7 @@ void DrawUI(GAMESTATE state)
         break;
     case State_PlaceYourBuilding:
         DrawUI_Deck();
+        DrawUI_RewardCards();
         //DrawUI_GauntletClose();
         break;
     case State_EndOfTurn:
@@ -311,7 +363,6 @@ int CheckMouseColliding(BUTTON buttonArray[], CP_Vector mousePos, int isSplashSc
             }
         }
     }
-
     return mouseClickFailed;
 }
 
@@ -337,7 +388,6 @@ void InitSpritesheets(void)
     }
 
 }
-
 SPRITESHEET GetSpriteAnimationByIndex(int index)
 {
     switch (index)
@@ -348,7 +398,6 @@ SPRITESHEET GetSpriteAnimationByIndex(int index)
         return tileset_testenemy;
     }
 }
-
 CP_Image GetSpriteSheetByIndex(int index)
 {
     switch (index)
@@ -360,49 +409,51 @@ CP_Image GetSpriteSheetByIndex(int index)
     }
 }
 
+SPRITESHEET AllAnims[100] = { 0 };
+float getDelta = 0;
+float delay = 0;
+int animSize = 99;
+int currentSprite = 0;
 // Draws Animation without stopping, float x and y for position, float scale pixel size, delay is animation time, index is enum spritesheet
-void DrawAnimation(float x, float y, float scaleX, float scaleY, float delay, int index)
+void DrawAnimation(float x, float y, float scaleX, float scaleY, float newDelay, int newIndex)
 {
 
-    timeElapse[index] += CP_System_GetDt();
+    timeElapse[newIndex] += CP_System_GetDt();
 
 
-    if (timeElapse[index] >= delay)
+    if (timeElapse[newIndex] >= newDelay)
     {
-        timeElapse[index] -= delay;
-        setNextSprite[index] = 1;
+        timeElapse[newIndex] -= newDelay;
+        setNextSprite[newIndex] = 1;
     }
 
-    if (setNextSprite[index] == 1)
+    if (setNextSprite[newIndex] == 1)
     {
-        if (minX[index] == maxX[index] - 1)
+        if (minX[newIndex] == maxX[newIndex] - 1)
         {
-            minX[index] = 0;
+            minX[newIndex] = 0;
         }
         else
         {
-            minX[index]++;
+            minX[newIndex]++;
         }
 
-        if (minY[index] == maxY[index] - 1)
+        if (minY[newIndex] == maxY[newIndex] - 1)
         {
-            minY[index] = 0;
+            minY[newIndex] = 0;
         }
         else
         {
-            minY[index]++;
+            minY[newIndex]++;
         }
 
-        setNextSprite[index] = 0;
+        setNextSprite[newIndex] = 0;
     }
 
     //CP_Image_DrawSubImage(GetBuildingSpriteByIndex(7), WORLDGRIDX, WORLDGRIDY, TILEWIDTH, TILEHEIGHT, 0, 512, 128, 672, 255);
-    CP_Image_DrawSubImage(GetSpriteSheetByIndex(index), x, y, scaleX, scaleY, spriteSizeX[index] * minX[index], spriteSizeY[index] * minY[index], spriteSizeX[index] * (minX[index] + 1), spriteSizeY[index] * (minY[index] + 1), 255);
+    CP_Image_DrawSubImage(GetSpriteSheetByIndex(newIndex), x, y, scaleX, scaleY, spriteSizeX[newIndex] * minX[newIndex], spriteSizeY[newIndex] * minY[newIndex], spriteSizeX[newIndex] * (minX[newIndex] + 1), spriteSizeY[newIndex] * (minY[newIndex] + 1), 255);
 
 }
-
-SPRITESHEET AllAnims[100] = { 0 };
-
 // Saves an animation into the AllAnims array to be rendered. If infiniteLoop put 1. timeToDeath is how long 1 cycle of animation will take in case of infiniteloop.
 void SpawnAnimation(float x, float y, float scaleX, float scaleY, int index, float timeToDeath, int isInfinteLoop)
 {
@@ -438,12 +489,6 @@ void SpawnAnimation(float x, float y, float scaleX, float scaleY, int index, flo
         AllAnims[i].timeElapse = 0;
     }
 }
-
-float getDelta = 0;
-float delay = 0;
-int animSize = 99;
-int currentSprite = 0;
-
 // Draws out all Anims in the array until the animation's death, where it will be removed
 void DrawAllAnimations(void)
 {
@@ -545,7 +590,6 @@ void DrawAllAnimations(void)
 
     }
 }
-
 //testing animation fucntion
 void ConstantAnimSpawner(float time)
 {
@@ -557,13 +601,26 @@ void ConstantAnimSpawner(float time)
     }
 }
 
-
+char resourceBuffer[10];
 void DrawTempTextResources()
 {
-    CP_Settings_TextSize(20);
+    CP_Image_Draw(image_ResourceBars, 800, 450, 1600, 900, 255);
+
+
+    CP_Settings_TextSize(40);
     CP_Settings_Fill(CP_Color_Create(255, 255, 255, 255));
-    char buffer[200];
-    sprintf_s(buffer, 100, "Gold: %d\t\tFood: %d\t\tPopulation: %d\t\tMorale: %d", Get_current_gold(), Get_current_food(), Get_current_population(), (Get_current_morale() + Get_additional_morale()));
-    CP_Font_DrawText(buffer, 200, 20);
+
+    sprintf_s(resourceBuffer, 10, "%d", Get_current_gold());
+    CP_Font_DrawText(resourceBuffer, 170, 68);
+
+    sprintf_s(resourceBuffer, 10, "%d", Get_current_food());
+    CP_Font_DrawText(resourceBuffer, 170, 156);
+
+    sprintf_s(resourceBuffer, 10, "%d", Get_current_population());
+    CP_Font_DrawText(resourceBuffer, 170, 243);
+
+    sprintf_s(resourceBuffer, 10, "%d", Get_current_morale() + Get_additional_morale());
+    CP_Font_DrawText(resourceBuffer, 170, 332);
+
 }
 

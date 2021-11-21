@@ -37,15 +37,15 @@ void game_init(void)
 {
 	
 	CP_System_SetWindowSize(1600, 900);
-	CP_Settings_TextAlignment(CP_TEXT_ALIGN_H_CENTER, CP_TEXT_ALIGN_V_TOP);
+	CP_Settings_TextAlignment(CP_TEXT_ALIGN_H_RIGHT, CP_TEXT_ALIGN_V_TOP);
 	windowsWidth = (float)CP_System_GetWindowWidth();
 	windowsHeight = (float)CP_System_GetWindowHeight();
 
 	//START FROM BEGINNING
-	gameScene = SCENE_MAINMENU;
+	//gameScene = SCENE_MAINMENU;
 	//SKIP TO GAME
-	//MainGame_Initialize();
-	//gameScene = SCENE_GAMEPHASE;
+	MainGame_Initialize();
+	gameScene = SCENE_GAMEPHASE;
 	//CHANGEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
 	
 
