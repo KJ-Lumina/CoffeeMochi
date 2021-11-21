@@ -147,7 +147,6 @@ void MouseClick()
                     else 
                     {
                         GameEnd();
-                        gameState = State_EndOfTurn;
                         break;
                     }
 
