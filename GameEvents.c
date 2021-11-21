@@ -47,10 +47,10 @@ int currentCardIndex;
 
 #pragma region Reward Cards
 REWARDCARD R_NullCard = { 0, NULL_CHOICE, R_NULL_INDEX, 0, "This is a null reward." };
-REWARDCARD R_HouseCard	= { 1, BUILD_TYPE_EVENT, B_HOUSE_INDEX , 1, "Click on the grid to place the house."};
-REWARDCARD R_FarmCard	= { 2, BUILD_TYPE_EVENT, B_FARM_INDEX , 1, "Click on the grid to place the farm." };
-REWARDCARD R_MarketCard	= { 3, BUILD_TYPE_EVENT, B_MARKET_INDEX , 1, "Click on the grid to place the market." };
-REWARDCARD R_TavernCard	= { 4, BUILD_TYPE_EVENT, B_TAVERN_INDEX , 1, "Click on the grid to place the tavern." };
+REWARDCARD R_HouseCard	= { 1, BUILD_TYPE_EVENT, B_HOUSE_INDEX , 1, "Click on the grid to construct the house."};
+REWARDCARD R_FarmCard	= { 2, BUILD_TYPE_EVENT, B_FARM_INDEX , 1, "Click on the grid to construct the farm." };
+REWARDCARD R_MarketCard	= { 3, BUILD_TYPE_EVENT, B_MARKET_INDEX , 1, "Click on the grid to construct the market." };
+REWARDCARD R_TavernCard	= { 4, BUILD_TYPE_EVENT, B_TAVERN_INDEX , 1, "Click on the grid to construct the tavern." };
 
 #pragma endregion
 
