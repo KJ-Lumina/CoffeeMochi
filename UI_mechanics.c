@@ -1,10 +1,12 @@
 #include <stdio.h>
 #include <stdbool.h>
+#include <math.h>
 #include "cprocessing.h"
 #include "Common_Headers.h"
 #include "UI_mechanics.h"
 #include "Buildings.h"
 #include "UI_Text.h"
+
 
 #define BUTTONARRAYSIZE 3
 
@@ -49,6 +51,7 @@ float cardhighlightTimer[5];
 // resource bars
 CP_Image image_ResourceBars;
 
+extern int rewardIndex;
 
 
 void InitUI()
@@ -78,18 +81,12 @@ void UI_SetEvent(CARDEVENT* newEvent)
     IsBViable = IsCostPayable(selectedEvent->resourceChangeB[0]);
 }
 
-void UI_SetReward(CARDEVENT* newEvent, bool optionA)
+void UI_SetReward(REWARDCARD* rewardCard, int cardsLeft)
 {
-    if (optionA)
-    {
-        selectedReward = GetRewardByIndex(newEvent->resourceRewardA[0]);
-        rewardCardsLeft = newEvent->resourceRewardA[1];
-    }
-    else
-    {
-        selectedReward = GetRewardByIndex(newEvent->resourceRewardB[0]);
-        rewardCardsLeft = newEvent->resourceRewardB[1];
-    }
+    
+        selectedReward = rewardCard;
+        rewardCardsLeft = abs(cardsLeft);
+ 
 }
 
 bool ClickCheck_CardDraw()
@@ -281,6 +278,11 @@ void DrawUI(GAMESTATE state)
         DrawUI_RewardCards();
         break;
     case State_PlaceYourBuilding:
+        DrawUI_Deck();
+        DrawUI_RewardCards();
+        //DrawUI_GauntletClose();
+        break;
+    case State_DestroyBuilding:
         DrawUI_Deck();
         DrawUI_RewardCards();
         //DrawUI_GauntletClose();
