@@ -61,7 +61,7 @@ void RemoveBuilding(CP_Vector pos)
 	}
 }
 
-CP_Vector FindNearestBuilding(int index, CP_Vector location)
+CONSTBUILDING FindNearestBuilding(int index, CP_Vector location)
 {
 	float closestDist = 1000.0f;
 	int nearest = 0;
@@ -73,7 +73,7 @@ CP_Vector FindNearestBuilding(int index, CP_Vector location)
 			nearest = i;
 		}
 	}
-	return buildingArray[nearest].position;
+	return buildingArray[nearest];
 }
 
 int CountBuilding(int index)

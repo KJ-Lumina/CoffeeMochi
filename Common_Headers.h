@@ -2,10 +2,7 @@
 #include <stdbool.h>
 #include "cprocessing.h"
 
-
-
-
-#define WORLDGRIDX 5
+#define WORLDGRIDX 10
 #define WORLDGRIDY 5
 #define TILEWIDTH 128.0f
 #define TILEHEIGHT 128.0f
@@ -50,7 +47,6 @@
 #define RESOURCE_TYPE_EVENT 2
 #define DESTROY_TYPE_EVENT 3
 #define ONGOING_TYPE_EVENT 4
-#define EVENT_TYPE_REWARD 5
 
 //Resources
 // Building costs for every tile are defaulted to the following values
@@ -63,31 +59,22 @@
 #define START_GAME 0
 
 
-typedef enum 
-{
-	SCENE_MAINMENU,
-	SCENE_GAMEENTRY,
-	SCENE_GAMELEAVEENTRY,
-	SCENE_GAMEPHASE,
-	SCENE_ENDPHASE,
-}GAMESCENE;
-
-typedef enum
-{
+typedef enum {
+	PHASE_MAINMENU,
 	PHASE_BUILDPHASE,
 	PHASE_GAMEPHASE,
-	PHASE_ENDPHASE,
+	PHASE_ENDPHASE
+
 }GAMEPHASE;
 typedef enum
 {
+	State_MainMenu,
 	State_StartOfTurn,
 	State_Idle,
 	State_CardDraw,
 	State_MakeAChoice,
-	State_CollectRewards,
 	State_PlaceYourBuilding,
 	State_EndOfTurn,
-	State_GameOver
 }GAMESTATE;
 typedef const struct {
 
@@ -97,25 +84,27 @@ typedef const struct {
 }CARDOPTION;
 typedef struct
 {
-	int eventIndex; // unique ID
-	int eventType; //
-	char* description;
-	int resourceChangeA[4];
-	int resourceRewardA[2];
-	char* descriptionA;
-	int resourceChangeB[4];
-	int resourceRewardB[2];
-	char* descriptionB;
-}CARDEVENT;
-typedef struct
-{
 	int eventIndex;
-	int cardType;
-	int resourceType;
-	int resourceAmt;
+	int eventDifficultyType;
+	int eventType;
 	char* description;
-}REWARDCARD;
 
+	int indexOptionA;
+	int optionAmountA;
+	int optionTypeA;
+	int costTypeA;
+	int costAmountA;
+	char* descriptionA;
+
+	int indexOptionB;
+	int optionAmountB;
+	int optionTypeB;
+	int costTypeB;
+	int costAmountB;
+	char* descriptionB;
+
+
+}CARDEVENT;
 typedef struct
 {
 	const char* name;
@@ -179,9 +168,7 @@ typedef struct
 float Math_Abs(float x);
 int Math_Abs_Int(int x);
 
-/* Forward declarations */
-void MainGame_Initialize(void);
-void MainGame_Update(void);
+GAMESTATE GetGameState();
 
 // Initialization
 void InitBuildings();
@@ -198,22 +185,20 @@ void DrawCursorTile(CP_Vector cursorPos);
 float CalculateUnitsToBorder(CP_Vector position, CP_Vector directionUnit);
 void SetNewBuilding(int xPos, int yPos, int buildingIndex);
 void SetCurrentBuilding(BUILDING* newBuilding);
+void SetCurrentAmountToBuild(int buildAmount);
 bool AttemptPlaceBuilding(CP_Vector cursorPos);
 bool IsTileOccupied(CP_Vector);
 int GetAllBuildingsPositionByIndex(int index, TILEPOSITION position[]);
 void DestroyBuildingByIndex(int buidlingIndex);
 
 // UI_Mechanics
-bool CheckWithinBounds(CP_Vector position, float width, float height);
-bool ClickCheck_CardDraw();
-int ClickCheck_CardChoice();
-int ClickCheck_Rewards();
 void DrawUI_Deck();
+void DrawUI_CardDrawn();
 void DrawUI_Default();
 void DrawUI(GAMESTATE state);
 void DrawTempTextResources();
-void UI_SetReward(CARDEVENT* newEvent, bool optionA);
 void UI_SetEvent(CARDEVENT*);
+int CheckUIClick(float, float);
 
 // Resources
 void Set_current_gold(int gold);
@@ -235,22 +220,16 @@ void SubtractFarm();
 void SubtractHouse();
 void SubtractTavern();
 void GenerateResourcesOnEndTurn();
-void ApplyEventResult(int resourceChange[4]);
 
 // Card Events
 int GetCardsLeft();
 CARDEVENT* GetNextEvent(GAMEPHASE gamePhase);
 CARDEVENT* GetCurrentEvent();
 BUILDING* GetBuildingByIndex(int);
-REWARDCARD* GetRewardByIndex(int index);
 CP_Image* GetBuildingSpriteByIndex(int);
 CP_Image* GetBuildingSpriteButtonByIndex(int);
-CP_Image* GetCardSpriteByIndex(int index);
-void SwapToMainDeck(GAMEPHASE currentGamePhase);
+void ChangeDeckByPhase(GAMEPHASE currentGamePhase);
 CARDEVENT* GetEventByIndex(int index);
-
-// Resources
-bool IsCostPayable(int costAmt);
 
 
 

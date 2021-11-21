@@ -32,18 +32,6 @@ void LerpTowards()
 
 }
 
-bool CheckWithinBounds(CP_Vector position, float width, float height)
-{
-	float mouseX = CP_Input_GetMouseX();
-	float mouseY = CP_Input_GetMouseY();
-
-	if (mouseX >= position.x - (width / 2) && mouseX <= position.x + (width / 2) && mouseY >= position.y - (height / 2) && mouseY <= position.y + (height / 2))
-	{
-		return true;
-	}
-	return false;
-}
-
 
 
 

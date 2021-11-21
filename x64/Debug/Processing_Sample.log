@@ -1,3 +1,6 @@
+<<<<<<< HEAD
+﻿  UI_mechanics.c
+=======
 ﻿  Buildings.c
   GameEvents.c
   Menu.c
@@ -7,7 +10,8 @@
   UI_mechanics.c
   WorldSpaceGrid.c
   game.c
+>>>>>>> bcfc390bb22b46ed04f28440ec06ece4d439724f
   Processing_Sample.vcxproj -> C:\Users\Seow Kai Jun\Documents\GitHub\CoffeeMochi\x64\Debug\Processing_Sample.exe
   1 File(s) copied
   1 File(s) copied
-  45 File(s) copied
+  43 File(s) copied

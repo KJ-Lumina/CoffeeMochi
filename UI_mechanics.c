@@ -11,22 +11,20 @@
 // SPRITES
 CP_Image EventCard;
 MOVINGSPRITES EventCardAnim;
-CP_Image image_CardBack;
-CP_Image image_CardDeck;
-//CP_Image EventGauntletClose;
-CP_Image image_CardFlipped;
-CP_Image image_CardA;
-CP_Image image_CardB;
+CP_Image EventCardBack;
+CP_Image EventCardA;
+CP_Image EventCardB;
+CP_Image EventCardDeck;
+CP_Image EventGauntletClose;
+CP_Image EventGauntletOpen;
+CP_Image EventGauntletA;
+CP_Image EventGauntletB;
 
 CARDEVENT* selectedEvent;
-REWARDCARD* selectedReward;
-int rewardCardsLeft;
 float windowWidth;
 float windowHeight;
 CP_Vector optionAPos;
 CP_Vector optionBPos;
-bool IsAViable;
-bool IsBViable;
 char textDescBuffer[100];
 
 //SPRITESHEET tileset_testenemy = { setNextSprite,minX,maxX,minY,maxY,maxSprites,spriteSizeX,spritesizeY,timeToDeath,posX,PosY,scaleX,scaleY,timeElapse,index,isInfiniteLoop };
@@ -46,115 +44,415 @@ void InitUI()
 {
     windowWidth = (float)CP_System_GetWindowWidth();
     windowHeight = (float)CP_System_GetWindowHeight();
-    image_CardBack = CP_Image_Load("./ImperoArtAssets/Impero_CardBack.png");
-    image_CardDeck = CP_Image_Load("./ImperoArtAssets/Impero_CardDeck.png");
-    EventCardAnim = (MOVINGSPRITES){ image_CardBack, CP_Vector_Set(windowWidth - 130, (windowHeight / 2) + 230), CP_Vector_Set(windowWidth - 130, (windowHeight / 2) - 60), 0.6f, 0 };
-    //EventGauntletClose = CP_Image_Load("./Assets/gauntletclose.png");
-    image_CardFlipped = CP_Image_Load("./ImperoArtAssets/Impero_CardFlip.png");
-    image_CardA = CP_Image_Load("./ImperoArtAssets/Impero_CardBlue.png");
-    image_CardB = CP_Image_Load("./ImperoArtAssets/Impero_CardRed.png");
+    EventCardBack = CP_Image_Load("./Assets/best_cardback.png");
+    EventCard = CP_Image_Load("./Assets/best_darkencard.png");
+    EventCardA = CP_Image_Load("./Assets/best_cardblue.png");
+    EventCardB = CP_Image_Load("./Assets/best_cardred.png");
+    EventCardDeck = CP_Image_Load("./Assets/WIP CARDDECK.png");
+    EventCardAnim = (MOVINGSPRITES){ EventCardBack, CP_Vector_Set(windowWidth - 130, (windowHeight / 2) + 230), CP_Vector_Set(windowWidth - 130, (windowHeight / 2) - 60), 0.6f, 0 };
+    EventGauntletClose = CP_Image_Load("./Assets/gauntletclose.png");
+    EventGauntletOpen = CP_Image_Load("./Assets/gauntletopen.png");
+    EventGauntletA = CP_Image_Load("./Assets/gauntletA.png");
+    EventGauntletB = CP_Image_Load("./Assets/gauntletB.png");
 
-    optionAPos = CP_Vector_Set(windowWidth - 176, windowHeight / 2 - 60);
+
+    optionAPos = CP_Vector_Set(windowWidth - 170, windowHeight / 2 - 60);
     optionBPos = CP_Vector_Set(windowWidth - 90, windowHeight / 2 - 60);
 }
 
 void UI_SetEvent(CARDEVENT* newEvent)
 {
     selectedEvent = newEvent;
-    IsAViable = IsCostPayable(selectedEvent->resourceChangeA[0]);
-    IsBViable = IsCostPayable(selectedEvent->resourceChangeB[0]);
 }
 
-void UI_SetReward(CARDEVENT* newEvent, bool optionA)
+bool CheckWithinBounds(CP_Vector position, float width, float height)
 {
-    if (optionA)
-    {
-        selectedReward = GetRewardByIndex(newEvent->resourceRewardA[0]);
-        rewardCardsLeft = newEvent->resourceRewardA[1];
-    }
-    else
-    {
-        selectedReward = GetRewardByIndex(newEvent->resourceRewardB[0]);
-        rewardCardsLeft = newEvent->resourceRewardB[1];
-    }
-}
+    float mouseX = CP_Input_GetMouseX();
+    float mouseY = CP_Input_GetMouseY();
 
-bool ClickCheck_CardDraw()
-{
-    if (CheckWithinBounds(EventCardAnim.startingPos, 185, 243))
+    if (mouseX >= position.x - (width/2) && mouseX <= position.x + (width / 2) && mouseY >= position.y - (height / 2) && mouseY <= position.y + (height / 2))
     {
         return true;
     }
     return false;
 }
 
-int ClickCheck_CardChoice()
+int CheckUIClick(float xPos, float yPos)
 {
-    if (CheckWithinBounds(optionAPos, 120, 320))
+    switch (GetGameState())
     {
-        if (IsAViable)
+    case State_MainMenu:
+        break;
+    case State_Idle:
+        // click on card
+        if (CheckWithinBounds(EventCardAnim.startingPos, 240, 240))
         {
             return 1;
         }
-        else
+        break;
+    case State_MakeAChoice:
+        // click on option A
+        if (xPos >= optionAPos.x - 60 && xPos <= optionAPos.x + 60 && yPos >= optionBPos.y - 160 && yPos <= optionBPos.y + 160)
         {
-            printf("u broke dude LMAO");
-            return 0;
+
+            //Check for Pre-Requiste 
+            switch (selectedEvent->costTypeA)
+            {
+            case R_NULL_INDEX:
+                //Do Nothing
+                break;
+                //RESOURCE COST
+            case R_GOLD_INDEX:
+                if ((Get_current_gold() - selectedEvent->costAmountA) < 0) return 0;
+                Set_current_gold(Get_current_gold() - selectedEvent->costAmountA);
+                break;
+
+            case R_FOOD_INDEX:
+                if ((Get_current_food() - selectedEvent->costAmountA) < 0) return 0;
+                Set_current_food(Get_current_food() - selectedEvent->costAmountA);
+                break;
+
+            case R_POPULATION_INDEX:
+                if ((Get_current_population() - selectedEvent->costAmountA) < 0) return 0;
+                Set_current_population(Get_current_population() - selectedEvent->costAmountA);
+                break;
+
+            case R_MORALE_INDEX:
+                if ((Get_current_morale() - selectedEvent->costAmountA) < 0) return 0;
+                Set_additional_morale(Get_additional_morale() - selectedEvent->costAmountA);
+                break;
+
+            case R_BUILDING_HOUSE_INDEX:
+                SubtractHouse();
+                DestroyBuildingByIndex(B_HOUSE_INDEX);
+
+                break;
+
+            case R_BUILDING_FARM_INDEX:
+                SubtractFarm();
+                DestroyBuildingByIndex(B_FARM_INDEX);
+
+                break;
+
+            case R_BUILDING_MARKET_INDEX:
+                SubtractMarket();
+                DestroyBuildingByIndex(B_MARKET_INDEX);
+
+                break;
+
+            case R_BUILDING_TAVERN_INDEX:
+                SubtractTavern();
+                DestroyBuildingByIndex(B_TAVERN_INDEX);
+
+                break;
+
+            default:
+                break;
+            }
+
+            //Run the Event depending on the event type if the Pre-Requiste is met
+            switch (selectedEvent->eventType) {
+            case BUILD_TYPE_EVENT:
+                if (selectedEvent->indexOptionA != NULL_CHOICE) {
+                    SetCurrentBuilding(GetBuildingByIndex(selectedEvent->indexOptionA));
+                    SetCurrentAmountToBuild(selectedEvent->optionAmountA);
+                    return 1;
+                }
+                else {
+                    return 2;
+                }           
+                break;
+
+            case RESOURCE_TYPE_EVENT:
+
+                switch (selectedEvent->optionTypeA) {
+
+                case R_NULL_INDEX:
+
+                    break;
+
+                case R_GOLD_INDEX:
+
+                    if (selectedEvent->indexOptionA == E_INCREASE_RESOURCE) {
+                        Set_current_gold(Get_current_gold() + selectedEvent->optionAmountA);
+                    }
+                    else if (selectedEvent->indexOptionA == E_DECREASE_RESOURCE) {
+                        Set_current_gold(Get_current_gold() - selectedEvent->optionAmountA);
+                    }
+
+                    break;
+
+                case R_FOOD_INDEX:
+
+                    if (selectedEvent->indexOptionA == E_INCREASE_RESOURCE) {
+                        Set_current_food(Get_current_food() + selectedEvent->optionAmountA);
+                    }
+                    else if (selectedEvent->indexOptionA == E_DECREASE_RESOURCE) {
+                        Set_current_food(Get_current_food() - selectedEvent->optionAmountA);
+                    }
+
+                    break;
+
+                case R_POPULATION_INDEX:
+
+                    if (selectedEvent->indexOptionA == E_INCREASE_RESOURCE) {
+                        Set_current_population(Get_current_population() + selectedEvent->optionAmountA);
+                    }
+                    else if (selectedEvent->indexOptionA == E_DECREASE_RESOURCE) {
+                        Set_current_population(Get_current_population() - selectedEvent->optionAmountA);
+                    }
+
+                    break;
+
+                default:
+                    break;
+                }
+
+                return 2;
+                break;
+
+            case DESTROY_TYPE_EVENT:
+
+                switch (selectedEvent->optionTypeA) {
+
+                case R_BUILDING_HOUSE_INDEX:
+                    SubtractHouse();
+                    DestroyBuildingByIndex(B_HOUSE_INDEX);
+
+                    break;
+
+                case R_BUILDING_FARM_INDEX:
+                    SubtractFarm();
+                    DestroyBuildingByIndex(B_FARM_INDEX);
+
+                    break;
+
+                case R_BUILDING_MARKET_INDEX:
+                    SubtractMarket();
+                    DestroyBuildingByIndex(B_MARKET_INDEX);
+
+                    break;
+
+                case R_BUILDING_TAVERN_INDEX:
+                    SubtractTavern();
+                    DestroyBuildingByIndex(B_TAVERN_INDEX);
+
+                    break;
+                }
+                return 2;
+                break;
+
+            case ONGOING_TYPE_EVENT:
+
+                break;
+
+            default:
+                break;
+
+            }
+
+            break;
         }
-    }
-    else if (CheckWithinBounds(optionBPos, 120, 320))
-    {
-        if (IsBViable)
+
+        // click on option B?
+        else if (xPos >= optionBPos.x - 60 && xPos <= optionBPos.x + 60 && yPos >= optionBPos.y - 160 && yPos <= optionBPos.y + 160)
         {
-            return 2;
+
+             //Check for Pre-Requiste 
+            switch (selectedEvent->costTypeB)
+            {
+            case R_NULL_INDEX:
+                //Do Nothing
+                break;
+
+                //RESOURECE RELATED TYPE COST
+            case R_GOLD_INDEX:
+                if ((Get_current_gold() - selectedEvent->costAmountB) < 0) return 0;
+                Set_current_gold(Get_current_gold() - selectedEvent->costAmountB);
+                break;
+
+            case R_FOOD_INDEX:
+                if ((Get_current_food() - selectedEvent->costAmountB) < 0) return 0;
+                Set_current_food(Get_current_food() - selectedEvent->costAmountB);
+                break;
+
+            case R_POPULATION_INDEX:
+                if ((Get_current_population() - selectedEvent->costAmountB) < 0) return 0;
+                Set_current_population(Get_current_population() - selectedEvent->costAmountB);
+                break;
+
+            case R_MORALE_INDEX:
+                if ((Get_current_morale() - selectedEvent->costAmountB) < 0) return 0;
+                Set_additional_morale(Get_additional_morale() - selectedEvent->costAmountB);
+                break;
+
+
+                //BUILDING RELATED TYPE COST
+            case R_BUILDING_HOUSE_INDEX:
+                SubtractHouse();
+                DestroyBuildingByIndex(B_HOUSE_INDEX);
+
+                break;
+
+            case R_BUILDING_FARM_INDEX:
+                SubtractFarm();
+                DestroyBuildingByIndex(B_FARM_INDEX);
+
+                break;
+
+            case R_BUILDING_MARKET_INDEX:
+                SubtractMarket();
+                DestroyBuildingByIndex(B_MARKET_INDEX);
+
+                break;
+
+            case R_BUILDING_TAVERN_INDEX:
+                SubtractTavern();
+                DestroyBuildingByIndex(B_TAVERN_INDEX);
+
+                break;
+
+            default:
+
+                break;
+            }
+
+            //Run the Event depending on the event type if the Pre-Requiste is met
+            switch (selectedEvent->eventType) {
+            case BUILD_TYPE_EVENT:
+                if (selectedEvent->indexOptionB != NULL_CHOICE) {
+                    SetCurrentBuilding(GetBuildingByIndex(selectedEvent->indexOptionB));
+                    SetCurrentAmountToBuild(selectedEvent->optionAmountB);
+                    return 1;
+                }
+                else {
+                    return 2;
+                }        
+                break;
+
+            case RESOURCE_TYPE_EVENT:
+
+                switch (selectedEvent->optionTypeB) {
+
+                case R_NULL_INDEX:
+
+                    break;
+                
+                case R_GOLD_INDEX:
+
+                    if (selectedEvent->indexOptionA == E_INCREASE_RESOURCE) {
+                        Set_current_gold(Get_current_gold() + selectedEvent->optionAmountB);
+                    }
+                    else if (selectedEvent->indexOptionA == E_DECREASE_RESOURCE) {
+                        Set_current_gold(Get_current_gold() - selectedEvent->optionAmountB);
+                    }
+
+                    break;
+
+                case R_FOOD_INDEX:
+
+                    if (selectedEvent->indexOptionA == E_INCREASE_RESOURCE) {
+                        Set_current_food(Get_current_food() + selectedEvent->optionAmountB);
+                    }
+                    else if (selectedEvent->indexOptionA == E_DECREASE_RESOURCE) {
+                        Set_current_food(Get_current_food() - selectedEvent->optionAmountB);
+                    }
+
+                    break;
+
+                case R_POPULATION_INDEX:
+
+                    if (selectedEvent->indexOptionA == E_INCREASE_RESOURCE) {
+                        Set_current_population(Get_current_population() + selectedEvent->optionAmountB);
+                    }
+                    else if (selectedEvent->indexOptionA == E_DECREASE_RESOURCE) {
+                        Set_current_population(Get_current_population() - selectedEvent->optionAmountB);
+                    }
+
+                    break;
+
+                default:
+                    break;
+                }
+
+                return 2;
+                break;
+
+
+            case DESTROY_TYPE_EVENT:
+
+                switch (selectedEvent->optionTypeB) {
+
+                case R_BUILDING_HOUSE_INDEX:
+                    SubtractHouse();
+                    DestroyBuildingByIndex(B_HOUSE_INDEX);
+
+                    break;
+
+                case R_BUILDING_FARM_INDEX:
+                    SubtractFarm();
+                    DestroyBuildingByIndex(B_FARM_INDEX);
+
+                    break;
+
+                case R_BUILDING_MARKET_INDEX:
+                    SubtractMarket();
+                    DestroyBuildingByIndex(B_MARKET_INDEX);
+
+                    break;
+
+                case R_BUILDING_TAVERN_INDEX:
+                    SubtractTavern();
+                    DestroyBuildingByIndex(B_TAVERN_INDEX);
+
+                    break;
+                }
+
+                return 2;
+                break;
+
+            case ONGOING_TYPE_EVENT:
+
+                break;
+
+            default:
+                break;
+
+            }
+
+            break;
         }
-        else
-        {
-            printf("u broke dude LMAO");
-            return 0;
-        }
+        break;
+
+    case State_PlaceYourBuilding:
+        break;
+    default:
+        return 0;
     }
     return 0;
 }
 
-int ClickCheck_Rewards()
-{
-    if (CheckWithinBounds(CP_Vector_Set(windowWidth - 130, windowHeight / 2 - 60), 180, 240))
-    {
-        if (selectedReward->cardType == BUILD_TYPE_EVENT)
-        {
-            return 1;
-        }
-        else if (selectedReward->cardType == ONGOING_TYPE_EVENT)
-        {
-            return 2;
-        }
-    }
-    return 0;
-}
-
-
-/*void DrawUI_GauntletClose()
+void DrawUI_GauntletClose()
 {
     // Draw Gauntlet
     CP_Image_Draw(EventGauntletClose, windowWidth - 130, windowHeight / 2 - 60, 240, 255, 255);
-}*/
+}
 
 void DrawUI_GauntletOpen()
 {
     // Draw Gauntlet
     // Hovering A
-    if (CheckWithinBounds(optionAPos, 90, 243))
+    if (CheckWithinBounds(optionAPos, 90, 240))
     {
-        CP_Image_Draw(image_CardA, windowWidth - 130, windowHeight / 2 - 60, 185, 243, 255);
+        CP_Image_Draw(EventGauntletA, windowWidth - 130, windowHeight / 2 - 60, 240, 255, 255);
         CP_Settings_TextSize(20);
         CP_Settings_Fill(CP_Color_Create(255, 255, 255, 255));
         CP_Font_DrawTextBox(selectedEvent->descriptionA, windowWidth - 255, 140, 250);
     }
     // Hovering B
-    else if (CheckWithinBounds(optionBPos, 90, 243))
+    else if (CheckWithinBounds(optionBPos, 90, 240))
     {
-        CP_Image_Draw(image_CardB, windowWidth - 130, windowHeight / 2 - 60, 185, 243, 255);
+        CP_Image_Draw(EventGauntletB, windowWidth - 130, windowHeight / 2 - 60, 240, 255, 255);
         CP_Settings_TextSize(20);
         CP_Settings_Fill(CP_Color_Create(255, 255, 255, 255));
         CP_Font_DrawTextBox(selectedEvent->descriptionB, windowWidth - 255, 140, 250);
@@ -162,7 +460,7 @@ void DrawUI_GauntletOpen()
     // Not Hovering
     else
     {
-        CP_Image_Draw(image_CardFlipped, windowWidth - 130, windowHeight / 2 - 60, 185, 243, 255);
+        CP_Image_Draw(EventGauntletOpen, windowWidth - 130, windowHeight / 2 - 60, 240, 255, 255);
         CP_Settings_TextSize(20);
         CP_Settings_Fill(CP_Color_Create(255, 255, 255, 255));
         CP_Font_DrawTextBox(selectedEvent->description, windowWidth - 255, 140, 250);
@@ -172,13 +470,13 @@ void DrawUI_GauntletOpen()
 void DrawUI_Deck()
 {
     // Draw back of card
-    CP_Image_Draw(image_CardDeck, windowWidth - 130, (windowHeight / 2) + 400, 228, 309, 255);
+    CP_Image_Draw(EventCardDeck, windowWidth - 130, (windowHeight / 2) + 240, 240, 360, 255);
 }
 
 void DrawUI_TopPile()
 {
     // Hovering Deck
-    if (CheckWithinBounds(EventCardAnim.startingPos, 185, 243))
+    if (CheckWithinBounds(EventCardAnim.startingPos, 240, 240))
     {
         EventCardAnim.currentTime += CP_System_GetDt();
     }
@@ -187,19 +485,21 @@ void DrawUI_TopPile()
         EventCardAnim.currentTime -= CP_System_GetDt();
     }
     EventCardAnim.currentTime = CP_Math_ClampFloat(EventCardAnim.currentTime, 0, EventCardAnim.totalTime / 8);
-    CP_Image_Draw(EventCardAnim.image, EventCardAnim.startingPos.x , CP_Math_LerpFloat(EventCardAnim.startingPos.y, EventCardAnim.endingPos.y, EventCardAnim.currentTime / EventCardAnim.totalTime), 185, 243, 255);
+    CP_Image_Draw(EventCardAnim.image, EventCardAnim.startingPos.x , CP_Math_LerpFloat(EventCardAnim.startingPos.y, EventCardAnim.endingPos.y, EventCardAnim.currentTime / EventCardAnim.totalTime), 240, 240, 255);
 }
 
 void DrawUI_TopPileInsert()
 {
     EventCardAnim.currentTime += CP_System_GetDt();
     EventCardAnim.currentTime = CP_Math_ClampFloat(EventCardAnim.currentTime, 0, EventCardAnim.totalTime);
-    CP_Image_Draw(EventCardAnim.image, EventCardAnim.startingPos.x, CP_Math_LerpFloat(EventCardAnim.startingPos.y, EventCardAnim.endingPos.y, EventCardAnim.currentTime / EventCardAnim.totalTime), 185, 243, 255);
+    CP_Image_Draw(EventCardAnim.image, EventCardAnim.startingPos.x, CP_Math_LerpFloat(EventCardAnim.startingPos.y, EventCardAnim.endingPos.y, EventCardAnim.currentTime / EventCardAnim.totalTime), 240, 240, 255);
 }
 
-void DrawUI_RewardCards()
+void DrawUI_Default()
 {
-    CP_Image_Draw(*GetCardSpriteByIndex(selectedReward->eventIndex), windowWidth - 130, windowHeight / 2 - 60, 185, 243, 255);
+    // Create black background
+    CP_Settings_Fill(CP_Color_Create(0, 0, 0, 255));
+    CP_Graphics_DrawRect(windowWidth - 260, 0, windowWidth, windowHeight);
 }
 
 void DrawUI(GAMESTATE state)
@@ -207,35 +507,37 @@ void DrawUI(GAMESTATE state)
     switch (state)
     {
     case State_StartOfTurn:
+        DrawUI_Default();
         DrawUI_Deck();
         DrawUI_TopPile();
-        //DrawUI_GauntletClose();
+        DrawUI_GauntletClose();
         break;
     case State_Idle:
+        DrawUI_Default();
         DrawUI_Deck();
         DrawUI_TopPile();
-        //DrawUI_GauntletClose();
+        DrawUI_GauntletClose();
         break;
     case State_CardDraw:
+        DrawUI_Default();
         DrawUI_Deck();
         DrawUI_TopPileInsert();
-        //DrawUI_GauntletClose();
+        DrawUI_GauntletClose();
         break;
     case State_MakeAChoice:
+        DrawUI_Default();
         DrawUI_Deck();
         DrawUI_GauntletOpen();
         break;
-    case State_CollectRewards:
-        DrawUI_Deck();
-        DrawUI_RewardCards();
-        break;
     case State_PlaceYourBuilding:
+        DrawUI_Default();
         DrawUI_Deck();
-        //DrawUI_GauntletClose();
+        DrawUI_GauntletClose();
         break;
     case State_EndOfTurn:
+        DrawUI_Default();
         DrawUI_Deck();
-        //DrawUI_GauntletClose();
+        DrawUI_GauntletClose();
         EventCardAnim.currentTime = 0;
         break;
     }
