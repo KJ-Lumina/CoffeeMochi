@@ -269,14 +269,12 @@ CARDEVENT* GetNextEvent(bool isTutorial)
 	//}
 }
 
-void SwapDeckToMain(bool isTutorial) {
+
+void SwapDeckToMain() {
 
 	currentCardIndex = 0;
 
-	if (isTutorial == false) return;
-
 	currentDeck = &cardDeck;
-
 }
 
 

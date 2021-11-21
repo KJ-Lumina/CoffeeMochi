@@ -89,6 +89,7 @@ typedef enum
 	State_DestroyBuilding,
 	State_EndOfTurn,
 	State_GameOver
+
 }GAMESTATE;
 
 typedef struct
@@ -252,7 +253,7 @@ REWARDCARD* GetRewardByIndex(int index);
 CP_Image* GetBuildingSpriteByIndex(int);
 CP_Image* GetBuildingSpriteButtonByIndex(int);
 CP_Image* GetCardSpriteByIndex(int index);
-void SwapDeckToMain(bool isTutorial);
+void SwapDeckToMain();
 CARDEVENT* GetEventByIndex(int index);
 
 // Resources

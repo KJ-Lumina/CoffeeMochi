@@ -20,8 +20,8 @@ GAMESTATE gameState;
 CP_Image game_Background;
 CP_Vector currentMousePos;
 CP_Vector mouseDragPos;
-int loseCondition_FoodValue;
-int loseCondition_PopulationValue;
+int loseCondition_FoodValue = 0;
+int loseCondition_PopulationValue = 0;
 
 bool isTutorial = true;
 
@@ -39,22 +39,26 @@ void StartTurn()
 
 }
 
-//Trigger Turn End Functions Calls
+//End Game Functions
+void GameEnd() {
+    gameState = State_GameOver;
+    printf("The game has ended.");
+}
+
 void GameOver() 
 {
     //Lose UI Pop Up
-    printf("The game has ended!");
+    gameState = State_GameOver;
+    printf("You lose. Ran out of ****");
 }
 
 void EndTurn() 
 {
     GenerateResourcesOnEndTurn();
 
-    if (gameState == State_GameOver) {
+  /*  if (LoseCondition_Resources()) {
         GameOver();
-    }
-    /*if (LoseCondition_Resources())
-        GameOver();*/
+    }*/
 }
 
 bool LoseCondition_Resources() {
@@ -131,9 +135,16 @@ void MouseClick()
             {
                 if (GetCardsLeft() == 0)
                 {
-                    SwapDeckToMain(isTutorial);
-                    if (isTutorial == true) isTutorial = false;
-                    //Check if End Game
+                    if (isTutorial) {
+                        SwapDeckToMain(isTutorial);
+                        isTutorial = false;
+                    }
+                    else {
+                        GameEnd();
+                        gameState = State_EndOfTurn;
+                        break;
+                    }
+
                     gameState = State_MakeAChoice;
                     selectedEvent = GetNextEvent(isTutorial);
                     UI_SetEvent(selectedEvent);
@@ -229,7 +240,6 @@ void MouseClick()
                     ++rewardCardsLeft[rewardIndex];
                     UI_SetReward(selectedReward[rewardIndex], rewardCardsLeft[rewardIndex]);
                     gameState = State_DestroyBuilding;
-                    //MouseClick(); //To ReRun this Code 
                 }
                     
                 break;
