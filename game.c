@@ -56,13 +56,13 @@ void EndTurn()
 {
     GenerateResourcesOnEndTurn();
 
-  /*  if (LoseCondition_Resources()) {
+    if (LoseCondition_Resources()) {
         GameOver();
-    }*/
+    }
 }
 
 bool LoseCondition_Resources() {
-    if (Get_current_food() <= loseCondition_FoodValue || Get_current_population() <= loseCondition_FoodValue) {
+    if (Get_current_food() <= loseCondition_FoodValue || Get_current_population() <= loseCondition_PopulationValue) {
         return 1;
     }
 

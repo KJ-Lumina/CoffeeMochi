@@ -14,17 +14,18 @@ Buff/Debuff effects will be seperated to a different header file
 // For now Gold generated from 'Market' tiles and 'merchant' citizens 
 // and tax amount is defaulted to the following values
 // Subject to adjustments if Levels/Ranks are to be implemented
-#define GOLD_AMT_FROM_MARKETS 20
+#define GOLD_AMT_FROM_MARKETS 5
 #define TAX_AMOUNT 1
 
 // For now Food generated from 'Farm' tiles and 'farmer' citizens 
 // and consumption amount is defaulted to the following values
 // Subject to adjustments if Levels/Ranks are to be implemented
-#define FOOD_AMT_FROM_FARMS 10
-#define FOOD_AMT_FROM_FARMERS 5
+#define FOOD_AMT_FROM_FARMS 3
+#define FOOD_AMT_FROM_FARMERS 2
 #define FOOD_CONSUMPTION_PER_PAX 2
 
-#define PAX_PER_HOUSING 5
+#define PAX_PER_HOUSING 1
+#define INCREMENT_PERCENTAGE_PER_PAX 1
 
 // Upkeep costs for every tile are defaulted to the following values
 // Subject to adjustments if Levels/Ranks are to be implemented
@@ -38,8 +39,8 @@ Buff/Debuff effects will be seperated to a different header file
 #define LOW_MORALE 2
 
 
-int curGold = 0;
-int curFood = 0;
+int curGold = 20;
+int curFood = 10;
 int curPopulation = 0;
 int initPopulation = 100;
 int curMorale = 0;
@@ -184,7 +185,12 @@ void Food_generated_per_turn()
 void Population_per_turn()
 {
 	//curPopulation = initPopulation + (numHouses * PAX_PER_HOUSING);
-	curPopulation = numHouses * PAX_PER_HOUSING;
+    if (!isStarved) {
+        curPopulation += numHouses * PAX_PER_HOUSING * INCREMENT_PERCENTAGE_PER_PAX;
+    }
+    else {
+        curPopulation -= numHouses * PAX_PER_HOUSING * INCREMENT_PERCENTAGE_PER_PAX;
+    }
 }
 
 void Gold_check()
@@ -278,6 +284,7 @@ void SubtractTavern()
 
 void GenerateResourcesOnEndTurn()
 {
+    printf("Houses: %d", numHouses);
 	Gold_generated_per_turn();
 	Food_generated_per_turn();
 	Population_per_turn();
@@ -288,16 +295,16 @@ void AddNewResourceBuilding(int buildingIndex)
 {
 	switch (buildingIndex)
 	{
-	case 2:
+	case B_HOUSE_INDEX:
 		AddHouse();
 		break;
-	case 3:
+	case B_FARM_INDEX:
 		AddFarm();
 		break;
-	case 4:
+	case B_MARKET_INDEX:
 		AddMarket();
 		break;
-	case 5:
+	case B_TAVERN_INDEX:
 		AddTavern();
 		break;
 	}
