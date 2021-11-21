@@ -82,7 +82,7 @@ void UI_SetReward(REWARDCARD* rewardCard, int cardsLeft)
 {
     
         selectedReward = rewardCard;
-        rewardCardsLeft = abs(cardsLeft);
+        rewardCardsLeft = cardsLeft;
  
 }
 
@@ -206,14 +206,14 @@ void DrawUI_TopPileInsert()
 
 void DrawUI_RewardCards()
 {
-    float offsetX = -(rewardCardsLeft - 1) * rewardCardGap / 2;
+    float offsetX = -(abs(rewardCardsLeft) - 1) * rewardCardGap / 2;
     float deltaTime = CP_System_GetDt();
-    for (int i = 0; i < rewardCardsLeft; ++i)
+    for (int i = 0; i < abs(rewardCardsLeft); ++i)
     {
         CP_Image_Draw(*GetCardSpriteByIndex(selectedReward->eventIndex), 1470 + offsetX + rewardCardGap * i, 390, 185, 243, 255);
         cardflashTimer += deltaTime;
         CP_Image_Draw(image_CardFlash, 1470 + offsetX + rewardCardGap * i, 390, 185, 243, CP_Math_LerpInt(255, 0, cardflashTimer));
-        if (i != rewardCardsLeft - 1)
+        if (i != abs(rewardCardsLeft) - 1)
         {
             if (CheckWithinBounds(CP_Vector_Set(1470 + offsetX + rewardCardGap * i - 77.5f, 390), 30, 243) && cardhighlightTimer[i] <= 1)
             {
