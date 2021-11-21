@@ -49,9 +49,23 @@ CARDDECK tutorialDeck;
 CARDDECK cardDeck;
 
 
+<<<<<<< HEAD
 CARDDECK* currentDeck;
 CARDEVENT* currentEvent;
 int currentCardIndex;
+=======
+
+CARDDECK* currentDeck;
+CARDEVENT* currentEvent;
+int currentCardIndex;
+
+#pragma region Reward Cards
+REWARDCARD R_NullCard = { 0, NULL_CHOICE, R_NULL_INDEX, 0, "This is a null reward." };
+REWARDCARD R_HouseCard	= { 1, BUILD_TYPE_EVENT, B_HOUSE_INDEX , 1, "Click on the grid to place the house."};
+REWARDCARD R_FarmCard	= { 2, BUILD_TYPE_EVENT, B_FARM_INDEX , 1, "Click on the grid to place the farm." };
+REWARDCARD R_MarketCard	= { 3, BUILD_TYPE_EVENT, B_MARKET_INDEX , 1, "Click on the grid to place the market." };
+REWARDCARD R_TavernCard	= { 4, BUILD_TYPE_EVENT, B_TAVERN_INDEX , 1, "Click on the grid to place the tavern." };
+>>>>>>> bcfc390bb22b46ed04f28440ec06ece4d439724f
 
 
 #pragma region Card Events
@@ -108,6 +122,7 @@ void InitCardList()
 	tutCardList[2] = &E_TutBuildAMarket;
 
 	//Init Card List
+<<<<<<< HEAD
 	cardList[0] = &E_BuidldATavern;
 	cardList[1] = &E_GoldMineDiscovered;
 	cardList[2] = &E_FoodMerchantArrival;
@@ -129,6 +144,41 @@ void InitCardList()
 	cardList[18] = &E_BuildAHouse;
 	cardList[19] = &E_VillagersKidnapped;
 	cardList[20] = &E_DiseaseSpread;
+=======
+
+	cardList[0] = &emptyCard;
+	cardList[1] = &E_BuildAHouse;
+	cardList[2] = &E_BuildAMarket;
+	cardList[3] = &E_ScarceFood;
+	cardList[4] = &E_MerchantSetUp;
+	cardList[5] = &E_BuidldATavern;
+	cardList[6] = &E_FoodMerchantArrival;
+	cardList[7] = &E_StolenFood;
+	cardList[8] = &E_HeavyStorm;
+	cardList[9] = &E_GoldMineDiscovered;
+	cardList[10] = &E_ContaminatedFood;
+	cardList[11] = &E_VillagersKidnapped;
+	cardList[12] = &E_MagnificentHunt;
+	cardList[13] = &E_RefugeesHouses;
+	cardList[14] = &E_NeedEntertainment;
+	cardList[15] = &E_NeedEntertainment;
+	cardList[16] = &E_ArsonistAttack;
+	cardList[17] = &E_CircusTroupeVisit;
+	cardList[18] = &E_CivilRevolt;
+	cardList[19] = &E_DiseaseSpread;
+	cardList[20] = &E_EarthquakeIncoming;
+
+	rewardCardList[0] = &R_NullCard;
+	rewardCardList[1] = &R_HouseCard;
+	rewardCardList[2] = &R_FarmCard;
+	rewardCardList[3] = &R_MarketCard;
+	rewardCardList[4] = &R_TavernCard;
+
+	HouseCardSprite = CP_Image_Load("./ImperoArtAssets/Impero_HouseRewardCard.png");
+	FarmCardSprite = CP_Image_Load("./ImperoArtAssets/Impero_HouseRewardCard.png");
+	MarketCardSprite = CP_Image_Load("./ImperoArtAssets/Impero_HouseRewardCard.png");
+	TavernCardSprite = CP_Image_Load("./ImperoArtAssets/Impero_HouseRewardCard.png");
+>>>>>>> bcfc390bb22b46ed04f28440ec06ece4d439724f
 }
 
 void InitDecks()
@@ -141,16 +191,16 @@ void InitDecks()
 	}
 
 
-	for (int index = 0; index < TOTALCARDCOUNT; index++)
-	{
-		cardDeck.cardIndexes[index] = index; //Setting the index of card in each deck to reference in cardlist, in accordance
+	
+	char cardDeckIndexes[] = { 5,9,6,7,16,2,8,10,3,15,4,17,12,20,13,14,18,1,11,19 };
+
+
+	for (int index = 0; index < sizeof(cardDeckIndexes); index++)
+	{	
+		cardDeck.cardIndexes[index] = (int)cardDeckIndexes[index];
+		//cardDeck.cardIndexes[index] = index; //Setting the index of card in each deck to reference in cardlist, in accordance
 		cardDeck.cardsInDeck++;
 	}
-	//for (int index = 0; index < TOTALCARDCOUNT; index++) 
-	//{
-	//	cardDeck.cardIndexes[index] = CP_Random_RangeInt(0, TOTALCARDCOUNT - 1); //Setting the index of card in each deck to reference in cardlist.
-	//	cardDeck.cardsInDeck++;
-	//}
 
 	currentCardIndex = 0;
 	currentDeck = &tutorialDeck;
@@ -182,8 +232,6 @@ CARDEVENT* GetNextEvent(GAMEPHASE gamePhase)
 			return currentEvent;
 		}*/
 
-		printf("Card Left:%d",GetCardsLeft());
-		printf("Card Index:%d", currentCardIndex);
 		currentEvent = tutCardList[currentDeck->cardIndexes[currentCardIndex]];
 		++currentCardIndex; //Adding one counter to the Card Index after Drawing it
 
@@ -198,8 +246,7 @@ CARDEVENT* GetNextEvent(GAMEPHASE gamePhase)
 		//	return currentEvent;
 		//}
 
-		printf("Get Game Phase Event");
-		currentEvent = cardList[currentDeck->cardIndexes[currentCardIndex]];
+		currentEvent = GetEventByIndex(currentDeck->cardIndexes[currentCardIndex]);
 		++currentCardIndex; //Adding one counter to the Card Index after Drawing it
 
 		break;
@@ -220,7 +267,6 @@ void ChangeDeckByPhase(GAMEPHASE currentGamePhase) {
 		break;
 
 	case PHASE_GAMEPHASE:
-		printf("Changed Phase");
 		currentDeck = &cardDeck;
 		break;
 
