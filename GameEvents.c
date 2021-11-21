@@ -225,51 +225,61 @@ int GetCardsLeft()
 	return currentDeck->cardsInDeck - currentCardIndex;
 }
 
-CARDEVENT* GetNextEvent(GAMEPHASE gamePhase)
+CARDEVENT* GetNextEvent(bool isTutorial)
 {
-
-	switch (gamePhase) {
-
-	case PHASE_BUILDPHASE:
-
-		/*if (currentCardIndex == currentDeck->cardsInDeck)
-		{
-			printf("Reset");
-			*currentEvent = emptyCard;
-			currentDeck = &cardDeck;
-			currentCardIndex = 0;
-			return currentEvent;
-		}*/
-
+	if (isTutorial == true) {
 		currentEvent = tutCardList[currentDeck->cardIndexes[currentCardIndex]];
-		++currentCardIndex; //Adding one counter to the Card Index after Drawing it
-
-		break;
-
-	case PHASE_GAMEPHASE:
-
-		//if (currentCardIndex == currentDeck->cardsInDeck)
-		//{
-		//	printf("exit");
-		//	*currentEvent = emptyCard;
-		//	return currentEvent;
-		//}
-
-		currentEvent = GetEventByIndex(currentDeck->cardIndexes[currentCardIndex]);
-		++currentCardIndex; //Adding one counter to the Card Index after Drawing it
-
-		break;
 	}
+	else {
+		currentEvent = GetEventByIndex(currentDeck->cardIndexes[currentCardIndex]);
+	}
+
+	++currentCardIndex;
 
 	return currentEvent;
 
+	//switch (gamePhase) {
+
+	//case PHASE_BUILDPHASE:
+
+	//	/*if (currentCardIndex == currentDeck->cardsInDeck)
+	//	{
+	//		printf("Reset");
+	//		*currentEvent = emptyCard;
+	//		currentDeck = &cardDeck;
+	//		currentCardIndex = 0;
+	//		return currentEvent;
+	//	}*/
+
+	//	 //Adding one counter to the Card Index after Drawing it
+
+	//	break;
+
+	//case PHASE_GAMEPHASE:
+
+	//	//if (currentCardIndex == currentDeck->cardsInDeck)
+	//	//{
+	//	//	printf("exit");
+	//	//	*currentEvent = emptyCard;
+	//	//	return currentEvent;
+	//	//}
+
+	//	 //Adding one counter to the Card Index after Drawing it
+
+	//	break;
+	//}
 }
 
-void ChangeDeckByPhase(GAMEPHASE currentGamePhase) {
+void SwapToMainDeck(bool isTutorial) {
 
-	currentCardIndex = 0;
+	currentCardIndex = 0; //Reset Card Index Counter
 
-	switch (currentGamePhase) {
+	if (isTutorial == false) return; 
+
+	currentDeck = &cardDeck;
+	
+
+	/*switch (currentGamePhase) {
 
 	case PHASE_BUILDPHASE:
 		currentDeck = &tutorialDeck;
@@ -282,7 +292,7 @@ void ChangeDeckByPhase(GAMEPHASE currentGamePhase) {
 	case PHASE_ENDPHASE:
 		break;
 
-	}
+	}*/
 
 }
 

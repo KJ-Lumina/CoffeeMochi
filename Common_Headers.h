@@ -80,7 +80,6 @@ typedef enum
 }GAMEPHASE;
 typedef enum
 {
-	State_MainMenu,
 	State_StartOfTurn,
 	State_Idle,
 	State_CardDraw,
@@ -247,7 +246,7 @@ REWARDCARD* GetRewardByIndex(int index);
 CP_Image* GetBuildingSpriteByIndex(int);
 CP_Image* GetBuildingSpriteButtonByIndex(int);
 CP_Image* GetCardSpriteByIndex(int index);
-void ChangeDeckByPhase(GAMEPHASE currentGamePhase);
+void SwapToMainDeck(GAMEPHASE currentGamePhase);
 CARDEVENT* GetEventByIndex(int index);
 
 // Resources
