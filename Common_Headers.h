@@ -250,7 +250,7 @@ bool LoseCondition_Resources();
 
 // Card Events
 int GetCardsLeft();
-CARDEVENT* GetNextEvent(bool isTutorial);
+CARDEVENT* GetNextEvent();
 CARDEVENT* GetCurrentEvent();
 BUILDING* GetBuildingByIndex(int);
 REWARDCARD* GetRewardByIndex(int index);

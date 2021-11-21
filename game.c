@@ -23,7 +23,7 @@ CP_Vector mouseDragPos;
 int loseCondition_FoodValue = 0;
 int loseCondition_PopulationValue = 0;
 
-bool isTutorial = true;
+//bool isTutorial = true;
 
 float AnimTimer = 1;
 CARDEVENT* selectedEvent;
@@ -140,19 +140,13 @@ void MouseClick()
             {
                 if (GetCardsLeft() == 0)
                 {
-                    if (isTutorial) {
-                        SwapDeckToMain(isTutorial);
-                        isTutorial = false;
-                    }
-                    else 
-                    {
-                        GameEnd();
-                        break;
-                    }
+                    GameEnd();
+                    break;
+                    
 
-                    gameState = State_MakeAChoice;
+                   /* gameState = State_MakeAChoice;
                     selectedEvent = GetNextEvent(isTutorial);
-                    UI_SetEvent(selectedEvent);
+                    UI_SetEvent(selectedEvent);*/
                     
                 }
                 else
@@ -312,7 +306,7 @@ void GameStateControl()
             if (AnimTimer <= 0)
             {
                 gameState = State_MakeAChoice;
-                selectedEvent = GetNextEvent(isTutorial);
+                selectedEvent = GetNextEvent();
                 UI_SetEvent(selectedEvent);
             }
             break;
