@@ -31,6 +31,8 @@ REWARDCARD* selectedReward[NUMBER_OF_MAX_REWARDS];
 int rewardCardsLeft[NUMBER_OF_MAX_REWARDS];
 int rewardIndex = 0;
 
+float endTurnTimer;
+
 
 #pragma region Turn & Win Lose Functions
 //Trigger Turn Start Functions Calls
@@ -335,13 +337,64 @@ void GameStateControl()
                 else {
                     rewardIndex = 0; //Reset Reward Index
                     gameState = State_EndOfTurn;
+
                 }
             }
 
             break;
         case State_EndOfTurn:
-            EndTurn();
-            gameState = State_StartOfTurn;
+            if (endTurnTimer <= 0)
+            {
+                float animCount = 0;
+                float animDelay = 0.2f;
+                CP_Vector worldOrigin = GetWorldSpaceOrigin();
+                CP_Vector tempVector;
+                for (int j = 0; j < WORLDGRIDY; ++j)
+                {
+                    for (int i = 0; i < WORLDGRIDX; ++i)
+                    {
+                        switch (GetOccupiedIndex(i, j))
+                        {
+                        case B_HOUSE_INDEX:
+                            tempVector.x = i * TILEWIDTH + TILEWIDTH / 2 + worldOrigin.x;
+                            tempVector.y = j * TILEHEIGHT + TILEHEIGHT / 3 + worldOrigin.y;
+                            SpawnLinearVfx(4,tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), 1, CP_Vector_Set(128, 128), animCount * animDelay);
+                            ++animCount;
+                            break;
+                        case B_FARM_INDEX:
+                            tempVector.x = i * TILEWIDTH + TILEWIDTH / 2 + worldOrigin.x;
+                            tempVector.y = j * TILEHEIGHT + TILEHEIGHT / 3 + worldOrigin.y;
+                            SpawnLinearVfx(3, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), 1, CP_Vector_Set(128, 128), animCount * animDelay);
+                            ++animCount;
+                            break;
+                        case B_MARKET_INDEX:
+                            tempVector.x = i * TILEWIDTH + TILEWIDTH / 2 + worldOrigin.x;
+                            tempVector.y = j * TILEHEIGHT + TILEHEIGHT / 3 + worldOrigin.y;
+                            SpawnLinearVfx(1, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), 1, CP_Vector_Set(128, 128), animCount * animDelay);
+                            ++animCount;
+                            break;
+                        case B_TAVERN_INDEX:
+                            tempVector.x = i * TILEWIDTH + TILEWIDTH / 2 + worldOrigin.x;
+                            tempVector.y = j * TILEHEIGHT + TILEHEIGHT / 3 + worldOrigin.y;
+                            SpawnLinearVfx(5, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), 1, CP_Vector_Set(128, 128), animCount * animDelay);
+                            ++animCount;
+                            break;
+                        default:
+                            break;
+                        }
+                    }
+                }
+                endTurnTimer = animCount * animDelay;
+            }
+            else
+            {
+                endTurnTimer -= CP_System_GetDt();
+                if (endTurnTimer <= 0)
+                {
+                    EndTurn();
+                    gameState = State_StartOfTurn;
+                }
+            }
             break;
     }
 }
@@ -385,6 +438,7 @@ void MainGame_Initialize(void)
     InitSpritesheets();
     InitDecks();
     InitUI();
+    InitVfx();
 }
 
 void MainGame_Update(void)
@@ -395,10 +449,12 @@ void MainGame_Update(void)
     // Graphics
     DrawBackground();
     DrawTileSet();
-    DrawBuildings();
     UpdateAllNpc();
+    DrawBuildings();
+    DrawAllLinearVfx();
     DrawUI(gameState);
     GameStateControl();
     DrawTempTextResources();
     DrawAllAnimations();
+
 }

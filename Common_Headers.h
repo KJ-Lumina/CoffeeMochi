@@ -206,6 +206,7 @@ float CalculateUnitsToBorder(CP_Vector position, CP_Vector directionUnit);
 void SetNewBuilding(int xPos, int yPos, int buildingIndex);
 void SetCurrentBuilding(BUILDING* newBuilding);
 bool AttemptPlaceBuilding(CP_Vector cursorPos);
+int GetOccupiedIndex(int x, int y);
 bool IsTileOccupied(CP_Vector);
 int GetAllBuildingsPositionByIndex(int index, TILEPOSITION position[]);
 void DestroyBuildingBySelectedBuilding();
@@ -216,7 +217,6 @@ bool ClickCheck_CardDraw();
 int ClickCheck_CardChoice();
 int ClickCheck_Rewards();
 void DrawUI_Deck();
-void DrawUI_Default();
 void DrawUI(GAMESTATE state);
 void DrawTempTextResources();
 void UI_SetReward(REWARDCARD* rewardCard, int cardsLeft);
@@ -258,6 +258,12 @@ CARDEVENT* GetEventByIndex(int index);
 
 // Resources
 bool IsCostPayable(int costAmt);
+
+
+// UI VFX
+void SpawnLinearVfx(int spriteIndex, CP_Vector startPos, CP_Vector endPos, float lifetime, CP_Vector size, float spawnDelay);
+void DrawAllLinearVfx();
+void InitVfx();
 
 
 

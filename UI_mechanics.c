@@ -74,8 +74,8 @@ void InitUI()
 void UI_SetEvent(CARDEVENT* newEvent)
 {
     selectedEvent = newEvent;
-    IsAViable = IsCostPayable(selectedEvent->resourceChangeA[0]);
-    IsBViable = IsCostPayable(selectedEvent->resourceChangeB[0]);
+    IsAViable = true;   // IsCostPayable(selectedEvent->resourceChangeA[0]);
+    IsBViable = true;   // IsCostPayable(selectedEvent->resourceChangeB[0]);
 }
 
 void UI_SetReward(REWARDCARD* rewardCard, int cardsLeft)
@@ -179,7 +179,7 @@ void DrawUI_GauntletOpen()
 void DrawUI_Deck()
 {
     // Draw back of card
-    CP_Image_Draw(image_CardDeck, windowWidth - 130, (windowHeight / 2) + 400, 228, 309, 255);
+    CP_Image_Draw(image_CardDeck, windowWidth - 130, (windowHeight / 2) + 260, 228, 309, 255);
 }
 
 void DrawUI_TopPile()
@@ -204,7 +204,7 @@ void DrawUI_TopPileInsert()
     CP_Image_Draw(EventCardAnim.image, EventCardAnim.startingPos.x, CP_Math_LerpFloat(EventCardAnim.startingPos.y, EventCardAnim.endingPos.y, EventCardAnim.currentTime / EventCardAnim.totalTime), 185, 243, 255);
 }
 
-void DrawUI_RewardCards()
+void DrawUI_RewardCards(bool rewardPicked)
 {
     float offsetX = -(abs(rewardCardsLeft) - 1) * rewardCardGap / 2;
     float deltaTime = CP_System_GetDt();
@@ -223,7 +223,7 @@ void DrawUI_RewardCards()
             {
                 cardhighlightTimer[i] -= deltaTime;
             }
-            CP_Image_Draw(image_CardHighlight, 1470 + offsetX + rewardCardGap * i, 390, 185, 243, CP_Math_LerpInt(0, 255, cardhighlightTimer[i]));
+            CP_Image_Draw(image_CardHighlight, 1470 + offsetX + rewardCardGap * i, 390, 185, 243, CP_Math_LerpInt(0, 180, cardhighlightTimer[i] * 2));
         }
         // First reward card
         else
@@ -236,8 +236,21 @@ void DrawUI_RewardCards()
             {
                 cardhighlightTimer[i] -= deltaTime;
             }
-            CP_Image_Draw(image_CardHighlight, 1470 + offsetX + rewardCardGap * i, 390, 185, 243, CP_Math_LerpInt(0, 255, cardhighlightTimer[i]));
+            CP_Image_Draw(image_CardHighlight, 1470 + offsetX + rewardCardGap * i, 390, 185, 243, CP_Math_LerpInt(0, 180, cardhighlightTimer[i] * 2));
         }
+    }
+
+    if (rewardPicked)
+    {
+        CP_Settings_TextSize(20);
+        CP_Settings_Fill(CP_Color_Create(255, 255, 255, 255));
+        CP_Font_DrawTextBox(selectedReward->description, 1330, 140, 250);
+    }
+    else
+    {
+        CP_Settings_TextSize(20);
+        CP_Settings_Fill(CP_Color_Create(255, 255, 255, 255));
+        CP_Font_DrawTextBox("Click on the card below to claim your reward.", 1330, 140, 250);
     }
 }
 
@@ -272,16 +285,16 @@ void DrawUI(GAMESTATE state)
         break;
     case State_CollectRewards:
         DrawUI_Deck();
-        DrawUI_RewardCards();
+        DrawUI_RewardCards(false);
         break;
     case State_PlaceYourBuilding:
         DrawUI_Deck();
-        DrawUI_RewardCards();
+        DrawUI_RewardCards(true);
         //DrawUI_GauntletClose();
         break;
     case State_DestroyBuilding:
         DrawUI_Deck();
-        DrawUI_RewardCards();
+        DrawUI_RewardCards(true);
         //DrawUI_GauntletClose();
         break;
     case State_EndOfTurn:
@@ -372,10 +385,21 @@ void DrawTempTextResources()
 
 
     CP_Settings_TextSize(40);
+    
+
+    if (Get_current_gold() < 0)
+    {
+        CP_Settings_Fill(CP_Color_Create(200, 0, 0, 255));
+        sprintf_s(resourceBuffer, 10, "(In Debt)");
+        CP_Font_DrawText(resourceBuffer, 100, 68);
+    }
+
     CP_Settings_Fill(CP_Color_Create(255, 255, 255, 255));
 
     sprintf_s(resourceBuffer, 10, "%d", Get_current_gold());
     CP_Font_DrawText(resourceBuffer, 150, 68);
+
+    
 
     sprintf_s(resourceBuffer, 10, "%d", Get_current_food());
     CP_Font_DrawText(resourceBuffer, 150, 156);

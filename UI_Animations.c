@@ -260,4 +260,91 @@ void ConstantAnimSpawner(float time)
     }
 }
 
+CP_Image addGold;
+CP_Image minusGold;
+CP_Image addFood;
+CP_Image minusFood;
+CP_Image addMorale;
+CP_Image minusMorale;
+
+void InitVfx()
+{
+    addGold = CP_Image_Load("./Assets/addGold2.png");
+    minusGold = CP_Image_Load("./Assets/minusGold2.png");
+    addFood = CP_Image_Load("./Assets/addFood2.png");
+    minusFood = CP_Image_Load("./Assets/minusFood2.png");
+    addMorale = CP_Image_Load("./Assets/addMorale2.png");
+    minusMorale = CP_Image_Load("./Assets/minusMorale2.png");
+}
+
+CP_Image* GetVfxSpriteByIndex(int index)
+{
+    switch (index)
+    {
+    case 1:
+        return &addGold;
+    case 2:
+        return &minusGold;
+    case 3:
+        return &addFood;
+    case 4:
+        return &minusFood;
+    case 5:
+        return &addMorale;
+    case 6:
+        return &minusMorale;
+    default:
+        return &addGold;
+    }
+}
+
+LINEARVFX vfxList[50];
+
+void SpawnLinearVfx(int spriteIndex, CP_Vector startPos, CP_Vector endPos, float lifetime, CP_Vector size, float spawnDelay)
+{
+    for (int i = 0; i < 50; ++i)
+    {
+        if (vfxList[i].spriteIndex == 0)
+        {
+            vfxList[i].spriteIndex = spriteIndex;
+            vfxList[i].startPos = startPos;
+            vfxList[i].endPos = endPos;
+            vfxList[i].lifetime = lifetime;
+            vfxList[i].curlifetime = 0;
+            vfxList[i].size = size;
+            vfxList[i].spawnDelay = spawnDelay;
+            return;
+        }
+    }
+}
+
+void DrawAllLinearVfx()
+{
+    float deltatVfx = CP_System_GetDt();
+    for (int i = 0; i < 50; ++i)
+    {
+        if (vfxList[i].spriteIndex != 0)
+        {
+            if (vfxList[i].spawnDelay >= 0)
+            {
+                vfxList[i].spawnDelay -= deltatVfx;
+            }
+            else
+            {
+                vfxList[i].curlifetime += deltatVfx;
+                if (vfxList[i].curlifetime < vfxList[i].lifetime)
+                {
+                    CP_Image_Draw(*GetVfxSpriteByIndex(vfxList[i].spriteIndex)
+                        , CP_Math_LerpFloat(vfxList[i].startPos.x, vfxList[i].endPos.x, vfxList[i].curlifetime / vfxList[i].lifetime)
+                        , CP_Math_LerpFloat(vfxList[i].startPos.y, vfxList[i].endPos.y, vfxList[i].curlifetime / vfxList[i].lifetime)
+                        , vfxList[i].size.x, vfxList[i].size.y, 255);
+                }
+                else
+                {
+                    vfxList[i].spriteIndex = 0;
+                }
+            }
+        }
+    }
+}
 
