@@ -125,7 +125,6 @@ int ClickCheck_CardChoice()
         }
         else
         {
-            printf("u broke dude LMAO");
             return 0;
         }
     }
@@ -137,7 +136,6 @@ int ClickCheck_CardChoice()
         }
         else
         {
-            printf("u broke dude LMAO");
             return 0;
         }
     }
@@ -491,22 +489,23 @@ void DrawTempTextResources()
 
     CP_Settings_Fill(CP_Color_Create(255, 255, 255, 255));
 
+    //Draw Text for current gold amount
     sprintf_s(resourceBuffer, 20, "%d", Get_current_gold());
     CP_Font_DrawText(resourceBuffer, 140, 70);
-
     
-
+    //Draw Text For current food amount
     sprintf_s(resourceBuffer, 20, "%d", Get_current_food());
     CP_Font_DrawText(resourceBuffer, 140, 160);
 
+    //Draw Text for current population amount
     sprintf_s(resourceBuffer, 20, "%d", Get_current_population());
     CP_Font_DrawText(resourceBuffer, 140, 250);
 
+    //Draw Text for current morale
     sprintf_s(resourceBuffer, 20, "%d", Get_current_morale() + Get_additional_morale());
     CP_Font_DrawText(resourceBuffer, 140, 340);
 
-
-    // LUL
+    //Draw text for number of cards left
     sprintf_s(resourceBuffer, 20, "Cards Left: %d", GetCardsLeft());
     CP_Font_DrawText(resourceBuffer, 1450, 850);
 

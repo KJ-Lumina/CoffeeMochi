@@ -44,21 +44,17 @@ void StartTurn()
 //End Game Functions
 void GameEnd() {
     gameState = State_GameOver;
-    printf("The game has ended.");
 }
 
 void GameOver() 
 {
     //Lose UI Pop Up
     gameState = State_GameOver;
-    printf("You lose. Ran out of ****");
-
 }
 
 bool LoseCondition_Resources()
 {
     if (Get_current_food() <= loseCondition_FoodValue || Get_current_population() <= loseCondition_PopulationValue) {
-        printf("Lose Condition Success");
         return true;
     }
     return false;
@@ -206,14 +202,12 @@ void MouseClick()
                
                 if (rewardCardsLeft[rewardIndex] > 0) 
                 {
-                    printf("Place Building");
                     SetCurrentBuilding(GetBuildingByIndex(selectedReward[rewardIndex]->eventIndex));
                     --rewardCardsLeft[rewardIndex];
                     gameState = State_PlaceYourBuilding;
                 }
                 else if (rewardCardsLeft[rewardIndex] < 0) 
                 {
-                    printf("Destroy Building");
                     SetCurrentBuilding(GetBuildingByIndex(selectedReward[rewardIndex]->eventIndex));
                     ++rewardCardsLeft[rewardIndex];
                     gameState = State_DestroyBuilding;
@@ -413,7 +407,6 @@ void GameStateControl()
         }
         break;
     case State_GameOver:
-        printf("Game Over");
         SetGameSceneEndPhase();
         break;
     }

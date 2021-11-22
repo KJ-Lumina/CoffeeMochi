@@ -302,7 +302,6 @@ void SubtractTavern()
 
 void GenerateResourcesOnEndTurn()
 {
-    printf("Houses: %d", numHouses);
 	Gold_generated_per_turn();
 	Food_generated_per_turn();
 	Population_per_turn();
