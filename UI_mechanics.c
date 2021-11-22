@@ -30,6 +30,8 @@ CP_Vector optionBPos;
 bool IsAViable;
 bool IsBViable;
 char textDescBuffer[100];
+CP_Image image_descbox;
+CP_Image image_descboxcover;
 
 
 //Button normalinitialize = {width,height,xPos,yPos,isSplashScreenActive,isSettingActive,index}
@@ -70,6 +72,8 @@ void InitUI()
     image_CardFlipped = CP_Image_Load("./ImperoArtAssets/Impero_CardFlip.png");
     image_CardA = CP_Image_Load("./ImperoArtAssets/Impero_CardBlue.png");
     image_CardB = CP_Image_Load("./ImperoArtAssets/Impero_CardRed.png");
+    image_descbox = CP_Image_Load("./ImperoArtAssets/Impero_Textbox.png");
+    image_descboxcover = CP_Image_Load("./ImperoArtAssets/textboxcover.png");
 
     optionAPos = CP_Vector_Set(windowWidth - 176, windowHeight / 2 - 60);
     optionBPos = CP_Vector_Set(windowWidth - 90, windowHeight / 2 - 60);
@@ -99,7 +103,7 @@ void UI_SetEvent(CARDEVENT* newEvent)
 void UI_SetReward(REWARDCARD* rewardCard, int cardsLeft)
 {
     UIselectedReward = rewardCard;
-    UIrewardCardsLeft = cardsLeft;
+    UIrewardCardsLeft = abs(cardsLeft);
 }
 
 bool ClickCheck_CardDraw()
@@ -164,25 +168,19 @@ void DrawUI_GauntletOpen()
     if (CheckWithinBounds(optionAPos, 90, 243))
     {
         CP_Image_Draw(image_CardA, windowWidth - 130, windowHeight / 2 - 60, 185, 243, 255);
-        CP_Settings_TextSize(20);
-        CP_Settings_Fill(CP_Color_Create(255, 255, 255, 255));
-        CP_Font_DrawTextBox(UIselectedEvent->descriptionA, 1330, 140, 250);
+        DrawUI_TextDesc(UIselectedEvent->descriptionA);
     }
     // Hovering B
     else if (CheckWithinBounds(optionBPos, 90, 243))
     {
         CP_Image_Draw(image_CardB, windowWidth - 130, windowHeight / 2 - 60, 185, 243, 255);
-        CP_Settings_TextSize(20);
-        CP_Settings_Fill(CP_Color_Create(255, 255, 255, 255));
-        CP_Font_DrawTextBox(UIselectedEvent->descriptionB, 1330, 140, 250);
+        DrawUI_TextDesc(UIselectedEvent->descriptionB);
     }
     // Not Hovering
     else
     {
         CP_Image_Draw(image_CardFlipped, windowWidth - 130, windowHeight / 2 - 60, 185, 243, 255);
-        CP_Settings_TextSize(20);
-        CP_Settings_Fill(CP_Color_Create(255, 255, 255, 255));
-        CP_Font_DrawTextBox(UIselectedEvent->description, 1330, 140, 250);
+        DrawUI_TextDesc(UIselectedEvent->description);
     }
 }
 
@@ -252,18 +250,25 @@ void DrawUI_RewardCards(bool rewardPicked)
 
     if (rewardPicked)
     {
-        CP_Settings_TextSize(20);
-        CP_Settings_Fill(CP_Color_Create(255, 255, 255, 255));
-        CP_Font_DrawTextBox(UIselectedReward->description, 1330, 140, 250);
+        DrawUI_TextDesc(UIselectedReward->description);
     }
     else
     {
-        CP_Settings_TextSize(20);
-        CP_Settings_Fill(CP_Color_Create(255, 255, 255, 255));
-        CP_Font_DrawTextBox("Click on the card below to claim your reward.", 1330, 140, 250);
+        DrawUI_TextDesc("Click on the card below to claim your reward.");
     }
 }
 
+void DrawUI_Textbox()
+{
+    CP_Image_Draw(image_descbox, 1370, 130, 439, 244, 255);
+}
+
+void DrawUI_TextDesc(const char* text)
+{
+    CP_Settings_TextSize(20);
+    CP_Settings_Fill(CP_Color_Create(255, 255, 255, 255));
+    CP_Font_DrawTextBox(text, 1220, 100, 300);
+}
 
 
 void DrawUI(GAMESTATE state)
@@ -273,14 +278,18 @@ void DrawUI(GAMESTATE state)
     case State_GameEntry:
         break;
     case State_StartOfTurn:
+        DrawUI_Textbox();
         DrawUI_Deck();
         DrawUI_TopPile();
         break;
     case State_Idle:
+        DrawUI_Textbox();
+        DrawUI_TextDesc("Click on the deck below to draw an event card");
         DrawUI_Deck();
         DrawUI_TopPile();
         break;
     case State_CardDraw:
+        DrawUI_Textbox();
         DrawUI_Deck();
         DrawUI_TopPileInsert();
         cardflashTimer = 0;
@@ -291,22 +300,27 @@ void DrawUI(GAMESTATE state)
         cardhighlightTimer[4] = 0;
         break;
     case State_MakeAChoice:
+        DrawUI_Textbox();
         DrawUI_Deck();
         DrawUI_GauntletOpen();
         break;
     case State_CollectRewards:
+        DrawUI_Textbox();
         DrawUI_Deck();
         DrawUI_RewardCards(false);
         break;
     case State_PlaceYourBuilding:
+        DrawUI_Textbox();
         DrawUI_Deck();
         DrawUI_RewardCards(true);
         break;
     case State_DestroyBuilding:
+        DrawUI_Textbox();
         DrawUI_Deck();
         DrawUI_RewardCards(true);
         break;
     case State_EndOfTurn:
+        DrawUI_Textbox();
         DrawUI_Deck();
         EventCardAnim.currentTime = 0;
         break;
@@ -484,7 +498,7 @@ void DrawTempTextResources()
 
     // LUL
     sprintf_s(resourceBuffer, 20, "Cards Left: %d", GetCardsLeft());
-    CP_Font_DrawText(resourceBuffer, 1500, 850);
+    CP_Font_DrawText(resourceBuffer, 1450, 850);
 
 
 }
