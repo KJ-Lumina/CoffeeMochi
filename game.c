@@ -197,12 +197,14 @@ void MouseClick()
                
                 if (rewardCardsLeft[rewardIndex] > 0) 
                 {
+                    printf("Place Building");
                     SetCurrentBuilding(GetBuildingByIndex(selectedReward[rewardIndex]->eventIndex));
                     --rewardCardsLeft[rewardIndex];
                     gameState = State_PlaceYourBuilding;
                 }
                 else if (rewardCardsLeft[rewardIndex] < 0) 
                 {
+                    printf("Destroy Building");
                     SetCurrentBuilding(GetBuildingByIndex(selectedReward[rewardIndex]->eventIndex));
                     ++rewardCardsLeft[rewardIndex];
                     gameState = State_DestroyBuilding;
@@ -217,9 +219,9 @@ void MouseClick()
         case State_PlaceYourBuilding:
             if (AttemptPlaceBuilding(currentMousePos))
             {
-                switch(rewardIndex)
+                switch(rewardIndex) //Prevention for going out of bounds
                 {
-                case 0:
+                case 0: //Check Reward Index = 0
                     if (rewardCardsLeft[rewardIndex] == 0) //Once first reward is empty, goes down to 2nd array slot in the Selected Reward
                     {
                         if (rewardCardsLeft[++rewardIndex] == 0) //Checks for 2nd Reward Index 
@@ -236,7 +238,7 @@ void MouseClick()
                         gameState = State_CollectRewards;
                     }
                     break;
-                case 1:
+                case 1: //Check Reward Index = 1 
                     if (rewardCardsLeft[rewardIndex] == 0)
                     {
                         gameState = State_EndOfTurn;
@@ -292,23 +294,41 @@ void GameStateControl()
         break;
     case State_DestroyBuilding:
 
-        DestroyBuildingBySelectedBuilding();
+        DestroyBuildingBySelectedBuilding(); //Destroy 1 building by the building chosen in choice
 
-        //there is more building to destroy
-
-        if (rewardCardsLeft[rewardIndex] == 0)
+        switch (rewardIndex) //Prevention for going out of bounds
         {
-            if (rewardCardsLeft[++rewardIndex] == 0) {
-                gameState = State_EndOfTurn;
+        case 0: //Check Reward Index = 0
+            if (rewardCardsLeft[rewardIndex] == 0)
+            {
+                if (rewardCardsLeft[++rewardIndex] == 0) {
+                    gameState = State_EndOfTurn;
+                }
+                else {
+                    gameState = State_CollectRewards;
+                }
             }
-            else {
+            else //If there is more buidling to destroy
+            {
                 gameState = State_CollectRewards;
             }
-        }
-        else
-        {
-            gameState = State_CollectRewards;
-        }
+            break;
+
+        case 1: //Check Reward Index = 1
+            if (rewardCardsLeft[rewardIndex] == 0)
+            {
+                gameState = State_EndOfTurn;
+            }
+            else //If there is more building to destroy
+            {
+                gameState = State_CollectRewards;
+            }
+            break;
+
+        default:
+            gameState = State_EndOfTurn;
+            break;
+        }   
         
         //if (rewardCardsLeft[rewardIndex])
         //{

@@ -103,7 +103,7 @@ void UI_SetEvent(CARDEVENT* newEvent)
 void UI_SetReward(REWARDCARD* rewardCard, int cardsLeft)
 {
     UIselectedReward = rewardCard;
-    UIrewardCardsLeft = cardsLeft;
+    UIrewardCardsLeft = abs(cardsLeft);
 }
 
 bool ClickCheck_CardDraw()
