@@ -58,6 +58,7 @@ void GameOver()
 bool LoseCondition_Resources()
 {
     if (Get_current_food() <= loseCondition_FoodValue || Get_current_population() <= loseCondition_PopulationValue) {
+        printf("Lose Condition Success");
         return true;
     }
     return false;
@@ -405,6 +406,7 @@ void GameStateControl()
         }
         break;
     case State_GameOver:
+        printf("Game Over");
         SetGameSceneEndPhase();
         break;
     }
