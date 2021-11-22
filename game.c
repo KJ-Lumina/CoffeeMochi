@@ -147,6 +147,7 @@ void MouseClick()
             {
             case 1:
                 // clicked on optionA
+                rewardIndex = 0; // Reset Reward Index Before Event Begin
                 ApplyEventResult(selectedEvent->resourceChangeA);
                 for (int index = 0; index < NUMBER_OF_MAX_REWARDS; ++index)
                 {
@@ -193,7 +194,7 @@ void MouseClick()
             {
             case 1:
                 // reward is construction
-          
+               
                 if (rewardCardsLeft[rewardIndex] > 0) 
                 {
                     SetCurrentBuilding(GetBuildingByIndex(selectedReward[rewardIndex]->eventIndex));
@@ -219,9 +220,9 @@ void MouseClick()
                 switch(rewardIndex)
                 {
                 case 0:
-                    if (rewardCardsLeft[rewardIndex] == 0)
+                    if (rewardCardsLeft[rewardIndex] == 0) //Once first reward is empty, goes down to 2nd array slot in the Selected Reward
                     {
-                        if (rewardCardsLeft[++rewardIndex] == 0)
+                        if (rewardCardsLeft[++rewardIndex] == 0) //Checks for 2nd Reward Index 
                         {
                             gameState = State_EndOfTurn;
                         }
@@ -294,29 +295,44 @@ void GameStateControl()
         DestroyBuildingBySelectedBuilding();
 
         //there is more building to destroy
-        if (rewardCardsLeft[rewardIndex])
+
+        if (rewardCardsLeft[rewardIndex] == 0)
+        {
+            if (rewardCardsLeft[++rewardIndex] == 0) {
+                gameState = State_EndOfTurn;
+            }
+            else {
+                gameState = State_CollectRewards;
+            }
+        }
+        else
         {
             gameState = State_CollectRewards;
         }
-        // there is no more rewards
-        else
-        {
-            ++rewardIndex;
-            if (rewardIndex != NUMBER_OF_MAX_REWARDS) {
-                gameState = State_CollectRewards;
-            }
-            else {
-                rewardIndex = 0; //Reset Reward Index
-                gameState = State_EndOfTurn;
+        
+        //if (rewardCardsLeft[rewardIndex])
+        //{
+        //    gameState = State_CollectRewards;
+        //}
+        //// there is no more rewards
+        //else
+        //{
+        //    ++rewardIndex;
+        //    if (rewardIndex != NUMBER_OF_MAX_REWARDS) {
+        //        gameState = State_CollectRewards;
+        //    }
+        //    else {
+        //        rewardIndex = 0; //Reset Reward Index
+        //        gameState = State_EndOfTurn;
 
-            }
-        }
+        //    }
+        //}
 
         break;
     case State_EndOfTurn:
         if (endTurnTimer <= 0)
         {
-            rewardIndex = 0;
+            rewardIndex = 0;  // Reset Reward Index Before Event Begin
             float animCount = 0;
             float animDelay = 0.1f;
             CP_Vector worldOrigin = GetWorldSpaceOrigin();
