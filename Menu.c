@@ -19,6 +19,7 @@ CP_Image SettingsButtonImage;
 CP_Image SettingsButtonImageHover;
 CP_Image ExitButtonImage;
 CP_Image ExitButtonImageHover;
+CP_Image game_Background;
 
 float splashdigipentimer = 0;
 float splashcoffeemochitimer = 0;
@@ -47,10 +48,10 @@ void game_init(void)
 	windowsHeight = (float)CP_System_GetWindowHeight();
 
 	//START FROM BEGINNING
-	gameScene = SCENE_SPLASH_DIGIPEN;
+	//gameScene = SCENE_SPLASH_DIGIPEN;
 	//SKIP TO GAME
-	//MainGame_Initialize();
-	//gameScene = SCENE_GAMEPHASE;
+	MainGame_Initialize();
+	gameScene = SCENE_GAMEPHASE;
 	//CHANGEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
 	Splash_Digipen = CP_Image_Load("./ImperoArtAssets/Impero_Digipen.png");
 	Splash_CoffeeMochi = CP_Image_Load("./ImperoArtAssets/CoffeeMochi_BG.png");
@@ -65,6 +66,7 @@ void game_init(void)
 	SettingsButtonImageHover = CP_Image_Load("./ImperoArtAssets/MainMenuAssets/Impero_SettingsButtonHover.png");
 	ExitButtonImage = CP_Image_Load("./ImperoArtAssets/MainMenuAssets/Impero_ExitButton.png");
 	ExitButtonImageHover = CP_Image_Load("./ImperoArtAssets/MainMenuAssets/Impero_ExitButtonHover.png");
+	game_Background = CP_Image_Load("./ImperoArtAssets/Impero_GameBG.png");
 
 	whiteFlash = CP_Image_Load("./Assets/WhiteFlash.png");
 }
@@ -74,6 +76,7 @@ void game_update(void)
 	CP_Graphics_ClearBackground(CP_Color_Create(150, 150, 150, 255));
 	if (gameScene == SCENE_GAMEPHASE)
 	{
+		CP_Image_Draw(game_Background, 800, 450, 1600, 900, 255);
 		MainGame_Update();
 	}
 	else if (gameScene == SCENE_SPLASH_DIGIPEN)

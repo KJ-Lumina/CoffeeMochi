@@ -6,8 +6,8 @@
 
 typedef struct
 {
-	int cardIndexes[23];
 	int cardsInDeck;
+	int cardIndexes[30];
 }CARDDECK;
 
 
@@ -37,7 +37,7 @@ CARDEVENT* tutCardList[TOTALTUTORIALCARDSCOUNT];
 REWARDCARD* rewardCardList[TOTALREWARDCARDCOUNT];
 
 CARDDECK tutorialDeck;
-CARDDECK cardDeck;
+CARDDECK prototypeDeck = { 23, 1,2,3,8,12,9,10,19,5,11,13,6,18,7,20,15,23,16,17,21,4,14,22, 0 };
 
 
 
@@ -195,23 +195,8 @@ void InitCardList()
 void InitDecks()
 {	
 	InitCardList();
-
-	/*for (int index = 0; index < TOTALTUTORIALCARDSCOUNT; index++) {
-		tutorialDeck.cardIndexes[index] = index;
-		tutorialDeck.cardsInDeck++;
-	}*/
-
-	char cardDeckIndexes[] = { 1,2,3,8,12,9,10,19,5,11,13,6,18,7,20,15,23,16,17,21,4,14,22 };
-
-	for (int index = 0; index < sizeof(cardDeckIndexes); index++)
-	{	
-		cardDeck.cardIndexes[index] = (int)cardDeckIndexes[index];
-		//cardDeck.cardIndexes[index] = index; //Setting the index of card in each deck to reference in cardlist, in accordance
-		cardDeck.cardsInDeck++;
-	}
-
 	currentCardIndex = 0;
-	currentDeck = &cardDeck;
+	currentDeck = &prototypeDeck;
 }
 
 CARDEVENT* GetCurrentEvent()
@@ -226,64 +211,11 @@ int GetCardsLeft()
 
 CARDEVENT* GetNextEvent()
 {
-
 	currentEvent = GetEventByIndex(currentDeck->cardIndexes[currentCardIndex]);
-	
-
 	++currentCardIndex;
 
 	return currentEvent;
-
-	//switch (gamePhase) {
-
-	//case PHASE_BUILDPHASE:
-
-	//	/*if (currentCardIndex == currentDeck->cardsInDeck)
-	//	{
-	//		printf("Reset");
-	//		*currentEvent = emptyCard;
-	//		currentDeck = &cardDeck;
-	//		currentCardIndex = 0;
-	//		return currentEvent;
-	//	}*/
-
-	//	
-	//	++currentCardIndex; //Adding one counter to the Card Index after Drawing it
-
-	//	break;
-
-	//case PHASE_GAMEPHASE:
-
-	//	//if (currentCardIndex == currentDeck->cardsInDeck)
-	//	//{
-	//	//	printf("exit");
-	//	//	*currentEvent = emptyCard;
-	//	//	return currentEvent;
-	//	//}
-
-	//	
-	//	++currentCardIndex; //Adding one counter to the Card Index after Drawing it
-
-	//	break;
-	//}
 }
-
-
-void SwapDeckToMain() {
-
-	currentCardIndex = 0;
-
-	currentDeck = &cardDeck;
-}
-
-
-int IsBasicEvent(CARDEVENT card) {
-	if (card.eventType == BASIC_EVENT)
-		return TRUE;
-
-	return FALSE;
-}
-
 
 CARDEVENT* GetEventByIndex(int index)
 {

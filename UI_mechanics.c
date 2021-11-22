@@ -15,7 +15,6 @@ CP_Image EventCard;
 MOVINGSPRITES EventCardAnim;
 CP_Image image_CardBack;
 CP_Image image_CardDeck;
-//CP_Image EventGauntletClose;
 CP_Image image_CardFlipped;
 CP_Image image_CardA;
 CP_Image image_CardB;
@@ -58,7 +57,6 @@ void InitUI()
     image_CardBack = CP_Image_Load("./ImperoArtAssets/Impero_CardBack.png");
     image_CardDeck = CP_Image_Load("./ImperoArtAssets/Impero_CardDeck.png");
     EventCardAnim = (MOVINGSPRITES){ image_CardBack, CP_Vector_Set(windowWidth - 130, (windowHeight / 2) + 230), CP_Vector_Set(windowWidth - 130, (windowHeight / 2) - 60), 0.6f, 0 };
-    //EventGauntletClose = CP_Image_Load("./Assets/gauntletclose.png");
     image_CardFlipped = CP_Image_Load("./ImperoArtAssets/Impero_CardFlip.png");
     image_CardA = CP_Image_Load("./ImperoArtAssets/Impero_CardBlue.png");
     image_CardB = CP_Image_Load("./ImperoArtAssets/Impero_CardRed.png");
@@ -80,10 +78,8 @@ void UI_SetEvent(CARDEVENT* newEvent)
 
 void UI_SetReward(REWARDCARD* rewardCard, int cardsLeft)
 {
-    
     UIselectedReward = rewardCard;
     UIrewardCardsLeft = cardsLeft;
- 
 }
 
 bool ClickCheck_CardDraw()
@@ -101,7 +97,7 @@ int ClickCheck_CardChoice()
     {
         if (IsAViable)
         {
-            return 1;
+            return BLUE_PILL;
         }
         else
         {
@@ -113,7 +109,7 @@ int ClickCheck_CardChoice()
     {
         if (IsBViable)
         {
-            return 2;
+            return RED_PILL;
         }
         else
         {
@@ -130,26 +126,20 @@ int ClickCheck_Rewards()
     {
         if (UIselectedReward->cardType == BUILD_TYPE_EVENT)
         {
+            --UIrewardCardsLeft;
             return 1;
         }
         else if (UIselectedReward->cardType == ONGOING_TYPE_EVENT)
         {
+            --UIrewardCardsLeft;
             return 2;
         }
     }
     return 0;
 }
 
-
-/*void DrawUI_GauntletClose()
-{
-    // Draw Gauntlet
-    CP_Image_Draw(EventGauntletClose, windowWidth - 130, windowHeight / 2 - 60, 240, 255, 255);
-}*/
-
 void DrawUI_GauntletOpen()
 {
-    // Draw Gauntlet
     // Hovering A
     if (CheckWithinBounds(optionAPos, 90, 243))
     {
@@ -261,12 +251,10 @@ void DrawUI(GAMESTATE state)
     case State_StartOfTurn:
         DrawUI_Deck();
         DrawUI_TopPile();
-        //DrawUI_GauntletClose();
         break;
     case State_Idle:
         DrawUI_Deck();
         DrawUI_TopPile();
-        //DrawUI_GauntletClose();
         break;
     case State_CardDraw:
         DrawUI_Deck();
@@ -277,7 +265,6 @@ void DrawUI(GAMESTATE state)
         cardhighlightTimer[2] = 0;
         cardhighlightTimer[3] = 0;
         cardhighlightTimer[4] = 0;
-        //DrawUI_GauntletClose();
         break;
     case State_MakeAChoice:
         DrawUI_Deck();
@@ -290,16 +277,13 @@ void DrawUI(GAMESTATE state)
     case State_PlaceYourBuilding:
         DrawUI_Deck();
         DrawUI_RewardCards(true);
-        //DrawUI_GauntletClose();
         break;
     case State_DestroyBuilding:
         DrawUI_Deck();
         DrawUI_RewardCards(true);
-        //DrawUI_GauntletClose();
         break;
     case State_EndOfTurn:
         DrawUI_Deck();
-        //DrawUI_GauntletClose();
         EventCardAnim.currentTime = 0;
         break;
     }
@@ -391,7 +375,7 @@ void DrawTempTextResources()
     {
         CP_Settings_Fill(CP_Color_Create(200, 0, 0, 255));
         sprintf_s(resourceBuffer, 20, "(In Debt)");
-        CP_Font_DrawText(resourceBuffer, 100, 68);
+        CP_Font_DrawText(resourceBuffer, 60, 68);
     }
 
     CP_Settings_Fill(CP_Color_Create(255, 255, 255, 255));

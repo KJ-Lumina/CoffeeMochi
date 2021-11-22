@@ -35,6 +35,13 @@ void InitWorldSpaceGrid()
     gridIndicator = CP_Image_Load("./Assets/GridIndicator.png");
     gridIndicatorgreen = CP_Image_Load("./Assets/GridIndicatorgreen.png");
     gridIndicatorred = CP_Image_Load("./Assets/GridIndicatorred.png");
+    for (int i = 0; i < WORLDGRIDX; ++i)
+    {
+        for (int j = 0; j < WORLDGRIDY; ++j)
+        {
+            buildingGrid[i][j] = 0;
+        }
+    }
 }
 CP_Vector GetWorldSpaceOrigin()
 {

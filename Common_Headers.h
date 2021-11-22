@@ -19,6 +19,9 @@
 #define BGM CP_SOUND_GROUP_0
 #define SFX CP_SOUND_GROUP_1
 
+#define BLUE_PILL 1;
+#define RED_PILL 2;
+
 //Building Related Definitions
 #define B_GRASS_INDEX -2 // TO BE DELETED
 #define NULL_CHOICE -1
@@ -257,7 +260,6 @@ REWARDCARD* GetRewardByIndex(int index);
 CP_Image* GetBuildingSpriteByIndex(int);
 CP_Image* GetBuildingSpriteButtonByIndex(int);
 CP_Image* GetCardSpriteByIndex(int index);
-void SwapDeckToMain();
 CARDEVENT* GetEventByIndex(int index);
 
 // Resources
