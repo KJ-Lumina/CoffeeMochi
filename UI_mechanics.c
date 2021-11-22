@@ -169,18 +169,21 @@ void DrawUI_GauntletOpen()
     {
         CP_Image_Draw(image_CardA, windowWidth - 130, windowHeight / 2 - 60, 185, 243, 255);
         DrawUI_TextDesc(UIselectedEvent->descriptionA);
+        DrawUI_Title(UIselectedEvent->title);
     }
     // Hovering B
     else if (CheckWithinBounds(optionBPos, 90, 243))
     {
         CP_Image_Draw(image_CardB, windowWidth - 130, windowHeight / 2 - 60, 185, 243, 255);
         DrawUI_TextDesc(UIselectedEvent->descriptionB);
+        DrawUI_Title(UIselectedEvent->title);
     }
     // Not Hovering
     else
     {
         CP_Image_Draw(image_CardFlipped, windowWidth - 130, windowHeight / 2 - 60, 185, 243, 255);
         DrawUI_TextDesc(UIselectedEvent->description);
+        DrawUI_Title(UIselectedEvent->title);
     }
 }
 
@@ -268,6 +271,13 @@ void DrawUI_TextDesc(const char* text)
     CP_Settings_TextSize(20);
     CP_Settings_Fill(CP_Color_Create(255, 255, 255, 255));
     CP_Font_DrawTextBox(text, 1220, 100, 300);
+}
+
+void DrawUI_Title(const char* text)
+{
+    CP_Settings_TextSize(40);
+    CP_Settings_Fill(CP_Color_Create(255, 255, 255, 255));
+    CP_Font_DrawTextBox(text, 1220, 40, 300);
 }
 
 
