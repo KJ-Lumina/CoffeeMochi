@@ -29,9 +29,9 @@ Buff/Debuff effects will be seperated to a different header file
 
 // Upkeep costs for every tile are defaulted to the following values
 // Subject to adjustments if Levels/Ranks are to be implemented
-#define MARKET_UPKEEP_COST 5
-#define FARM_UPKEEP_COST 5
-#define HOUSING_UPKEEP_COST 5
+#define TAVERN_UPKEEP_COST 5
+//#define FARM_UPKEEP_COST 5
+//#define HOUSING_UPKEEP_COST 5
 
 
 #define HIGH_MORALE 0
@@ -164,7 +164,7 @@ void Gold_generated_per_turn()
 	// Net total Gold generated
 	//curGold += gold_generated_by_markets + gold_generated_by_tax - gold_deducted_from_upkeep;
 
-	curGold += (numMarkets * GOLD_AMT_FROM_MARKETS) + (numHouses * PAX_PER_HOUSING) - ((numFarms * FARM_UPKEEP_COST) + (numHouses * HOUSING_UPKEEP_COST));
+	curGold += (numMarkets * GOLD_AMT_FROM_MARKETS) - (numTaverns * TAVERN_UPKEEP_COST);
 }
 
 // Function to check amount of Food resource generated per turn
@@ -219,19 +219,16 @@ void Morale_per_turn()
 	switch (isPoor + isStarved)
 	{
 		case HIGH_MORALE:
-			curMorale = 80 + (numTaverns * tavernModifier);
+			curMorale = curPopulation + (numTaverns * tavernModifier);
 			break;
 		case MEDIUM_MORALE:
-			curMorale = 50 + (numTaverns * (tavernModifier - MEDIUM_MORALE));
+			curMorale = (curPopulation/MEDIUM_MORALE) + (numTaverns * (tavernModifier - MEDIUM_MORALE));
 			break;
 		case LOW_MORALE:
-			curMorale = 10 + (numTaverns * (tavernModifier - LOW_MORALE));
+			curMorale = (curPopulation/LOW_MORALE) + (numTaverns * (tavernModifier - LOW_MORALE));
 			break;
 	}
-	if (curMorale > 100)
-	{
-		curMorale = 100;
-	}
+	
 }
 
 //TEMPORARY FOR PROTOTYPE ONLYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
