@@ -60,28 +60,28 @@ CARDEVENT emptyCard = { 0, NULL_TYPE_EVENT, "This is a null event, for errors on
 , {0,0,0,0}, {0,0}, "You are looking at a bug right now. Please ignore." };
 
 //TUTORIALS EVENTS [CARD INDEX STARTS WITH 0X]
-CARDEVENT E_TutBuildAHouse = { 1, BUILD_TYPE_EVENT,"Gorvernor, our citizens are homeless. Click on the cards to make a decision."
-, {0,0,0,0}, { {1, 2}, {0,0} } ,"Gather our workers! Build two houses!"
-, {0,0,0,0}, { {1, 2}, {0,0} },"Oh no! our houses are destroyed! Send in workers to repair the houses" };
-CARDEVENT E_TutBuildAFarm = { 2, BUILD_TYPE_EVENT, "Gorvernor, there is a food shortage,  our citizen are starving. Build our citizens two farms."
-, {0,0,0,0}, { {2, 2}, {0,0} }, "Decide on two empty land to place the farms where it is suited for crops to grow."
+CARDEVENT E_TutBuildAHouse = { 1, BUILD_TYPE_EVENT,"Gorvernor, we need to build houses for our citizens. Click on either red or the blue card."
+, {-20,0,0,5}, { {1, 2}, {0,0} } ,"Gather our workers! Let us construct two houses!"
+, {-10,0,0,-20}, { {1, 2}, {0,0} } ,"Find the cheapest materials you can! They don't need such luxury." };
+CARDEVENT E_TutBuildAFarm = { 2, BUILD_TYPE_EVENT, "Gorvernor, we need to feed our citizens. Building a farm can grow us some food."
+, {-20,0,0,5}, { {2, 2}, {0,0} }, "Decide on two empty land to place the farms where it is suited for crops to grow."
 , {0,0,0,0}, { {2, 2}, {0,0} }, "The kingdom needs self-sufficient food to survive. Gather the workers and start building ASAP!"};
 CARDEVENT E_TutBuildAMarket = { 3 , BUILD_TYPE_EVENT, "Gorvernor, our economy is unstable. We need income! Set up two markets."
-, {0,0,0,0}, { {3, 2}, {0,0} }, "Let known to citizens that they can start setting up shops! Time to make some money!!"
+, {-20,0,0,5}, { {3, 2}, {0,0} }, "Let known to citizens that they can start setting up shops! Time to make some money!!"
 , {0,0,0,0}, { {3, 2}, {0,0} }, "We are open for business! Start the build of markets so visiting merchants can set up trade." };
 
 /*----------------------------------------------------------*/
 
 //BASIC EVENTS - BUILD TYPE
 CARDEVENT E_BuildAHouse = { 4, BUILD_TYPE_EVENT, "Gorvernor, our population are growing and citizens are requesting for more lodging."
-, {5,0,0,0}, { {1,1}, {0,0} }, "Send in workers, build more houses for our citizens!"
-, {0,0,0,2}, { {0,0}, {0,0} }, "There are enough Houses for everyone, the citizens are over exaggerating." };
+, {-10,0,0,5}, { {1,1}, {0,0} }, "Send in workers, build more houses for our citizens!"
+, {0,0,0,-10}, { {0,0}, {0,0} }, "There are enough Houses for everyone, the citizens are over exaggerating." };
 CARDEVENT E_BuildAMarket = { 5 , BUILD_TYPE_EVENT, "Gorvernor, our markets are crowding up! Constructing another market will reduce the crowd."
-, {7,0,0,0}, { {3,1}, {0,0} }, "Spreading the crowd would help our income ,proceed with the consturction."
+, {7,0,0,0}, { {3,1}, {0,0} }, "Spreading the crowd would help our income ,proceed with the construction."
 , {0,0,0,2}, { {0,0}, {0,0} }, "A crowded market means good business, there is not a need to construct another market." };
 CARDEVENT E_ScarceFood = { 6, BUILD_TYPE_EVENT, "Gorvernor, there is food shortage in our kingdom. We advice you to allow farms to be built."
-, {10,0,0,0},{ {2,2}, {0,0} },"Get our workers to start with the construction of the farm."
-, {0,0,0,2},{ {0,0},{0,0} }, "We have enough food, there is no need for a new farm." };
+, {-20,0,0,5},{ {2,2}, {0,0} },"Get our workers to start with the construction of the farm. We have enough blueprints for 2."
+, {10,0,0,-10},{ {0,0},{0,0} }, "The citizens can eat less." };
 CARDEVENT E_MerchantSetUp = { 7, BUILD_TYPE_EVENT, "Gorvernor, various merchants have shown interest in settling down in our kingdom. Allow the merchants in by constructing two markets."
 , {15,0,0,0},{ {3,2},{0,0} }, "Open our gates and invite the merchants in and set up two market spot for them."
 , {0,0,0,0}, { {0,0},{0,0} }, "We dont have enough manpower to construct markets." };
