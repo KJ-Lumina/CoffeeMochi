@@ -85,7 +85,7 @@ CARDEVENT E_ScarceFood = { 6, BUILD_TYPE_EVENT,"Expand Farmland", "Gorvernor, th
 CARDEVENT E_MerchantSetUp = { 7, BUILD_TYPE_EVENT,"Welcome Neighbours", "Gorvernor, various merchants have shown interest in settling down. Allow the merchants in by constructing two markets."
 , {-20,0,0,10},{ {3,2},{0,0} }, "Open our gates and invite the merchants in and set up two market spot for them."
 , {10,0,0,-10}, { {0,0},{0,0} }, "We don't have enough manpower to construct markets." };
-CARDEVENT E_BuidldATavern = {8, BUILD_TYPE_EVENT,"Give Entertainment", "Gorvernor, there is a lack of entertainment in our kingdom, our citizen are getting restless. Construct a tavern to give them entertainment."
+CARDEVENT E_BuidldATavern = {8, BUILD_TYPE_EVENT,"Entertainment Request", "Gorvernor, there is a lack of entertainment in our kingdom, our citizen are getting restless. Construct a tavern to give them entertainment."
 , {-10,0,0,10}, { {4,1},{0,0} }, "Entertainment would boost our citizens morale, get our builders to construct the taverns."
 , {5,0,0,-15}, { {0,0},{0,0} }, "We need to focus on our necessities, entertainment can wait." };
 
