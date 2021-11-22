@@ -46,6 +46,16 @@ float cardhighlightTimer[5];
 
 // resource bars
 CP_Image image_ResourceBars;
+CP_Image image_goldbar;
+CP_Image image_foodbar;
+CP_Image image_populationbar;
+CP_Image image_moralebar;
+CP_Image image_barBG;
+CP_Image image_resourcetext;
+float goldLerp;
+float foodLerp;
+float popuLerp;
+float moraleLerp;
 
 extern int rewardIndex;
 
@@ -67,6 +77,16 @@ void InitUI()
     image_CardFlash = CP_Image_Load("./ImperoArtAssets/Impero_Cardflash.png");
     image_CardHighlight = CP_Image_Load("./ImperoArtAssets/Impero_Cardhighlight.png");
     image_ResourceBars = CP_Image_Load("./ImperoArtAssets/ResourceBarAssets/Impero_ResourceBars.png");
+    image_goldbar = CP_Image_Load("./ImperoArtAssets/ResourceBarAssets/goldbar.png");
+    image_foodbar = CP_Image_Load("./ImperoArtAssets/ResourceBarAssets/foodbar.png");
+    image_populationbar = CP_Image_Load("./ImperoArtAssets/ResourceBarAssets/populationbar.png");
+    image_moralebar = CP_Image_Load("./ImperoArtAssets/ResourceBarAssets/moralebar.png");
+    image_barBG = CP_Image_Load("./ImperoArtAssets/ResourceBarAssets/barBackground.png");
+    image_resourcetext = CP_Image_Load("./ImperoArtAssets/ResourceBarAssets/resourcetext.png");
+    goldLerp = 0.0f;
+    foodLerp = -0.2f;
+    popuLerp = -0.4f;
+    moraleLerp = -0.6f;
 }
 
 void UI_SetEvent(CARDEVENT* newEvent)
@@ -244,10 +264,14 @@ void DrawUI_RewardCards(bool rewardPicked)
     }
 }
 
+
+
 void DrawUI(GAMESTATE state)
 {
     switch (state)
     {
+    case State_GameEntry:
+        break;
     case State_StartOfTurn:
         DrawUI_Deck();
         DrawUI_TopPile();
@@ -363,9 +387,72 @@ int CheckMouseColliding(BUTTON buttonArray[], CP_Vector mousePos, int isSplashSc
 }
 
 char resourceBuffer[20];
+
+
+
 void DrawTempTextResources()
 {
-    CP_Image_Draw(image_ResourceBars, 800, 450, 1600, 900, 255);
+    if (goldLerp < (float)Get_current_gold() / 200)
+    {
+        goldLerp += CP_System_GetDt() / 4;
+        if (goldLerp > (float)Get_current_gold() / 200)
+            goldLerp = (float)Get_current_gold() / 200;
+    }
+    else if(goldLerp > (float)Get_current_gold() / 200)
+    {
+        goldLerp -= CP_System_GetDt() / 4;
+        if (goldLerp < (float)Get_current_gold() / 200)
+            goldLerp = (float)Get_current_gold() / 200;
+    }
+    if (foodLerp < (float)Get_current_food() / 200)
+    {
+        foodLerp += CP_System_GetDt() / 4;
+        if (foodLerp > (float)Get_current_food() / 200)
+            foodLerp = (float)Get_current_food() / 200;
+    }
+    else if (foodLerp > (float)Get_current_food() / 200)
+    {
+        foodLerp -= CP_System_GetDt() / 4;
+        if (foodLerp < (float)Get_current_food() / 200)
+            foodLerp = (float)Get_current_food() / 200;
+    }
+
+    if (popuLerp < (float)Get_current_population() / 200)
+    {
+        popuLerp += CP_System_GetDt() / 4;
+        if (popuLerp > (float)Get_current_population() / 200)
+            popuLerp = (float)Get_current_population() / 200;
+    }
+    else if (popuLerp > (float)Get_current_population() / 200)
+    {
+        popuLerp -= CP_System_GetDt() / 4;
+        if (popuLerp < (float)Get_current_population() / 200)
+            popuLerp = (float)Get_current_population() / 200;
+    }
+
+    if (moraleLerp < (float)Get_current_morale() / 200)
+    {
+        moraleLerp += CP_System_GetDt() / 4;
+        if (moraleLerp > (float)Get_current_morale() / 200)
+            moraleLerp = (float)Get_current_morale() / 200;
+    }
+    else if (moraleLerp > (float)Get_current_morale() / 200)
+    {
+        moraleLerp -= CP_System_GetDt() / 4;
+        if (moraleLerp < (float)Get_current_morale() / 200)
+            moraleLerp = (float)Get_current_morale() / 200;
+    }
+    CP_Image_Draw(image_barBG, 100, 90, 200, 60, 255);
+    CP_Image_Draw(image_barBG, 100, 180, 200, 60, 255);
+    CP_Image_Draw(image_barBG, 100, 270, 200, 60, 255);
+    CP_Image_Draw(image_barBG, 100, 360, 200, 60, 255);
+    CP_Image_Draw(image_goldbar, CP_Math_LerpFloat(-100, 100, goldLerp), 90, 200, 60, 255);
+    CP_Image_Draw(image_foodbar, CP_Math_LerpFloat(-100, 100, foodLerp), 180, 200, 60, 255);
+    CP_Image_Draw(image_populationbar, CP_Math_LerpFloat(-100, 100, popuLerp), 270, 200, 60, 255);
+    CP_Image_Draw(image_moralebar, CP_Math_LerpFloat(-100, 100, moraleLerp), 360, 200, 60, 255);
+    CP_Image_Draw(image_resourcetext, 100, 200, 200, 400, 255);
+
+    //CP_Image_Draw(image_ResourceBars, 800, 450, 1600, 900, 255);
 
 
     CP_Settings_TextSize(40);
@@ -381,18 +468,18 @@ void DrawTempTextResources()
     CP_Settings_Fill(CP_Color_Create(255, 255, 255, 255));
 
     sprintf_s(resourceBuffer, 20, "%d", Get_current_gold());
-    CP_Font_DrawText(resourceBuffer, 150, 68);
+    CP_Font_DrawText(resourceBuffer, 140, 70);
 
     
 
     sprintf_s(resourceBuffer, 20, "%d", Get_current_food());
-    CP_Font_DrawText(resourceBuffer, 150, 156);
+    CP_Font_DrawText(resourceBuffer, 140, 160);
 
     sprintf_s(resourceBuffer, 20, "%d", Get_current_population());
-    CP_Font_DrawText(resourceBuffer, 150, 243);
+    CP_Font_DrawText(resourceBuffer, 140, 250);
 
     sprintf_s(resourceBuffer, 20, "%d", Get_current_morale() + Get_additional_morale());
-    CP_Font_DrawText(resourceBuffer, 150, 332);
+    CP_Font_DrawText(resourceBuffer, 140, 340);
 
 
     // LUL

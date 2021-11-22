@@ -86,6 +86,7 @@ typedef enum
 
 typedef enum
 {
+	State_GameEntry,
 	State_StartOfTurn,
 	State_Idle,
 	State_CardDraw,

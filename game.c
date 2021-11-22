@@ -267,109 +267,110 @@ void GameStateControl()
     DrawGridIndicator(currentMousePos);
     switch (gameState)
     {
-        case State_StartOfTurn:
-            gameState = State_Idle;
-            break;
+    case State_GameEntry:
+        gameState = State_Idle;
+        break;
+    case State_StartOfTurn:
+        gameState = State_Idle;
+        break;
+    case State_Idle:
+        break;
+    case State_CardDraw:
+        AnimTimer -= CP_System_GetDt();
+        if (AnimTimer <= 0)
+        {
+            gameState = State_MakeAChoice;
+            selectedEvent = GetNextEvent();
+            UI_SetEvent(selectedEvent);
+        }
+        break;
+    case State_MakeAChoice:
+        break;
+    case State_PlaceYourBuilding:
+        DrawCursorTile(currentMousePos);
+        break;
+    case State_DestroyBuilding:
 
-        case State_Idle:
-            break;
+        DestroyBuildingBySelectedBuilding();
 
-        case State_CardDraw:
-            AnimTimer -= CP_System_GetDt();
-            if (AnimTimer <= 0)
-            {
-                gameState = State_MakeAChoice;
-                selectedEvent = GetNextEvent();
-                UI_SetEvent(selectedEvent);
-            }
-            break;
-        case State_MakeAChoice:
-            break;
-        case State_PlaceYourBuilding:
-            DrawCursorTile(currentMousePos);
-            break;
-        case State_DestroyBuilding:
-
-            DestroyBuildingBySelectedBuilding();
-
-            //there is more building to destroy
-            if (rewardCardsLeft[rewardIndex])
-            {
+        //there is more building to destroy
+        if (rewardCardsLeft[rewardIndex])
+        {
+            gameState = State_CollectRewards;
+        }
+        // there is no more rewards
+        else
+        {
+            ++rewardIndex;
+            if (rewardIndex != NUMBER_OF_MAX_REWARDS) {
                 gameState = State_CollectRewards;
             }
-            // there is no more rewards
-            else
-            {
-                ++rewardIndex;
-                if (rewardIndex != NUMBER_OF_MAX_REWARDS) {
-                    gameState = State_CollectRewards;
-                }
-                else {
-                    rewardIndex = 0; //Reset Reward Index
-                    gameState = State_EndOfTurn;
+            else {
+                rewardIndex = 0; //Reset Reward Index
+                gameState = State_EndOfTurn;
 
-                }
             }
+        }
 
-            break;
-        case State_EndOfTurn:
-            if (endTurnTimer <= 0)
+        break;
+    case State_EndOfTurn:
+        if (endTurnTimer <= 0)
+        {
+            rewardIndex = 0;
+            float animCount = 0;
+            float animDelay = 0.1f;
+            CP_Vector worldOrigin = GetWorldSpaceOrigin();
+            CP_Vector tempVector;
+            for (int j = 0; j < WORLDGRIDY; ++j)
             {
-                rewardIndex = 0;
-                float animCount = 0;
-                float animDelay = 0.1f;
-                CP_Vector worldOrigin = GetWorldSpaceOrigin();
-                CP_Vector tempVector;
-                for (int j = 0; j < WORLDGRIDY; ++j)
+                for (int i = 0; i < WORLDGRIDX; ++i)
                 {
-                    for (int i = 0; i < WORLDGRIDX; ++i)
+                    switch (GetOccupiedIndex(i, j))
                     {
-                        switch (GetOccupiedIndex(i, j))
-                        {
-                        case B_HOUSE_INDEX:
-                            tempVector.x = i * TILEWIDTH + TILEWIDTH / 2 + worldOrigin.x;
-                            tempVector.y = j * TILEHEIGHT + TILEHEIGHT / 3 + worldOrigin.y;
-                            SpawnLinearVfx(4,tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), 1, CP_Vector_Set(128, 128), animCount * animDelay);
-                            ++animCount;
-                            break;
-                        case B_FARM_INDEX:
-                            tempVector.x = i * TILEWIDTH + TILEWIDTH / 2 + worldOrigin.x;
-                            tempVector.y = j * TILEHEIGHT + TILEHEIGHT / 3 + worldOrigin.y;
-                            SpawnLinearVfx(3, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), 1, CP_Vector_Set(128, 128), animCount * animDelay);
-                            ++animCount;
-                            break;
-                        case B_MARKET_INDEX:
-                            tempVector.x = i * TILEWIDTH + TILEWIDTH / 2 + worldOrigin.x;
-                            tempVector.y = j * TILEHEIGHT + TILEHEIGHT / 3 + worldOrigin.y;
-                            SpawnLinearVfx(1, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), 1, CP_Vector_Set(128, 128), animCount * animDelay);
-                            ++animCount;
-                            break;
-                        case B_TAVERN_INDEX:
-                            tempVector.x = i * TILEWIDTH + TILEWIDTH / 2 + worldOrigin.x;
-                            tempVector.y = j * TILEHEIGHT + TILEHEIGHT / 3 + worldOrigin.y;
-                            SpawnLinearVfx(5, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), 1, CP_Vector_Set(128, 128), animCount * animDelay);
-                            ++animCount;
-                            break;
-                        default:
-                            break;
-                        }
+                    case B_HOUSE_INDEX:
+                        tempVector.x = i * TILEWIDTH + TILEWIDTH / 2 + worldOrigin.x;
+                        tempVector.y = j * TILEHEIGHT + TILEHEIGHT / 3 + worldOrigin.y;
+                        SpawnLinearVfx(4,tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), 1, CP_Vector_Set(128, 128), animCount * animDelay);
+                        ++animCount;
+                        break;
+                    case B_FARM_INDEX:
+                        tempVector.x = i * TILEWIDTH + TILEWIDTH / 2 + worldOrigin.x;
+                        tempVector.y = j * TILEHEIGHT + TILEHEIGHT / 3 + worldOrigin.y;
+                        SpawnLinearVfx(3, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), 1, CP_Vector_Set(128, 128), animCount * animDelay);
+                        ++animCount;
+                        break;
+                    case B_MARKET_INDEX:
+                        tempVector.x = i * TILEWIDTH + TILEWIDTH / 2 + worldOrigin.x;
+                        tempVector.y = j * TILEHEIGHT + TILEHEIGHT / 3 + worldOrigin.y;
+                        SpawnLinearVfx(1, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), 1, CP_Vector_Set(128, 128), animCount * animDelay);
+                        ++animCount;
+                        break;
+                    case B_TAVERN_INDEX:
+                        tempVector.x = i * TILEWIDTH + TILEWIDTH / 2 + worldOrigin.x;
+                        tempVector.y = j * TILEHEIGHT + TILEHEIGHT / 3 + worldOrigin.y;
+                        SpawnLinearVfx(5, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), 1, CP_Vector_Set(128, 128), animCount * animDelay);
+                        ++animCount;
+                        break;
+                    default:
+                        break;
                     }
                 }
-                endTurnTimer = animCount * animDelay;
             }
-            else
+            endTurnTimer = animCount * animDelay;
+        }
+        else
+        {
+            endTurnTimer -= CP_System_GetDt();
+            if (endTurnTimer <= 0)
             {
-                endTurnTimer -= CP_System_GetDt();
-                if (endTurnTimer <= 0)
-                {
-                    EndTurn();
-                    gameState = State_StartOfTurn;
-                }
+                EndTurn();
+                gameState = State_StartOfTurn;
             }
-            break;
-        case State_GameOver:
-            SetGameSceneEndPhase();
-            break;
+        }
+        break;
+    case State_GameOver:
+        SetGameSceneEndPhase();
+        break;
     }
 }
 
@@ -402,7 +403,7 @@ void MouseDragOrClick(void)
 
 void MainGame_Initialize(void)
 {
-    gameState = State_Idle;
+    gameState = State_GameEntry;
     InitResources(100);
     InitWorldSpaceGrid();
     InitBuildings();
