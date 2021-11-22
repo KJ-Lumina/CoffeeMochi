@@ -103,6 +103,11 @@ void AdminControlInput()
     {
         SpawnAnimation(currentMousePos.x, currentMousePos.y, 200, 200, 1, 0.5f, 1);
     }
+
+    if (CP_Input_KeyTriggered(KEY_E)) 
+    {
+
+    }
 }
 
 void CheckKeyInput()

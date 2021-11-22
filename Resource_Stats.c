@@ -25,10 +25,12 @@ Buff/Debuff effects will be seperated to a different header file
 
 #define PAX_PER_HOUSING 1
 #define INCREMENT_PERCENTAGE_PER_PAX 1
+#define PAX_LOW_MODIFIER 0.1
+#define PAX_MEDIUM_MODIFIER 0.25
 
 // Upkeep costs for every tile are defaulted to the following values
 // Subject to adjustments if Levels/Ranks are to be implemented
-#define TAVERN_UPKEEP_COST 5
+#define TAVERN_UPKEEP_COST 2
 //#define FARM_UPKEEP_COST 5
 //#define HOUSING_UPKEEP_COST 5
 
@@ -58,6 +60,7 @@ int numHouses = 0;
 
 //Morale Related Variables
 int numTaverns = 0;
+int currentMoraleStatus = HIGH_MORALE;
 int tavernModifier = 4;
 
 /*--------------------
@@ -190,6 +193,19 @@ void Population_per_turn()
     else {
         curPopulation -= numHouses * PAX_PER_HOUSING * INCREMENT_PERCENTAGE_PER_PAX;
     }
+
+    switch (currentMoraleStatus) {
+
+    case MEDIUM_MORALE:
+        curPopulation -= (int)(curPopulation * PAX_MEDIUM_MODIFIER);
+        break;
+
+    case LOW_MORALE:
+        curPopulation -= (int)(curPopulation * PAX_LOW_MODIFIER);
+        break;
+
+    }
+
 }
 
 void Gold_check()
@@ -215,7 +231,9 @@ void Morale_per_turn()
 	//event effects then we will just have to add a seperate counter for it
 	//Tavern morale modifier affected by Morale debuff i.e. More debuff, lower Morale increase
 
-	switch (isPoor + isStarved)
+    currentMoraleStatus = isPoor + isStarved;
+
+	switch (currentMoraleStatus)
 	{
 		case HIGH_MORALE:
 			curMorale = curPopulation + (numTaverns * tavernModifier);

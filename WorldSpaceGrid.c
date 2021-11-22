@@ -131,6 +131,24 @@ void DestroyBuildingBySelectedBuilding() {
     TILEPOSITION tile_positions[MAXTILECOUNT];
     int length = GetAllBuildingsPositionByIndex(selectedBuilding->spriteIndex, tile_positions);
 
+    switch (selectedBuilding->spriteIndex) {
+    case B_HOUSE_INDEX:
+        SubtractHouse();
+        break;
+
+    case B_FARM_INDEX:
+        SubtractFarm();
+        break;
+
+    case B_MARKET_INDEX:
+        SubtractMarket();
+        break;
+
+    case B_TAVERN_INDEX:
+        SubtractTavern();
+        break;
+    }
+
     if (length > 0) {
         unsigned int lowerBounds = 0;
         unsigned int upperBounds = length - 1;

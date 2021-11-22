@@ -93,22 +93,22 @@ CARDEVENT E_BuidldATavern = {8, BUILD_TYPE_EVENT,"Entertainment Request", "Gorve
 //BASIC EVENT - RESOURCE TYPE
 CARDEVENT E_FoodMerchantArrival = { 9, RESOURCE_TYPE_EVENT,"Merchants Trade", "Gorvernor, food peddlers have arrived at your kingdom, they wish to trade"
 , {-10,20,0,0},{ {0,0},{0,0} }, "Inform them that we will be accepting their trades, send carts over to carry the goods to our granaries."
-, {0,0,0,0},{ {0,0},{0,0} }, "We have a substantial amount of food in our granaries, there is not a need to trade." };
+, {0,0,2,-2},{ {0,0},{0,0} }, "We have a substantial amount of food in our granaries, there is not a need to trade." };
 CARDEVENT E_StolenFood = { 10 , RESOURCE_TYPE_EVENT,"Granary Thievery","Gorvernor, there is a report of food stolen from our granaries. We advice an investigation to apprehend the culprit."
 , {-10,0,0,10}, { {0,0},{0,0} }, "We need to give our citizens a sense of security, proceed with the investigation! We want the culprit aprehended. "
 , {0,-10,0,5}, { {0,0},{0,0} }, "This is just a one time thing, let it pass and increase our security around the granaries." };
 CARDEVENT E_HeavyStorm = { 11 , RESOURCE_TYPE_EVENT,"Storm Bypassing","Gorvernor, we have been hit by a heavy thunderstorm, many houses are currently damaged and citizens are requesting for repair."
 , {-10,-10,0,5}, { {0,0},{0,0} }, "Divide our manpower to sort out the damages and to repair the damaged houses."
-, {0,0,0,-10}, { {0,0},{0,0} }, "Clean up the damages that the storm have done first, the repairs can wait." };
+, {5,5,0,-10}, { {0,0},{0,0} }, "Clean up the damages that the storm have done first, the repairs can wait." };
 CARDEVENT E_GoldMineDiscovered = { 12 , RESOURCE_TYPE_EVENT,"Gold Mine Discovery", "Gorvernor, our miners have discovered a gold mine.They are currently waiting on instruction to deal with it."
-, {25,0,0,0}, { {0,0},{0,0} }, "Arrange carts to bring the gold back to the treasury, we will sell them to increase our capital."
+, {25,0,0,2}, { {0,0},{0,0} }, "Arrange carts to bring the gold back to the treasury, we will sell them to increase our capital."
 , {5,0,0,10} ,{ {0,0},{0,0} }, "Arrange multiple carts to distribute the gold to all the households. They deserve a reward for their hardwork." };
 CARDEVENT E_ContaminatedFood = { 13, RESOURCE_TYPE_EVENT,"Granary Contamination", "Gorvernor, we have discovered that the food in our granaries are contaminated. We need to dispose of them to prevent further damage."
 , {0,-25,0,10}, { {0,0},{0,0} }, "Dispose the contaminated food quickly."
-, {0,15,0,-20},{ {0,0},{0,0} }, "Perhaps the citizens won't notice if I distribute some." };
+, {0,15,-10,2},{ {0,0},{0,0} }, "Perhaps the citizens won't notice if I distribute some." };
 CARDEVENT E_VillagersKidnapped = { 14, RESOURCE_TYPE_EVENT,"Kidnapping Fiasco", "Gorvernor, we received reports that some of our citizens have been kidnapped by bandits in a skirmish! We have to send out troops to rescue them."
 , {-20,0,0,10}, { {0,0},{0,0} }, "Hire the mercenaries that have reached out to us to rescue the kidnapped citizens"
-, {-10,0,0,10}, { {0,0},{0,0} }, "Get our local militia ready and dispatch them to rescue the kidnapped citizen as soon as possible." };
+, {-10,0,-2,5}, { {0,0},{0,0} }, "Get our local militia ready and dispatch them to rescue the kidnapped citizen as soon as possible." };
 CARDEVENT E_MagnificentHunt = { 15, RESOURCE_TYPE_EVENT,"Great Food Hunt", "Gorvernor, our hunters have return back from the wildness with a magnificent hunt. We are waiting for your instruction on what to do with the hunt."
 , {0,20,0,0}, { {0,0},{0,0} }, "Gather the food and store the hunt in our granaries for future use."
 , {-15,0,0,20}, { {0,0},{0,0} }, "This calls for a celebration. Use some of our gold in the coffers to hold a festival to celebrate the magnificent hunt." };
@@ -116,33 +116,33 @@ CARDEVENT E_MagnificentHunt = { 15, RESOURCE_TYPE_EVENT,"Great Food Hunt", "Gorv
 
 //ADVANCED EVENTS - BUILD TYPE
 CARDEVENT E_RefugeesHouses = { 16 , BUILD_TYPE_EVENT,"Host Refugees", "Gorvernor, multiple refugees are seeking shelter in your kingdom. What is your verdict?"
-, {-20,0,0,10} ,{ {1,2}, {0,0} }, "Let them enter. We can house those refugees and put them to work."
-, {0,0,0,-10}, { {0,0},{0,0} }, "Reject their entry. They might be spies from another kingdom, its too dangerous to let them enter." };
+, {-20,0,10,10} ,{ {1,2}, {0,0} }, "Let them enter. We can house those refugees and put them to work."
+, {0,0,-5,-10}, { {0,0},{0,0} }, "Reject their entry. They might be spies from another kingdom, its too dangerous to let them enter." };
 CARDEVENT E_NeedEntertainment = { 17, BUILD_TYPE_EVENT,"More Entertainment", "Gorvernor, our population have grown, our citizen desperately needs entertainment to relieve stress. We advice the construction of two taverns."
-, {-20,0,0,10},{ {4,2}, {0,0} }, "Our citizen have worked hard and deserve a place to relax. Proceed with the construction of the two taverns and finish it as soon as possible."
+, {-20,0,0,15},{ {4,2}, {0,0} }, "Our citizen have worked hard and deserve a place to relax. Proceed with the construction of the two taverns and finish it as soon as possible."
 , {10,0,0,-10}, { {0,0},{0,0} }, "There are other parts of the kingdom that needs to be focused on. The construction of the taverns can start later." };
 
 //ADVANCED EVENTS - RESOURCE TYPE
 CARDEVENT E_FamineStrikes = { 18, RESOURCE_TYPE_EVENT,"Famine Strike", "Gorvernor, a famine have struck your kingdom, we advice to distribute the backup food storage to every household to prevent any further crisis from happening."
-,{0,-20,0,10}, { {0,0},{0,0} }, "Get all our manpower ready, we need to start distributing the food supplies to each household to overcome this famine."
-, {0,-30,0,15}, { {0,0},{0,0} }, "We must brace through this famine. Focus on helping those crucial citizens, make sure they have food to survive." };
+,{0,-30,0,10}, { {0,0},{0,0} }, "Get all our manpower ready, we need to start distributing the food supplies to each household to overcome this famine."
+, {0,-15,-5,5}, { {0,0},{0,0} }, "We must brace through this famine. Focus on helping those crucial citizens, make sure they have food to survive." };
 CARDEVENT E_ArsonistAttack = { 19, RESOURCE_TYPE_EVENT,"Arsonist Invasion", "Gorvernor, our farms are on fire and it is reported that there is an arsonist on the loose."
-, {-20,0,0,20}, { {0,0},{0,0} }, "Send all our men to assist in extinguishing the fire and rebuild the farm to a working condition."
-, {0,-15,0,-10}, { {1,-1}, {0,0} }, "The farm that is on fire is not within vacinity of any other farms. Make sure all citizen evacuate the area and let fire extinguish by itself." };
+, {-20,0,2,20}, { {0,0},{0,0} }, "Send all our men to assist in extinguishing the fire and rebuild the farm to a working condition."
+, {0,-15,0,-10}, { {2,-1}, {0,0} }, "The farm that is on fire is not within vacinity of any other farms. Make sure all citizen evacuate the area and let fire extinguish by itself." };
 CARDEVENT E_CircusTroupeVisit = { 20 , RESOURCE_TYPE_EVENT,"Travelling Circus", "Gorvernor, a famous circus troupe have arrived at our kingdom and is offering their services to brighten the mood of the kingdom."
 , {-30,0,0,30}, { {0,0},{0,0} }, "Our citzens would enjoy the entertainment provided by the troupe. Send a representative to invite them into our kingdom."
-, {10,0,0,-20}, { {0,0},{0,0} }, "We need to conserve our gold for the development of our kingdom. Send a representative down to kindly decline their services." };
+, {15,0,0,-20}, { {0,0},{0,0} }, "We need to conserve our gold for the development of our kingdom. Send a representative down to kindly decline their services." };
 CARDEVENT E_CivilRevolt = { 21, RESOURCE_TYPE_EVENT,"Citizens Rebelion","Gorvernor, a revolt have broken out and citizens are demanding for more food and gold while threating to leave the kingdom if they do not receive them."
-, {10,-20,0,0}, { {0,0},{0,0} }, "The kingdom would not exist without our citizens. Distribute gold and food to our citizen and keep them pleased."
-, {0,0,-10,-30}, { {0,0},{0,0} }, "We must stand our ground and not submit to our citizens demands!" };
+, {-10,-20,10,10}, { {0,0},{0,0} }, "The kingdom would not exist without our citizens. Distribute gold and food to our citizen and keep them pleased."
+, {10,10,-10,-30}, { {0,0},{0,0} }, "We must stand our ground and not submit to our citizens demands!" };
 CARDEVENT E_DiseaseSpread = { 22, RESOURCE_TYPE_EVENT,"Pandemic Strike", "Gorvernor, a disease have spread through our kingdom and we currently have no cure for it. However, the neighbouring kingdom has already developed a cure."
-, {-50,0,0,10}, { {0,0},{0,0} }, "Quickly! Isolate the diseased to prevent further spreading and send messenger over to inform them that we will be purchasing thier cure for the disease."
-, {0,0,-10,-20}, { {0,0},{0,0} }, "Confine and isolate the diseased. Start working on developing the cure. We cannot afford to show our weakness to the other kingdom and have us owe them a favour." };
+, {-50,0,10,20}, { {0,0},{0,0} }, "Quickly! Isolate the diseased to prevent further spreading and send messenger over to inform them that we will be purchasing thier cure for the disease."
+, {0,-10,-10,-20}, { {0,0},{0,0} }, "Confine and isolate the diseased. Start working on developing the cure. We cannot afford to show our weakness to the other kingdom and have us owe them a favour." };
 
 //DESTROY TYPE EVENTS
 CARDEVENT E_EarthquakeIncoming = { 23, DESTROY_TYPE_EVENT,"Disaster Strike", "Gorvernor, news from nearby kingdom have reach our ears that a earthquake is coming and would reach our kingdom soon. There is an urgent need to prepare for it when it arrives."
-,{0,0,0,-20},{ {2, -1}, {4, -1} }, "Sound the emergency alarm. Get all of our citizen to start reinforcing all our building but focus on the House and Markets."
-,{0,0,0,-20},{ {1, -1}, {3, -1} }, "Sound the emergency alarm. Get all of our citizen to start reinforcing all our building but focus on the Farms and Taverns." };
+,{0,-10,-2,-10},{ {2, -1}, {4, -1} }, "Sound the emergency alarm. Get all of our citizen to start reinforcing all our building but focus on the House and Markets."
+,{-10,0,-5,-5},{ {1, -1}, {3, -1} }, "Sound the emergency alarm. Get all of our citizen to start reinforcing all our building but focus on the Farms and Taverns." };
 
 #pragma endregion
 

@@ -277,7 +277,7 @@ void DrawUI_Title(const char* text)
 {
     CP_Settings_TextSize(40);
     CP_Settings_Fill(CP_Color_Create(255, 255, 255, 255));
-    CP_Font_DrawTextBox(text, 1220, 40, 300);
+    CP_Font_DrawTextBox(text, 1170, 40, 400);
 }
 
 
