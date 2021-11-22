@@ -110,6 +110,7 @@ typedef struct
 {
 	int eventIndex; // unique ID
 	int eventType; //
+	char* title;
 	char* description;
 	int resourceChangeA[4];
 	REWARD resourceRewardA[NUMBER_OF_MAX_REWARDS];
@@ -225,7 +226,8 @@ int ClickCheck_CardChoice();
 int ClickCheck_Rewards();
 void DrawUI_Deck();
 void DrawUI(GAMESTATE state);
-void DrawUI_TextDesc(const char* text);
+void DrawUI_TextDesc(const char* text); 
+void DrawUI_Title(const char* text);
 void DrawTempTextResources();
 void UI_SetReward(REWARDCARD* rewardCard, int cardsLeft);
 void UI_SetEvent(CARDEVENT*);
