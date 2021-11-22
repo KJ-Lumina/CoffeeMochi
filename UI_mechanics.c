@@ -268,7 +268,7 @@ void DrawUI_TextDesc(const char* text)
 {
     CP_Settings_TextSize(20);
     CP_Settings_Fill(CP_Color_Create(255, 255, 255, 255));
-    CP_Font_DrawTextBox(text, 1220, 100, 300);
+    CP_Font_DrawTextBox(text, 1220, 90, 300);
 }
 
 void DrawUI_Title(const char* text)
