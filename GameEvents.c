@@ -65,7 +65,7 @@ CARDEVENT E_TutBuildAHouse = { 1, BUILD_TYPE_EVENT,"Gorvernor, we need to build 
 , {-10,0,0,-20}, { {1, 2}, {0,0} } ,"Find the cheapest materials you can! They don't need such luxury." };
 CARDEVENT E_TutBuildAFarm = { 2, BUILD_TYPE_EVENT, "Gorvernor, we need to feed our citizens. Building a farm can grow us some food."
 , {-20,0,0,5}, { {2, 2}, {0,0} }, "Decide on two empty land to place the farms where it is suited for crops to grow."
-, {0,0,0,0}, { {2, 2}, {0,0} }, "The kingdom needs self-sufficient food to survive. Gather the workers and start building ASAP!"};
+, {0,0,0,0}, { {2, 2}, {0,0} }, "The kingdom needs self-sufficient food to survive. Gather the workers and start building as soon as possible!"};
 CARDEVENT E_TutBuildAMarket = { 3 , BUILD_TYPE_EVENT, "Gorvernor, our economy is unstable. We need income! Set up two markets."
 , {-20,0,0,5}, { {3, 2}, {0,0} }, "Let known to citizens that they can start setting up shops! Would be good to raise some money for the kingdom."
 , {0,0,0,0}, { {3, 2}, {0,0} }, "We are open for business! Start the build of markets so visiting merchants can set up trade." };
@@ -82,7 +82,7 @@ CARDEVENT E_BuildAMarket = { 5 , BUILD_TYPE_EVENT, "Gorvernor, our markets are c
 CARDEVENT E_ScarceFood = { 6, BUILD_TYPE_EVENT, "Gorvernor, there is food shortage in our kingdom. We advice you to allow farms to be built."
 , {-20,0,0,10},{ {2,2}, {0,0} },"Get our workers to start with the construction of the farm. We have enough blueprints for two."
 , {10,0,0,-10},{ {0,0},{0,0} }, "The citizens can eat lesser." };
-CARDEVENT E_MerchantSetUp = { 7, BUILD_TYPE_EVENT, "Gorvernor, various merchants have shown interest in settling down in our kingdom. Allow the merchants in by constructing two markets."
+CARDEVENT E_MerchantSetUp = { 7, BUILD_TYPE_EVENT, "Gorvernor, various merchants have shown interest in settling down. Allow the merchants in by constructing two markets."
 , {10,0,0,0},{ {3,2},{0,0} }, "Open our gates and invite the merchants in and set up two market spot for them."
 , {0,0,0,0}, { {0,0},{0,0} }, "We don't have enough manpower to construct markets." };
 CARDEVENT E_BuidldATavern = {8, BUILD_TYPE_EVENT, "Gorvernor, there is a lack of entertainment in our kingdom, our citizen are getting restless. Construct a tavern to give them entertainment."
@@ -103,7 +103,7 @@ CARDEVENT E_HeavyStorm = { 11 , RESOURCE_TYPE_EVENT,"Gorvernor, we have been hit
 CARDEVENT E_GoldMineDiscovered = { 12 , RESOURCE_TYPE_EVENT, "Gorvernor, our miners have discovered a gold mine. They are currently waiting on instruction to deal with it."
 , {25,0,0,0}, { {0,0},{0,0} }, "Arrange carts to bring the gold back to the treasury, we will sell them to increase our capital."
 , {0,0,0,10} ,{ {0,0},{0,0} }, "Arrange multiple carts to distribute the gold to all the households. They deserve a reward for their hardwork." };
-CARDEVENT E_ContaminatedFood = { 13, RESOURCE_TYPE_EVENT, "Gorvernor, we have discovered that the food in our granaries are contaminated. We need to dispose of them as soon as possible to prevent further contamination."
+CARDEVENT E_ContaminatedFood = { 13, RESOURCE_TYPE_EVENT, "Gorvernor, we have discovered that the food in our granaries are contaminated. We need to dispose of them to prevent further damage."
 , {-10,0,0,10}, { {0,0},{0,0} }, "Dispose the contaminated food quickly and start replenishing new food in our granaries"
 , {0,-20,0,-10},{ {0,0},{0,0} }, "Get our workers to dispose the contaminated food as quickly as possible. There is not a need to replenish the contaminated food, however find the source of the contamination." };
 CARDEVENT E_VillagersKidnapped = { 14, RESOURCE_TYPE_EVENT, "Gorvernor, we received reports that some of our citizens have been kidnapped by bandits in a skirmish! We have to send out troops to rescue them."
@@ -135,7 +135,7 @@ CARDEVENT E_CircusTroupeVisit = { 20 , RESOURCE_TYPE_EVENT, "Gorvernor, a wander
 CARDEVENT E_CivilRevolt = { 21, RESOURCE_TYPE_EVENT,"Gorvernor, a revolt have broken out and citizens are demanding for more food and gold while threating to leave the kingdom if they do not receive them."
 , {10,-20,0,0}, { {0,0},{0,0} }, "The kingdom would not exist without our citizens. Distribute gold and food to our citizen and keep them pleased."
 , {0,0,-10,-30}, { {0,0},{0,0} }, "We must stand our ground and not submit to our citizens demands!" };
-CARDEVENT E_DiseaseSpread = { 22, RESOURCE_TYPE_EVENT, "Gorvernor, a disease have spread through our kingdom and we currently have no cure for it. However, there is information that a nearby allied kingdom have developed a cure for it."
+CARDEVENT E_DiseaseSpread = { 22, RESOURCE_TYPE_EVENT, "Gorvernor, a disease have spread through our kingdom and we currently have no cure for it. However, the neighbouring kingdom has already developed a cure."
 , {-50,0,0,10}, { {0,0},{0,0} }, "Quickly! Isolate the diseased to prevent further spreading and send messenger over to inform them that we will be purchasing thier cure for the disease."
 , {0,0,-10,-20}, { {0,0},{0,0} }, "Confine and isolate the diseased. Start working on developing the cure. We cannot afford to show our weakness to the other kingdom and have us owe them a favour." };
 
