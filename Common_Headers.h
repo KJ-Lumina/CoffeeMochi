@@ -225,9 +225,11 @@ int ClickCheck_CardChoice();
 int ClickCheck_Rewards();
 void DrawUI_Deck();
 void DrawUI(GAMESTATE state);
+void DrawUI_TextDesc(const char* text);
 void DrawTempTextResources();
 void UI_SetReward(REWARDCARD* rewardCard, int cardsLeft);
 void UI_SetEvent(CARDEVENT*);
+
 
 // Resources
 void Set_current_gold(int gold);

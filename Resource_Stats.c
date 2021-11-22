@@ -14,7 +14,7 @@ Buff/Debuff effects will be seperated to a different header file
 // For now Gold generated from 'Market' tiles and 'merchant' citizens 
 // and tax amount is defaulted to the following values
 // Subject to adjustments if Levels/Ranks are to be implemented
-#define GOLD_AMT_FROM_MARKETS 5
+#define GOLD_AMT_FROM_MARKETS 3
 #define TAX_AMOUNT 1
 
 // For now Food generated from 'Farm' tiles and 'farmer' citizens 
