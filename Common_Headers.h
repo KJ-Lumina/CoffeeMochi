@@ -202,7 +202,7 @@ void MainGame_Update(void);
 void InitBuildings();
 void InitDecks();
 void InitUI();
-void InitResources(int startingGold);
+void InitResources(int startingGold, int startingFood, int startingPopulation, int startingMorale);
 void GameOver();
 
 // WorldGridSpace
@@ -270,11 +270,13 @@ CARDEVENT* GetEventByIndex(int index);
 // Resources
 bool IsCostPayable(int costAmt);
 
-
 // UI VFX
 void SpawnLinearVfx(int spriteIndex, CP_Vector startPos, CP_Vector endPos, float lifetime, CP_Vector size, float spawnDelay);
 void DrawAllLinearVfx();
 void InitVfx();
+
+//Menu CallBacks
+void SetGameSceneEndPhase();
 
 
 

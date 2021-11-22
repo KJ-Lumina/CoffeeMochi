@@ -71,6 +71,9 @@ void EndTurn()
     if (LoseCondition_Resources()) {
         GameOver();
     }
+    else {
+        gameState = State_StartOfTurn;
+    }
 }
 #pragma endregion
 
@@ -400,8 +403,7 @@ void GameStateControl()
             endTurnTimer -= CP_System_GetDt();
             if (endTurnTimer <= 0)
             {
-                EndTurn();
-                gameState = State_StartOfTurn;
+                EndTurn();  //State Set to Start Turn is in EndTurn()       
             }
         }
         break;
@@ -442,7 +444,7 @@ void MouseDragOrClick(void)
 void MainGame_Initialize(void)
 {
     gameState = State_GameEntry;
-    InitResources(100);
+    InitResources(100,10,0,0);
     InitWorldSpaceGrid();
     InitBuildings();
     InitNpc();

@@ -38,7 +38,7 @@ Buff/Debuff effects will be seperated to a different header file
 #define LOW_MORALE 2
 
 
-int curGold = 20;
+int curGold = 100;
 int curFood = 10;
 int curPopulation = 0;
 int initPopulation = 100;
@@ -232,8 +232,12 @@ void Morale_per_turn()
 
 //TEMPORARY FOR PROTOTYPE ONLYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
 
-void InitResources(int startingGold) {
+void InitResources(int startingGold, int startingFood, int startingPopulation, int startingMorale) {
 	curGold = startingGold;
+    curFood = startingFood;
+    curPopulation = startingPopulation;
+    curMorale = startingMorale;
+    additionalMorale = 0;
 }
 
 void AddMarket()
