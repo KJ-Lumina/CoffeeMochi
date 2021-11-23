@@ -69,6 +69,7 @@ void game_init(void)
 	game_Background = CP_Image_Load("./ImperoArtAssets/Impero_GameBG.png");
 
 	whiteFlash = CP_Image_Load("./Assets/WhiteFlash.png");
+	InitSpritesheets();
 }
 
 void game_update(void)
@@ -77,6 +78,7 @@ void game_update(void)
 	if (gameScene == SCENE_GAMEPHASE)
 	{
 		CP_Image_Draw(game_Background, 800, 450, 1600, 900, 255);
+
 		MainGame_Update();
 	}
 	else if (gameScene == SCENE_SPLASH_DIGIPEN)
@@ -123,7 +125,14 @@ void game_update(void)
 	}
 	else if (gameScene == SCENE_MAINMENU)
 	{
+		ConstantAnimSpawner(2, 1, 30, 1550, 10, 500, 50, 50, 0.4f, 1);
+		ConstantAnimSpawner(2, 1, 30, 1550, 10, 500, 50, 50, 0.4f, 1);
+		ConstantAnimSpawner(2, 1, 30, 1550, 10, 500, 50, 50, 0.4f, 1);
+		ConstantAnimSpawner(2, 1, 30, 1550, 10, 500, 50, 50, 0.4f, 1);
+		ConstantAnimSpawner(2, 1, 30, 1550, 10, 500, 50, 50, 0.4f, 1);
+		ConstantAnimSpawner(2, 1, 30, 1550, 10, 850, 100, 100, 0.75f, 1);
 		CP_Image_Draw(mainScreenImage, 800, mainScreenYLerpStart, 1600, 2700, 255);
+		DrawAllAnimations();
 		CP_Image_Draw(titleImage, 800, titleImageYLerpStart, 985, 440, 255);
 		// Play button
 		if (CheckWithinBounds(CP_Vector_Set(1200, 700), 328, 99))

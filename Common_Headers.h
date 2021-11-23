@@ -277,6 +277,11 @@ void InitVfx();
 
 //Menu CallBacks
 void SetGameSceneEndPhase();
+ 
+//graphics Animspawn
+void ConstantAnimSpawner(int index, float time, int lowerX, int upperX, int lowerY, int upperY, float scaleX, float scaleY, float timeToDeath, int isTimeVariance);
+void InitSpritesheets(void);
+void DrawAllAnimations(void);
 
 
 

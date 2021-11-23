@@ -8,7 +8,9 @@
 
 //SPRITESHEET tileset_testenemy = { setNextSprite,minX,maxX,minY,maxY,maxSprites,spriteSizeX,spritesizeY,timeToDeath,posX,PosY,scaleX,scaleY,timeElapse,index,isInfiniteLoop };
 SPRITESHEET tileset_testenemy = { 0,0,4,0,1,4,64,64,10,100,100,200,200,0,1,0 };
+SPRITESHEET tileset_stars = { 0,0,10,0,1,10,64,64,10,100,100,100,100,0,2,0 };
 CP_Image testenemy;
+CP_Image stars;
 
 // hardcode amt of sprites, add 1 more when more spritesheets :(
 int numOfSpritesheets;
@@ -26,13 +28,13 @@ float timeElapse[1];
 float spawnerAnimDelta = 0;
 
 
-void InitSpritesheets(void)
+void InitSpritesheets()
 {
     //edit this when more spritesheets
-    numOfSpritesheets = 1;
+    numOfSpritesheets = 2;
 
     testenemy = CP_Image_Load("./Assets/testenemy.png");
-
+    stars = CP_Image_Load("./Assets/Impero_Sprite_Stars.png");
 
 
     for (int i = 0; i < numOfSpritesheets; ++i)
@@ -53,6 +55,8 @@ SPRITESHEET GetSpriteAnimationByIndex(int index)
     {
     case TILESET_TESTENEMY:
         return tileset_testenemy;
+    case TILESET_STARS:
+        return tileset_stars;
     default:
         return tileset_testenemy;
     }
@@ -63,6 +67,8 @@ CP_Image GetSpriteSheetByIndex(int index)
     {
     case 1:
         return testenemy;
+    case 2:
+        return stars;
     default:
         return testenemy;
     }
@@ -249,14 +255,42 @@ void DrawAllAnimations(void)
 
     }
 }
-//testing animation fucntion
-void ConstantAnimSpawner(float time)
+
+//repeated spawnanim function
+void ConstantAnimSpawner(int index, float time, int lowerX, int upperX, int lowerY, int upperY, float scaleX, float scaleY, float timeToDeath, int isTimeVariance)
 {
+    float posX = 0;
+    float posY = 0;
+    float totaltime = time; 
+    bool check = CP_Random_GetBool();
     spawnerAnimDelta += CP_System_GetDt();
-    if (spawnerAnimDelta >= time)
+    if (spawnerAnimDelta >= totaltime)
     {
-        spawnerAnimDelta -= time;
-        SpawnAnimation(100, 100, 200, 200, 1, 4, 0);
+        spawnerAnimDelta -= totaltime;
+        posX = (float)CP_Random_RangeInt(lowerX,upperX);
+        posY = (float)CP_Random_RangeInt(lowerY, upperY);
+        SpawnAnimation(posX, posY, scaleX, scaleY, index, timeToDeath, 0);
+        if (isTimeVariance)
+        {
+            check = CP_Random_GetBool();
+            if (check)
+            {
+                totaltime += CP_Random_GetFloat();
+
+            }
+            else
+            {
+                totaltime -= CP_Random_GetFloat();
+            }  
+        }
+        if (totaltime <= 0)
+        {
+            totaltime = time;
+        }
+        else if (totaltime >= (time * 2))
+        {
+            totaltime = time;
+        }
     }
 }
 
@@ -347,4 +381,6 @@ void DrawAllLinearVfx()
         }
     }
 }
+
+
 

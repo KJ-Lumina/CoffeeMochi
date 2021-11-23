@@ -336,9 +336,8 @@ void DrawUI(GAMESTATE state)
 }
 
 
-// all structs are temporarily initialized to 3 in array
 BUTTON AllButtons[BUTTONARRAYSIZE];
-//Button Main[3] = { { 100,100,200,200,0,0,"Building" }, { 100,100,900,900,22,"Citizen" }, { 100,100,900,900,23,"Settings" } };
+
 
 BUTTON GetButtonIndex(int index)
 {
