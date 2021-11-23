@@ -54,7 +54,7 @@ void GameOver()
 
 bool LoseCondition_Resources()
 {
-    if (Get_current_food() <= loseCondition_FoodValue || Get_current_population() <= loseCondition_PopulationValue) {
+    if (Get_current_food() <= loseCondition_FoodValue || Get_current_population() <= loseCondition_PopulationValue || Get_current_gold() < 0) {
         return true;
     }
     return false;
@@ -442,7 +442,7 @@ void MouseDragOrClick(void)
 void MainGame_Initialize(void)
 {
     gameState = State_GameEntry;
-    InitResources(100,10,0,0);
+    InitResources(100,40,0,50);
     InitWorldSpaceGrid();
     InitBuildings();
     InitNpc();

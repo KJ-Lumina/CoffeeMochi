@@ -90,7 +90,7 @@ void InitUI()
     goldLerp = 0.0f;
     foodLerp = -0.2f;
     popuLerp = -0.4f;
-    moraleLerp = -0.6f;
+    moraleLerp = -0.4f;
 }
 
 void UI_SetEvent(CARDEVENT* newEvent)

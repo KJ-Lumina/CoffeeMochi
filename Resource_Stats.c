@@ -20,8 +20,8 @@ Buff/Debuff effects will be seperated to a different header file
 // For now Food generated from 'Farm' tiles and 'farmer' citizens 
 // and consumption amount is defaulted to the following values
 // Subject to adjustments if Levels/Ranks are to be implemented
-#define FOOD_AMT_FROM_FARMS 2
-#define FOOD_CONSUMPTION_PER_PAX 2
+#define FOOD_AMT_FROM_FARMS 7
+#define FOOD_CONSUMPTION_PER_PAX 5
 
 #define PAX_PER_HOUSING 1
 #define INCREMENT_PERCENTAGE_PER_PAX 1
@@ -30,7 +30,7 @@ Buff/Debuff effects will be seperated to a different header file
 
 // Upkeep costs for every tile are defaulted to the following values
 // Subject to adjustments if Levels/Ranks are to be implemented
-#define TAVERN_UPKEEP_COST 2
+#define TAVERN_UPKEEP_COST 5
 //#define FARM_UPKEEP_COST 5
 //#define HOUSING_UPKEEP_COST 5
 
@@ -41,10 +41,10 @@ Buff/Debuff effects will be seperated to a different header file
 
 
 int curGold = 100;
-int curFood = 10;
+int curFood = 40;
 int curPopulation = 0;
 int initPopulation = 100;
-int curMorale = 0;
+int curMorale = 50;
 int additionalMorale = 0;
 
 //Gold Related Variables
@@ -186,6 +186,7 @@ void Food_generated_per_turn()
 
 void Population_per_turn()
 {
+    /*
 	//curPopulation = initPopulation + (numHouses * PAX_PER_HOUSING);
     if (!isStarved) {
         curPopulation += numHouses * PAX_PER_HOUSING * INCREMENT_PERCENTAGE_PER_PAX;
@@ -204,7 +205,8 @@ void Population_per_turn()
         curPopulation -= (int)(curPopulation * PAX_LOW_MODIFIER);
         break;
 
-    }
+    }*/
+    curPopulation =  numHouses * PAX_PER_HOUSING * 10;
 
 }
 
@@ -305,7 +307,7 @@ void GenerateResourcesOnEndTurn()
 	Gold_generated_per_turn();
 	Food_generated_per_turn();
 	Population_per_turn();
-	Morale_per_turn();
+	//Morale_per_turn();
 }
 
 void AddNewResourceBuilding(int buildingIndex)
@@ -334,7 +336,7 @@ void ApplyEventResult(int resourceChange[4])
     curGold += resourceChange[0];
     curFood += resourceChange[1];
     curPopulation += resourceChange[2];
-    additionalMorale += resourceChange[3];
+    curMorale += resourceChange[3];
 
     /*if (resourceChange[0] != 0)
     {
