@@ -106,7 +106,7 @@ CARDEVENT E_GoldMineDiscovered = { 12 , RESOURCE_TYPE_EVENT,"Gold Mine Discovery
 CARDEVENT E_ContaminatedFood = { 13, RESOURCE_TYPE_EVENT,"Granary Contamination", "Gorvernor, we have discovered that the food in our granaries are contaminated. We need to dispose of them to prevent further damage."
 , {0,-25,0,10}, { {0,0},{0,0} }, "Dispose the contaminated food quickly."
 , {0,15,0,-20},{ {0,0},{0,0} }, "Perhaps the citizens won't notice if I distribute some." };
-CARDEVENT E_VillagersKidnapped = { 14, RESOURCE_TYPE_EVENT,"Kidnapping Fiasco", "Gorvernor, we received reports that some of our citizens have been kidnapped by bandits in a skirmish! We have to send out troops to rescue them."
+CARDEVENT E_VillagersKidnapped = { 14, RESOURCE_TYPE_EVENT,"Kidnap and Extortion", "Gorvernor, we received reports that some of our citizens have been kidnapped by bandits in a skirmish! We have to send out troops to rescue them."
 , {0,-20,0,10}, { {0,0},{0,0} }, "Hire the mercenaries that have reached out to us to rescue the kidnapped citizens"
 , {-30,0,0,10}, { {0,0},{0,0} }, "Bribe them, we can't risk hurting our citizens" };
 CARDEVENT E_MagnificentHunt = { 15, RESOURCE_TYPE_EVENT,"Great Food Hunt", "Gorvernor, our hunters have return back from the wildness with a magnificent hunt. We are waiting for your instruction on what to do with the hunt."
@@ -132,10 +132,10 @@ CARDEVENT E_ArsonistAttack = { 19, RESOURCE_TYPE_EVENT,"Arsonist Invasion", "Gor
 CARDEVENT E_CircusTroupeVisit = { 20 , RESOURCE_TYPE_EVENT,"Travelling Circus", "Gorvernor, a famous circus troupe have arrived at our kingdom and is offering their services to brighten the mood of the kingdom."
 , {-30,0,0,30}, { {0,0},{0,0} }, "Our citzens would enjoy the entertainment provided by the troupe. Send a representative to invite them into our kingdom."
 , {15,0,0,-20}, { {0,0},{0,0} }, "We need to conserve our gold for the development of our kingdom. Send a representative down to kindly decline their services." };
-CARDEVENT E_CivilRevolt = { 21, RESOURCE_TYPE_EVENT,"Citizens Rebelion","Gorvernor, a revolt have broken out and citizens are demanding for more food and gold while threating to leave the kingdom if they do not receive them."
+CARDEVENT E_CivilRevolt = { 21, RESOURCE_TYPE_EVENT,"Citizens Rebellion","Gorvernor, a revolt have broken out and citizens are demanding for more food and gold while threating to leave the kingdom if they do not receive them."
 , {-20,-20,0,10}, { {0,0},{0,0} }, "The kingdom would not exist without our citizens. Distribute gold and food to our citizen and keep them pleased."
 , {10,10,0,-30}, { {0,0},{0,0} }, "We must stand our ground and not submit to our citizens demands!" };
-CARDEVENT E_DiseaseSpread = { 22, RESOURCE_TYPE_EVENT,"Pandemic Strike", "Gorvernor, a disease have spread through our kingdom and we currently have no cure for it. However, the neighbouring kingdom has already developed a cure."
+CARDEVENT E_DiseaseSpread = { 22, RESOURCE_TYPE_EVENT,"Global Epidemic", "Gorvernor, a disease have spread through our kingdom and we currently have no cure for it. However, the neighbouring kingdom has already developed a cure."
 , {-50,0,0,10}, { {0,0},{0,0} }, "Quickly! Isolate the diseased to prevent further spreading and send messenger over to inform them that we will be purchasing thier cure for the disease."
 , {0,-10,0,-20}, { {0,0},{0,0} }, "Confine and isolate the diseased. Start working on developing the cure. We cannot afford to show our weakness to the other kingdom and have us owe them a favour." };
 
