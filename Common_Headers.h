@@ -91,6 +91,7 @@ typedef enum
 	State_Idle,
 	State_CardDraw,
 	State_MakeAChoice,
+	State_ResourceChange,
 	State_CollectRewards,
 	State_PlaceYourBuilding,
 	State_DestroyBuilding,
@@ -253,8 +254,10 @@ void SubtractFarm();
 void SubtractHouse();
 void SubtractTavern();
 void GenerateResourcesOnEndTurn();
-void ApplyEventResult(int resourceChange[4]);
 bool LoseCondition_Resources();
+bool IsCostPayable(int costAmt);
+void ApplyEventResourceAnim(int resourceChange[4]);
+void ApplyEventResourceChange(int resourceChange[4]);
 
 // Card Events
 int GetCardsLeft();
@@ -264,14 +267,12 @@ BUILDING* GetBuildingByIndex(int);
 REWARDCARD* GetRewardByIndex(int index);
 CP_Image* GetBuildingSpriteByIndex(int);
 CP_Image* GetBuildingSpriteButtonByIndex(int);
-CP_Image* GetCardSpriteByIndex(int index);
+CP_Image* GetCardSpriteByType(int type);
 CARDEVENT* GetEventByIndex(int index);
-
-// Resources
-bool IsCostPayable(int costAmt);
 
 // UI VFX
 void SpawnLinearVfx(int spriteIndex, CP_Vector startPos, CP_Vector endPos, float lifetime, CP_Vector size, float spawnDelay);
+void SpawnVfxEaseInToEaseOut(int spriteIndex, CP_Vector startPos, CP_Vector checkpoint, CP_Vector endPos, float lifetime, CP_Vector size, float spawnDelay);
 void DrawAllLinearVfx();
 void InitVfx();
 

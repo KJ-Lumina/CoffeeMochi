@@ -24,20 +24,19 @@ typedef struct
 	char* descriptionB;
 }CARDEVENT; */
 
-CP_Image HouseCardSprite;
-CP_Image FarmCardSprite;
-CP_Image MarketCardSprite;
-CP_Image TavernCardSprite;
+CP_Image buildCardSprite;
+CP_Image destroyCardSprite;
 
 #define TOTALCARDCOUNT 24
 #define TOTALTUTORIALCARDSCOUNT 3
-#define TOTALREWARDCARDCOUNT 5
+#define TOTALREWARDCARDCOUNT 11
 CARDEVENT* cardList[TOTALCARDCOUNT];
 CARDEVENT* tutCardList[TOTALTUTORIALCARDSCOUNT];
 REWARDCARD* rewardCardList[TOTALREWARDCARDCOUNT];
 
 CARDDECK tutorialDeck;
 CARDDECK prototypeDeck = { 23, 1,2,3,8,12,9,10,19,5,11,13,6,18,7,20,15,23,16,17,21,4,14,22, 0 };
+CARDDECK debugDeck = { 6, 1, 1, 23, 23, 23, 23 };
 
 
 
@@ -46,11 +45,17 @@ CARDEVENT* currentEvent;
 int currentCardIndex;
 
 #pragma region Reward Cards
-REWARDCARD R_NullCard = { 0, NULL_CHOICE, R_NULL_INDEX, 0, "This is a null reward." };
-REWARDCARD R_HouseCard	= { 1, BUILD_TYPE_EVENT, B_HOUSE_INDEX , 1, "Click on the grid to construct the house."};
-REWARDCARD R_FarmCard	= { 2, BUILD_TYPE_EVENT, B_FARM_INDEX , 1, "Click on the grid to construct the farm." };
-REWARDCARD R_MarketCard	= { 3, BUILD_TYPE_EVENT, B_MARKET_INDEX , 1, "Click on the grid to construct the market." };
-REWARDCARD R_TavernCard	= { 4, BUILD_TYPE_EVENT, B_TAVERN_INDEX , 1, "Click on the grid to construct the tavern." };
+REWARDCARD R_NullCard				= { 0, NULL_CHOICE, R_NULL_INDEX, 0, "This is a null reward." };
+REWARDCARD R_HouseCard				= { 1, BUILD_TYPE_EVENT, B_HOUSE_INDEX , 1, "Click on the grid to construct the house."};
+REWARDCARD R_FarmCard				= { 2, BUILD_TYPE_EVENT, B_FARM_INDEX , 1, "Click on the grid to construct the farm." };
+REWARDCARD R_MarketCard				= { 3, BUILD_TYPE_EVENT, B_MARKET_INDEX , 1, "Click on the grid to construct the market." };
+REWARDCARD R_TavernCard				= { 4, BUILD_TYPE_EVENT, B_TAVERN_INDEX , 1, "Click on the grid to construct the tavern." };
+REWARDCARD R_DemolishHouseCard		= { 5, DESTROY_TYPE_EVENT, B_HOUSE_INDEX , 1, "" };
+REWARDCARD R_DemolishFarmCard		= { 6, DESTROY_TYPE_EVENT, B_FARM_INDEX , 1, "" };
+REWARDCARD R_DemolishMarketCard		= { 7, DESTROY_TYPE_EVENT, B_MARKET_INDEX , 1, "" };
+REWARDCARD R_DemolishTavernCard		= { 8, DESTROY_TYPE_EVENT, B_TAVERN_INDEX , 1, "" };
+REWARDCARD R_RatCard				= { 9, ONGOING_TYPE_EVENT, R_NULL_INDEX , 1, "" };
+REWARDCARD R_RainCard				= { 10, ONGOING_TYPE_EVENT, R_NULL_INDEX , 1, "" };
 
 #pragma endregion
 
@@ -63,9 +68,9 @@ CARDEVENT emptyCard = { 0, NULL_TYPE_EVENT,"", "This is a null event, for errors
 CARDEVENT E_TutBuildAHouse = { 1, BUILD_TYPE_EVENT,"Build Houses","Gorvernor, we need to build houses for our citizens. Click on either red or the blue card."
 , {-20,0,0,5}, { {1, 2}, {0,0} } ,"Gather our workers! Let us construct two houses!"
 , {-10,0,0,-20}, { {1, 2}, {0,0} } ,"Find the cheapest materials you can! They don't need such luxury." };
-CARDEVENT E_TutBuildAFarm = { 2, BUILD_TYPE_EVENT,"Build Farms", "Gorvernor, we need to feed our citizens. Building a farm can grow us some food."
+CARDEVENT E_TutBuildAFarm = { 2, BUILD_TYPE_EVENT,"Build Farms", "Gorvernor, we need to feed our citizens. Building farms can grow us some food."
 , {-20,0,0,5}, { {2, 2}, {0,0} }, "The kingdom needs self-sufficient food to survive. Gather the workers and start building as soon as possible!"
-, {-20,0,0,0}, { {2, 2}, {0,0} }, "The kingdom needs self-sufficient food to survive. Gather the workers and start building as soon as possible!"};
+, {-20,5,0,-5}, { {2, 2}, {0,0} }, "I should have my own personal farm."};
 CARDEVENT E_TutBuildAMarket = { 3 , BUILD_TYPE_EVENT,"Build Markets", "Gorvernor, our economy is unstable. We need income! Set up two markets."
 , {-20,0,0,10}, { {3, 2}, {0,0} }, "We are open for business! Start the build of markets so visiting merchants can set up trade."
 , {10,0,0,-20}, { {3, 2}, {0,0} }, "Let the citizens set up their own vendors." };
@@ -139,11 +144,23 @@ CARDEVENT E_DiseaseSpread = { 22, RESOURCE_TYPE_EVENT,"Global Epidemic", "Gorver
 , {-50,0,0,10}, { {0,0},{0,0} }, "Quickly! Isolate the diseased to prevent further spreading and send messenger over to inform them that we will be purchasing thier cure for the disease."
 , {0,-10,0,-20}, { {0,0},{0,0} }, "Confine and isolate the diseased. Start working on developing the cure. We cannot afford to show our weakness to the other kingdom and have us owe them a favour." };
 
-//DESTROY TYPE EVENTS
-CARDEVENT E_EarthquakeIncoming = { 23, DESTROY_TYPE_EVENT,"Disaster Strike", "Gorvernor, news from nearby kingdom have reach our ears that a earthquake is coming and would reach our kingdom soon. There is an urgent need to prepare for it when it arrives."
-,{0,-20,0,-30},{ {2, -1}, {4, -1} }, "Sound the emergency alarm. Get all of our citizen to start reinforcing all our building but focus on the House and Markets."
-,{-20,0,0,-15},{ {1, -1}, {3, -1} }, "Sound the emergency alarm. Get all of our citizen to start reinforcing all our building but focus on the Farms and Taverns." };
+//ADVANCED EVENTS - ONGOING TYPE
+CARDEVENT E_RatInfestation = { 24, ONGOING_TYPE_EVENT,"Rat Infestation", "Gorvernor, there is an outbreak of rats in our agricultural locations!"
+, {-10, 0, 0, 0}, { {0,0},{0,0} }, "Prepare some cages. We will capture and release them peacefully. This will take a while." 
+, {0,-10,0, -10}, { {0,0},{0,0} }, "Burn the fields down." };
 
+CARDEVENT E_HeavyRain = { 25, ONGOING_TYPE_EVENT,"Raining Season", "Looks like a storm is approaching."
+, {-30, 0, 0, 0}, { {0,0},{0,0} }, "Upgrade our crop drainage trenches."
+, {-30, 0,0, 0}, { {0,0},{0,0} }, "Reinforce our shelters" };
+
+//DESTROY TYPE EVENTS
+//CARDEVENT E_EarthquakeIncoming = { 23, DESTROY_TYPE_EVENT,"Disaster Strike", "Gorvernor, news from nearby kingdom have reach our ears that a earthquake is coming and would reach our kingdom soon. There is an urgent need to prepare for it when it arrives."
+//,{0,-20,0,-30},{ {2, -1}, {4, -1} }, "Sound the emergency alarm. Get all of our citizen to start reinforcing all our building but focus on the House and Markets."
+//,{-20,0,0,-15},{ {1, -1}, {3, -1} }, "Sound the emergency alarm. Get all of our citizen to start reinforcing all our building but focus on the Farms and Taverns." };
+
+CARDEVENT E_EarthquakeIncoming = { 23, DESTROY_TYPE_EVENT,"Disaster Strike", "Gorvernor, news from nearby kingdom have reach our ears that a earthquake is coming and would reach our kingdom soon. There is an urgent need to prepare for it when it arrives."
+,{0,-20,0,-30},{ {6, -1}, {8, -1} }, "Sound the emergency alarm. Get all of our citizen to start reinforcing all our building but focus on the House and Markets."
+,{-20,0,0,-15},{ {5, -1}, {7, -1} }, "Sound the emergency alarm. Get all of our citizen to start reinforcing all our building but focus on the Farms and Taverns." };
 #pragma endregion
 
 
@@ -185,11 +202,15 @@ void InitCardList()
 	rewardCardList[2] = &R_FarmCard;
 	rewardCardList[3] = &R_MarketCard;
 	rewardCardList[4] = &R_TavernCard;
+	rewardCardList[5] = &R_DemolishHouseCard;
+	rewardCardList[6] = &R_DemolishFarmCard;
+	rewardCardList[7] = &R_DemolishMarketCard;
+	rewardCardList[8] = &R_DemolishTavernCard;
+	rewardCardList[9] = &R_RatCard;
+	rewardCardList[10] = &R_RainCard;
 
-	HouseCardSprite = CP_Image_Load("./ImperoArtAssets/Impero_CardBuild.png");
-	FarmCardSprite = CP_Image_Load("./ImperoArtAssets/Impero_CardBuild.png");
-	MarketCardSprite = CP_Image_Load("./ImperoArtAssets/Impero_CardBuild.png");
-	TavernCardSprite = CP_Image_Load("./ImperoArtAssets/Impero_CardBuild.png");
+	buildCardSprite = CP_Image_Load("./ImperoArtAssets/Impero_CardBuild.png");
+	destroyCardSprite = CP_Image_Load("./ImperoArtAssets/Impero_CardDestroy.png");
 }
 
 void InitDecks()
@@ -227,20 +248,16 @@ REWARDCARD* GetRewardByIndex(int index)
 	return rewardCardList[index];
 }
 
-CP_Image* GetCardSpriteByIndex(int index)
+CP_Image* GetCardSpriteByType(int type)
 {
-	switch (index)
+	switch (type)
 	{
 	case 1:
-		return &HouseCardSprite;
-	case 2:
-		return &FarmCardSprite;
+		return &buildCardSprite;
 	case 3:
-		return &MarketCardSprite;
-	case 4:
-		return &TavernCardSprite;
+		return &destroyCardSprite;
 	default:
-		return &HouseCardSprite;
+		return &buildCardSprite;
 	}
 }
 

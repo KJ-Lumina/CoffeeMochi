@@ -22,7 +22,7 @@
 
 CP_Image sprite_rat;
 
-ONGOING currentEvent[10] = { 0 };
+ONGOING ongoingEvents[10] = { 0 };
 
 // event_rat = { 1,CP_Vector_set(0,0), position, FARM, AreaOfEffect,0,5,"Rat has infiltrated the city , food will be compromised every turn " };
 // event_one = { 2,CP_Vector_set(0,0), position, FARM, AreaOfEffect,0,5,"Rat has infiltrated the city , food will be compromised every turn " };
@@ -46,11 +46,11 @@ void GenerateEvents(int eventIndex, CP_Vector currentPosition) {
 	//create store in array
 
 	for (int i = 0; i < (EVENTLIMIT); ++i) {
-		if (currentEvent[i].alive == ISDEAD) {
+		if (ongoingEvents[i].alive == ISDEAD) {
 			switch (eventIndex)
 			{
 			case 1:
-				currentEvent[i] = (ONGOING){1, sprite_rat, CP_Vector_Set(0,0), CP_Vector_Set(currentPosition.x,currentPosition.y), R_BUILDING_FARM_INDEX, 5, ISALIVE,"Rat has infiltrated the city , food will be compromised every turn "};//store into array
+				ongoingEvents[i] = (ONGOING){1, sprite_rat, CP_Vector_Set(0,0), CP_Vector_Set(currentPosition.x,currentPosition.y), R_BUILDING_FARM_INDEX, 5, ISALIVE,"Rat has infiltrated the city , food will be compromised every turn "};//store into array
 				return;
 			case 2:
 				//currentEvent[i] = { 2,sprite_one, CP_Vector_set(0,0), position, FARM, AreaOfEffect,0,5,"Rat has infiltrated the city , food will be compromised every turn ", ISALIVE };
@@ -79,18 +79,18 @@ void GenerateEvents(int eventIndex, CP_Vector currentPosition) {
 void RemoveEvent(int i) 
 {
 	//remove current event when turn hit 0
-	currentEvent[i].alive = ISDEAD;
+	ongoingEvents[i].alive = ISDEAD;
 }
 void OnEndUpdateEvents()
 {
 	//turn minus one when called
 	for (int i = 0; i < EVENTLIMIT; i++)
 	{
-		if (currentEvent[i].alive == ISALIVE) {
+		if (ongoingEvents[i].alive == ISALIVE) {
 
-			currentEvent[i].turn -= 1;
+			ongoingEvents[i].turn -= 1;
 
-			if (currentEvent[i].turn == 0) {
+			if (ongoingEvents[i].turn == 0) {
 
 				RemoveEvent(i);
 			}
@@ -101,9 +101,9 @@ void DrawEvent()
 {
 	for (int i = 0; i < EVENTLIMIT; ++i)
 	{
-		if (currentEvent[i].alive == ISALIVE)
+		if (ongoingEvents[i].alive == ISALIVE)
 		{
-			CP_Image_Draw(currentEvent[i].sprite, currentEvent[i].currentPosition.x, currentEvent[i].currentPosition.y, 100, 100, 255);
+			CP_Image_Draw(ongoingEvents[i].sprite, ongoingEvents[i].currentPosition.x, ongoingEvents[i].currentPosition.y, 100, 100, 255);
 		}
 	}
 }

@@ -28,10 +28,11 @@ int loseCondition_PopulationValue = 0;
 float AnimTimer = 1;
 CARDEVENT* selectedEvent;
 REWARDCARD* selectedReward[NUMBER_OF_MAX_REWARDS];
+int selectedChoice;
 int rewardCardsLeft[NUMBER_OF_MAX_REWARDS];
 int rewardIndex = 0;
 
-float endTurnTimer;
+float endTurnTimer = 0;
 
 
 #pragma region Turn & Win Lose Functions
@@ -54,7 +55,7 @@ void GameOver()
 
 bool LoseCondition_Resources()
 {
-    if (Get_current_food() <= loseCondition_FoodValue || Get_current_population() <= loseCondition_PopulationValue || Get_current_gold() < 0) {
+    if (Get_current_food() <= loseCondition_FoodValue || Get_current_population() <= loseCondition_PopulationValue || Get_current_gold() < 0 || Get_current_morale() < 0) {
         return true;
     }
     return false;
@@ -102,7 +103,7 @@ void AdminControlInput()
 
     if (CP_Input_KeyTriggered(KEY_E)) 
     {
-
+        SpawnVfxEaseInToEaseOut(1, currentMousePos, CP_Vector_Set(CP_Random_RangeFloat(-50, 50) + currentMousePos.x, CP_Random_RangeFloat(-50, 50) + currentMousePos.y), CP_Vector_Set(50, 50), 1, CP_Vector_Set(128, 128), 0);
     }
 }
 
@@ -151,46 +152,30 @@ void MouseClick()
             switch (ClickCheck_CardChoice())
             {
             case 1:
+                selectedChoice = 1;
                 // clicked on optionA
                 rewardIndex = 0; // Reset Reward Index Before Event Begin
-                ApplyEventResult(selectedEvent->resourceChangeA);
+                ApplyEventResourceAnim(selectedEvent->resourceChangeA);
                 for (int index = 0; index < NUMBER_OF_MAX_REWARDS; ++index)
                 {
                     selectedReward[index] = GetRewardByIndex(selectedEvent->resourceRewardA[index].rewardIndex);
                     rewardCardsLeft[index] = selectedEvent->resourceRewardA[index].rewardAmount;
                 }
-                if (rewardCardsLeft[rewardIndex])
-                {
-                    // reward cards exist
-                    UI_SetReward(selectedReward[rewardIndex], rewardCardsLeft[0] + rewardCardsLeft[1]);
-                    gameState = State_CollectRewards;
-                }
-                else
-                {
-                    // no reward cards
-                    gameState = State_EndOfTurn;
-                }
+                AnimTimer = 1.3f;
+                gameState = State_ResourceChange;
                 break;
             case 2:
+                selectedChoice = 2;
                 // clicked on optionB
-                ApplyEventResult(selectedEvent->resourceChangeB);
+                rewardIndex = 0; // Reset Reward Index Before Event Begin
+                ApplyEventResourceAnim(selectedEvent->resourceChangeB);
                 for (int index = 0; index < NUMBER_OF_MAX_REWARDS; ++index)
                 {
                     selectedReward[index] = GetRewardByIndex(selectedEvent->resourceRewardB[index].rewardIndex);
                     rewardCardsLeft[index] = selectedEvent->resourceRewardB[index].rewardAmount;
                 }
-
-                if (rewardCardsLeft[rewardIndex])
-                {
-                    // reward cards exist
-                    UI_SetReward(selectedReward[rewardIndex], rewardCardsLeft[0] + rewardCardsLeft[1]);
-                    gameState = State_CollectRewards;
-                }
-                else
-                {
-                    // no reward cards
-                    gameState = State_EndOfTurn;
-                }
+                AnimTimer = 1.3f;
+                gameState = State_ResourceChange;
                 break;
             }
             break;
@@ -212,7 +197,6 @@ void MouseClick()
                     ++rewardCardsLeft[rewardIndex];
                     gameState = State_DestroyBuilding;
                 }
-                    
                 break;
             case 2:
                 // reward is ongoing?
@@ -292,6 +276,34 @@ void GameStateControl()
         break;
     case State_MakeAChoice:
         break;
+    case State_ResourceChange:
+        AnimTimer -= CP_System_GetDt();
+        if (AnimTimer <= 0)
+        {
+            switch (selectedChoice)
+            {
+            case 1:
+                ApplyEventResourceChange(selectedEvent->resourceChangeA);
+                break;
+            case 2:
+                ApplyEventResourceChange(selectedEvent->resourceChangeB);
+                break;
+            }
+            if (rewardCardsLeft[rewardIndex])
+            {
+                // reward cards exist
+                UI_SetReward(selectedReward[rewardIndex], rewardCardsLeft[0] + rewardCardsLeft[1]);
+                gameState = State_CollectRewards;
+            }
+            else
+            {
+                // no reward cards
+                gameState = State_EndOfTurn;
+            }
+        }
+        break;
+    case State_CollectRewards:
+        break;
     case State_PlaceYourBuilding:
         DrawCursorTile(currentMousePos);
         break;
@@ -332,25 +344,6 @@ void GameStateControl()
             gameState = State_EndOfTurn;
             break;
         }   
-        
-        //if (rewardCardsLeft[rewardIndex])
-        //{
-        //    gameState = State_CollectRewards;
-        //}
-        //// there is no more rewards
-        //else
-        //{
-        //    ++rewardIndex;
-        //    if (rewardIndex != NUMBER_OF_MAX_REWARDS) {
-        //        gameState = State_CollectRewards;
-        //    }
-        //    else {
-        //        rewardIndex = 0; //Reset Reward Index
-        //        gameState = State_EndOfTurn;
-
-        //    }
-        //}
-
         break;
     case State_EndOfTurn:
         if (endTurnTimer <= 0)
@@ -369,25 +362,25 @@ void GameStateControl()
                     case B_HOUSE_INDEX:
                         tempVector.x = i * TILEWIDTH + TILEWIDTH / 2 + worldOrigin.x;
                         tempVector.y = j * TILEHEIGHT + TILEHEIGHT / 3 + worldOrigin.y;
-                        SpawnLinearVfx(4,tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), 1, CP_Vector_Set(128, 128), animCount * animDelay);
+                        SpawnVfxEaseInToEaseOut(4, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), CP_Vector_Set(50, 180), 0.6f, CP_Vector_Set(128, 128), animCount * animDelay);
                         ++animCount;
                         break;
                     case B_FARM_INDEX:
                         tempVector.x = i * TILEWIDTH + TILEWIDTH / 2 + worldOrigin.x;
                         tempVector.y = j * TILEHEIGHT + TILEHEIGHT / 3 + worldOrigin.y;
-                        SpawnLinearVfx(3, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), 1, CP_Vector_Set(128, 128), animCount * animDelay);
+                        SpawnVfxEaseInToEaseOut(3, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), CP_Vector_Set(50, 180), 0.6f, CP_Vector_Set(128, 128), animCount* animDelay);
                         ++animCount;
                         break;
                     case B_MARKET_INDEX:
                         tempVector.x = i * TILEWIDTH + TILEWIDTH / 2 + worldOrigin.x;
                         tempVector.y = j * TILEHEIGHT + TILEHEIGHT / 3 + worldOrigin.y;
-                        SpawnLinearVfx(1, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), 1, CP_Vector_Set(128, 128), animCount * animDelay);
+                        SpawnVfxEaseInToEaseOut(1, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), CP_Vector_Set(50, 90), 0.6f, CP_Vector_Set(128, 128), animCount * animDelay);
                         ++animCount;
                         break;
                     case B_TAVERN_INDEX:
                         tempVector.x = i * TILEWIDTH + TILEWIDTH / 2 + worldOrigin.x;
                         tempVector.y = j * TILEHEIGHT + TILEHEIGHT / 3 + worldOrigin.y;
-                        SpawnLinearVfx(5, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), 1, CP_Vector_Set(128, 128), animCount * animDelay);
+                        SpawnVfxEaseInToEaseOut(5, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), CP_Vector_Set(50, 360), 0.6f, CP_Vector_Set(128, 128), animCount* animDelay);
                         ++animCount;
                         break;
                     default:
@@ -395,7 +388,7 @@ void GameStateControl()
                     }
                 }
             }
-            endTurnTimer = animCount * animDelay;
+            endTurnTimer = animCount * animDelay + 1.0f;
         }
         else
         {
@@ -461,10 +454,9 @@ void MainGame_Update(void)
     DrawTileSet();
     UpdateAllNpc();
     DrawBuildings();
-    DrawAllLinearVfx();
     DrawUI(gameState);
     GameStateControl();
     DrawTempTextResources();
+    DrawAllLinearVfx();
     DrawAllAnimations();
-
 }

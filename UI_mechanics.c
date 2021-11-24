@@ -29,6 +29,7 @@ CP_Vector optionAPos;
 CP_Vector optionBPos;
 bool IsAViable;
 bool IsBViable;
+int UIselectedChoice;
 char textDescBuffer[100];
 CP_Image image_descbox;
 CP_Image image_descboxcover;
@@ -119,25 +120,15 @@ int ClickCheck_CardChoice()
 {
     if (CheckWithinBounds(optionAPos, 120, 320))
     {
-        if (IsAViable)
-        {
-            return BLUE_PILL;
-        }
-        else
-        {
-            return 0;
-        }
+        UIselectedChoice = BLUE_PILL;
+        cardhighlightTimer[0] = 1;
+        return UIselectedChoice;
     }
     else if (CheckWithinBounds(optionBPos, 120, 320))
     {
-        if (IsBViable)
-        {
-            return RED_PILL;
-        }
-        else
-        {
-            return 0;
-        }
+        UIselectedChoice = RED_PILL;
+        cardhighlightTimer[0] = 1;
+        return UIselectedChoice;
     }
     return 0;
 }
@@ -160,7 +151,7 @@ int ClickCheck_Rewards()
     return 0;
 }
 
-void DrawUI_GauntletOpen()
+void DrawUI_OptionSelector()
 {
     // Hovering A
     if (CheckWithinBounds(optionAPos, 90, 243))
@@ -182,6 +173,26 @@ void DrawUI_GauntletOpen()
         CP_Image_Draw(image_CardFlipped, windowWidth - 130, windowHeight / 2 - 60, 185, 243, 255);
         DrawUI_TextDesc(UIselectedEvent->description);
         DrawUI_Title(UIselectedEvent->title);
+    }
+}
+
+void DrawUI_SelectedOption()
+{
+    cardhighlightTimer[0] -= CP_System_GetDt();
+    switch (UIselectedChoice)
+    {
+    case 1:
+        CP_Image_Draw(image_CardA, windowWidth - 130, windowHeight / 2 - 60, 185, 243, 255);
+        CP_Image_Draw(image_CardHighlight, windowWidth - 130, windowHeight / 2 - 60, 185, 243, CP_Math_LerpInt(0, 180, cardhighlightTimer[0]));
+        DrawUI_Title(UIselectedEvent->title);
+        DrawUI_TextDesc(UIselectedEvent->descriptionA);
+        break;
+    case 2:
+        CP_Image_Draw(image_CardB, windowWidth - 130, windowHeight / 2 - 60, 185, 243, 255);
+        CP_Image_Draw(image_CardHighlight, windowWidth - 130, windowHeight / 2 - 60, 185, 243, CP_Math_LerpInt(0, 180, cardhighlightTimer[0]));
+        DrawUI_Title(UIselectedEvent->title);
+        DrawUI_TextDesc(UIselectedEvent->descriptionB);
+        break;
     }
 }
 
@@ -219,7 +230,7 @@ void DrawUI_RewardCards(bool rewardPicked)
     float deltaTime = CP_System_GetDt();
     for (int i = 0; i < abs(UIrewardCardsLeft); ++i)
     {
-        CP_Image_Draw(*GetCardSpriteByIndex(UIselectedReward->eventIndex), 1470 + offsetX + rewardCardGap * i, 390, 185, 243, 255);
+        CP_Image_Draw(*GetCardSpriteByType(UIselectedReward->cardType), 1470 + offsetX + rewardCardGap * i, 390, 185, 243, 255);
         cardflashTimer += deltaTime;
         CP_Image_Draw(image_CardFlash, 1470 + offsetX + rewardCardGap * i, 390, 185, 243, CP_Math_LerpInt(255, 0, cardflashTimer));
         if (i != abs(UIrewardCardsLeft) - 1)
@@ -310,7 +321,12 @@ void DrawUI(GAMESTATE state)
     case State_MakeAChoice:
         DrawUI_Textbox();
         DrawUI_Deck();
-        DrawUI_GauntletOpen();
+        DrawUI_OptionSelector();
+        break;
+    case State_ResourceChange:
+        DrawUI_Textbox();
+        DrawUI_Deck();
+        DrawUI_SelectedOption();
         break;
     case State_CollectRewards:
         DrawUI_Textbox();

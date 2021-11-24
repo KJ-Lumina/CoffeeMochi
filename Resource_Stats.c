@@ -233,7 +233,7 @@ void Morale_per_turn()
 	//event effects then we will just have to add a seperate counter for it
 	//Tavern morale modifier affected by Morale debuff i.e. More debuff, lower Morale increase
 
-    currentMoraleStatus = isPoor + isStarved;
+    /*currentMoraleStatus = isPoor + isStarved;
 
 	switch (currentMoraleStatus)
 	{
@@ -246,8 +246,10 @@ void Morale_per_turn()
 		case LOW_MORALE:
 			curMorale = (curPopulation/LOW_MORALE) + (numTaverns * (tavernModifier - LOW_MORALE));
 			break;
-	}
+	}*/
 	
+    curMorale += numTaverns * 2;
+
 }
 
 //TEMPORARY FOR PROTOTYPE ONLYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
@@ -258,6 +260,8 @@ void InitResources(int startingGold, int startingFood, int startingPopulation, i
     curPopulation = startingPopulation;
     curMorale = startingMorale;
     additionalMorale = 0;
+
+    numHouses = 0;
 }
 
 void AddMarket()
@@ -307,7 +311,7 @@ void GenerateResourcesOnEndTurn()
 	Gold_generated_per_turn();
 	Food_generated_per_turn();
 	Population_per_turn();
-	//Morale_per_turn();
+	Morale_per_turn();
 }
 
 void AddNewResourceBuilding(int buildingIndex)
@@ -329,19 +333,42 @@ void AddNewResourceBuilding(int buildingIndex)
 	}
 }
 
-void ApplyEventResult(int resourceChange[4])
+void ApplyEventResourceAnim(int resourceChange[4])
 {
-    
     //curGold += Lerp_Resources(curGold, curGold + resourceChange[0], 2.0f);
+    if (resourceChange[0] > 0)
+    {
+        SpawnVfxEaseInToEaseOut(1, CP_Vector_Set(1470, 390), CP_Vector_Set(CP_Random_RangeFloat(-50, 50) + 1470, CP_Random_RangeFloat(-50, 50) + 390), CP_Vector_Set(50, 90), 0.6f, CP_Vector_Set(128, 128), 0);
+    }
+    else if (resourceChange[0] < 0)
+    {
+        SpawnVfxEaseInToEaseOut(2, CP_Vector_Set(1470, 390), CP_Vector_Set(CP_Random_RangeFloat(-50, 50) + 1470, CP_Random_RangeFloat(-50, 50) + 390), CP_Vector_Set(50, 90), 0.6f, CP_Vector_Set(128, 128), 0);
+    }
+    if (resourceChange[1] > 0)
+    {
+        SpawnVfxEaseInToEaseOut(3, CP_Vector_Set(1470, 390), CP_Vector_Set(CP_Random_RangeFloat(-50, 50) + 1470, CP_Random_RangeFloat(-50, 50) + 390), CP_Vector_Set(50, 180), 0.6f, CP_Vector_Set(128, 128), 0);
+    }
+    else if (resourceChange[1] < 0)
+    {
+        SpawnVfxEaseInToEaseOut(4, CP_Vector_Set(1470, 390), CP_Vector_Set(CP_Random_RangeFloat(-50, 50) + 1470, CP_Random_RangeFloat(-50, 50) + 390), CP_Vector_Set(50, 180), 0.6f, CP_Vector_Set(128, 128), 0);
+    }
+
+    if (resourceChange[3] > 0)
+    {
+        SpawnVfxEaseInToEaseOut(5, CP_Vector_Set(1470, 390), CP_Vector_Set(CP_Random_RangeFloat(-50, 50) + 1470, CP_Random_RangeFloat(-50, 50) + 390), CP_Vector_Set(50, 360), 0.6f, CP_Vector_Set(128, 128), 0);
+    }
+    else if (resourceChange[3] < 0)
+    {
+        SpawnVfxEaseInToEaseOut(6, CP_Vector_Set(1470, 390), CP_Vector_Set(CP_Random_RangeFloat(-50, 50) + 1470, CP_Random_RangeFloat(-50, 50) + 390), CP_Vector_Set(50, 360), 0.6f, CP_Vector_Set(128, 128), 0);
+    }
+}
+
+void ApplyEventResourceChange(int resourceChange[4])
+{
     curGold += resourceChange[0];
     curFood += resourceChange[1];
     curPopulation += resourceChange[2];
     curMorale += resourceChange[3];
-
-    /*if (resourceChange[0] != 0)
-    {
-        resourceChange[0] > 0 ? DrawanimgoldIncrease : Drawnimgolddecrease
-    }*/
 }
 
 bool IsCostPayable(int costAmt)
