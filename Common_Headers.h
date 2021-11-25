@@ -269,6 +269,8 @@ CARDEVENT* GetEventByIndex(int index);
 void InitOngoingEvents();
 void GenerateEvents(int eventIndex, int xPos, int yPos);// generate the event of rat|| any ongoing events 
 void DrawOngoingEvents();
+void OnEndUpdateEvents();//end turn, turn reduce by 1 
+bool CheckCurrent(int typeofeffect, int x, int y);
 
 // UI VFX
 void SpawnLinearVfx(int spriteIndex, CP_Vector startPos, CP_Vector endPos, float lifetime, CP_Vector size, float spawnDelay);

@@ -41,6 +41,23 @@ void InitOngoingEvents() {
 	//sprite_five = CP_Image_load();
 }
 
+bool CheckCurrent(int typeofeffect, int x, int y)
+{
+	//int GetOccupiedIndex(int x, int y)
+	//this function, if u put in the xand y position, it will return u the building index, 
+	//then u check if the event is standing on the correct one
+	for (int i = 0; i < EVENTLIMIT; i++) {
+
+		if (ongoingEvents[i].alive == ISALIVE) {
+			if (ongoingEvents[i].typeOfEffect == typeofeffect && ongoingEvents[i].positionx == x && ongoingEvents[i].positiony == y)
+			{
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
 
 void GenerateEvents(int eventIndex, int xPos, int yPos) 
 {
@@ -51,8 +68,7 @@ void GenerateEvents(int eventIndex, int xPos, int yPos)
 			switch (eventIndex)
 			{
 			case O_RATEVENT:
-				printf("1");
-				ongoingEvents[i] = (ONGOING){ O_RATEVENT, sprite_rat, xPos, yPos, B_HOUSE_INDEX, 5, ISALIVE,"Rat has infiltrated the city , food will be compromised every turn "};//store into array
+				ongoingEvents[i] = (ONGOING){ O_RATEVENT, sprite_rat, xPos, yPos, B_FARM_INDEX, 5, ISALIVE,"Rat has infiltrated the city , food will be compromised every turn "};//store into array
 				return;
 			case 2:
 				//currentEvent[i] = { 2,sprite_one, CP_Vector_set(0,0), position, FARM, AreaOfEffect,0,5,"Rat has infiltrated the city , food will be compromised every turn ", ISALIVE };

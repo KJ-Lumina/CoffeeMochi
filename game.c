@@ -11,7 +11,7 @@
 
 
 #pragma region Game Options Control
-bool AllowAdminControl = false;
+bool AllowAdminControl = true;
 bool AllowMouseDrag = false;
 bool mouseDrag = false;
 float MouseCounter = 0;
@@ -64,6 +64,7 @@ bool LoseCondition_Resources()
 void EndTurn() 
 {
     GenerateResourcesOnEndTurn();
+    OnEndUpdateEvents();
 
     if (LoseCondition_Resources()) {
         GameOver();
@@ -104,6 +105,27 @@ void AdminControlInput()
     if (CP_Input_KeyTriggered(KEY_E)) 
     {
         SpawnVfxEaseInToEaseOut(1, currentMousePos, CP_Vector_Set(CP_Random_RangeFloat(-50, 50) + currentMousePos.x, CP_Random_RangeFloat(-50, 50) + currentMousePos.y), CP_Vector_Set(50, 50), 1, CP_Vector_Set(128, 128), 0);
+    }
+
+    if (CP_Input_KeyTriggered(KEY_1))
+    {
+        int moregold[4] = { 10,0,0,0 };
+        ApplyEventResourceChange(moregold);
+    }
+    if (CP_Input_KeyTriggered(KEY_2))
+    {
+        int morefood[4] = { 0,10,0,0 };
+        ApplyEventResourceChange(morefood);
+    }
+    if (CP_Input_KeyTriggered(KEY_3))
+    {
+        int morepop[4] = { 0,0,10,0 };
+        ApplyEventResourceChange(morepop);
+    }
+    if (CP_Input_KeyTriggered(KEY_4))
+    {
+        int moremoral[4] = { 0,0,0,10 };
+        ApplyEventResourceChange(moremoral);
     }
 }
 void CheckKeyInput()
@@ -352,25 +374,58 @@ void GameStateControl()
                     case B_HOUSE_INDEX:
                         tempVector.x = i * TILEWIDTH + TILEWIDTH / 2 + worldOrigin.x;
                         tempVector.y = j * TILEHEIGHT + TILEHEIGHT / 3 + worldOrigin.y;
+                        if (CheckCurrent(B_HOUSE_INDEX, i, j))
+                        {
+                            // house broken, lose morale
+                            SpawnVfxEaseInToEaseOut(6, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), CP_Vector_Set(50, 180), 0.6f, CP_Vector_Set(128, 128), animCount * animDelay);
+                        }
+                        // house consume food
                         SpawnVfxEaseInToEaseOut(4, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), CP_Vector_Set(50, 180), 0.6f, CP_Vector_Set(128, 128), animCount * animDelay);
                         ++animCount;
                         break;
                     case B_FARM_INDEX:
                         tempVector.x = i * TILEWIDTH + TILEWIDTH / 2 + worldOrigin.x;
                         tempVector.y = j * TILEHEIGHT + TILEHEIGHT / 3 + worldOrigin.y;
-                        SpawnVfxEaseInToEaseOut(3, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), CP_Vector_Set(50, 180), 0.6f, CP_Vector_Set(128, 128), animCount* animDelay);
+                        // farm broken, no food
+                        if (CheckCurrent(B_FARM_INDEX, i, j))
+                        {
+                            //SpawnVfxEaseInToEaseOut(3, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), CP_Vector_Set(50, 180), 0.6f, CP_Vector_Set(128, 128), animCount* animDelay);
+                        }
+                        else
+                        {
+                            // farm generate food
+                            SpawnVfxEaseInToEaseOut(3, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), CP_Vector_Set(50, 180), 0.6f, CP_Vector_Set(128, 128), animCount * animDelay);
+                        }
                         ++animCount;
                         break;
                     case B_MARKET_INDEX:
                         tempVector.x = i * TILEWIDTH + TILEWIDTH / 2 + worldOrigin.x;
                         tempVector.y = j * TILEHEIGHT + TILEHEIGHT / 3 + worldOrigin.y;
-                        SpawnVfxEaseInToEaseOut(1, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), CP_Vector_Set(50, 90), 0.6f, CP_Vector_Set(128, 128), animCount * animDelay);
+                        // market broke, no gold
+                        if (CheckCurrent(B_MARKET_INDEX, i, j))
+                        {
+                            
+                        }
+                        else
+                        {
+                            // market generate gold
+                            SpawnVfxEaseInToEaseOut(1, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), CP_Vector_Set(50, 90), 0.6f, CP_Vector_Set(128, 128), animCount* animDelay);
+                        }
                         ++animCount;
                         break;
                     case B_TAVERN_INDEX:
                         tempVector.x = i * TILEWIDTH + TILEWIDTH / 2 + worldOrigin.x;
                         tempVector.y = j * TILEHEIGHT + TILEHEIGHT / 3 + worldOrigin.y;
-                        SpawnVfxEaseInToEaseOut(5, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), CP_Vector_Set(50, 360), 0.6f, CP_Vector_Set(128, 128), animCount* animDelay);
+                        // tavern broken, no morale
+                        if (CheckCurrent(B_TAVERN_INDEX, i, j))
+                        {
+
+                        }
+                        else
+                        {
+                            // tavern generate morale
+                            SpawnVfxEaseInToEaseOut(5, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), CP_Vector_Set(50, 90), 0.6f, CP_Vector_Set(128, 128), animCount * animDelay);
+                        }
                         ++animCount;
                         break;
                     default:

@@ -14,5 +14,5 @@ typedef struct {
 
 
 
-void OnEndUpdateEvents();//end turn, turn reduce by 1 
+
 void RemoveEvent(int index);//check if  turn left is 0, if 0, remove event from array 

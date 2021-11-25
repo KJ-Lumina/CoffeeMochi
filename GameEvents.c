@@ -36,7 +36,7 @@ REWARDCARD* rewardCardList[TOTALREWARDCARDCOUNT];
 
 CARDDECK tutorialDeck;
 CARDDECK prototypeDeck = { 23, 1,2,3,8,12,9,10,19,5,11,13,6,18,7,20,15,23,16,17,21,4,14,22, 0 };
-CARDDECK debugDeck = { 6, 1, 2, 24, 23, 23, 23 };
+CARDDECK debugDeck = { 11, 1, 2, 24, 12, 12, 12, 12, 12, 23, 23, 23 };
 
 
 
