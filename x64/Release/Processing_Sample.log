@@ -1,6 +1,16 @@
-﻿  GameEvents.c
+﻿  Buildings.c
+  game.c
+  main.c
+  Menu.c
+  Npc.c
+  OngoingEvents.c
+  Resource_Stats.c
+  GameEvents.c
+  UI_Animations.c
+  UI_mechanics.c
+  WorldSpaceGrid.c
   Generating code
-  Previous IPDB and IOBJ mismatch, fall back to full compilation.
+  Previous IPDB not found, fall back to full compilation.
   All 109 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
   Finished generating code
   Processing_Sample.vcxproj -> C:\Users\trave\Documents\GitHub\CoffeeMochi\x64\Release\Processing_Sample.exe

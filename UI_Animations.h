@@ -20,6 +20,7 @@ enum SpriteAnimationIndex
 typedef struct
 {
     int spriteIndex;
+    int movementIndex;
     CP_Vector startPos;
     CP_Vector endPos;
     float curlifetime;
@@ -27,3 +28,5 @@ typedef struct
     CP_Vector size;
     float spawnDelay;
 }LINEARVFX;
+
+float EaseInQuad(float start, float end, float value);
