@@ -11,7 +11,7 @@ typedef struct
 	int buildingIndex;
 } CONSTBUILDING;
 
-BUILDING tile_base		= { "grass",	B_GRASS_INDEX, 0, 0, 0 };
+
 BUILDING tile_house		= { "House",	B_HOUSE_INDEX, 0, 0, 0 };
 BUILDING tile_farm		= { "Farm",		B_FARM_INDEX, 0, 1, 0 };
 BUILDING tile_market	= { "Market",	B_MARKET_INDEX, 1, 0, 0 };
@@ -100,7 +100,7 @@ BUILDING* GetBuildingByIndex(int index)
 	case B_TAVERN_INDEX:
 		return &tile_tavern;
 	default:
-		return &tile_base;
+		return &tile_house;
 		break;
 	}
 }

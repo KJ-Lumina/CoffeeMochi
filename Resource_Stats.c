@@ -252,7 +252,6 @@ void Morale_per_turn()
 
 }
 
-//TEMPORARY FOR PROTOTYPE ONLYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
 
 void InitResources(int startingGold, int startingFood, int startingPopulation, int startingMorale) {
 	curGold = startingGold;
@@ -262,6 +261,9 @@ void InitResources(int startingGold, int startingFood, int startingPopulation, i
     additionalMorale = 0;
 
     numHouses = 0;
+    numFarms = 0;
+    numTaverns = 0;
+    numMarkets = 0;
 }
 
 void AddMarket()

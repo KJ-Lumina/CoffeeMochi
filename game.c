@@ -106,7 +106,6 @@ void AdminControlInput()
         SpawnVfxEaseInToEaseOut(1, currentMousePos, CP_Vector_Set(CP_Random_RangeFloat(-50, 50) + currentMousePos.x, CP_Random_RangeFloat(-50, 50) + currentMousePos.y), CP_Vector_Set(50, 50), 1, CP_Vector_Set(128, 128), 0);
     }
 }
-
 void CheckKeyInput()
 {
     if (CP_Input_KeyTriggered(KEY_F))
@@ -119,7 +118,6 @@ void CheckKeyInput()
         AdminControlInput();
     }
 }
-
 void MouseClick()
 {
     switch (gameState)
@@ -128,7 +126,6 @@ void MouseClick()
             //Run Condition on Start of Turn
             gameState = State_Idle;
             break;
-
         case State_Idle:
             if (ClickCheck_CardDraw())
             {
@@ -161,7 +158,7 @@ void MouseClick()
                     selectedReward[index] = GetRewardByIndex(selectedEvent->resourceRewardA[index].rewardIndex);
                     rewardCardsLeft[index] = selectedEvent->resourceRewardA[index].rewardAmount;
                 }
-                AnimTimer = 1.3f;
+                //AnimTimer = 1.3f;
                 gameState = State_ResourceChange;
                 break;
             case 2:
@@ -174,7 +171,7 @@ void MouseClick()
                     selectedReward[index] = GetRewardByIndex(selectedEvent->resourceRewardB[index].rewardIndex);
                     rewardCardsLeft[index] = selectedEvent->resourceRewardB[index].rewardAmount;
                 }
-                AnimTimer = 1.3f;
+                //AnimTimer = 1.3f;
                 gameState = State_ResourceChange;
                 break;
             }
@@ -182,24 +179,34 @@ void MouseClick()
         case State_CollectRewards:
             switch (ClickCheck_Rewards())
             {
-            case 1:
+            case BUILD_TYPE_EVENT:
                 // reward is construction
-               
-                if (rewardCardsLeft[rewardIndex] > 0) 
-                {
-                    SetCurrentBuilding(GetBuildingByIndex(selectedReward[rewardIndex]->eventIndex));
-                    --rewardCardsLeft[rewardIndex];
-                    gameState = State_PlaceYourBuilding;
-                }
-                else if (rewardCardsLeft[rewardIndex] < 0) 
-                {
-                    SetCurrentBuilding(GetBuildingByIndex(selectedReward[rewardIndex]->eventIndex));
-                    ++rewardCardsLeft[rewardIndex];
-                    gameState = State_DestroyBuilding;
-                }
+                SetBuildingType(GetBuildingByIndex(selectedReward[rewardIndex]->eventIndex));
+                --rewardCardsLeft[rewardIndex];
+                gameState = State_PlaceYourBuilding;
                 break;
-            case 2:
-                // reward is ongoing?
+            case DESTROY_TYPE_EVENT:
+                SetBuildingType(GetBuildingByIndex(selectedReward[rewardIndex]->eventIndex));
+                --rewardCardsLeft[rewardIndex];
+                gameState = State_DestroyBuilding;
+                break;
+            case ONGOING_TYPE_EVENT:
+                printf("a");
+                while (selectedEvent->affectedLand[rewardIndex] != 0)
+                {
+                    int gridPos = selectedEvent->affectedLand[rewardIndex];
+                    int xpos = (gridPos - 1) % WORLDGRIDY;
+                    int ypos = (gridPos - 1) / WORLDGRIDX;
+                    printf("%d,%d\n", xpos,ypos);
+                    if (GetOccupiedIndex(xpos, ypos) == selectedReward[0]->resourceType)
+                    {
+                        GenerateEvents(O_RATEVENT, xpos, ypos);
+                    }
+                    rewardIndex++;
+                    printf("b");
+                }
+                printf("c");
+                gameState = State_EndOfTurn;
                 break;
             }
             break;
@@ -251,7 +258,6 @@ void MouseClick()
             break;
     }
 }
-
 void GameStateControl() 
 {
     DrawGridIndicator(currentMousePos);
@@ -308,9 +314,7 @@ void GameStateControl()
         DrawCursorTile(currentMousePos);
         break;
     case State_DestroyBuilding:
-
-        DestroyBuildingBySelectedBuilding(); //Destroy 1 building by the building chosen in choice
-
+        DestroyBuildingBySelectedBuilding(selectedReward[rewardIndex]->resourceType); //Destroy 1 building by the building chosen in choice
         switch (rewardIndex) //Prevention for going out of bounds
         {
         case 0: //Check Reward Index = 0
@@ -404,7 +408,6 @@ void GameStateControl()
         break;
     }
 }
-
 void MouseDragOrClick(void)
 {
     if (AllowMouseDrag)
@@ -443,6 +446,7 @@ void MainGame_Initialize(void)
     InitDecks();
     InitUI();
     InitVfx();
+    InitOngoingEvents();
 }
 
 void MainGame_Update(void)
@@ -453,8 +457,9 @@ void MainGame_Update(void)
     // Graphics
     DrawTileSet();
     UpdateAllNpc();
-    DrawBuildings();
     DrawUI(gameState);
+    DrawBuildings();
+    DrawOngoingEvents();
     GameStateControl();
     DrawTempTextResources();
     DrawAllLinearVfx();

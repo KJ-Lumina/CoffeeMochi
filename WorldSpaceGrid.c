@@ -126,12 +126,12 @@ float CalculateUnitsToBorder(CP_Vector position, CP_Vector directionUnit)
     return dirUnitsToXBorder > dirUnitsToYBorder ? dirUnitsToYBorder : dirUnitsToXBorder;
 }
 
-void DestroyBuildingBySelectedBuilding() {
+void DestroyBuildingBySelectedBuilding(int buildingIndex) {
 
     TILEPOSITION tile_positions[MAXTILECOUNT];
-    int length = GetAllBuildingsPositionByIndex(selectedBuilding->spriteIndex, tile_positions);
+    int length = GetAllBuildingsPositionByIndex(buildingIndex, tile_positions);
 
-    switch (selectedBuilding->spriteIndex) {
+    switch (buildingIndex) {
     case B_HOUSE_INDEX:
         SubtractHouse();
         break;
@@ -163,7 +163,7 @@ void SetNewBuilding(int x, int y, int buildingIndex)
 {
     buildingGrid[x][y] = buildingIndex;
 }
-void SetCurrentBuilding(BUILDING* newBuilding)
+void SetBuildingType(BUILDING* newBuilding)
 {
     selectedBuilding = newBuilding;
 }

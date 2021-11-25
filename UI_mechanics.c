@@ -19,6 +19,7 @@ CP_Image image_CardFlipped;
 CP_Image image_CardA;
 CP_Image image_CardB;
 
+CP_Image image_redZone;
 CARDEVENT* UIselectedEvent;
 REWARDCARD* UIselectedReward;
 int UIrewardCardsLeft;
@@ -73,6 +74,7 @@ void InitUI()
     image_CardFlipped = CP_Image_Load("./ImperoArtAssets/Impero_CardFlip.png");
     image_CardA = CP_Image_Load("./ImperoArtAssets/Impero_CardBlue.png");
     image_CardB = CP_Image_Load("./ImperoArtAssets/Impero_CardRed.png");
+    image_redZone = CP_Image_Load("./Assets/RedZone.png");
     image_descbox = CP_Image_Load("./ImperoArtAssets/Impero_Textbox.png");
     image_descboxcover = CP_Image_Load("./ImperoArtAssets/textboxcover.png");
 
@@ -115,7 +117,6 @@ bool ClickCheck_CardDraw()
     }
     return false;
 }
-
 int ClickCheck_CardChoice()
 {
     if (CheckWithinBounds(optionAPos, 120, 320))
@@ -132,21 +133,12 @@ int ClickCheck_CardChoice()
     }
     return 0;
 }
-
 int ClickCheck_Rewards()
 {
     if (CheckWithinBounds(CP_Vector_Set(1485 - 15.0f * UIrewardCardsLeft, 390), 150 + UIrewardCardsLeft * rewardCardGap, 240))
     {
-        if (UIselectedReward->cardType == BUILD_TYPE_EVENT)
-        {
-            --UIrewardCardsLeft;
-            return 1;
-        }
-        else if (UIselectedReward->cardType == ONGOING_TYPE_EVENT)
-        {
-            --UIrewardCardsLeft;
-            return 2;
-        }
+        --UIrewardCardsLeft;
+        return UIselectedReward->cardType;
     }
     return 0;
 }
@@ -175,7 +167,6 @@ void DrawUI_OptionSelector()
         DrawUI_Title(UIselectedEvent->title);
     }
 }
-
 void DrawUI_SelectedOption()
 {
     cardhighlightTimer[0] -= CP_System_GetDt();
@@ -195,13 +186,11 @@ void DrawUI_SelectedOption()
         break;
     }
 }
-
 void DrawUI_Deck()
 {
     // Draw back of card
     CP_Image_Draw(image_CardDeck, windowWidth - 130, (windowHeight / 2) + 260, 228, 309, 255);
 }
-
 void DrawUI_TopPile()
 {
     // Hovering Deck
@@ -216,14 +205,12 @@ void DrawUI_TopPile()
     EventCardAnim.currentTime = CP_Math_ClampFloat(EventCardAnim.currentTime, 0, EventCardAnim.totalTime / 8);
     CP_Image_Draw(EventCardAnim.image, EventCardAnim.startingPos.x , CP_Math_LerpFloat(EventCardAnim.startingPos.y, EventCardAnim.endingPos.y, EventCardAnim.currentTime / EventCardAnim.totalTime), 185, 243, 255);
 }
-
 void DrawUI_TopPileInsert()
 {
     EventCardAnim.currentTime += CP_System_GetDt();
     EventCardAnim.currentTime = CP_Math_ClampFloat(EventCardAnim.currentTime, 0, EventCardAnim.totalTime);
     CP_Image_Draw(EventCardAnim.image, EventCardAnim.startingPos.x, CP_Math_LerpFloat(EventCardAnim.startingPos.y, EventCardAnim.endingPos.y, EventCardAnim.currentTime / EventCardAnim.totalTime), 185, 243, 255);
 }
-
 void DrawUI_RewardCards(bool rewardPicked)
 {
     float offsetX = -(abs(UIrewardCardsLeft) - 1) * rewardCardGap / 2;
@@ -269,26 +256,57 @@ void DrawUI_RewardCards(bool rewardPicked)
         DrawUI_TextDesc("Click on the card below to claim your reward.");
     }
 }
-
 void DrawUI_Textbox()
 {
     CP_Image_Draw(image_descbox, 1370, 130, 439, 244, 255);
 }
-
 void DrawUI_TextDesc(const char* text)
 {
     CP_Settings_TextSize(20);
     CP_Settings_Fill(CP_Color_Create(255, 255, 255, 255));
     CP_Font_DrawTextBox(text, 1220, 90, 300);
 }
-
 void DrawUI_Title(const char* text)
 {
     CP_Settings_TextSize(40);
     CP_Settings_Fill(CP_Color_Create(255, 255, 255, 255));
     CP_Font_DrawTextBox(text, 1170, 40, 400);
 }
+void DrawUI_AffectedLand()
+{
+    static float alphaLerp = 0;
+    static bool inc = true;
+    int affectedIndex = 0;
+    if (inc)
+    {
+        alphaLerp += CP_System_GetDt() * 200;
+        if (alphaLerp > 180)
+            inc = false;
+    }
+    else
+    {
+        alphaLerp -= CP_System_GetDt() * 200;
+        if (alphaLerp < 0)
+            inc = true;
+    }
+    switch (UIselectedEvent->affectedLand[0])
+    {
+    case 0:
+        break;
+    case 26:
+        CP_Image_Draw(image_redZone, 800 + MAPOFFSETX, 450, 640, 640, (int)alphaLerp);
+        break;
+    default:
+        while (UIselectedEvent->affectedLand[affectedIndex] != 0)
+        {
+            CP_Image_Draw(image_redZone, ((float)((UIselectedEvent->affectedLand[affectedIndex] - 1) % WORLDGRIDY) - (WORLDGRIDX) / 2) * TILEWIDTH + MAPOFFSETX + 800,
+                    ((float)((UIselectedEvent->affectedLand[affectedIndex] - 1) / WORLDGRIDY) - (WORLDGRIDX) / 2) * TILEHEIGHT + 450, TILEWIDTH, TILEHEIGHT, (int)alphaLerp);
+            affectedIndex++;
+        }
 
+        break;
+    }
+}
 
 void DrawUI(GAMESTATE state)
 {
@@ -322,6 +340,7 @@ void DrawUI(GAMESTATE state)
         DrawUI_Textbox();
         DrawUI_Deck();
         DrawUI_OptionSelector();
+        DrawUI_AffectedLand();
         break;
     case State_ResourceChange:
         DrawUI_Textbox();
