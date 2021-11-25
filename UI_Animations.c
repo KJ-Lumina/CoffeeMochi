@@ -433,7 +433,7 @@ void SpawnVfxEaseInToEaseOut(int spriteIndex, CP_Vector startPos, CP_Vector chec
             else if (count == 1)
             {
                 vfxList[i].spriteIndex = spriteIndex;
-                vfxList[i].movementIndex = 2;
+                vfxList[i].movementIndex = 1;
                 vfxList[i].startPos = checkpoint;
                 vfxList[i].endPos = endPos;
                 vfxList[i].lifetime = lifetime;

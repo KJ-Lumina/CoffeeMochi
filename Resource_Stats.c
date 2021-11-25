@@ -382,6 +382,11 @@ bool IsCostPayable(int costAmt)
 	return false;
 }
 
+void UpdateResources()
+{
+
+}
+
 
 
 /*// click on option A

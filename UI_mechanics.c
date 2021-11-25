@@ -56,6 +56,13 @@ CP_Image image_populationbar;
 CP_Image image_moralebar;
 CP_Image image_barBG;
 CP_Image image_resourcetext;
+
+int nullResourceChange[4] = { 0 };
+bool goldAffected = false;
+bool foodAffected = false;
+bool popAffected = false;
+bool moraleAffected = false;
+
 float goldLerp;
 float foodLerp;
 float popuLerp;
@@ -109,6 +116,14 @@ void UI_SetReward(REWARDCARD* rewardCard, int cardsLeft)
     UIrewardCardsLeft = abs(cardsLeft);
 }
 
+void UI_SetResourceAffected(int resourceChange[4])
+{
+    goldAffected = (bool)resourceChange[0];
+    foodAffected = (bool)resourceChange[1];
+    popAffected = (bool)resourceChange[2];
+    moraleAffected = (bool)resourceChange[3];
+}
+
 bool ClickCheck_CardDraw()
 {
     if (CheckWithinBounds(EventCardAnim.startingPos, 185, 243))
@@ -123,12 +138,14 @@ int ClickCheck_CardChoice()
     {
         UIselectedChoice = BLUE_PILL;
         cardhighlightTimer[0] = 1;
+        UI_SetResourceAffected(nullResourceChange);
         return UIselectedChoice;
     }
     else if (CheckWithinBounds(optionBPos, 120, 320))
     {
         UIselectedChoice = RED_PILL;
         cardhighlightTimer[0] = 1;
+        UI_SetResourceAffected(nullResourceChange);
         return UIselectedChoice;
     }
     return 0;
@@ -151,6 +168,7 @@ void DrawUI_OptionSelector()
         CP_Image_Draw(image_CardA, windowWidth - 130, windowHeight / 2 - 60, 185, 243, 255);
         DrawUI_TextDesc(UIselectedEvent->descriptionA);
         DrawUI_Title(UIselectedEvent->title);
+        UI_SetResourceAffected(UIselectedEvent->resourceChangeA);
     }
     // Hovering B
     else if (CheckWithinBounds(optionBPos, 90, 243))
@@ -158,6 +176,7 @@ void DrawUI_OptionSelector()
         CP_Image_Draw(image_CardB, windowWidth - 130, windowHeight / 2 - 60, 185, 243, 255);
         DrawUI_TextDesc(UIselectedEvent->descriptionB);
         DrawUI_Title(UIselectedEvent->title);
+        UI_SetResourceAffected(UIselectedEvent->resourceChangeB);
     }
     // Not Hovering
     else
@@ -165,6 +184,7 @@ void DrawUI_OptionSelector()
         CP_Image_Draw(image_CardFlipped, windowWidth - 130, windowHeight / 2 - 60, 185, 243, 255);
         DrawUI_TextDesc(UIselectedEvent->description);
         DrawUI_Title(UIselectedEvent->title);
+        UI_SetResourceAffected(nullResourceChange);
     }
 }
 void DrawUI_SelectedOption()
@@ -443,11 +463,28 @@ int CheckMouseColliding(BUTTON buttonArray[], CP_Vector mousePos, int isSplashSc
 }
 
 char resourceBuffer[20];
-
-
+int resourceAffectedLerp = 0;
+bool ralerpinc = true;
 
 void DrawTempTextResources()
 {
+    if (ralerpinc)
+    {
+        resourceAffectedLerp += 7;
+        if (resourceAffectedLerp >= 255)
+        {
+            ralerpinc = false;
+        }
+    }
+    else
+    {
+        resourceAffectedLerp -= 7;
+        if (resourceAffectedLerp <= 140)
+        {
+            ralerpinc = true;
+        }
+    }
+
     if (goldLerp < (float)Get_current_gold() / 200)
     {
         goldLerp += CP_System_GetDt() / 4;
@@ -498,28 +535,51 @@ void DrawTempTextResources()
         if (moraleLerp < (float)Get_current_morale() / 200)
             moraleLerp = (float)Get_current_morale() / 200;
     }
+    //bar background
     CP_Image_Draw(image_barBG, 100, 90, 200, 60, 255);
     CP_Image_Draw(image_barBG, 100, 180, 200, 60, 255);
     CP_Image_Draw(image_barBG, 100, 270, 200, 60, 255);
     CP_Image_Draw(image_barBG, 100, 360, 200, 60, 255);
-    CP_Image_Draw(image_goldbar, CP_Math_LerpFloat(-100, 100, goldLerp), 90, 200, 60, 255);
-    CP_Image_Draw(image_foodbar, CP_Math_LerpFloat(-100, 100, foodLerp), 180, 200, 60, 255);
-    CP_Image_Draw(image_populationbar, CP_Math_LerpFloat(-100, 100, popuLerp), 270, 200, 60, 255);
-    CP_Image_Draw(image_moralebar, CP_Math_LerpFloat(-100, 100, moraleLerp), 360, 200, 60, 255);
-    CP_Image_Draw(image_resourcetext, 100, 200, 200, 400, 255);
 
-    //CP_Image_Draw(image_ResourceBars, 800, 450, 1600, 900, 255);
+    //resource bar
+    if (goldAffected)
+    {
+        CP_Image_Draw(image_goldbar, CP_Math_LerpFloat(-100, 100, goldLerp), 90, 200, 60, resourceAffectedLerp);
+    }
+    else
+    {
+        CP_Image_Draw(image_goldbar, CP_Math_LerpFloat(-100, 100, goldLerp), 90, 200, 60, 255);
+    }
+    if (foodAffected)
+    {
+        CP_Image_Draw(image_foodbar, CP_Math_LerpFloat(-100, 100, foodLerp), 180, 200, 60, resourceAffectedLerp);
+    }
+    else
+    {
+        CP_Image_Draw(image_foodbar, CP_Math_LerpFloat(-100, 100, foodLerp), 180, 200, 60, 255);
+    }
+    if (popAffected)
+    {
+        CP_Image_Draw(image_populationbar, CP_Math_LerpFloat(-100, 100, popuLerp), 270, 200, 60, resourceAffectedLerp);
+    }
+    else
+    {
+        CP_Image_Draw(image_populationbar, CP_Math_LerpFloat(-100, 100, popuLerp), 270, 200, 60, 255);
+    }
+    if (moraleAffected)
+    {
+        CP_Image_Draw(image_moralebar, CP_Math_LerpFloat(-100, 100, moraleLerp), 360, 200, 60, resourceAffectedLerp);
+    }
+    else
+    {
+        CP_Image_Draw(image_moralebar, CP_Math_LerpFloat(-100, 100, moraleLerp), 360, 200, 60, 255);
+    }
+
+    CP_Image_Draw(image_resourcetext, 100, 200, 200, 400, 255);
 
 
     CP_Settings_TextSize(40);
     
-
-    if (Get_current_gold() < 0)
-    {
-        CP_Settings_Fill(CP_Color_Create(200, 0, 0, 255));
-        sprintf_s(resourceBuffer, 20, "(In Debt)");
-        CP_Font_DrawText(resourceBuffer, 60, 68);
-    }
 
     CP_Settings_Fill(CP_Color_Create(255, 255, 255, 255));
 

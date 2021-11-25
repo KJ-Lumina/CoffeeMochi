@@ -129,16 +129,8 @@ void MouseClick()
         case State_Idle:
             if (ClickCheck_CardDraw())
             {
-                if (GetCardsLeft() == 0)
-                {
-                    GameEnd();
-                    break;
-                }
-                else
-                {
-                    AnimTimer = 0.6f;
-                    gameState = State_CardDraw;
-                }
+                AnimTimer = 0.6f;
+                gameState = State_CardDraw;
             }
             break;
         case State_CardDraw:
@@ -191,21 +183,15 @@ void MouseClick()
                 gameState = State_DestroyBuilding;
                 break;
             case ONGOING_TYPE_EVENT:
-                printf("a");
                 while (selectedEvent->affectedLand[rewardIndex] != 0)
                 {
                     int gridPos = selectedEvent->affectedLand[rewardIndex];
-                    int xpos = (gridPos - 1) % WORLDGRIDY;
-                    int ypos = (gridPos - 1) / WORLDGRIDX;
-                    printf("%d,%d\n", xpos,ypos);
-                    if (GetOccupiedIndex(xpos, ypos) == selectedReward[0]->resourceType)
+                    if (GetOccupiedIndex((gridPos - 1) % WORLDGRIDY, (gridPos - 1) / WORLDGRIDX) == selectedReward[0]->resourceType)
                     {
-                        GenerateEvents(O_RATEVENT, xpos, ypos);
+                        GenerateEvents(O_RATEVENT, (gridPos - 1) % WORLDGRIDY, (gridPos - 1) / WORLDGRIDX);
                     }
                     rewardIndex++;
-                    printf("b");
                 }
-                printf("c");
                 gameState = State_EndOfTurn;
                 break;
             }
@@ -397,7 +383,11 @@ void GameStateControl()
         else
         {
             endTurnTimer -= CP_System_GetDt();
-            if (endTurnTimer <= 0)
+            if (GetCardsLeft() == 0)
+            {
+                GameEnd();
+            }
+            else if (endTurnTimer <= 0)
             {
                 EndTurn();  //State Set to Start Turn is in EndTurn()       
             }

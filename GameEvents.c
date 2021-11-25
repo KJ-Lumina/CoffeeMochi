@@ -147,7 +147,7 @@ CARDEVENT E_DiseaseSpread = { 22, RESOURCE_TYPE_EVENT,"Global Epidemic", "Gorver
 //ADVANCED EVENTS - ONGOING TYPE
 CARDEVENT E_RatInfestation = { 24, ONGOING_TYPE_EVENT,"Rat Infestation", "Gorvernor, there is an outbreak of rats in our agricultural locations!"
 , {-10, 0, 0, 0}, { {O_RATEVENT,1},{0,0} }, "Prepare some cages. We will capture and release them peacefully. This will take a while."
-, {0,-10,0, -10}, { {O_RATEVENT,1},{0,0} }, "Burn the fields down.", {1, 5, 7, 9, 13, 17, 19, 21, 25, 0} };
+, {0,-10,0, -10}, { {O_RATEVENT,1},{0,0} }, "Burn the fields down.", {1, 2, 6, 7, 8, 11, 12, 0} };
 
 CARDEVENT E_HeavyRain = { 25, ONGOING_TYPE_EVENT,"Raining Season", "Looks like a storm is approaching."
 , {-30, 0, 0, 0}, { {0,0},{0,0} }, "Upgrade our crop drainage trenches."
