@@ -21,6 +21,11 @@ CP_Image ExitButtonImage;
 CP_Image ExitButtonImageHover;
 CP_Image game_Background;
 
+CP_Image vol_slider;
+CP_Image vol_bar;
+float currentBGM_Volume;
+float currentSFX_Volume;
+
 float splashdigipentimer = 0;
 float splashcoffeemochitimer = 0;
 
@@ -42,7 +47,8 @@ void ExitGame()
 void game_init(void)
 {
 	
-	CP_System_SetWindowSize(1600, 900);
+	//CP_System_SetWindowSize(1600, 900);
+	CP_System_FullscreenAdvanced(1600, 900); //Enable for full screen
 	CP_Settings_TextAlignment(CP_TEXT_ALIGN_H_CENTER, CP_TEXT_ALIGN_V_TOP);
 	windowsWidth = (float)CP_System_GetWindowWidth();
 	windowsHeight = (float)CP_System_GetWindowHeight();
@@ -223,6 +229,7 @@ void SetGameSceneEndPhase()
 	gameScene = SCENE_ENDPHASE;
 }
 
+//OPTIONS/SETTINGS
 int OptionsOpen = FALSE;
 CP_Image OptionMenu; //Might consider moving to UI_Mechanics?
 
@@ -242,3 +249,10 @@ void ChangeVolume(float vol, CP_SOUND_GROUP soundGroup)
 {
 	CP_Sound_SetGroupVolume(soundGroup, vol);
 }
+
+void SliderTracker(CP_Vector SliderPosition) {
+
+	//if(CheckWithinBounds())
+
+}
+

@@ -482,6 +482,7 @@ void MouseDragOrClick(void)
 
 void MainGame_Initialize(void)
 {
+    CP_System_FullscreenAdvanced(1600, 900); //Enable for full screen
     gameState = State_GameEntry;
     InitResources(100,40,0,50);
     InitWorldSpaceGrid();
