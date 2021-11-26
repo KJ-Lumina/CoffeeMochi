@@ -4,3 +4,4 @@
 void OpenOptions();
 void ChangeVolume(float vol);
 void ExitGame();
+void AdjustVolumeSlider();
