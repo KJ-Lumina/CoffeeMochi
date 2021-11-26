@@ -21,10 +21,16 @@ CP_Image ExitButtonImage;
 CP_Image ExitButtonImageHover;
 CP_Image game_Background;
 
-CP_Image vol_slider;
-CP_Image vol_bar;
-float currentBGM_Volume;
-float currentSFX_Volume;
+
+CP_Image OptionsScreenImage;
+CP_Image ResolutionBtn_1600;
+CP_Image ResolutionBtn_1920;
+CP_Image Vol_Slider;
+float sliderMaxPos;
+float sliderMinPos;
+CP_Vector currentSliderPos;
+float current_Volume;
+
 
 float splashdigipentimer = 0;
 float splashcoffeemochitimer = 0;
@@ -62,10 +68,9 @@ void game_init(void)
 	Splash_Digipen = CP_Image_Load("./ImperoArtAssets/Impero_Digipen.png");
 	Splash_CoffeeMochi = CP_Image_Load("./ImperoArtAssets/CoffeeMochi_BG.png");
 
-
+	//Main Menu Assets
 	mainScreenImage = CP_Image_Load("./ImperoArtAssets/MainMenuAssets/Impero_MainMenu_BG.png");
 	titleImage = CP_Image_Load("./ImperoArtAssets/MainMenuAssets/Impero_TitleTrim.png");
-
 	StartButtonImage = CP_Image_Load("./ImperoArtAssets/MainMenuAssets/Impero_StartButton.png");
 	StartButtonImageHover = CP_Image_Load("./ImperoArtAssets/MainMenuAssets/Impero_StartButtonHover.png");
 	SettingsButtonImage = CP_Image_Load("./ImperoArtAssets/MainMenuAssets/Impero_SettingsButton.png");
@@ -73,6 +78,13 @@ void game_init(void)
 	ExitButtonImage = CP_Image_Load("./ImperoArtAssets/MainMenuAssets/Impero_ExitButton.png");
 	ExitButtonImageHover = CP_Image_Load("./ImperoArtAssets/MainMenuAssets/Impero_ExitButtonHover.png");
 	game_Background = CP_Image_Load("./ImperoArtAssets/Impero_GameBG.png");
+
+	//Options Assets
+	OptionsScreenImage = CP_Image_Load("./ImperoArtAssets/OtherMenuAssets/Impero_Options");
+	ResolutionBtn_1600 = CP_Image_Load("./ImperoArtAssets/OtherMenuAssets/Impero_1600");
+	ResolutionBtn_1920 = CP_Image_Load("./ImperoArtAssets/OtherMenuAssets/Impero_1920");
+	Vol_Slider = CP_Image_Load("./ImperoArtAssets/OtherMenuAssets/Impero_slider");
+
 
 	whiteFlash = CP_Image_Load("./Assets/WhiteFlash.png");
 	InitSpritesheets();
@@ -245,14 +257,30 @@ void OpenOptions()
 
 	}
 }
-void ChangeVolume(float vol, CP_SOUND_GROUP soundGroup)
+void ChangeVolume(float vol)
 {
-	CP_Sound_SetGroupVolume(soundGroup, vol);
+	CP_Sound_SetGroupVolume(CP_SOUND_GROUP_0, vol);
 }
 
-void SliderTracker(CP_Vector SliderPosition) {
+void AdjustVolumeSlider() {
 
-	//if(CheckWithinBounds())
+	float mouseX = CP_Input_GetMouseX();
+	float mouseY = CP_Input_GetMouseY();
+	CP_Vector previousSliderPos = currentSliderPos;
+
+	if (CheckWithinBounds(currentSliderPos, 100, 200)) {
+		float sliderMovement = mouseX - previousSliderPos.x;
+		int withinMaxPos = currentSliderPos.x + sliderMovement <= sliderMaxPos;
+		int withinMinPos = currentSliderPos.x + sliderMovement >= sliderMinPos;
+		if (withinMaxPos && withinMinPos) {
+			currentSliderPos.x += sliderMovement;
+		}
+
+		float vol_percentageChange = (sliderMovement / (sliderMaxPos - sliderMinPos)) * 100;
+
+		ChangeVolume(current_Volume + vol_percentageChange);	
+
+	}
 
 }
 
