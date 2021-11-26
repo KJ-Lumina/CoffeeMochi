@@ -27,11 +27,12 @@ CP_Image OptionsScreenImage;
 CP_Image ResolutionBtn_1600;
 CP_Image ResolutionBtn_1920;
 CP_Image Vol_Slider;
-float sliderMaxPos;
-float sliderMinPos;
+float sliderMinPos = 620;
+float sliderMaxPos = 1050;
 CP_Vector currentSliderPos;
-float current_Volume;
+float current_Volume = 100;
 
+CP_Sound Test_BGM; //Delete after use
 
 float splashdigipentimer = 0;
 float splashcoffeemochitimer = 0;
@@ -86,10 +87,13 @@ void game_init(void)
 	ResolutionBtn_1600 = CP_Image_Load("./ImperoArtAssets/OtherMenuAssets/Impero_1600.png");
 	ResolutionBtn_1920 = CP_Image_Load("./ImperoArtAssets/OtherMenuAssets/Impero_1920.png");
 	Vol_Slider = CP_Image_Load("./ImperoArtAssets/OtherMenuAssets/Impero_slider.png");
-
-
+	currentSliderPos = CP_Vector_Set(1050, 508);
+	
 	whiteFlash = CP_Image_Load("./Assets/WhiteFlash.png");
 	InitSpritesheets();
+
+	/*Test_BGM = CP_Sound_Load("./ImperoArtAssets/Music/Test_BGM.wav");
+	CP_Sound_PlayAdvanced(Test_BGM, current_Volume, 440, TRUE, CP_SOUND_GROUP_0);*/
 }
 
 void RestartGame()
@@ -101,6 +105,7 @@ void RestartGame()
 void game_update(void)
 {
 	CP_Graphics_ClearBackground(CP_Color_Create(150, 150, 150, 255));
+	
 	if (gameScene == SCENE_GAMEPHASE)
 	{
 		CP_Image_Draw(game_Background, 800, 450, 1600, 900, 255);
@@ -211,9 +216,10 @@ void game_update(void)
 
 		CP_Graphics_ClearBackground(CP_Color_Create(0, 0, 0, 255));
 		CP_Image_Draw(OptionsScreenImage, 800, 450, 1600, 900, 255);
-		currentSliderPos = CP_Vector_Set(800, 508);
+
 		CP_Image_Draw(Vol_Slider, currentSliderPos.x, currentSliderPos.y, 35, 58, 255);
 		CP_Image_Draw(ResolutionBtn_1600, 800, 365, 241,90, 255);
+		AdjustVolumeSlider();
 
 	}
 	else if (gameScene == SCENE_GAMEENTRY)
@@ -308,17 +314,24 @@ void AdjustVolumeSlider() {
 	//float mouseY = CP_Input_GetMouseY();
 	CP_Vector previousSliderPos = currentSliderPos;
 
-	if (CheckWithinBounds(currentSliderPos, 100, 200)) {
-		float sliderMovement = mouseX - previousSliderPos.x;
-		int withinMaxPos = currentSliderPos.x + sliderMovement <= sliderMaxPos;
-		int withinMinPos = currentSliderPos.x + sliderMovement >= sliderMinPos;
-		if (withinMaxPos && withinMinPos) {
-			currentSliderPos.x += sliderMovement;
+	if (CP_Input_MouseDragged(MOUSE_BUTTON_LEFT)) {		
+		printf("Dragging");
+		if (CheckWithinBounds(currentSliderPos, 35, 58)) {
+			printf("In Bounds");
+			float sliderMovement = mouseX - previousSliderPos.x;
+			int withinMaxPos = currentSliderPos.x + sliderMovement <= sliderMaxPos;
+			int withinMinPos = currentSliderPos.x + sliderMovement >= sliderMinPos;
+			if (withinMaxPos && withinMinPos) {
+				printf("in Bounds");
+				float newSliderPosX = currentSliderPos.x + sliderMovement;
+				currentSliderPos = CP_Vector_Set(newSliderPosX, currentSliderPos.y);
+			}
+
+			float vol_percentageChange = (sliderMovement / (sliderMaxPos - sliderMinPos)) * 100;
+			printf("Vol Change: %f", vol_percentageChange);
+			printf("Current Volume: %f", current_Volume);
+			ChangeVolume(current_Volume + vol_percentageChange);
 		}
-
-		float vol_percentageChange = (sliderMovement / (sliderMaxPos - sliderMinPos)) * 100;
-
-		ChangeVolume(current_Volume + vol_percentageChange);	
 
 	}
 
