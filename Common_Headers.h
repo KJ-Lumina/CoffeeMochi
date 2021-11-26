@@ -11,19 +11,15 @@
 #define TILEHEIGHT 128.0f
 #define TILESPRITEWIDTH 128.0f
 #define TILESPRITEHEIGHT 160.0f
-#define MAPOFFSETX -130
+#define MAPOFFSETX 325
+#define MAPOFFSETY 25
 
 #define MAXTILECOUNT (WORLDGRIDX * WORLDGRIDY)
-
-//Menu & Music
-#define BGM CP_SOUND_GROUP_0
-#define SFX CP_SOUND_GROUP_1
 
 #define BLUE_PILL 1;
 #define RED_PILL 2;
 
 //Building Related Definitions
-#define B_GRASS_INDEX -2 // TO BE DELETED
 #define NULL_CHOICE -1
 #define B_EMPTY_INDEX 0
 #define B_HOUSE_INDEX 1
@@ -39,19 +35,14 @@
 #define R_FOOD_INDEX 2
 #define R_POPULATION_INDEX 3
 #define R_MORALE_INDEX 4
-#define R_BUILDING_HOUSE_INDEX 5
-#define R_BUILDING_FARM_INDEX 6
-#define R_BUILDING_MARKET_INDEX 7
-#define R_BUILDING_TAVERN_INDEX 8
 
 
 #define E_INCREASE_RESOURCE 1
 #define E_DECREASE_RESOURCE 2
 #define E_DESTROY_BUILDING 3
 
-#define NULL_EVENT 0
-#define BASIC_EVENT 1
-#define ADVANCED_EVENT 2
+#define O_RATEVENT 9
+
 
 #define NULL_TYPE_EVENT 0
 #define BUILD_TYPE_EVENT 1
@@ -72,14 +63,16 @@
 #define START_GAME 0
 
 void SetGameSceneEndPhase();
+void RestartGame();
 
 typedef enum 
 {
 	SCENE_SPLASH_DIGIPEN,
 	SCENE_SPLASH_COFFEEMOCHI,
 	SCENE_MAINMENU,
+	SCENE_OPTIONS,
 	SCENE_GAMEENTRY,
-	SCENE_GAMELEAVEENTRY,
+	SCENE_RESTART,
 	SCENE_GAMEPHASE,
 	SCENE_ENDPHASE,
 }GAMESCENE;
@@ -119,6 +112,7 @@ typedef struct
 	int resourceChangeB[4];
 	REWARD resourceRewardB[NUMBER_OF_MAX_REWARDS];
 	char* descriptionB;
+	int affectedLand[25];
 }CARDEVENT;
 
 
@@ -128,7 +122,6 @@ typedef struct
 	int eventIndex;
 	int cardType;
 	int resourceType;
-	int resourceAmt;
 	char* description;
 }REWARDCARD;
 
@@ -211,16 +204,17 @@ void GameOver();
 // WorldGridSpace
 CP_Vector GetWorldSpaceOrigin();
 void MoveWorldSpaceOrigin(float positionChangeX, float positionChangeY);
+void GridToWorldPosition(CP_Vector*);
 void DrawGridIndicator(CP_Vector cursorPosition);
 void DrawCursorTile(CP_Vector cursorPos);
 float CalculateUnitsToBorder(CP_Vector position, CP_Vector directionUnit);
 void SetNewBuilding(int xPos, int yPos, int buildingIndex);
-void SetCurrentBuilding(BUILDING* newBuilding);
+void SetBuildingType(BUILDING* newBuilding);
 bool AttemptPlaceBuilding(CP_Vector cursorPos);
 int GetOccupiedIndex(int x, int y);
 bool IsTileOccupied(CP_Vector);
 int GetAllBuildingsPositionByIndex(int index, TILEPOSITION position[]);
-void DestroyBuildingBySelectedBuilding();
+void DestroyBuildingBySelectedBuilding(int buildingIndex);
 
 // UI_Mechanics
 bool CheckWithinBounds(CP_Vector position, float width, float height);
@@ -237,6 +231,7 @@ void UI_SetEvent(CARDEVENT*);
 
 
 // Resources
+void UpdateResources();
 void Set_current_gold(int gold);
 void Set_current_food(int food);
 void Set_current_population(int population);
@@ -260,6 +255,17 @@ bool LoseCondition_Resources();
 bool IsCostPayable(int costAmt);
 void ApplyEventResourceAnim(int resourceChange[4]);
 void ApplyEventResourceChange(int resourceChange[4]);
+void IncreaseGold(int amount);
+void IncreaseFood(int amount);
+void IncreasePop(int amount);
+void IncreaseMorale(int amount);
+int GetDelayedGold();
+int GetDelayedFood();
+int GetDelayedPop();
+int GetDelayedMorale();
+void SpawnGoldGainAnimation(int amount, CP_Vector startPos, CP_Vector checkpoint, CP_Vector endPos, float lifeTime, float spawnDelay);
+void SpawnFoodGainAnimation(int amount, CP_Vector startPos, CP_Vector checkpoint, CP_Vector endPos, float lifeTime, float spawnDelay);
+void SpawnMoraleGainAnimation(int amount, CP_Vector startPos, CP_Vector checkpoint, CP_Vector endPos, float lifeTime, float spawnDelay);
 
 // Card Events
 int GetCardsLeft();
@@ -271,6 +277,13 @@ CP_Image* GetBuildingSpriteByIndex(int);
 CP_Image* GetBuildingSpriteButtonByIndex(int);
 CP_Image* GetCardSpriteByType(int type);
 CARDEVENT* GetEventByIndex(int index);
+
+// Ongoing Events
+void InitOngoingEvents();
+void GenerateEvents(int eventIndex, int xPos, int yPos);// generate the event of rat|| any ongoing events 
+void DrawOngoingEvents();
+void OnEndUpdateEvents();//end turn, turn reduce by 1 
+bool CheckCurrent(int typeofeffect, int x, int y);
 
 // UI VFX
 void SpawnLinearVfx(int spriteIndex, CP_Vector startPos, CP_Vector endPos, float lifetime, CP_Vector size, float spawnDelay);

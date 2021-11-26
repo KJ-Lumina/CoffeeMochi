@@ -20,6 +20,18 @@ CP_Image SettingsButtonImageHover;
 CP_Image ExitButtonImage;
 CP_Image ExitButtonImageHover;
 CP_Image game_Background;
+CP_Image game_UIBackground;
+
+
+CP_Image OptionsScreenImage;
+CP_Image ResolutionBtn_1600;
+CP_Image ResolutionBtn_1920;
+CP_Image Vol_Slider;
+float sliderMaxPos;
+float sliderMinPos;
+CP_Vector currentSliderPos;
+float current_Volume;
+
 
 float splashdigipentimer = 0;
 float splashcoffeemochitimer = 0;
@@ -43,6 +55,7 @@ void game_init(void)
 {
 	
 	CP_System_SetWindowSize(1600, 900);
+	//CP_System_FullscreenAdvanced(1600, 900); //Enable for full screen
 	CP_Settings_TextAlignment(CP_TEXT_ALIGN_H_CENTER, CP_TEXT_ALIGN_V_TOP);
 	windowsWidth = (float)CP_System_GetWindowWidth();
 	windowsHeight = (float)CP_System_GetWindowHeight();
@@ -56,10 +69,9 @@ void game_init(void)
 	Splash_Digipen = CP_Image_Load("./ImperoArtAssets/Impero_Digipen.png");
 	Splash_CoffeeMochi = CP_Image_Load("./ImperoArtAssets/CoffeeMochi_BG.png");
 
-
+	//Main Menu Assets
 	mainScreenImage = CP_Image_Load("./ImperoArtAssets/MainMenuAssets/Impero_MainMenu_BG.png");
 	titleImage = CP_Image_Load("./ImperoArtAssets/MainMenuAssets/Impero_TitleTrim.png");
-
 	StartButtonImage = CP_Image_Load("./ImperoArtAssets/MainMenuAssets/Impero_StartButton.png");
 	StartButtonImageHover = CP_Image_Load("./ImperoArtAssets/MainMenuAssets/Impero_StartButtonHover.png");
 	SettingsButtonImage = CP_Image_Load("./ImperoArtAssets/MainMenuAssets/Impero_SettingsButton.png");
@@ -67,9 +79,23 @@ void game_init(void)
 	ExitButtonImage = CP_Image_Load("./ImperoArtAssets/MainMenuAssets/Impero_ExitButton.png");
 	ExitButtonImageHover = CP_Image_Load("./ImperoArtAssets/MainMenuAssets/Impero_ExitButtonHover.png");
 	game_Background = CP_Image_Load("./ImperoArtAssets/Impero_GameBG.png");
+	game_UIBackground = CP_Image_Load("./ImperoArtAssets/UI bg.png"); 
+
+	//Options Assets
+	OptionsScreenImage = CP_Image_Load("./ImperoArtAssets/OtherMenuAssets/Impero_Options");
+	ResolutionBtn_1600 = CP_Image_Load("./ImperoArtAssets/OtherMenuAssets/Impero_1600");
+	ResolutionBtn_1920 = CP_Image_Load("./ImperoArtAssets/OtherMenuAssets/Impero_1920");
+	Vol_Slider = CP_Image_Load("./ImperoArtAssets/OtherMenuAssets/Impero_slider");
+
 
 	whiteFlash = CP_Image_Load("./Assets/WhiteFlash.png");
 	InitSpritesheets();
+}
+
+void RestartGame()
+{
+	currentTimer = 0;
+	gameScene = SCENE_RESTART;
 }
 
 void game_update(void)
@@ -78,8 +104,13 @@ void game_update(void)
 	if (gameScene == SCENE_GAMEPHASE)
 	{
 		CP_Image_Draw(game_Background, 800, 450, 1600, 900, 255);
-
+		CP_Image_Draw(game_UIBackground, 275, 450, 550, 900, 255);
 		MainGame_Update();
+		if (currentTimer < 1)
+		{
+			currentTimer += CP_System_GetDt();
+			CP_Image_Draw(whiteFlash, windowsWidth / 2, windowsHeight / 2, 1600, 900, CP_Math_LerpInt(255, 0, (currentTimer)));
+		}
 	}
 	else if (gameScene == SCENE_SPLASH_DIGIPEN)
 	{
@@ -191,18 +222,27 @@ void game_update(void)
 		{
 			CP_Image_Draw(whiteFlash, windowsWidth / 2, windowsHeight / 2, 1600, 900, 255);
 			MainGame_Initialize();
-			gameScene = SCENE_GAMELEAVEENTRY;
 			currentTimer = 0;
-		}
-	}
-	else if (gameScene == SCENE_GAMELEAVEENTRY)
-	{
-		currentTimer += CP_System_GetDt();
-		CP_Image_Draw(whiteFlash, windowsWidth / 2, windowsHeight / 2, 1600, 900, CP_Math_LerpInt(255, 0, (currentTimer)));
-		if (currentTimer >= 1)
-		{
 			gameScene = SCENE_GAMEPHASE;
 		}
+	}
+	else if (gameScene == SCENE_RESTART)
+	{
+		currentTimer += CP_System_GetDt();
+		if (currentTimer <= 1)
+		{
+			CP_Image_Draw(game_Background, 800, 450, 1600, 900, 255);
+			MainGame_Update();
+			CP_Image_Draw(whiteFlash, windowsWidth / 2, windowsHeight / 2, 1600, 900, CP_Math_LerpInt(0, 255, (currentTimer)));
+		}
+		else
+		{
+			CP_Image_Draw(whiteFlash, windowsWidth / 2, windowsHeight / 2, 1600, 900, 255);
+			MainGame_Initialize();
+			currentTimer = 0;
+			gameScene = SCENE_GAMEPHASE;
+		}
+
 	}
 	else if (gameScene == SCENE_ENDPHASE)
 	{
@@ -227,6 +267,7 @@ void SetGameSceneEndPhase()
 	gameScene = SCENE_ENDPHASE;
 }
 
+//OPTIONS/SETTINGS
 int OptionsOpen = FALSE;
 CP_Image OptionMenu; //Might consider moving to UI_Mechanics?
 
@@ -242,7 +283,30 @@ void OpenOptions()
 
 	}
 }
-void ChangeVolume(float vol, CP_SOUND_GROUP soundGroup)
+void ChangeVolume(float vol)
 {
-	CP_Sound_SetGroupVolume(soundGroup, vol);
+	CP_Sound_SetGroupVolume(CP_SOUND_GROUP_0, vol);
 }
+
+void AdjustVolumeSlider() {
+
+	float mouseX = CP_Input_GetMouseX();
+	float mouseY = CP_Input_GetMouseY();
+	CP_Vector previousSliderPos = currentSliderPos;
+
+	if (CheckWithinBounds(currentSliderPos, 100, 200)) {
+		float sliderMovement = mouseX - previousSliderPos.x;
+		int withinMaxPos = currentSliderPos.x + sliderMovement <= sliderMaxPos;
+		int withinMinPos = currentSliderPos.x + sliderMovement >= sliderMinPos;
+		if (withinMaxPos && withinMinPos) {
+			currentSliderPos.x += sliderMovement;
+		}
+
+		float vol_percentageChange = (sliderMovement / (sliderMaxPos - sliderMinPos)) * 100;
+
+		ChangeVolume(current_Volume + vol_percentageChange);	
+
+	}
+
+}
+

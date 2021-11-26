@@ -1,4 +1,5 @@
 ﻿  game.c
-game.obj : error LNK2019: unresolved external symbol SpawnVfxEaseInToEaseOut referenced in function AdminControlInput
-Resource_Stats.obj : error LNK2001: unresolved external symbol SpawnVfxEaseInToEaseOut
-C:\Users\windy\Documents\GitHub\CoffeeMochi\x64\Debug\Processing_Sample.exe : fatal error LNK1120: 1 unresolved externals
+  Processing_Sample.vcxproj -> C:\Users\trave\Documents\GitHub\CoffeeMochi\x64\Debug\Processing_Sample.exe
+  1 File(s) copied
+  1 File(s) copied
+  63 File(s) copied

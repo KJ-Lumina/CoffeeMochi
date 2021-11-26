@@ -31,7 +31,7 @@ ONGOING ongoingEvents[10] = { 0 };
 // event_four = { 5,CP_Vector_set(0,0), position, FARM, AreaOfEffect,0,5,"Rat has infiltrated the city , food will be compromised every turn " };
 // event_five = { 6,CP_Vector_set(0,0), position, FARM, AreaOfEffect,0,5,"Rat has infiltrated the city , food will be compromised every turn " };
 
-void InitEvents() {
+void InitOngoingEvents() {
 
 	sprite_rat = CP_Image_Load("./Assets/workinprogress.png");
 	//sprite_one = CP_Image_load();
@@ -40,17 +40,40 @@ void InitEvents() {
 	//sprite_four = CP_Image_load();
 	//sprite_five = CP_Image_load();
 
+	for (int i = 0; i < EVENTLIMIT; ++i)
+	{
+		ongoingEvents[i] = (ONGOING){ 0 };
+	}
 }
 
-void GenerateEvents(int eventIndex, CP_Vector currentPosition) {
+bool CheckCurrent(int typeofeffect, int x, int y)
+{
+	//int GetOccupiedIndex(int x, int y)
+	//this function, if u put in the xand y position, it will return u the building index, 
+	//then u check if the event is standing on the correct one
+	for (int i = 0; i < EVENTLIMIT; i++) {
+
+		if (ongoingEvents[i].alive == ISALIVE) {
+			if (ongoingEvents[i].typeOfEffect == typeofeffect && ongoingEvents[i].positionx == x && ongoingEvents[i].positiony == y)
+			{
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+
+void GenerateEvents(int eventIndex, int xPos, int yPos) 
+{
 	//create store in array
 
 	for (int i = 0; i < (EVENTLIMIT); ++i) {
 		if (ongoingEvents[i].alive == ISDEAD) {
 			switch (eventIndex)
 			{
-			case 1:
-				ongoingEvents[i] = (ONGOING){1, sprite_rat, CP_Vector_Set(0,0), CP_Vector_Set(currentPosition.x,currentPosition.y), R_BUILDING_FARM_INDEX, 5, ISALIVE,"Rat has infiltrated the city , food will be compromised every turn "};//store into array
+			case O_RATEVENT:
+				ongoingEvents[i] = (ONGOING){ O_RATEVENT, sprite_rat, xPos, yPos, B_FARM_INDEX, 5, ISALIVE,"Rat has infiltrated the city , food will be compromised every turn "};//store into array
 				return;
 			case 2:
 				//currentEvent[i] = { 2,sprite_one, CP_Vector_set(0,0), position, FARM, AreaOfEffect,0,5,"Rat has infiltrated the city , food will be compromised every turn ", ISALIVE };
@@ -97,13 +120,17 @@ void OnEndUpdateEvents()
 		}
 	}
 }
-void DrawEvent() 
+void DrawOngoingEvents() 
 {
+	CP_Vector worldPosition;
 	for (int i = 0; i < EVENTLIMIT; ++i)
 	{
 		if (ongoingEvents[i].alive == ISALIVE)
 		{
-			CP_Image_Draw(ongoingEvents[i].sprite, ongoingEvents[i].currentPosition.x, ongoingEvents[i].currentPosition.y, 100, 100, 255);
+			worldPosition.x = (float)ongoingEvents[i].positionx;
+			worldPosition.y = (float)ongoingEvents[i].positiony;
+			GridToWorldPosition(&worldPosition);
+			CP_Image_Draw(ongoingEvents[i].sprite, worldPosition.x, worldPosition.y, 200, 200, 255);
 		}
 	}
 }
