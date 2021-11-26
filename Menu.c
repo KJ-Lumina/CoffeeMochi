@@ -20,6 +20,7 @@ CP_Image SettingsButtonImageHover;
 CP_Image ExitButtonImage;
 CP_Image ExitButtonImageHover;
 CP_Image game_Background;
+CP_Image game_UIBackground;
 
 
 CP_Image OptionsScreenImage;
@@ -78,6 +79,7 @@ void game_init(void)
 	ExitButtonImage = CP_Image_Load("./ImperoArtAssets/MainMenuAssets/Impero_ExitButton.png");
 	ExitButtonImageHover = CP_Image_Load("./ImperoArtAssets/MainMenuAssets/Impero_ExitButtonHover.png");
 	game_Background = CP_Image_Load("./ImperoArtAssets/Impero_GameBG.png");
+	game_UIBackground = CP_Image_Load("./ImperoArtAssets/UI bg.png"); 
 
 	//Options Assets
 	OptionsScreenImage = CP_Image_Load("./ImperoArtAssets/OtherMenuAssets/Impero_Options.png");
@@ -90,14 +92,25 @@ void game_init(void)
 	InitSpritesheets();
 }
 
+void RestartGame()
+{
+	currentTimer = 0;
+	gameScene = SCENE_RESTART;
+}
+
 void game_update(void)
 {
 	CP_Graphics_ClearBackground(CP_Color_Create(150, 150, 150, 255));
 	if (gameScene == SCENE_GAMEPHASE)
 	{
 		CP_Image_Draw(game_Background, 800, 450, 1600, 900, 255);
-
+		CP_Image_Draw(game_UIBackground, 275, 450, 550, 900, 255);
 		MainGame_Update();
+		if (currentTimer < 1)
+		{
+			currentTimer += CP_System_GetDt();
+			CP_Image_Draw(whiteFlash, windowsWidth / 2, windowsHeight / 2, 1600, 900, CP_Math_LerpInt(255, 0, (currentTimer)));
+		}
 	}
 	else if (gameScene == SCENE_SPLASH_DIGIPEN)
 	{
@@ -143,12 +156,14 @@ void game_update(void)
 	}
 	else if (gameScene == SCENE_MAINMENU)
 	{
-		ConstantAnimSpawner(2, 1, 30, 1550, 10, 500, 50, 50, 0.4f, 1);
-		ConstantAnimSpawner(2, 1, 30, 1550, 10, 500, 50, 50, 0.4f, 1);
-		ConstantAnimSpawner(2, 1, 30, 1550, 10, 500, 50, 50, 0.4f, 1);
-		ConstantAnimSpawner(2, 1, 30, 1550, 10, 500, 50, 50, 0.4f, 1);
-		ConstantAnimSpawner(2, 1, 30, 1550, 10, 500, 50, 50, 0.4f, 1);
-		ConstantAnimSpawner(2, 1, 30, 1550, 10, 850, 100, 100, 0.75f, 1);
+		ConstantAnimSpawner(1, 2, 1, 30, 1550, 10, 500, 50, 50, 0.4f, 1, 0);
+		ConstantAnimSpawner(1, 2, 1, 30, 1550, 10, 500, 50, 50, 0.4f, 1, 0);
+		ConstantAnimSpawner(2, 3, 5, 600, 1800, 0, 500, 50, 50, 1.75f, 1, 1);
+		ConstantAnimSpawner(1, 2, 1, 30, 1550, 10, 600, 100, 100, 0.75f, 1, 0);
+		if (CP_Input_KeyTriggered(KEY_L))
+		{
+			SpawnAnimation(1550, 10, 0, 600, 100, 100, 3, 1, 0);
+		}
 		CP_Image_Draw(mainScreenImage, 800, mainScreenYLerpStart, 1600, 2700, 255);
 		DrawAllAnimations();
 		CP_Image_Draw(titleImage, 800, titleImageYLerpStart, 985, 440, 255);
@@ -164,6 +179,8 @@ void game_update(void)
 		}
 		else
 		{
+			//crazy ass star near start button
+			ConstantAnimSpawner(3, 2, 5.f, 1370, 1370, 645, 645, 300, 300, 0.75f, 0, 0);
 			CP_Image_Draw(StartButtonImage, 1200, 700, 328, 99, 255);
 		}
 		// Settings button
@@ -219,18 +236,27 @@ void game_update(void)
 		{
 			CP_Image_Draw(whiteFlash, windowsWidth / 2, windowsHeight / 2, 1600, 900, 255);
 			MainGame_Initialize();
-			gameScene = SCENE_GAMELEAVEENTRY;
 			currentTimer = 0;
-		}
-	}
-	else if (gameScene == SCENE_GAMELEAVEENTRY)
-	{
-		currentTimer += CP_System_GetDt();
-		CP_Image_Draw(whiteFlash, windowsWidth / 2, windowsHeight / 2, 1600, 900, CP_Math_LerpInt(255, 0, (currentTimer)));
-		if (currentTimer >= 1)
-		{
 			gameScene = SCENE_GAMEPHASE;
 		}
+	}
+	else if (gameScene == SCENE_RESTART)
+	{
+		currentTimer += CP_System_GetDt();
+		if (currentTimer <= 1)
+		{
+			CP_Image_Draw(game_Background, 800, 450, 1600, 900, 255);
+			MainGame_Update();
+			CP_Image_Draw(whiteFlash, windowsWidth / 2, windowsHeight / 2, 1600, 900, CP_Math_LerpInt(0, 255, (currentTimer)));
+		}
+		else
+		{
+			CP_Image_Draw(whiteFlash, windowsWidth / 2, windowsHeight / 2, 1600, 900, 255);
+			MainGame_Initialize();
+			currentTimer = 0;
+			gameScene = SCENE_GAMEPHASE;
+		}
+
 	}
 	else if (gameScene == SCENE_ENDPHASE)
 	{

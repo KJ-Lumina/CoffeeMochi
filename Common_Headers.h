@@ -11,7 +11,8 @@
 #define TILEHEIGHT 128.0f
 #define TILESPRITEWIDTH 128.0f
 #define TILESPRITEHEIGHT 160.0f
-#define MAPOFFSETX -130
+#define MAPOFFSETX 325
+#define MAPOFFSETY 25
 
 #define MAXTILECOUNT (WORLDGRIDX * WORLDGRIDY)
 
@@ -62,6 +63,7 @@
 #define START_GAME 0
 
 void SetGameSceneEndPhase();
+void RestartGame();
 
 typedef enum 
 {
@@ -70,7 +72,7 @@ typedef enum
 	SCENE_MAINMENU,
 	SCENE_OPTIONS,
 	SCENE_GAMEENTRY,
-	SCENE_GAMELEAVEENTRY,
+	SCENE_RESTART,
 	SCENE_GAMEPHASE,
 	SCENE_ENDPHASE,
 }GAMESCENE;
@@ -152,14 +154,16 @@ typedef struct
 	int maxSprites; //number of sprites in a spritesheet
 	float spriteSizeX; //pixels on a sprite grid x-axis
 	float spriteSizeY; //pixels on a sprite grid y-axis
-	float timeToDeath; //time drawn on screen before it disappears
-	float posX;
-	float posY;
 	float scaleX;
 	float scaleY;
-	float timeElapse;
 	int index;
 	int isInfiniteLoop;
+	float posX;
+	float posY;
+	float endPosX;
+	float endPosY;
+	float timeElapse;
+	float timeToDeath; //time drawn on screen before it disappears
 }SPRITESHEET;
 typedef struct
 {
@@ -226,6 +230,7 @@ void UI_SetEvent(CARDEVENT*);
 
 
 // Resources
+void UpdateResources();
 void Set_current_gold(int gold);
 void Set_current_food(int food);
 void Set_current_population(int population);
@@ -249,6 +254,17 @@ bool LoseCondition_Resources();
 bool IsCostPayable(int costAmt);
 void ApplyEventResourceAnim(int resourceChange[4]);
 void ApplyEventResourceChange(int resourceChange[4]);
+void IncreaseGold(int amount);
+void IncreaseFood(int amount);
+void IncreasePop(int amount);
+void IncreaseMorale(int amount);
+int GetDelayedGold();
+int GetDelayedFood();
+int GetDelayedPop();
+int GetDelayedMorale();
+void SpawnGoldGainAnimation(int amount, CP_Vector startPos, CP_Vector checkpoint, CP_Vector endPos, float lifeTime, float spawnDelay);
+void SpawnFoodGainAnimation(int amount, CP_Vector startPos, CP_Vector checkpoint, CP_Vector endPos, float lifeTime, float spawnDelay);
+void SpawnMoraleGainAnimation(int amount, CP_Vector startPos, CP_Vector checkpoint, CP_Vector endPos, float lifeTime, float spawnDelay);
 
 // Card Events
 int GetCardsLeft();
@@ -278,7 +294,8 @@ void InitVfx();
 void SetGameSceneEndPhase();
  
 //graphics Animspawn
-void ConstantAnimSpawner(int index, float time, int lowerX, int upperX, int lowerY, int upperY, float scaleX, float scaleY, float timeToDeath, int isTimeVariance);
+void ConstantAnimSpawner(int counterIndex, int index, float time, int lowerX, int upperX, int lowerY, int upperY, float scaleX, float scaleY, float timeToDeath, int isTimeVariance, int isLerp);
+void SpawnAnimation(float x, float y, float endx, float endy, float scaleX, float scaleY, int index, float timeToDeath, int isInfinteLoop);
 void InitSpritesheets(void);
 void DrawAllAnimations(void);
 
