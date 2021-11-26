@@ -98,7 +98,7 @@ void AdminControlInput()
     //testing animations
     if (CP_Input_KeyTriggered(KEY_W))
     {
-        SpawnAnimation(currentMousePos.x, currentMousePos.y, 200, 200, 1, 0.5f, 1);
+        SpawnAnimation(currentMousePos.x, currentMousePos.y, currentMousePos.x, currentMousePos.y, 200, 200, 1, 0.5f, 1);
     }
 
     if (CP_Input_KeyTriggered(KEY_E)) 

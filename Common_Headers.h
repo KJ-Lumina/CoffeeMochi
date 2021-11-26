@@ -162,14 +162,16 @@ typedef struct
 	int maxSprites; //number of sprites in a spritesheet
 	float spriteSizeX; //pixels on a sprite grid x-axis
 	float spriteSizeY; //pixels on a sprite grid y-axis
-	float timeToDeath; //time drawn on screen before it disappears
-	float posX;
-	float posY;
 	float scaleX;
 	float scaleY;
-	float timeElapse;
 	int index;
 	int isInfiniteLoop;
+	float posX;
+	float posY;
+	float endPosX;
+	float endPosY;
+	float timeElapse;
+	float timeToDeath; //time drawn on screen before it disappears
 }SPRITESHEET;
 typedef struct
 {
@@ -280,7 +282,8 @@ void InitVfx();
 void SetGameSceneEndPhase();
  
 //graphics Animspawn
-void ConstantAnimSpawner(int index, float time, int lowerX, int upperX, int lowerY, int upperY, float scaleX, float scaleY, float timeToDeath, int isTimeVariance);
+void ConstantAnimSpawner(int counterIndex, int index, float time, int lowerX, int upperX, int lowerY, int upperY, float scaleX, float scaleY, float timeToDeath, int isTimeVariance, int isLerp);
+void SpawnAnimation(float x, float y, float endx, float endy, float scaleX, float scaleY, int index, float timeToDeath, int isInfinteLoop);
 void InitSpritesheets(void);
 void DrawAllAnimations(void);
 

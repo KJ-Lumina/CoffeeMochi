@@ -1,9 +1,3 @@
-﻿  GameEvents.c
-  Generating code
-  Previous IPDB and IOBJ mismatch, fall back to full compilation.
-  All 109 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
-  Finished generating code
-  Processing_Sample.vcxproj -> C:\Users\trave\Documents\GitHub\CoffeeMochi\x64\Release\Processing_Sample.exe
-  1 File(s) copied
-  1 File(s) copied
-  62 File(s) copied
+﻿  game.c
+game.obj : error LNK2001: unresolved external symbol SpawnVfxEaseInToEaseOut
+C:\Users\windy\Documents\GitHub\CoffeeMochi\x64\Release\Processing_Sample.exe : fatal error LNK1120: 1 unresolved externals

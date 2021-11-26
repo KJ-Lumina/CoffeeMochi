@@ -125,12 +125,14 @@ void game_update(void)
 	}
 	else if (gameScene == SCENE_MAINMENU)
 	{
-		ConstantAnimSpawner(2, 1, 30, 1550, 10, 500, 50, 50, 0.4f, 1);
-		ConstantAnimSpawner(2, 1, 30, 1550, 10, 500, 50, 50, 0.4f, 1);
-		ConstantAnimSpawner(2, 1, 30, 1550, 10, 500, 50, 50, 0.4f, 1);
-		ConstantAnimSpawner(2, 1, 30, 1550, 10, 500, 50, 50, 0.4f, 1);
-		ConstantAnimSpawner(2, 1, 30, 1550, 10, 500, 50, 50, 0.4f, 1);
-		ConstantAnimSpawner(2, 1, 30, 1550, 10, 850, 100, 100, 0.75f, 1);
+		ConstantAnimSpawner(1, 2, 1, 30, 1550, 10, 500, 50, 50, 0.4f, 1, 0);
+		ConstantAnimSpawner(1, 2, 1, 30, 1550, 10, 500, 50, 50, 0.4f, 1, 0);
+		ConstantAnimSpawner(2, 3, 5, 600, 1800, 0, 500, 50, 50, 1.75f, 1, 1);
+		ConstantAnimSpawner(1, 2, 1, 30, 1550, 10, 600, 100, 100, 0.75f, 1, 0);
+		if (CP_Input_KeyTriggered(KEY_L))
+		{
+			SpawnAnimation(1550, 10, 0, 600, 100, 100, 3, 1, 0);
+		}
 		CP_Image_Draw(mainScreenImage, 800, mainScreenYLerpStart, 1600, 2700, 255);
 		DrawAllAnimations();
 		CP_Image_Draw(titleImage, 800, titleImageYLerpStart, 985, 440, 255);
@@ -146,6 +148,8 @@ void game_update(void)
 		}
 		else
 		{
+			//crazy ass star near start button
+			ConstantAnimSpawner(3, 2, 5.f, 1370, 1370, 645, 645, 300, 300, 0.75f, 0, 0);
 			CP_Image_Draw(StartButtonImage, 1200, 700, 328, 99, 255);
 		}
 		// Settings button
