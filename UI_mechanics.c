@@ -28,8 +28,8 @@ float windowWidth;
 float windowHeight;
 CP_Vector optionAPos;
 CP_Vector optionBPos;
-bool IsAViable;
-bool IsBViable;
+CP_Vector cardSeletorPos;
+
 int UIselectedChoice;
 char textDescBuffer[100];
 CP_Image image_descbox;
@@ -54,19 +54,17 @@ CP_Image image_goldbar;
 CP_Image image_foodbar;
 CP_Image image_populationbar;
 CP_Image image_moralebar;
-CP_Image image_barBG;
-CP_Image image_resourcetext;
+CP_Image image_barBGgold;
+CP_Image image_barBGfood;
+CP_Image image_barBGpop;
+CP_Image image_barBGmorale;
+
 
 int nullResourceChange[4] = { 0 };
 bool goldAffected = false;
 bool foodAffected = false;
 bool popAffected = false;
 bool moraleAffected = false;
-
-float goldLerp;
-float foodLerp;
-float popuLerp;
-float moraleLerp;
 
 extern int rewardIndex;
 
@@ -77,37 +75,37 @@ void InitUI()
     windowHeight = (float)CP_System_GetWindowHeight();
     image_CardBack = CP_Image_Load("./ImperoArtAssets/Impero_CardBack.png");
     image_CardDeck = CP_Image_Load("./ImperoArtAssets/Impero_CardDeck.png");
-    EventCardAnim = (MOVINGSPRITES){ image_CardBack, CP_Vector_Set(windowWidth - 130, (windowHeight / 2) + 230), CP_Vector_Set(windowWidth - 130, (windowHeight / 2) - 60), 0.6f, 0 };
+    
     image_CardFlipped = CP_Image_Load("./ImperoArtAssets/Impero_CardFlip.png");
     image_CardA = CP_Image_Load("./ImperoArtAssets/Impero_CardBlue.png");
     image_CardB = CP_Image_Load("./ImperoArtAssets/Impero_CardRed.png");
     image_redZone = CP_Image_Load("./Assets/RedZone.png");
-    image_descbox = CP_Image_Load("./ImperoArtAssets/Impero_Textbox.png");
-    image_descboxcover = CP_Image_Load("./ImperoArtAssets/textboxcover.png");
+    image_descbox = CP_Image_Load("./ImperoArtAssets/ResourceBarAssets/Impero_Textbox.png");
+    image_descboxcover = CP_Image_Load("./ImperoArtAssets/ResourceBarAssets/Impero_TextboxBG.png");
 
-    optionAPos = CP_Vector_Set(windowWidth - 176, windowHeight / 2 - 60);
-    optionBPos = CP_Vector_Set(windowWidth - 90, windowHeight / 2 - 60);
+    cardSeletorPos = CP_Vector_Set(200, 450);
+    optionAPos = CP_Vector_Set(cardSeletorPos.x - 43, cardSeletorPos.y);
+    optionBPos = CP_Vector_Set(cardSeletorPos.x + 43, cardSeletorPos.y);
+    EventCardAnim = (MOVINGSPRITES){ image_CardBack, CP_Vector_Set(130, (windowHeight / 2) + 230), CP_Vector_Set(cardSeletorPos.x, cardSeletorPos.y), 0.6f, 0 };
 
     image_CardFlash = CP_Image_Load("./ImperoArtAssets/Impero_Cardflash.png");
     image_CardHighlight = CP_Image_Load("./ImperoArtAssets/Impero_Cardhighlight.png");
-    image_ResourceBars = CP_Image_Load("./ImperoArtAssets/ResourceBarAssets/Impero_ResourceBars.png");
-    image_goldbar = CP_Image_Load("./ImperoArtAssets/ResourceBarAssets/goldbar.png");
-    image_foodbar = CP_Image_Load("./ImperoArtAssets/ResourceBarAssets/foodbar.png");
-    image_populationbar = CP_Image_Load("./ImperoArtAssets/ResourceBarAssets/populationbar.png");
-    image_moralebar = CP_Image_Load("./ImperoArtAssets/ResourceBarAssets/moralebar.png");
-    image_barBG = CP_Image_Load("./ImperoArtAssets/ResourceBarAssets/barBackground.png");
-    image_resourcetext = CP_Image_Load("./ImperoArtAssets/ResourceBarAssets/resourcetext.png");
-    goldLerp = 0.0f;
-    foodLerp = -0.2f;
-    popuLerp = -0.4f;
-    moraleLerp = -0.4f;
+
+    image_goldbar = CP_Image_Load("./ImperoArtAssets/ResourceBarAssets/Impero_GoldBar.png");
+    image_foodbar = CP_Image_Load("./ImperoArtAssets/ResourceBarAssets/Impero_FoodBar.png");
+    image_populationbar = CP_Image_Load("./ImperoArtAssets/ResourceBarAssets/Impero_PopBar.png");
+    image_moralebar = CP_Image_Load("./ImperoArtAssets/ResourceBarAssets/Impero_MoraleBar.png");
+
+    image_barBGgold = CP_Image_Load("./ImperoArtAssets/ResourceBarAssets/Impero_GoldBarBG.png");
+    image_barBGfood = CP_Image_Load("./ImperoArtAssets/ResourceBarAssets/Impero_FoodBarBG.png");
+    image_barBGpop = CP_Image_Load("./ImperoArtAssets/ResourceBarAssets/Impero_PopBarBG.png");
+    image_barBGmorale = CP_Image_Load("./ImperoArtAssets/ResourceBarAssets/Impero_MoraleBarBG.png");
+
 }
 
 void UI_SetEvent(CARDEVENT* newEvent)
 {
     UIselectedEvent = newEvent;
-    IsAViable = true;   // IsCostPayable(selectedEvent->resourceChangeA[0]);
-    IsBViable = true;   // IsCostPayable(selectedEvent->resourceChangeB[0]);
 }
 
 void UI_SetReward(REWARDCARD* rewardCard, int cardsLeft)
@@ -152,7 +150,7 @@ int ClickCheck_CardChoice()
 }
 int ClickCheck_Rewards()
 {
-    if (CheckWithinBounds(CP_Vector_Set(1485 - 15.0f * UIrewardCardsLeft, 390), 150 + UIrewardCardsLeft * rewardCardGap, 240))
+    if (CheckWithinBounds(CP_Vector_Set(cardSeletorPos.x + 15.0f - 15.0f * UIrewardCardsLeft, cardSeletorPos.y), 150 + UIrewardCardsLeft * rewardCardGap, 240))
     {
         --UIrewardCardsLeft;
         return UIselectedReward->cardType;
@@ -165,7 +163,7 @@ void DrawUI_OptionSelector()
     // Hovering A
     if (CheckWithinBounds(optionAPos, 90, 243))
     {
-        CP_Image_Draw(image_CardA, windowWidth - 130, windowHeight / 2 - 60, 185, 243, 255);
+        CP_Image_Draw(image_CardA, cardSeletorPos.x, cardSeletorPos.y, 185, 243, 255);
         DrawUI_TextDesc(UIselectedEvent->descriptionA);
         DrawUI_Title(UIselectedEvent->title);
         UI_SetResourceAffected(UIselectedEvent->resourceChangeA);
@@ -173,7 +171,7 @@ void DrawUI_OptionSelector()
     // Hovering B
     else if (CheckWithinBounds(optionBPos, 90, 243))
     {
-        CP_Image_Draw(image_CardB, windowWidth - 130, windowHeight / 2 - 60, 185, 243, 255);
+        CP_Image_Draw(image_CardB, cardSeletorPos.x, cardSeletorPos.y, 185, 243, 255);
         DrawUI_TextDesc(UIselectedEvent->descriptionB);
         DrawUI_Title(UIselectedEvent->title);
         UI_SetResourceAffected(UIselectedEvent->resourceChangeB);
@@ -181,7 +179,7 @@ void DrawUI_OptionSelector()
     // Not Hovering
     else
     {
-        CP_Image_Draw(image_CardFlipped, windowWidth - 130, windowHeight / 2 - 60, 185, 243, 255);
+        CP_Image_Draw(image_CardFlipped, cardSeletorPos.x, cardSeletorPos.y, 185, 243, 255);
         DrawUI_TextDesc(UIselectedEvent->description);
         DrawUI_Title(UIselectedEvent->title);
         UI_SetResourceAffected(nullResourceChange);
@@ -193,14 +191,14 @@ void DrawUI_SelectedOption()
     switch (UIselectedChoice)
     {
     case 1:
-        CP_Image_Draw(image_CardA, windowWidth - 130, windowHeight / 2 - 60, 185, 243, 255);
-        CP_Image_Draw(image_CardHighlight, windowWidth - 130, windowHeight / 2 - 60, 185, 243, CP_Math_LerpInt(0, 180, cardhighlightTimer[0]));
+        CP_Image_Draw(image_CardA, cardSeletorPos.x, cardSeletorPos.y, 185, 243, 255);
+        CP_Image_Draw(image_CardHighlight, cardSeletorPos.x, cardSeletorPos.y, 185, 243, CP_Math_LerpInt(0, 180, cardhighlightTimer[0]));
         DrawUI_Title(UIselectedEvent->title);
         DrawUI_TextDesc(UIselectedEvent->descriptionA);
         break;
     case 2:
-        CP_Image_Draw(image_CardB, windowWidth - 130, windowHeight / 2 - 60, 185, 243, 255);
-        CP_Image_Draw(image_CardHighlight, windowWidth - 130, windowHeight / 2 - 60, 185, 243, CP_Math_LerpInt(0, 180, cardhighlightTimer[0]));
+        CP_Image_Draw(image_CardB, cardSeletorPos.x, cardSeletorPos.y, 185, 243, 255);
+        CP_Image_Draw(image_CardHighlight, cardSeletorPos.x, cardSeletorPos.y, 185, 243, CP_Math_LerpInt(0, 180, cardhighlightTimer[0]));
         DrawUI_Title(UIselectedEvent->title);
         DrawUI_TextDesc(UIselectedEvent->descriptionB);
         break;
@@ -209,7 +207,7 @@ void DrawUI_SelectedOption()
 void DrawUI_Deck()
 {
     // Draw back of card
-    CP_Image_Draw(image_CardDeck, windowWidth - 130, (windowHeight / 2) + 260, 228, 309, 255);
+    //CP_Image_Draw(image_CardDeck, windowWidth - 130, (windowHeight / 2) + 260, 228, 309, 255);
 }
 void DrawUI_TopPile()
 {
@@ -223,13 +221,15 @@ void DrawUI_TopPile()
         EventCardAnim.currentTime -= CP_System_GetDt();
     }
     EventCardAnim.currentTime = CP_Math_ClampFloat(EventCardAnim.currentTime, 0, EventCardAnim.totalTime / 8);
-    CP_Image_Draw(EventCardAnim.image, EventCardAnim.startingPos.x , CP_Math_LerpFloat(EventCardAnim.startingPos.y, EventCardAnim.endingPos.y, EventCardAnim.currentTime / EventCardAnim.totalTime), 185, 243, 255);
+    CP_Image_Draw(EventCardAnim.image, CP_Math_LerpFloat(EventCardAnim.startingPos.x, EventCardAnim.endingPos.x, EventCardAnim.currentTime / EventCardAnim.totalTime),
+        CP_Math_LerpFloat(EventCardAnim.startingPos.y, EventCardAnim.endingPos.y, EventCardAnim.currentTime / EventCardAnim.totalTime), 185, 243, 255);
 }
 void DrawUI_TopPileInsert()
 {
     EventCardAnim.currentTime += CP_System_GetDt();
     EventCardAnim.currentTime = CP_Math_ClampFloat(EventCardAnim.currentTime, 0, EventCardAnim.totalTime);
-    CP_Image_Draw(EventCardAnim.image, EventCardAnim.startingPos.x, CP_Math_LerpFloat(EventCardAnim.startingPos.y, EventCardAnim.endingPos.y, EventCardAnim.currentTime / EventCardAnim.totalTime), 185, 243, 255);
+    CP_Image_Draw(EventCardAnim.image, CP_Math_LerpFloat(EventCardAnim.startingPos.x, EventCardAnim.endingPos.x, EventCardAnim.currentTime / EventCardAnim.totalTime),
+        CP_Math_LerpFloat(EventCardAnim.startingPos.y, EventCardAnim.endingPos.y, EventCardAnim.currentTime / EventCardAnim.totalTime), 185, 243, 255);
 }
 void DrawUI_RewardCards(bool rewardPicked)
 {
@@ -237,12 +237,12 @@ void DrawUI_RewardCards(bool rewardPicked)
     float deltaTime = CP_System_GetDt();
     for (int i = 0; i < abs(UIrewardCardsLeft); ++i)
     {
-        CP_Image_Draw(*GetCardSpriteByType(UIselectedReward->cardType), 1470 + offsetX + rewardCardGap * i, 390, 185, 243, 255);
+        CP_Image_Draw(*GetCardSpriteByType(UIselectedReward->cardType), cardSeletorPos.x + offsetX + rewardCardGap * i, cardSeletorPos.y, 185, 243, 255);
         cardflashTimer += deltaTime;
-        CP_Image_Draw(image_CardFlash, 1470 + offsetX + rewardCardGap * i, 390, 185, 243, CP_Math_LerpInt(255, 0, cardflashTimer));
+        CP_Image_Draw(image_CardFlash, cardSeletorPos.x + offsetX + rewardCardGap * i, cardSeletorPos.y, 185, 243, CP_Math_LerpInt(255, 0, cardflashTimer));
         if (i != abs(UIrewardCardsLeft) - 1)
         {
-            if (CheckWithinBounds(CP_Vector_Set(1470 + offsetX + rewardCardGap * i - 77.5f, 390), 30, 243) && cardhighlightTimer[i] <= 1)
+            if (CheckWithinBounds(CP_Vector_Set(cardSeletorPos.x + offsetX + rewardCardGap * i - 77.5f, cardSeletorPos.y), 30, 243) && cardhighlightTimer[i] <= 1)
             {
                 cardhighlightTimer[i] += deltaTime;
             }
@@ -250,12 +250,12 @@ void DrawUI_RewardCards(bool rewardPicked)
             {
                 cardhighlightTimer[i] -= deltaTime;
             }
-            CP_Image_Draw(image_CardHighlight, 1470 + offsetX + rewardCardGap * i, 390, 185, 243, CP_Math_LerpInt(0, 180, cardhighlightTimer[i] * 2));
+            CP_Image_Draw(image_CardHighlight, cardSeletorPos.x + offsetX + rewardCardGap * i, cardSeletorPos.y, 185, 243, CP_Math_LerpInt(0, 180, cardhighlightTimer[i] * 2));
         }
         // First reward card
         else
         {
-            if (CheckWithinBounds(CP_Vector_Set(1470 + offsetX + rewardCardGap * i, 390), 185, 243) && cardhighlightTimer[i] <= 1)
+            if (CheckWithinBounds(CP_Vector_Set(cardSeletorPos.x + offsetX + rewardCardGap * i, cardSeletorPos.y), 185, 243) && cardhighlightTimer[i] <= 1)
             {
                 cardhighlightTimer[i] += deltaTime;
             }
@@ -263,7 +263,7 @@ void DrawUI_RewardCards(bool rewardPicked)
             {
                 cardhighlightTimer[i] -= deltaTime;
             }
-            CP_Image_Draw(image_CardHighlight, 1470 + offsetX + rewardCardGap * i, 390, 185, 243, CP_Math_LerpInt(0, 180, cardhighlightTimer[i] * 2));
+            CP_Image_Draw(image_CardHighlight, cardSeletorPos.x + offsetX + rewardCardGap * i, cardSeletorPos.y, 185, 243, CP_Math_LerpInt(0, 180, cardhighlightTimer[i] * 2));
         }
     }
 
@@ -278,19 +278,20 @@ void DrawUI_RewardCards(bool rewardPicked)
 }
 void DrawUI_Textbox()
 {
-    CP_Image_Draw(image_descbox, 1370, 130, 439, 244, 255);
+    CP_Image_Draw(image_descboxcover, 260, 190, 455, 270, 255);
+    CP_Image_Draw(image_descbox, 260, 190, 455, 270, 255);
 }
 void DrawUI_TextDesc(const char* text)
 {
     CP_Settings_TextSize(20);
     CP_Settings_Fill(CP_Color_Create(255, 255, 255, 255));
-    CP_Font_DrawTextBox(text, 1220, 90, 300);
+    CP_Font_DrawTextBox(text, 100, 180, 300);
 }
 void DrawUI_Title(const char* text)
 {
     CP_Settings_TextSize(40);
     CP_Settings_Fill(CP_Color_Create(255, 255, 255, 255));
-    CP_Font_DrawTextBox(text, 1170, 40, 400);
+    CP_Font_DrawTextBox(text, 50, 130, 400);
 }
 void DrawUI_AffectedLand()
 {
@@ -314,13 +315,13 @@ void DrawUI_AffectedLand()
     case 0:
         break;
     case 26:
-        CP_Image_Draw(image_redZone, 800 + MAPOFFSETX, 450, 640, 640, (int)alphaLerp);
+        CP_Image_Draw(image_redZone, 800 + MAPOFFSETX, 450 + MAPOFFSETY, 640, 640, (int)alphaLerp);
         break;
     default:
         while (UIselectedEvent->affectedLand[affectedIndex] != 0)
         {
             CP_Image_Draw(image_redZone, ((float)((UIselectedEvent->affectedLand[affectedIndex] - 1) % WORLDGRIDY) - (WORLDGRIDX) / 2) * TILEWIDTH + MAPOFFSETX + 800,
-                    ((float)((UIselectedEvent->affectedLand[affectedIndex] - 1) / WORLDGRIDY) - (WORLDGRIDX) / 2) * TILEHEIGHT + 450, TILEWIDTH, TILEHEIGHT, (int)alphaLerp);
+                    ((float)((UIselectedEvent->affectedLand[affectedIndex] - 1) / WORLDGRIDY) - (WORLDGRIDX) / 2) * TILEHEIGHT + 450 + MAPOFFSETY, TILEWIDTH, TILEHEIGHT, (int)alphaLerp);
             affectedIndex++;
         }
 
@@ -470,7 +471,7 @@ void DrawTempTextResources()
 {
     if (ralerpinc)
     {
-        resourceAffectedLerp += 7;
+        resourceAffectedLerp += 10;
         if (resourceAffectedLerp >= 255)
         {
             ralerpinc = false;
@@ -478,104 +479,56 @@ void DrawTempTextResources()
     }
     else
     {
-        resourceAffectedLerp -= 7;
-        if (resourceAffectedLerp <= 140)
+        resourceAffectedLerp -= 10;
+        if (resourceAffectedLerp <= 60)
         {
             ralerpinc = true;
         }
     }
 
-    if (goldLerp < (float)Get_current_gold() / 200)
-    {
-        goldLerp += CP_System_GetDt() / 4;
-        if (goldLerp > (float)Get_current_gold() / 200)
-            goldLerp = (float)Get_current_gold() / 200;
-    }
-    else if(goldLerp > (float)Get_current_gold() / 200)
-    {
-        goldLerp -= CP_System_GetDt() / 4;
-        if (goldLerp < (float)Get_current_gold() / 200)
-            goldLerp = (float)Get_current_gold() / 200;
-    }
-    if (foodLerp < (float)Get_current_food() / 200)
-    {
-        foodLerp += CP_System_GetDt() / 4;
-        if (foodLerp > (float)Get_current_food() / 200)
-            foodLerp = (float)Get_current_food() / 200;
-    }
-    else if (foodLerp > (float)Get_current_food() / 200)
-    {
-        foodLerp -= CP_System_GetDt() / 4;
-        if (foodLerp < (float)Get_current_food() / 200)
-            foodLerp = (float)Get_current_food() / 200;
-    }
-
-    if (popuLerp < (float)Get_current_population() / 200)
-    {
-        popuLerp += CP_System_GetDt() / 4;
-        if (popuLerp > (float)Get_current_population() / 200)
-            popuLerp = (float)Get_current_population() / 200;
-    }
-    else if (popuLerp > (float)Get_current_population() / 200)
-    {
-        popuLerp -= CP_System_GetDt() / 4;
-        if (popuLerp < (float)Get_current_population() / 200)
-            popuLerp = (float)Get_current_population() / 200;
-    }
-
-    if (moraleLerp < (float)Get_current_morale() / 200)
-    {
-        moraleLerp += CP_System_GetDt() / 4;
-        if (moraleLerp > (float)Get_current_morale() / 200)
-            moraleLerp = (float)Get_current_morale() / 200;
-    }
-    else if (moraleLerp > (float)Get_current_morale() / 200)
-    {
-        moraleLerp -= CP_System_GetDt() / 4;
-        if (moraleLerp < (float)Get_current_morale() / 200)
-            moraleLerp = (float)Get_current_morale() / 200;
-    }
     //bar background
-    CP_Image_Draw(image_barBG, 100, 90, 200, 60, 255);
-    CP_Image_Draw(image_barBG, 100, 180, 200, 60, 255);
-    CP_Image_Draw(image_barBG, 100, 270, 200, 60, 255);
-    CP_Image_Draw(image_barBG, 100, 360, 200, 60, 255);
+    CP_Image_Draw(image_barBGgold, 615, 90, 200, 60, 255);
+    CP_Image_Draw(image_barBGfood, 615, 180, 200, 60, 255);
+    CP_Image_Draw(image_barBGpop, 615, 270, 200, 60, 255);
+    CP_Image_Draw(image_barBGmorale, 615, 360, 200, 60, 255);
 
+    float maxBarSize = 380;
     //resource bar
     if (goldAffected)
     {
-        CP_Image_Draw(image_goldbar, CP_Math_LerpFloat(-100, 100, goldLerp), 90, 200, 60, resourceAffectedLerp);
+        CP_Image_Draw(image_goldbar, 520, 90, CP_Math_LerpFloat(0, maxBarSize, (float)GetDelayedGold() / 200), 60, resourceAffectedLerp);
     }
     else
     {
-        CP_Image_Draw(image_goldbar, CP_Math_LerpFloat(-100, 100, goldLerp), 90, 200, 60, 255);
+        CP_Image_Draw(image_goldbar, 520, 90, CP_Math_LerpFloat(0, maxBarSize, (float)GetDelayedGold() / 200), 60, 255);
+
     }
     if (foodAffected)
     {
-        CP_Image_Draw(image_foodbar, CP_Math_LerpFloat(-100, 100, foodLerp), 180, 200, 60, resourceAffectedLerp);
+        CP_Image_Draw(image_foodbar, 520, 180, CP_Math_LerpFloat(0, maxBarSize, (float)GetDelayedFood() / 200), 60, resourceAffectedLerp);
     }
     else
     {
-        CP_Image_Draw(image_foodbar, CP_Math_LerpFloat(-100, 100, foodLerp), 180, 200, 60, 255);
+        CP_Image_Draw(image_foodbar, 520, 180, CP_Math_LerpFloat(0, maxBarSize, (float)GetDelayedFood() / 200), 60, 255);
     }
     if (popAffected)
     {
-        CP_Image_Draw(image_populationbar, CP_Math_LerpFloat(-100, 100, popuLerp), 270, 200, 60, resourceAffectedLerp);
+        CP_Image_Draw(image_populationbar, 520, 270, CP_Math_LerpFloat(0, maxBarSize, (float)GetDelayedPop() / 200), 60, resourceAffectedLerp);
     }
     else
     {
-        CP_Image_Draw(image_populationbar, CP_Math_LerpFloat(-100, 100, popuLerp), 270, 200, 60, 255);
+        CP_Image_Draw(image_populationbar, 520, 270, CP_Math_LerpFloat(0, maxBarSize, (float)GetDelayedPop() / 200), 60, 255);
     }
     if (moraleAffected)
     {
-        CP_Image_Draw(image_moralebar, CP_Math_LerpFloat(-100, 100, moraleLerp), 360, 200, 60, resourceAffectedLerp);
+        CP_Image_Draw(image_moralebar, 520, 360, CP_Math_LerpFloat(0, maxBarSize, (float)GetDelayedMorale() / 200), 60, resourceAffectedLerp);
     }
     else
     {
-        CP_Image_Draw(image_moralebar, CP_Math_LerpFloat(-100, 100, moraleLerp), 360, 200, 60, 255);
+        CP_Image_Draw(image_moralebar, 520, 360, CP_Math_LerpFloat(0, maxBarSize, (float)GetDelayedMorale() / 200), 60, 255);
     }
 
-    CP_Image_Draw(image_resourcetext, 100, 200, 200, 400, 255);
+
 
 
     CP_Settings_TextSize(40);
@@ -584,24 +537,24 @@ void DrawTempTextResources()
     CP_Settings_Fill(CP_Color_Create(255, 255, 255, 255));
 
     //Draw Text for current gold amount
-    sprintf_s(resourceBuffer, 20, "%d", Get_current_gold());
-    CP_Font_DrawText(resourceBuffer, 140, 70);
+    sprintf_s(resourceBuffer, 20, "%d", GetDelayedGold());
+    CP_Font_DrawText(resourceBuffer, 660, 74);
     
     //Draw Text For current food amount
-    sprintf_s(resourceBuffer, 20, "%d", Get_current_food());
-    CP_Font_DrawText(resourceBuffer, 140, 160);
+    sprintf_s(resourceBuffer, 20, "%d", GetDelayedFood());
+    CP_Font_DrawText(resourceBuffer, 660, 164);
 
     //Draw Text for current population amount
-    sprintf_s(resourceBuffer, 20, "%d", Get_current_population());
-    CP_Font_DrawText(resourceBuffer, 140, 250);
+    sprintf_s(resourceBuffer, 20, "%d", GetDelayedPop());
+    CP_Font_DrawText(resourceBuffer, 660, 254);
 
     //Draw Text for current morale
-    sprintf_s(resourceBuffer, 20, "%d", Get_current_morale() + Get_additional_morale());
-    CP_Font_DrawText(resourceBuffer, 140, 340);
+    sprintf_s(resourceBuffer, 20, "%d", GetDelayedMorale() + Get_additional_morale());
+    CP_Font_DrawText(resourceBuffer, 660, 344);
 
     //Draw text for number of cards left
-    sprintf_s(resourceBuffer, 20, "Cards Left: %d", GetCardsLeft());
-    CP_Font_DrawText(resourceBuffer, 1450, 850);
+    sprintf_s(resourceBuffer, 20, "%d", GetCardsLeft());
+    CP_Font_DrawText(resourceBuffer, 505, 769);
 
 
 }

@@ -11,7 +11,8 @@
 #define TILEHEIGHT 128.0f
 #define TILESPRITEWIDTH 128.0f
 #define TILESPRITEHEIGHT 160.0f
-#define MAPOFFSETX -130
+#define MAPOFFSETX 325
+#define MAPOFFSETY 25
 
 #define MAXTILECOUNT (WORLDGRIDX * WORLDGRIDY)
 
@@ -66,6 +67,7 @@
 #define START_GAME 0
 
 void SetGameSceneEndPhase();
+void RestartGame();
 
 typedef enum 
 {
@@ -73,7 +75,7 @@ typedef enum
 	SCENE_SPLASH_COFFEEMOCHI,
 	SCENE_MAINMENU,
 	SCENE_GAMEENTRY,
-	SCENE_GAMELEAVEENTRY,
+	SCENE_RESTART,
 	SCENE_GAMEPHASE,
 	SCENE_ENDPHASE,
 }GAMESCENE;
@@ -230,6 +232,7 @@ void UI_SetEvent(CARDEVENT*);
 
 
 // Resources
+void UpdateResources();
 void Set_current_gold(int gold);
 void Set_current_food(int food);
 void Set_current_population(int population);
@@ -253,6 +256,17 @@ bool LoseCondition_Resources();
 bool IsCostPayable(int costAmt);
 void ApplyEventResourceAnim(int resourceChange[4]);
 void ApplyEventResourceChange(int resourceChange[4]);
+void IncreaseGold(int amount);
+void IncreaseFood(int amount);
+void IncreasePop(int amount);
+void IncreaseMorale(int amount);
+int GetDelayedGold();
+int GetDelayedFood();
+int GetDelayedPop();
+int GetDelayedMorale();
+void SpawnGoldGainAnimation(int amount, CP_Vector startPos, CP_Vector checkpoint, CP_Vector endPos, float lifeTime, float spawnDelay);
+void SpawnFoodGainAnimation(int amount, CP_Vector startPos, CP_Vector checkpoint, CP_Vector endPos, float lifeTime, float spawnDelay);
+void SpawnMoraleGainAnimation(int amount, CP_Vector startPos, CP_Vector checkpoint, CP_Vector endPos, float lifeTime, float spawnDelay);
 
 // Card Events
 int GetCardsLeft();

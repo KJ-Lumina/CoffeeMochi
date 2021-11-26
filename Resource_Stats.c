@@ -165,8 +165,7 @@ void Gold_generated_per_turn()
 
 	// Net total Gold generated
 	//curGold += gold_generated_by_markets + gold_generated_by_tax - gold_deducted_from_upkeep;
-
-	curGold += (numMarkets * GOLD_AMT_FROM_MARKETS) - (numTaverns * TAVERN_UPKEEP_COST);
+    IncreaseGold((numMarkets * GOLD_AMT_FROM_MARKETS) - (numTaverns * TAVERN_UPKEEP_COST));
 }
 
 // Function to check amount of Food resource generated per turn
@@ -180,8 +179,7 @@ void Food_generated_per_turn()
 
 	// Net total Food generated
 	//curFood += food_generated_by_farms - food_deducted_from_consumption;
-
-	curFood += (numFarms * FOOD_AMT_FROM_FARMS) - (numHouses * FOOD_CONSUMPTION_PER_PAX);
+    IncreaseFood((numFarms * FOOD_AMT_FROM_FARMS) - (numHouses * FOOD_CONSUMPTION_PER_PAX));
 }
 
 void Population_per_turn()
@@ -247,10 +245,26 @@ void Morale_per_turn()
 			curMorale = (curPopulation/LOW_MORALE) + (numTaverns * (tavernModifier - LOW_MORALE));
 			break;
 	}*/
-	
-    curMorale += numTaverns * 2;
-
+    IncreaseMorale(numTaverns * 2);
 }
+
+int delayedGold = 0;
+int delayedFood = 0;
+int delayedPop = 0;
+int delayedMorale = 0;
+float lerpGold = 0;
+float lerpFood = 0;
+float lerpPop = 0;
+float lerpMorale = 0;
+
+typedef struct
+{
+    int resourceType;
+    int resourceAmt;
+    float timer;
+}DELAYEDRESOURCE;
+
+DELAYEDRESOURCE delayedList[20];
 
 
 void InitResources(int startingGold, int startingFood, int startingPopulation, int startingMorale) {
@@ -264,6 +278,58 @@ void InitResources(int startingGold, int startingFood, int startingPopulation, i
     numFarms = 0;
     numTaverns = 0;
     numMarkets = 0;
+
+    for (int i = 0; i < 20; ++i)
+    {
+        delayedList[i].timer = 0;
+    }
+}
+
+void UpdateResources()
+{
+    if (lerpGold < 1)
+    {
+        lerpGold += CP_System_GetDt();
+    }
+    if (lerpFood < 1)
+    {
+        lerpFood += CP_System_GetDt();
+    }
+    if (lerpPop < 1)
+    {
+        lerpPop += CP_System_GetDt();
+    }
+    if (lerpMorale < 1)
+    {
+        lerpMorale += CP_System_GetDt();
+    }
+
+    float resourceDelta = CP_System_GetDt();
+    for (int i = 0; i < 20; ++i)
+    {
+        if (delayedList[i].timer > 0)
+        {
+            delayedList[i].timer -= resourceDelta;
+            if (delayedList[i].timer < 0)
+            {
+                switch (delayedList[i].resourceType)
+                {
+                case 1:
+                    IncreaseGold(delayedList[i].resourceAmt);
+                    break;
+                case 2:
+                    IncreaseFood(delayedList[i].resourceAmt);
+                    break;
+                case 3:
+                    IncreasePop(delayedList[i].resourceAmt);
+                    break;
+                case 4:
+                    IncreaseMorale(delayedList[i].resourceAmt);
+                    break;
+                }
+            }
+        }
+    }
 }
 
 void AddMarket()
@@ -335,42 +401,131 @@ void AddNewResourceBuilding(int buildingIndex)
 	}
 }
 
+
+
+void AddDelayedResource(int type, int amt, float delay)
+{
+    for (int i = 0; i < 20; ++i)
+    {
+        if (delayedList[i].timer <= 0)
+        {
+            delayedList[i].resourceType = type;
+            delayedList[i].resourceAmt = amt;
+            delayedList[i].timer = delay;
+            return;
+        }
+    }
+}
+
+int GetDelayedGold()
+{
+    return CP_Math_LerpInt(delayedGold, curGold, lerpGold);
+}
+int GetDelayedFood()
+{
+    return CP_Math_LerpInt(delayedFood, curFood, lerpFood);
+}
+int GetDelayedPop()
+{
+    return CP_Math_LerpInt(delayedPop, curPopulation, lerpPop);
+}
+int GetDelayedMorale()
+{
+    return CP_Math_LerpInt(delayedMorale, curMorale, lerpMorale);
+}
+
+void SpawnGoldGainAnimation(int amount, CP_Vector startPos, CP_Vector checkpoint, CP_Vector endPos, float lifeTime, float spawnDelay)
+{
+    if (amount > 0)
+    {
+        SpawnVfxEaseInToEaseOut(1, startPos, checkpoint, endPos, lifeTime, CP_Vector_Set(128, 128), spawnDelay);
+        AddDelayedResource(1, amount, lifeTime * 2 + spawnDelay);
+    }
+    else if (amount < 0)
+    {
+        SpawnVfxEaseInToEaseOut(2, startPos, checkpoint, endPos, lifeTime, CP_Vector_Set(128, 128), spawnDelay);
+        AddDelayedResource(1, amount, lifeTime * 2 + spawnDelay);
+    }
+}
+
+void SpawnFoodGainAnimation(int amount, CP_Vector startPos, CP_Vector checkpoint, CP_Vector endPos, float lifeTime, float spawnDelay)
+{
+    if (amount > 0)
+    {
+        SpawnVfxEaseInToEaseOut(3, startPos, checkpoint, endPos, lifeTime, CP_Vector_Set(128, 128), spawnDelay);
+        AddDelayedResource(2, amount, lifeTime * 2 + spawnDelay);
+    }
+    else if (amount < 0)
+    {
+        SpawnVfxEaseInToEaseOut(4, startPos, checkpoint, endPos, lifeTime, CP_Vector_Set(128, 128), spawnDelay);
+        AddDelayedResource(2, amount, lifeTime * 2 + spawnDelay);
+    }
+}
+
+void SpawnMoraleGainAnimation(int amount, CP_Vector startPos, CP_Vector checkpoint, CP_Vector endPos, float lifeTime, float spawnDelay)
+{
+    if (amount > 0)
+    {
+        SpawnVfxEaseInToEaseOut(5, startPos, checkpoint, endPos, lifeTime, CP_Vector_Set(128, 128), spawnDelay);
+        AddDelayedResource(4, amount, lifeTime * 2 + spawnDelay);
+    }
+    else if (amount < 0)
+    {
+        SpawnVfxEaseInToEaseOut(6, startPos, checkpoint, endPos, lifeTime, CP_Vector_Set(128, 128), spawnDelay);
+        AddDelayedResource(4, amount, lifeTime * 2 + spawnDelay);
+    }
+}
+
 void ApplyEventResourceAnim(int resourceChange[4])
 {
-    //curGold += Lerp_Resources(curGold, curGold + resourceChange[0], 2.0f);
-    if (resourceChange[0] > 0)
-    {
-        SpawnVfxEaseInToEaseOut(1, CP_Vector_Set(1470, 390), CP_Vector_Set(CP_Random_RangeFloat(-50, 50) + 1470, CP_Random_RangeFloat(-50, 50) + 390), CP_Vector_Set(50, 90), 0.6f, CP_Vector_Set(128, 128), 0);
-    }
-    else if (resourceChange[0] < 0)
-    {
-        SpawnVfxEaseInToEaseOut(2, CP_Vector_Set(1470, 390), CP_Vector_Set(CP_Random_RangeFloat(-50, 50) + 1470, CP_Random_RangeFloat(-50, 50) + 390), CP_Vector_Set(50, 90), 0.6f, CP_Vector_Set(128, 128), 0);
-    }
-    if (resourceChange[1] > 0)
-    {
-        SpawnVfxEaseInToEaseOut(3, CP_Vector_Set(1470, 390), CP_Vector_Set(CP_Random_RangeFloat(-50, 50) + 1470, CP_Random_RangeFloat(-50, 50) + 390), CP_Vector_Set(50, 180), 0.6f, CP_Vector_Set(128, 128), 0);
-    }
-    else if (resourceChange[1] < 0)
-    {
-        SpawnVfxEaseInToEaseOut(4, CP_Vector_Set(1470, 390), CP_Vector_Set(CP_Random_RangeFloat(-50, 50) + 1470, CP_Random_RangeFloat(-50, 50) + 390), CP_Vector_Set(50, 180), 0.6f, CP_Vector_Set(128, 128), 0);
-    }
+    SpawnGoldGainAnimation(resourceChange[0], CP_Vector_Set(200, 450), CP_Vector_Set(CP_Random_RangeFloat(150,250), CP_Random_RangeFloat(400, 500)), CP_Vector_Set(520, 90), 0.6f, 0);
+    SpawnFoodGainAnimation(resourceChange[1], CP_Vector_Set(200, 450), CP_Vector_Set(CP_Random_RangeFloat(150, 250), CP_Random_RangeFloat(400, 500)), CP_Vector_Set(520, 180), 0.6f, 0);
+    SpawnMoraleGainAnimation(resourceChange[3], CP_Vector_Set(200, 450), CP_Vector_Set(CP_Random_RangeFloat(150, 250), CP_Random_RangeFloat(400, 500)), CP_Vector_Set(520, 360), 0.6f, 0);
+}
 
-    if (resourceChange[3] > 0)
+void IncreaseGold(int amount)
+{
+    if (amount != 0)
     {
-        SpawnVfxEaseInToEaseOut(5, CP_Vector_Set(1470, 390), CP_Vector_Set(CP_Random_RangeFloat(-50, 50) + 1470, CP_Random_RangeFloat(-50, 50) + 390), CP_Vector_Set(50, 360), 0.6f, CP_Vector_Set(128, 128), 0);
+        delayedGold = CP_Math_LerpInt(delayedGold, curGold, lerpGold);
+        lerpGold = 0;
+        curGold += amount;
     }
-    else if (resourceChange[3] < 0)
+}
+
+void IncreaseFood(int amount)
+{
+    if (amount != 0)
     {
-        SpawnVfxEaseInToEaseOut(6, CP_Vector_Set(1470, 390), CP_Vector_Set(CP_Random_RangeFloat(-50, 50) + 1470, CP_Random_RangeFloat(-50, 50) + 390), CP_Vector_Set(50, 360), 0.6f, CP_Vector_Set(128, 128), 0);
+        delayedFood = CP_Math_LerpInt(delayedFood, curFood, lerpFood);
+        lerpFood = 0;
+        curFood += amount;
     }
+}
+
+void IncreasePop(int amount)
+{
+    if (amount != 0)
+    {
+        delayedPop = CP_Math_LerpInt(delayedPop, curPopulation, lerpPop);
+        lerpPop = 0;
+        curPopulation += amount;
+    }
+}
+
+void IncreaseMorale(int amount)
+{
+    delayedMorale = CP_Math_LerpInt(delayedMorale, curMorale, lerpMorale);
+    lerpMorale = 0;
+    curMorale += amount;
 }
 
 void ApplyEventResourceChange(int resourceChange[4])
 {
-    curGold += resourceChange[0];
-    curFood += resourceChange[1];
-    curPopulation += resourceChange[2];
-    curMorale += resourceChange[3];
+    AddDelayedResource(1, resourceChange[0], 0.6f);
+    AddDelayedResource(2, resourceChange[1], 0.6f);
+    AddDelayedResource(3, resourceChange[2], 0.6f);
+    AddDelayedResource(4, resourceChange[3], 0.6f);
 }
 
 bool IsCostPayable(int costAmt)
@@ -382,10 +537,6 @@ bool IsCostPayable(int costAmt)
 	return false;
 }
 
-void UpdateResources()
-{
-
-}
 
 
 

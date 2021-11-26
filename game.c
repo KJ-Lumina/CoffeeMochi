@@ -127,6 +127,30 @@ void AdminControlInput()
         int moremoral[4] = { 0,0,0,10 };
         ApplyEventResourceChange(moremoral);
     }
+    if (CP_Input_KeyTriggered(KEY_5))
+    {
+        int moregold[4] = { -10,0,0,0 };
+        ApplyEventResourceChange(moregold);
+    }
+    if (CP_Input_KeyTriggered(KEY_6))
+    {
+        int morefood[4] = { 0,-10,0,0 };
+        ApplyEventResourceChange(morefood);
+    }
+    if (CP_Input_KeyTriggered(KEY_7))
+    {
+        int morepop[4] = { 0,0,-10,0 };
+        ApplyEventResourceChange(morepop);
+    }
+    if (CP_Input_KeyTriggered(KEY_8))
+    {
+        int moremoral[4] = { 0,0,0,-10 };
+        ApplyEventResourceChange(moremoral);
+    }
+    if (CP_Input_KeyTriggered(KEY_R))
+    {
+        RestartGame();
+    }
 }
 void CheckKeyInput()
 {
@@ -297,10 +321,10 @@ void GameStateControl()
             switch (selectedChoice)
             {
             case 1:
-                ApplyEventResourceChange(selectedEvent->resourceChangeA);
+                //ApplyEventResourceChange(selectedEvent->resourceChangeA);
                 break;
             case 2:
-                ApplyEventResourceChange(selectedEvent->resourceChangeB);
+                //ApplyEventResourceChange(selectedEvent->resourceChangeB);
                 break;
             }
             if (rewardCardsLeft[rewardIndex])
@@ -377,10 +401,11 @@ void GameStateControl()
                         if (CheckCurrent(B_HOUSE_INDEX, i, j))
                         {
                             // house broken, lose morale
-                            SpawnVfxEaseInToEaseOut(6, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), CP_Vector_Set(50, 180), 0.6f, CP_Vector_Set(128, 128), animCount * animDelay);
+                            SpawnMoraleGainAnimation(-1, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), CP_Vector_Set(520, 360), 0.6f, animCount * animDelay);
+                            //SpawnVfxEaseInToEaseOut(6, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), CP_Vector_Set(50, 180), 0.6f, CP_Vector_Set(128, 128), animCount * animDelay);
                         }
                         // house consume food
-                        SpawnVfxEaseInToEaseOut(4, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), CP_Vector_Set(50, 180), 0.6f, CP_Vector_Set(128, 128), animCount * animDelay);
+                        SpawnFoodGainAnimation(-1, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), CP_Vector_Set(520, 180), 0.6f, animCount * animDelay);
                         ++animCount;
                         break;
                     case B_FARM_INDEX:
@@ -389,12 +414,12 @@ void GameStateControl()
                         // farm broken, no food
                         if (CheckCurrent(B_FARM_INDEX, i, j))
                         {
-                            //SpawnVfxEaseInToEaseOut(3, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), CP_Vector_Set(50, 180), 0.6f, CP_Vector_Set(128, 128), animCount* animDelay);
+                            //SpawnFoodGainAnimation(0, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), CP_Vector_Set(520, 180), 0.6f, animCount * animDelay);
                         }
                         else
                         {
                             // farm generate food
-                            SpawnVfxEaseInToEaseOut(3, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), CP_Vector_Set(50, 180), 0.6f, CP_Vector_Set(128, 128), animCount * animDelay);
+                            SpawnFoodGainAnimation(1, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), CP_Vector_Set(520, 180), 0.6f, animCount* animDelay);
                         }
                         ++animCount;
                         break;
@@ -409,7 +434,7 @@ void GameStateControl()
                         else
                         {
                             // market generate gold
-                            SpawnVfxEaseInToEaseOut(1, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), CP_Vector_Set(50, 90), 0.6f, CP_Vector_Set(128, 128), animCount* animDelay);
+                            SpawnGoldGainAnimation(1, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), CP_Vector_Set(520, 90), 0.6f, animCount* animDelay);
                         }
                         ++animCount;
                         break;
@@ -424,7 +449,7 @@ void GameStateControl()
                         else
                         {
                             // tavern generate morale
-                            SpawnVfxEaseInToEaseOut(5, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), CP_Vector_Set(50, 90), 0.6f, CP_Vector_Set(128, 128), animCount * animDelay);
+                            SpawnMoraleGainAnimation(0, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), CP_Vector_Set(520, 360), 0.6f, animCount* animDelay);
                         }
                         ++animCount;
                         break;
@@ -482,7 +507,7 @@ void MouseDragOrClick(void)
 
 void MainGame_Initialize(void)
 {
-    CP_System_FullscreenAdvanced(1600, 900); //Enable for full screen
+    //CP_System_FullscreenAdvanced(1600, 900); //Enable for full screen
     gameState = State_GameEntry;
     InitResources(100,40,0,50);
     InitWorldSpaceGrid();
@@ -497,6 +522,7 @@ void MainGame_Initialize(void)
 
 void MainGame_Update(void)
 {
+    UpdateResources();
     UpdateMouseInput();
     MouseDragOrClick();
     CheckKeyInput();

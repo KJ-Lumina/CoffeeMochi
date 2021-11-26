@@ -300,6 +300,7 @@ CP_Image addFood;
 CP_Image loseFood;
 CP_Image addMorale;
 CP_Image minusMorale;
+LINEARVFX vfxList[50];
 
 void InitVfx()
 {
@@ -309,6 +310,10 @@ void InitVfx()
     loseFood = CP_Image_Load("./Assets/minusFood2.png");
     addMorale = CP_Image_Load("./Assets/addMorale2.png");
     minusMorale = CP_Image_Load("./Assets/minusMorale2.png");
+    for (int i = 0; i < 50; ++i)
+    {
+        vfxList[i] = (LINEARVFX){ 0 };
+    }
 }
 
 CP_Image* GetVfxSpriteByIndex(int index)
@@ -332,7 +337,7 @@ CP_Image* GetVfxSpriteByIndex(int index)
     }
 }
 
-LINEARVFX vfxList[50];
+
 
 void SpawnLinearVfx(int spriteIndex, CP_Vector startPos, CP_Vector endPos, float lifetime, CP_Vector size, float spawnDelay)
 {

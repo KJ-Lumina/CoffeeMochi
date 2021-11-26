@@ -20,6 +20,7 @@ CP_Image SettingsButtonImageHover;
 CP_Image ExitButtonImage;
 CP_Image ExitButtonImageHover;
 CP_Image game_Background;
+CP_Image game_UIBackground;
 
 CP_Image vol_slider;
 CP_Image vol_bar;
@@ -47,8 +48,8 @@ void ExitGame()
 void game_init(void)
 {
 	
-	//CP_System_SetWindowSize(1600, 900);
-	CP_System_FullscreenAdvanced(1600, 900); //Enable for full screen
+	CP_System_SetWindowSize(1600, 900);
+	//CP_System_FullscreenAdvanced(1600, 900); //Enable for full screen
 	CP_Settings_TextAlignment(CP_TEXT_ALIGN_H_CENTER, CP_TEXT_ALIGN_V_TOP);
 	windowsWidth = (float)CP_System_GetWindowWidth();
 	windowsHeight = (float)CP_System_GetWindowHeight();
@@ -73,9 +74,16 @@ void game_init(void)
 	ExitButtonImage = CP_Image_Load("./ImperoArtAssets/MainMenuAssets/Impero_ExitButton.png");
 	ExitButtonImageHover = CP_Image_Load("./ImperoArtAssets/MainMenuAssets/Impero_ExitButtonHover.png");
 	game_Background = CP_Image_Load("./ImperoArtAssets/Impero_GameBG.png");
+	game_UIBackground = CP_Image_Load("./ImperoArtAssets/UI bg.png"); 
 
 	whiteFlash = CP_Image_Load("./Assets/WhiteFlash.png");
 	InitSpritesheets();
+}
+
+void RestartGame()
+{
+	currentTimer = 0;
+	gameScene = SCENE_RESTART;
 }
 
 void game_update(void)
@@ -84,8 +92,13 @@ void game_update(void)
 	if (gameScene == SCENE_GAMEPHASE)
 	{
 		CP_Image_Draw(game_Background, 800, 450, 1600, 900, 255);
-
+		CP_Image_Draw(game_UIBackground, 275, 450, 550, 900, 255);
 		MainGame_Update();
+		if (currentTimer < 1)
+		{
+			currentTimer += CP_System_GetDt();
+			CP_Image_Draw(whiteFlash, windowsWidth / 2, windowsHeight / 2, 1600, 900, CP_Math_LerpInt(255, 0, (currentTimer)));
+		}
 	}
 	else if (gameScene == SCENE_SPLASH_DIGIPEN)
 	{
@@ -193,18 +206,27 @@ void game_update(void)
 		{
 			CP_Image_Draw(whiteFlash, windowsWidth / 2, windowsHeight / 2, 1600, 900, 255);
 			MainGame_Initialize();
-			gameScene = SCENE_GAMELEAVEENTRY;
 			currentTimer = 0;
-		}
-	}
-	else if (gameScene == SCENE_GAMELEAVEENTRY)
-	{
-		currentTimer += CP_System_GetDt();
-		CP_Image_Draw(whiteFlash, windowsWidth / 2, windowsHeight / 2, 1600, 900, CP_Math_LerpInt(255, 0, (currentTimer)));
-		if (currentTimer >= 1)
-		{
 			gameScene = SCENE_GAMEPHASE;
 		}
+	}
+	else if (gameScene == SCENE_RESTART)
+	{
+		currentTimer += CP_System_GetDt();
+		if (currentTimer <= 1)
+		{
+			CP_Image_Draw(game_Background, 800, 450, 1600, 900, 255);
+			MainGame_Update();
+			CP_Image_Draw(whiteFlash, windowsWidth / 2, windowsHeight / 2, 1600, 900, CP_Math_LerpInt(0, 255, (currentTimer)));
+		}
+		else
+		{
+			CP_Image_Draw(whiteFlash, windowsWidth / 2, windowsHeight / 2, 1600, 900, 255);
+			MainGame_Initialize();
+			currentTimer = 0;
+			gameScene = SCENE_GAMEPHASE;
+		}
+
 	}
 	else if (gameScene == SCENE_ENDPHASE)
 	{

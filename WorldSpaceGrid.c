@@ -203,7 +203,7 @@ bool AttemptPlaceBuilding(CP_Vector cursorPosition)
 void ReturnToCenter()
 {
     worldSpaceOrigin.x = windowsWidth / 2 - TILEWIDTH * WORLDGRIDX / 2 + MAPOFFSETX;
-    worldSpaceOrigin.y = windowsHeight / 2 - TILEHEIGHT * WORLDGRIDY / 2;
+    worldSpaceOrigin.y = windowsHeight / 2 - TILEHEIGHT * WORLDGRIDY / 2 + MAPOFFSETY;
 }
 
 void DrawGridIndicator(CP_Vector cursorPosition)

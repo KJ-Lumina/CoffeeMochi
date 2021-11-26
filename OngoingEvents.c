@@ -39,6 +39,11 @@ void InitOngoingEvents() {
 	//sprite_three = CP_Image_load();
 	//sprite_four = CP_Image_load();
 	//sprite_five = CP_Image_load();
+
+	for (int i = 0; i < EVENTLIMIT; ++i)
+	{
+		ongoingEvents[i] = (ONGOING){ 0 };
+	}
 }
 
 bool CheckCurrent(int typeofeffect, int x, int y)
