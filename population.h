@@ -28,19 +28,19 @@
 #define FULL 4 // too much food
 #define RICH 5 // too much gold
 
-int tier;
+int tier
 
 
 
 
-typedef struct{
-    char name[50];
+struct PROFILE{
+    char name[];
     //char descrip[];
     int age;
     int needs;
-    char occupation[50];
+    char occupation[];
 
-}PROFILE;
+};
 
 PROFILE create_citizen(){
 int second_gen;
@@ -286,7 +286,7 @@ int tier_gen= (rand() % 20);
         }
     }
     
-    return PROFILE{ name[50], age , occupation[]};
+    return PROFILE{ name, age , occupation };
 }
 
 

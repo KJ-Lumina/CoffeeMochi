@@ -7,7 +7,6 @@
 #include "UI_mechanics.h"
 #include "UI_Animations.h"
 #include "Npc.h"
-#include "Sound.c"
 
 
 
@@ -33,7 +32,7 @@ int rewardCardsLeft[NUMBER_OF_MAX_REWARDS];
 int rewardIndex = 0;
 
 float endTurnTimer;
-PlaySound();
+
 
 #pragma region Turn & Win Lose Functions
 //Trigger Turn Start Functions Calls
