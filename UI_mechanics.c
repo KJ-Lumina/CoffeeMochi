@@ -283,15 +283,15 @@ void DrawUI_Textbox()
 }
 void DrawUI_TextDesc(const char* text)
 {
-    CP_Settings_TextSize(20);
+    CP_Settings_TextSize(30);
     CP_Settings_Fill(CP_Color_Create(255, 255, 255, 255));
-    CP_Font_DrawTextBox(text, 100, 180, 300);
+    CP_Font_DrawTextBox(text, 110, 155, 300);
 }
 void DrawUI_Title(const char* text)
 {
-    CP_Settings_TextSize(40);
+    CP_Settings_TextSize(50);
     CP_Settings_Fill(CP_Color_Create(255, 255, 255, 255));
-    CP_Font_DrawTextBox(text, 50, 130, 400);
+    CP_Font_DrawTextBox(text, 110, 105, 300);
 }
 void DrawUI_AffectedLand()
 {
@@ -342,7 +342,7 @@ void DrawUI(GAMESTATE state)
         break;
     case State_Idle:
         DrawUI_Textbox();
-        DrawUI_TextDesc("Click on the deck below to draw an event card");
+        DrawUI_Title("Click on the card below to start an event");
         DrawUI_Deck();
         DrawUI_TopPile();
         break;

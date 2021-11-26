@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include "Menu.h"
 
-
+CP_Font accFont;
 float windowsWidth;
 float windowsHeight;
 GAMESCENE gameScene;
@@ -55,6 +55,8 @@ void game_init(void)
 {
 	
 	CP_System_SetWindowSize(1600, 900);
+	accFont = CP_Font_Load("./Assets/accid.ttf");
+	CP_Font_Set(accFont);
 	//CP_System_FullscreenAdvanced(1600, 900); //Enable for full screen
 	CP_Settings_TextAlignment(CP_TEXT_ALIGN_H_CENTER, CP_TEXT_ALIGN_V_TOP);
 	windowsWidth = (float)CP_System_GetWindowWidth();
@@ -63,8 +65,8 @@ void game_init(void)
 	//START FROM BEGINNING
 	gameScene = SCENE_SPLASH_DIGIPEN;
 	//SKIP TO GAME
-	/*MainGame_Initialize();
-	gameScene = SCENE_GAMEPHASE;*/
+	//MainGame_Initialize();
+	//gameScene = SCENE_GAMEPHASE;
 	//CHANGEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
 	Splash_Digipen = CP_Image_Load("./ImperoArtAssets/Impero_Digipen.png");
 	Splash_CoffeeMochi = CP_Image_Load("./ImperoArtAssets/CoffeeMochi_BG.png");
@@ -116,6 +118,10 @@ void game_update(void)
 	{
 		CP_Graphics_ClearBackground(CP_Color_Create(0, 0, 0, 255));
 		splashdigipentimer += CP_System_GetDt();
+		if (CP_Input_MouseClicked())
+		{
+			gameScene = SCENE_SPLASH_COFFEEMOCHI;
+		}
 		if (splashdigipentimer < 1)
 		{
 			CP_Image_Draw(Splash_Digipen, 800, 450, 1600, 900, CP_Math_LerpInt(0, 255, splashdigipentimer / 1));
@@ -137,6 +143,10 @@ void game_update(void)
 	{
 		CP_Graphics_ClearBackground(CP_Color_Create(0, 0, 0, 255));
 		splashcoffeemochitimer += CP_System_GetDt();
+		if (CP_Input_MouseClicked())
+		{
+			gameScene = SCENE_MAINMENU;
+		}
 		if (splashcoffeemochitimer < 1)
 		{
 			CP_Image_Draw(Splash_CoffeeMochi, 800, 450, 1600, 900, CP_Math_LerpInt(0, 255, splashcoffeemochitimer / 1));
