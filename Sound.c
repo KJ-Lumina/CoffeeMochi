@@ -12,6 +12,7 @@ typedef struct {
 }
 SOUND;
 
+CP_Sound mySound;
 
 void Init()
 {

@@ -22,7 +22,12 @@ CP_Image ExitButtonImageHover;
 CP_Image game_Background;
 CP_Image game_UIBackground;
 
-
+CP_Image ReturnToMainMenuButton;
+CP_Image ReturnToMainMenuButtonHover;
+CP_Image ResumeGameButton;
+CP_Image ResumeGameButtonHover;
+CP_Image RestartGameButton;
+CP_Image RestartGameButtonHover;
 CP_Image OptionsScreenImage;
 CP_Image ResolutionBtn_1600;
 CP_Image ResolutionBtn_1920;
@@ -30,7 +35,7 @@ CP_Image Vol_Slider;
 float sliderMinPos = 620;
 float sliderMaxPos = 1050;
 CP_Vector currentSliderPos;
-float current_Volume = 100;
+float current_Volume = 1.0f;
 
 CP_Sound Test_BGM; //Delete after use
 
@@ -85,6 +90,12 @@ void game_init(void)
 	game_UIBackground = CP_Image_Load("./ImperoArtAssets/UI bg.png"); 
 
 	//Options Assets
+	ReturnToMainMenuButton = CP_Image_Load("./ImperoArtAssets/OtherMenuAssets/Impero_ReturnButton.png");
+	ReturnToMainMenuButtonHover = CP_Image_Load("./ImperoArtAssets/OtherMenuAssets/Impero_ReturnButtonHover.png");
+	ResumeGameButton = CP_Image_Load("./ImperoArtAssets/OtherMenuAssets/Impero_ResumeButton.png");
+	ResumeGameButtonHover = CP_Image_Load("./ImperoArtAssets/OtherMenuAssets/Impero_ResumeButtonHover.png");
+	RestartGameButton = CP_Image_Load("./ImperoArtAssets/OtherMenuAssets/Impero_RestartButton.png");
+	RestartGameButtonHover = CP_Image_Load("./ImperoArtAssets/OtherMenuAssets/Impero_RestartButtonHover.png");
 	OptionsScreenImage = CP_Image_Load("./ImperoArtAssets/OtherMenuAssets/Impero_Options.png");
 	ResolutionBtn_1600 = CP_Image_Load("./ImperoArtAssets/OtherMenuAssets/Impero_1600.png");
 	ResolutionBtn_1920 = CP_Image_Load("./ImperoArtAssets/OtherMenuAssets/Impero_1920.png");
@@ -94,8 +105,8 @@ void game_init(void)
 	whiteFlash = CP_Image_Load("./Assets/WhiteFlash.png");
 	InitSpritesheets();
 
-	/*Test_BGM = CP_Sound_Load("./ImperoArtAssets/Music/Test_BGM.wav");
-	CP_Sound_PlayAdvanced(Test_BGM, current_Volume, 440, TRUE, CP_SOUND_GROUP_0);*/
+	Test_BGM = CP_Sound_Load("./ImperoArtAssets/Music/Test_BGM.wav");
+	CP_Sound_PlayAdvanced(Test_BGM, 1.0f, 1.0f, TRUE, CP_SOUND_GROUP_0);
 }
 
 void RestartGame()
@@ -216,6 +227,9 @@ void game_update(void)
 		if (CheckWithinBounds(CP_Vector_Set(400, 700), 328, 99))
 		{
 			CP_Image_Draw(ExitButtonImageHover, 400, 700, 328, 99, 255);
+			if (CP_Input_MouseClicked()) {
+				ExitGame();
+			}
 		}
 		else
 		{
@@ -225,11 +239,26 @@ void game_update(void)
 	else if (gameScene == SCENE_OPTIONS) {
 
 		CP_Graphics_ClearBackground(CP_Color_Create(0, 0, 0, 255));
+
 		CP_Image_Draw(OptionsScreenImage, 800, 450, 1600, 900, 255);
 
+		if (CheckWithinBounds(CP_Vector_Set(800, 700), 281, 87))
+		{
+			CP_Image_Draw(ReturnToMainMenuButtonHover, 800, 700, 281, 87, 255);
+			if (CP_Input_MouseClicked())
+			{
+				gameScene = SCENE_MAINMENU;
+				currentTimer = 0;
+			}
+		}
+		else {
+			CP_Image_Draw(ReturnToMainMenuButton, 800, 700, 281, 87, 255);
+		}
+		
 		CP_Image_Draw(Vol_Slider, currentSliderPos.x, currentSliderPos.y, 35, 58, 255);
 		CP_Image_Draw(ResolutionBtn_1600, 800, 365, 241,90, 255);
 		AdjustVolumeSlider();
+
 
 	}
 	else if (gameScene == SCENE_GAMEENTRY)
@@ -315,7 +344,8 @@ void OpenOptions()
 }
 void ChangeVolume(float vol)
 {
-	CP_Sound_SetGroupVolume(CP_SOUND_GROUP_0, vol);
+	current_Volume = vol;
+	CP_Sound_SetGroupVolume(CP_SOUND_GROUP_0, current_Volume);
 }
 
 void AdjustVolumeSlider() {
@@ -325,22 +355,27 @@ void AdjustVolumeSlider() {
 	CP_Vector previousSliderPos = currentSliderPos;
 
 	if (CP_Input_MouseDragged(MOUSE_BUTTON_LEFT)) {		
-		printf("Dragging");
 		if (CheckWithinBounds(currentSliderPos, 35, 58)) {
-			printf("In Bounds");
 			float sliderMovement = mouseX - previousSliderPos.x;
 			int withinMaxPos = currentSliderPos.x + sliderMovement <= sliderMaxPos;
 			int withinMinPos = currentSliderPos.x + sliderMovement >= sliderMinPos;
 			if (withinMaxPos && withinMinPos) {
-				printf("in Bounds");
 				float newSliderPosX = currentSliderPos.x + sliderMovement;
 				currentSliderPos = CP_Vector_Set(newSliderPosX, currentSliderPos.y);
 			}
 
-			float vol_percentageChange = (sliderMovement / (sliderMaxPos - sliderMinPos)) * 100;
-			printf("Vol Change: %f", vol_percentageChange);
-			printf("Current Volume: %f", current_Volume);
-			ChangeVolume(current_Volume + vol_percentageChange);
+			float vol_percentageChange = (sliderMovement / (sliderMaxPos - sliderMinPos));
+			
+			float newVol = current_Volume + vol_percentageChange;
+
+			if (newVol <= 0.0f) {
+				newVol = 0.0f;
+			}
+			else if (newVol >= 1.0f) {
+				newVol = 1.0f;
+			}
+
+			ChangeVolume(newVol);
 		}
 
 	}
