@@ -53,17 +53,17 @@ void ExitGame()
 void game_init(void)
 {
 	
-	//CP_System_SetWindowSize(1600, 900);
-	CP_System_FullscreenAdvanced(1600, 900); //Enable for full screen
+	CP_System_SetWindowSize(1600, 900);
+	//CP_System_FullscreenAdvanced(1600, 900); //Enable for full screen
 	CP_Settings_TextAlignment(CP_TEXT_ALIGN_H_CENTER, CP_TEXT_ALIGN_V_TOP);
 	windowsWidth = (float)CP_System_GetWindowWidth();
 	windowsHeight = (float)CP_System_GetWindowHeight();
 
 	//START FROM BEGINNING
-	//gameScene = SCENE_SPLASH_DIGIPEN;
+	gameScene = SCENE_SPLASH_DIGIPEN;
 	//SKIP TO GAME
-	MainGame_Initialize();
-	gameScene = SCENE_GAMEPHASE;
+	/*MainGame_Initialize();
+	gameScene = SCENE_GAMEPHASE;*/
 	//CHANGEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
 	Splash_Digipen = CP_Image_Load("./ImperoArtAssets/Impero_Digipen.png");
 	Splash_CoffeeMochi = CP_Image_Load("./ImperoArtAssets/CoffeeMochi_BG.png");
@@ -80,10 +80,10 @@ void game_init(void)
 	game_Background = CP_Image_Load("./ImperoArtAssets/Impero_GameBG.png");
 
 	//Options Assets
-	OptionsScreenImage = CP_Image_Load("./ImperoArtAssets/OtherMenuAssets/Impero_Options");
-	ResolutionBtn_1600 = CP_Image_Load("./ImperoArtAssets/OtherMenuAssets/Impero_1600");
-	ResolutionBtn_1920 = CP_Image_Load("./ImperoArtAssets/OtherMenuAssets/Impero_1920");
-	Vol_Slider = CP_Image_Load("./ImperoArtAssets/OtherMenuAssets/Impero_slider");
+	OptionsScreenImage = CP_Image_Load("./ImperoArtAssets/OtherMenuAssets/Impero_Options.png");
+	ResolutionBtn_1600 = CP_Image_Load("./ImperoArtAssets/OtherMenuAssets/Impero_1600.png");
+	ResolutionBtn_1920 = CP_Image_Load("./ImperoArtAssets/OtherMenuAssets/Impero_1920.png");
+	Vol_Slider = CP_Image_Load("./ImperoArtAssets/OtherMenuAssets/Impero_slider.png");
 
 
 	whiteFlash = CP_Image_Load("./Assets/WhiteFlash.png");
@@ -170,6 +170,11 @@ void game_update(void)
 		if (CheckWithinBounds(CP_Vector_Set(800, 700), 328, 99))
 		{
 			CP_Image_Draw(SettingsButtonImageHover, 800, 700, 328, 99, 255);
+			if (CP_Input_MouseClicked())
+			{
+				gameScene = SCENE_OPTIONS;
+				currentTimer = 0;
+			}
 		}
 		else
 		{
@@ -184,6 +189,15 @@ void game_update(void)
 		{
 			CP_Image_Draw(ExitButtonImage, 400, 700, 328, 99, 255);
 		}
+	}
+	else if (gameScene == SCENE_OPTIONS) {
+
+		CP_Graphics_ClearBackground(CP_Color_Create(0, 0, 0, 255));
+		CP_Image_Draw(OptionsScreenImage, 800, 450, 1600, 900, 255);
+		currentSliderPos = CP_Vector_Set(800, 508);
+		CP_Image_Draw(Vol_Slider, currentSliderPos.x, currentSliderPos.y, 35, 58, 255);
+		CP_Image_Draw(ResolutionBtn_1600, 800, 365, 241,90, 255);
+
 	}
 	else if (gameScene == SCENE_GAMEENTRY)
 	{
@@ -265,7 +279,7 @@ void ChangeVolume(float vol)
 void AdjustVolumeSlider() {
 
 	float mouseX = CP_Input_GetMouseX();
-	float mouseY = CP_Input_GetMouseY();
+	//float mouseY = CP_Input_GetMouseY();
 	CP_Vector previousSliderPos = currentSliderPos;
 
 	if (CheckWithinBounds(currentSliderPos, 100, 200)) {

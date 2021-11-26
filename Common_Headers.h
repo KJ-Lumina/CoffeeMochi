@@ -114,7 +114,6 @@ typedef struct
 }CARDEVENT;
 
 
-
 typedef struct
 {
 	int eventIndex;
