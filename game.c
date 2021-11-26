@@ -11,7 +11,7 @@
 
 
 #pragma region Game Options Control
-bool AllowAdminControl = false;
+bool AllowAdminControl = true;
 bool AllowMouseDrag = false;
 bool mouseDrag = false;
 float MouseCounter = 0;
@@ -28,10 +28,11 @@ int loseCondition_PopulationValue = 0;
 float AnimTimer = 1;
 CARDEVENT* selectedEvent;
 REWARDCARD* selectedReward[NUMBER_OF_MAX_REWARDS];
+int selectedChoice;
 int rewardCardsLeft[NUMBER_OF_MAX_REWARDS];
 int rewardIndex = 0;
 
-float endTurnTimer;
+float endTurnTimer = 0;
 
 
 #pragma region Turn & Win Lose Functions
@@ -54,7 +55,7 @@ void GameOver()
 
 bool LoseCondition_Resources()
 {
-    if (Get_current_food() <= loseCondition_FoodValue || Get_current_population() <= loseCondition_PopulationValue || Get_current_gold() < 0) {
+    if (Get_current_food() <= loseCondition_FoodValue || Get_current_population() <= loseCondition_PopulationValue || Get_current_gold() < 0 || Get_current_morale() < 0) {
         return true;
     }
     return false;
@@ -63,6 +64,7 @@ bool LoseCondition_Resources()
 void EndTurn() 
 {
     GenerateResourcesOnEndTurn();
+    OnEndUpdateEvents();
 
     if (LoseCondition_Resources()) {
         GameOver();
@@ -97,15 +99,59 @@ void AdminControlInput()
     //testing animations
     if (CP_Input_KeyTriggered(KEY_W))
     {
-        SpawnAnimation(currentMousePos.x, currentMousePos.y, 200, 200, 1, 0.5f, 1);
+        SpawnAnimation(currentMousePos.x, currentMousePos.y, currentMousePos.x, currentMousePos.y, 200, 200, 1, 0.5f, 1);
     }
 
     if (CP_Input_KeyTriggered(KEY_E)) 
     {
+        SpawnVfxEaseInToEaseOut(1, currentMousePos, CP_Vector_Set(CP_Random_RangeFloat(-50, 50) + currentMousePos.x, CP_Random_RangeFloat(-50, 50) + currentMousePos.y), CP_Vector_Set(50, 50), 1, CP_Vector_Set(128, 128), 0);
+    }
 
+    if (CP_Input_KeyTriggered(KEY_1))
+    {
+        int moregold[4] = { 10,0,0,0 };
+        ApplyEventResourceChange(moregold);
+    }
+    if (CP_Input_KeyTriggered(KEY_2))
+    {
+        int morefood[4] = { 0,10,0,0 };
+        ApplyEventResourceChange(morefood);
+    }
+    if (CP_Input_KeyTriggered(KEY_3))
+    {
+        int morepop[4] = { 0,0,10,0 };
+        ApplyEventResourceChange(morepop);
+    }
+    if (CP_Input_KeyTriggered(KEY_4))
+    {
+        int moremoral[4] = { 0,0,0,10 };
+        ApplyEventResourceChange(moremoral);
+    }
+    if (CP_Input_KeyTriggered(KEY_5))
+    {
+        int moregold[4] = { -10,0,0,0 };
+        ApplyEventResourceChange(moregold);
+    }
+    if (CP_Input_KeyTriggered(KEY_6))
+    {
+        int morefood[4] = { 0,-10,0,0 };
+        ApplyEventResourceChange(morefood);
+    }
+    if (CP_Input_KeyTriggered(KEY_7))
+    {
+        int morepop[4] = { 0,0,-10,0 };
+        ApplyEventResourceChange(morepop);
+    }
+    if (CP_Input_KeyTriggered(KEY_8))
+    {
+        int moremoral[4] = { 0,0,0,-10 };
+        ApplyEventResourceChange(moremoral);
+    }
+    if (CP_Input_KeyTriggered(KEY_R))
+    {
+        RestartGame();
     }
 }
-
 void CheckKeyInput()
 {
     if (CP_Input_KeyTriggered(KEY_F))
@@ -118,7 +164,6 @@ void CheckKeyInput()
         AdminControlInput();
     }
 }
-
 void MouseClick()
 {
     switch (gameState)
@@ -127,20 +172,11 @@ void MouseClick()
             //Run Condition on Start of Turn
             gameState = State_Idle;
             break;
-
         case State_Idle:
             if (ClickCheck_CardDraw())
             {
-                if (GetCardsLeft() == 0)
-                {
-                    GameEnd();
-                    break;
-                }
-                else
-                {
-                    AnimTimer = 0.6f;
-                    gameState = State_CardDraw;
-                }
+                AnimTimer = 0.6f;
+                gameState = State_CardDraw;
             }
             break;
         case State_CardDraw:
@@ -151,71 +187,58 @@ void MouseClick()
             switch (ClickCheck_CardChoice())
             {
             case 1:
+                selectedChoice = 1;
                 // clicked on optionA
                 rewardIndex = 0; // Reset Reward Index Before Event Begin
-                ApplyEventResult(selectedEvent->resourceChangeA);
+                ApplyEventResourceAnim(selectedEvent->resourceChangeA);
                 for (int index = 0; index < NUMBER_OF_MAX_REWARDS; ++index)
                 {
                     selectedReward[index] = GetRewardByIndex(selectedEvent->resourceRewardA[index].rewardIndex);
                     rewardCardsLeft[index] = selectedEvent->resourceRewardA[index].rewardAmount;
                 }
-                if (rewardCardsLeft[rewardIndex])
-                {
-                    // reward cards exist
-                    UI_SetReward(selectedReward[rewardIndex], rewardCardsLeft[0] + rewardCardsLeft[1]);
-                    gameState = State_CollectRewards;
-                }
-                else
-                {
-                    // no reward cards
-                    gameState = State_EndOfTurn;
-                }
+                //AnimTimer = 1.3f;
+                gameState = State_ResourceChange;
                 break;
             case 2:
+                selectedChoice = 2;
                 // clicked on optionB
-                ApplyEventResult(selectedEvent->resourceChangeB);
+                rewardIndex = 0; // Reset Reward Index Before Event Begin
+                ApplyEventResourceAnim(selectedEvent->resourceChangeB);
                 for (int index = 0; index < NUMBER_OF_MAX_REWARDS; ++index)
                 {
                     selectedReward[index] = GetRewardByIndex(selectedEvent->resourceRewardB[index].rewardIndex);
                     rewardCardsLeft[index] = selectedEvent->resourceRewardB[index].rewardAmount;
                 }
-
-                if (rewardCardsLeft[rewardIndex])
-                {
-                    // reward cards exist
-                    UI_SetReward(selectedReward[rewardIndex], rewardCardsLeft[0] + rewardCardsLeft[1]);
-                    gameState = State_CollectRewards;
-                }
-                else
-                {
-                    // no reward cards
-                    gameState = State_EndOfTurn;
-                }
+                //AnimTimer = 1.3f;
+                gameState = State_ResourceChange;
                 break;
             }
             break;
         case State_CollectRewards:
             switch (ClickCheck_Rewards())
             {
-            case 1:
+            case BUILD_TYPE_EVENT:
                 // reward is construction
-               
-                if (rewardCardsLeft[rewardIndex] > 0) 
-                {
-                    SetCurrentBuilding(GetBuildingByIndex(selectedReward[rewardIndex]->eventIndex));
-                    --rewardCardsLeft[rewardIndex];
-                    gameState = State_PlaceYourBuilding;
-                }
-                else if (rewardCardsLeft[rewardIndex] < 0) 
-                {
-                    SetCurrentBuilding(GetBuildingByIndex(selectedReward[rewardIndex]->eventIndex));
-                    ++rewardCardsLeft[rewardIndex];
-                    gameState = State_DestroyBuilding;
-                }
-                    
+                SetBuildingType(GetBuildingByIndex(selectedReward[rewardIndex]->eventIndex));
+                --rewardCardsLeft[rewardIndex];
+                gameState = State_PlaceYourBuilding;
                 break;
-            case 2:
-                // reward is ongoing?
+            case DESTROY_TYPE_EVENT:
+                SetBuildingType(GetBuildingByIndex(selectedReward[rewardIndex]->eventIndex));
+                --rewardCardsLeft[rewardIndex];
+                gameState = State_DestroyBuilding;
+                break;
+            case ONGOING_TYPE_EVENT:
+                while (selectedEvent->affectedLand[rewardIndex] != 0)
+                {
+                    int gridPos = selectedEvent->affectedLand[rewardIndex];
+                    if (GetOccupiedIndex((gridPos - 1) % WORLDGRIDY, (gridPos - 1) / WORLDGRIDX) == selectedReward[0]->resourceType)
+                    {
+                        GenerateEvents(O_RATEVENT, (gridPos - 1) % WORLDGRIDY, (gridPos - 1) / WORLDGRIDX);
+                    }
+                    rewardIndex++;
+                }
+                gameState = State_EndOfTurn;
                 break;
             }
             break;
@@ -267,7 +290,6 @@ void MouseClick()
             break;
     }
 }
-
 void GameStateControl() 
 {
     DrawGridIndicator(currentMousePos);
@@ -292,13 +314,39 @@ void GameStateControl()
         break;
     case State_MakeAChoice:
         break;
+    case State_ResourceChange:
+        AnimTimer -= CP_System_GetDt();
+        if (AnimTimer <= 0)
+        {
+            switch (selectedChoice)
+            {
+            case 1:
+                //ApplyEventResourceChange(selectedEvent->resourceChangeA);
+                break;
+            case 2:
+                //ApplyEventResourceChange(selectedEvent->resourceChangeB);
+                break;
+            }
+            if (rewardCardsLeft[rewardIndex])
+            {
+                // reward cards exist
+                UI_SetReward(selectedReward[rewardIndex], rewardCardsLeft[0] + rewardCardsLeft[1]);
+                gameState = State_CollectRewards;
+            }
+            else
+            {
+                // no reward cards
+                gameState = State_EndOfTurn;
+            }
+        }
+        break;
+    case State_CollectRewards:
+        break;
     case State_PlaceYourBuilding:
         DrawCursorTile(currentMousePos);
         break;
     case State_DestroyBuilding:
-
-        DestroyBuildingBySelectedBuilding(); //Destroy 1 building by the building chosen in choice
-
+        DestroyBuildingBySelectedBuilding(selectedReward[rewardIndex]->resourceType); //Destroy 1 building by the building chosen in choice
         switch (rewardIndex) //Prevention for going out of bounds
         {
         case 0: //Check Reward Index = 0
@@ -332,25 +380,6 @@ void GameStateControl()
             gameState = State_EndOfTurn;
             break;
         }   
-        
-        //if (rewardCardsLeft[rewardIndex])
-        //{
-        //    gameState = State_CollectRewards;
-        //}
-        //// there is no more rewards
-        //else
-        //{
-        //    ++rewardIndex;
-        //    if (rewardIndex != NUMBER_OF_MAX_REWARDS) {
-        //        gameState = State_CollectRewards;
-        //    }
-        //    else {
-        //        rewardIndex = 0; //Reset Reward Index
-        //        gameState = State_EndOfTurn;
-
-        //    }
-        //}
-
         break;
     case State_EndOfTurn:
         if (endTurnTimer <= 0)
@@ -369,25 +398,59 @@ void GameStateControl()
                     case B_HOUSE_INDEX:
                         tempVector.x = i * TILEWIDTH + TILEWIDTH / 2 + worldOrigin.x;
                         tempVector.y = j * TILEHEIGHT + TILEHEIGHT / 3 + worldOrigin.y;
-                        SpawnLinearVfx(4,tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), 1, CP_Vector_Set(128, 128), animCount * animDelay);
+                        if (CheckCurrent(B_HOUSE_INDEX, i, j))
+                        {
+                            // house broken, lose morale
+                            SpawnMoraleGainAnimation(-1, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), CP_Vector_Set(520, 360), 0.6f, animCount * animDelay);
+                            //SpawnVfxEaseInToEaseOut(6, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), CP_Vector_Set(50, 180), 0.6f, CP_Vector_Set(128, 128), animCount * animDelay);
+                        }
+                        // house consume food
+                        SpawnFoodGainAnimation(-1, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), CP_Vector_Set(520, 180), 0.6f, animCount * animDelay);
                         ++animCount;
                         break;
                     case B_FARM_INDEX:
                         tempVector.x = i * TILEWIDTH + TILEWIDTH / 2 + worldOrigin.x;
                         tempVector.y = j * TILEHEIGHT + TILEHEIGHT / 3 + worldOrigin.y;
-                        SpawnLinearVfx(3, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), 1, CP_Vector_Set(128, 128), animCount * animDelay);
+                        // farm broken, no food
+                        if (CheckCurrent(B_FARM_INDEX, i, j))
+                        {
+                            //SpawnFoodGainAnimation(0, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), CP_Vector_Set(520, 180), 0.6f, animCount * animDelay);
+                        }
+                        else
+                        {
+                            // farm generate food
+                            SpawnFoodGainAnimation(1, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), CP_Vector_Set(520, 180), 0.6f, animCount* animDelay);
+                        }
                         ++animCount;
                         break;
                     case B_MARKET_INDEX:
                         tempVector.x = i * TILEWIDTH + TILEWIDTH / 2 + worldOrigin.x;
                         tempVector.y = j * TILEHEIGHT + TILEHEIGHT / 3 + worldOrigin.y;
-                        SpawnLinearVfx(1, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), 1, CP_Vector_Set(128, 128), animCount * animDelay);
+                        // market broke, no gold
+                        if (CheckCurrent(B_MARKET_INDEX, i, j))
+                        {
+                            
+                        }
+                        else
+                        {
+                            // market generate gold
+                            SpawnGoldGainAnimation(1, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), CP_Vector_Set(520, 90), 0.6f, animCount* animDelay);
+                        }
                         ++animCount;
                         break;
                     case B_TAVERN_INDEX:
                         tempVector.x = i * TILEWIDTH + TILEWIDTH / 2 + worldOrigin.x;
                         tempVector.y = j * TILEHEIGHT + TILEHEIGHT / 3 + worldOrigin.y;
-                        SpawnLinearVfx(5, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), 1, CP_Vector_Set(128, 128), animCount * animDelay);
+                        // tavern broken, no morale
+                        if (CheckCurrent(B_TAVERN_INDEX, i, j))
+                        {
+
+                        }
+                        else
+                        {
+                            // tavern generate morale
+                            SpawnMoraleGainAnimation(0, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), CP_Vector_Set(520, 360), 0.6f, animCount* animDelay);
+                        }
                         ++animCount;
                         break;
                     default:
@@ -395,12 +458,16 @@ void GameStateControl()
                     }
                 }
             }
-            endTurnTimer = animCount * animDelay;
+            endTurnTimer = animCount * animDelay + 1.0f;
         }
         else
         {
             endTurnTimer -= CP_System_GetDt();
-            if (endTurnTimer <= 0)
+            if (GetCardsLeft() == 0)
+            {
+                GameEnd();
+            }
+            else if (endTurnTimer <= 0)
             {
                 EndTurn();  //State Set to Start Turn is in EndTurn()       
             }
@@ -411,7 +478,6 @@ void GameStateControl()
         break;
     }
 }
-
 void MouseDragOrClick(void)
 {
     if (AllowMouseDrag)
@@ -441,6 +507,7 @@ void MouseDragOrClick(void)
 
 void MainGame_Initialize(void)
 {
+    //CP_System_FullscreenAdvanced(1600, 900); //Enable for full screen
     gameState = State_GameEntry;
     InitResources(100,40,0,50);
     InitWorldSpaceGrid();
@@ -450,21 +517,23 @@ void MainGame_Initialize(void)
     InitDecks();
     InitUI();
     InitVfx();
+    InitOngoingEvents();
 }
 
 void MainGame_Update(void)
 {
+    UpdateResources();
     UpdateMouseInput();
     MouseDragOrClick();
     CheckKeyInput();
     // Graphics
     DrawTileSet();
     UpdateAllNpc();
-    DrawBuildings();
-    DrawAllLinearVfx();
     DrawUI(gameState);
+    DrawBuildings();
+    DrawOngoingEvents();
     GameStateControl();
     DrawTempTextResources();
+    DrawAllLinearVfx();
     DrawAllAnimations();
-
 }

@@ -7,8 +7,10 @@
 
 
 //SPRITESHEET tileset_testenemy = { setNextSprite,minX,maxX,minY,maxY,maxSprites,spriteSizeX,spritesizeY,timeToDeath,posX,PosY,scaleX,scaleY,timeElapse,index,isInfiniteLoop };
-SPRITESHEET tileset_testenemy = { 0,0,4,0,1,4,64,64,10,100,100,200,200,0,1,0 };
-SPRITESHEET tileset_stars = { 0,0,10,0,1,10,64,64,10,100,100,100,100,0,2,0 };
+//SPRITESHEET tileset_testenemy = { setNextSprite,minX,maxX,minY,maxY,maxSprites,spriteSizeX,spritesizeY,scaleX,scaleY,index,isInfiniteLoop,posX,PosY,endposX,endposY,timeElapse,timeToDeath};
+SPRITESHEET tileset_testenemy = { 0,0,4,0,1,4,64,64,200,200,1,0,100,100, 100, 100, 0,10 };
+SPRITESHEET tileset_stars = { 0,0,10,0,1,10,64,64,100,100,2,0,100,100, 100, 100, 0, 10 };
+SPRITESHEET tileset_stars_falling = { 0,0,10,0,1,10,64,64,100,100,2,0,100,100, 100, 100, 0, 10 };
 CP_Image testenemy;
 CP_Image stars;
 
@@ -36,7 +38,6 @@ void InitSpritesheets()
     testenemy = CP_Image_Load("./Assets/testenemy.png");
     stars = CP_Image_Load("./Assets/Impero_Sprite_Stars.png");
 
-
     for (int i = 0; i < numOfSpritesheets; ++i)
     {
         minX[i] = GetSpriteAnimationByIndex(i).minX;
@@ -57,6 +58,8 @@ SPRITESHEET GetSpriteAnimationByIndex(int index)
         return tileset_testenemy;
     case TILESET_STARS:
         return tileset_stars;
+    case TILESET_STARFALL:
+        return tileset_stars_falling;
     default:
         return tileset_testenemy;
     }
@@ -68,6 +71,8 @@ CP_Image GetSpriteSheetByIndex(int index)
     case 1:
         return testenemy;
     case 2:
+        return stars;
+    case 3:
         return stars;
     default:
         return testenemy;
@@ -120,7 +125,7 @@ void DrawAnimation(float x, float y, float scaleX, float scaleY, float newDelay,
 
 }
 // Saves an animation into the AllAnims array to be rendered. If infiniteLoop put 1. timeToDeath is how long 1 cycle of animation will take in case of infiniteloop.
-void SpawnAnimation(float x, float y, float scaleX, float scaleY, int index, float timeToDeath, int isInfinteLoop)
+void SpawnAnimation(float x, float y, float endx, float endy, float scaleX, float scaleY, int index, float timeToDeath, int isInfinteLoop)
 {
     int i = 0;
     for (i = 0; i < 99; ++i)
@@ -147,6 +152,8 @@ void SpawnAnimation(float x, float y, float scaleX, float scaleY, int index, flo
     AllAnims[i].timeElapse = GetSpriteAnimationByIndex(index).timeElapse;
     AllAnims[i].index = index;
     AllAnims[i].isInfiniteLoop = 0;
+    AllAnims[i].endPosX = endx;
+    AllAnims[i].endPosY = endy;
 
     if (isInfinteLoop)
     {
@@ -211,7 +218,8 @@ void DrawAllAnimations(void)
             if ((currentSprite + 1) <= AllAnims[i].maxSprites)
             {
                 //CP_Image_DrawSubImage(GetBuildingSpriteByIndex(7), WORLDGRIDX, WORLDGRIDY, TILEWIDTH, TILEHEIGHT, 0, 512, 128, 672, 255);
-                CP_Image_DrawSubImage(GetSpriteSheetByIndex(AllAnims[i].index), AllAnims[i].posX, AllAnims[i].posY, AllAnims[i].scaleX, AllAnims[i].scaleY, AllAnims[i].spriteSizeX * AllAnims[i].minX, AllAnims[i].spriteSizeY * AllAnims[i].minY, AllAnims[i].spriteSizeX * (AllAnims[i].minX + 1), AllAnims[i].spriteSizeY * (AllAnims[i].minY + 1), 255);
+                CP_Image_DrawSubImage(GetSpriteSheetByIndex(AllAnims[i].index), CP_Math_LerpFloat(AllAnims[i].posX, AllAnims[i].endPosX, AllAnims[i].timeElapse / AllAnims[i].timeToDeath),
+                    CP_Math_LerpFloat(AllAnims[i].posY, AllAnims[i].endPosY, AllAnims[i].timeElapse / AllAnims[i].timeToDeath), AllAnims[i].scaleX, AllAnims[i].scaleY, AllAnims[i].spriteSizeX * AllAnims[i].minX, AllAnims[i].spriteSizeY * AllAnims[i].minY, AllAnims[i].spriteSizeX * (AllAnims[i].minX + 1), AllAnims[i].spriteSizeY * (AllAnims[i].minY + 1), 255);
             }
         }
 
@@ -248,67 +256,119 @@ void DrawAllAnimations(void)
 
                 AllAnims[i].setNextSprite = 0;
             }
-
-            CP_Image_DrawSubImage(GetSpriteSheetByIndex(AllAnims[i].index), AllAnims[i].posX, AllAnims[i].posY, AllAnims[i].scaleX, AllAnims[i].scaleY, AllAnims[i].spriteSizeX * AllAnims[i].minX, AllAnims[i].spriteSizeY * AllAnims[i].minY, AllAnims[i].spriteSizeX * (AllAnims[i].minX + 1), AllAnims[i].spriteSizeY * (AllAnims[i].minY + 1), 255);
-
+            // AllAnims[i].posX
+            //CP_Image_DrawSubImage(GetSpriteSheetByIndex(AllAnims[i].index), AllAnims[i].posX
+            //    , AllAnims[i].posY, AllAnims[i].scaleX, AllAnims[i].scaleY, AllAnims[i].spriteSizeX * AllAnims[i].minX, AllAnims[i].spriteSizeY * AllAnims[i].minY, AllAnims[i].spriteSizeX * (AllAnims[i].minX + 1), AllAnims[i].spriteSizeY * (AllAnims[i].minY + 1), 255);
+            CP_Image_DrawSubImage(GetSpriteSheetByIndex(AllAnims[i].index), CP_Math_LerpFloat(AllAnims[i].posX, AllAnims[i].endPosX, AllAnims[i].timeElapse / AllAnims[i].timeToDeath),
+                CP_Math_LerpFloat(AllAnims[i].posY, AllAnims[i].endPosY, AllAnims[i].timeElapse / AllAnims[i].timeToDeath), AllAnims[i].scaleX, AllAnims[i].scaleY, AllAnims[i].spriteSizeX * AllAnims[i].minX, AllAnims[i].spriteSizeY * AllAnims[i].minY, AllAnims[i].spriteSizeX * (AllAnims[i].minX + 1), AllAnims[i].spriteSizeY * (AllAnims[i].minY + 1), 255);
         }
 
     }
 }
 
+
+float counter1AnimDelta = 0;
+float counter2AnimDelta = 0;
+float counter3AnimDelta = 0;
 //repeated spawnanim function
-void ConstantAnimSpawner(int index, float time, int lowerX, int upperX, int lowerY, int upperY, float scaleX, float scaleY, float timeToDeath, int isTimeVariance)
+void ConstantAnimSpawner(int counterIndex, int index, float time, int lowerX, int upperX, int lowerY, int upperY, float scaleX, float scaleY, float timeToDeath, int isTimeVariance, int isLerp)
 {
     float posX = 0;
     float posY = 0;
+    float endposX = 0;
+    float endposY = 0;
     float totaltime = time; 
     bool check = CP_Random_GetBool();
-    spawnerAnimDelta += CP_System_GetDt();
-    if (spawnerAnimDelta >= totaltime)
+    switch (counterIndex)
     {
-        spawnerAnimDelta -= totaltime;
-        posX = (float)CP_Random_RangeInt(lowerX,upperX);
-        posY = (float)CP_Random_RangeInt(lowerY, upperY);
-        SpawnAnimation(posX, posY, scaleX, scaleY, index, timeToDeath, 0);
-        if (isTimeVariance)
+    case 1:
+        counter1AnimDelta += CP_System_GetDt();
+        if (counter1AnimDelta < totaltime)
         {
-            check = CP_Random_GetBool();
-            if (check)
-            {
-                totaltime += CP_Random_GetFloat();
-
-            }
-            else
-            {
-                totaltime -= CP_Random_GetFloat();
-            }  
+            return;
         }
-        if (totaltime <= 0)
+        counter1AnimDelta -= totaltime;
+        break;
+    case 2:
+        counter2AnimDelta += CP_System_GetDt();
+        if (counter2AnimDelta < totaltime)
         {
-            totaltime = time;
+            return;
         }
-        else if (totaltime >= (time * 2))
+        counter2AnimDelta -= totaltime;
+        break;
+    case 3:
+        counter3AnimDelta += CP_System_GetDt();
+        if (counter3AnimDelta < totaltime)
         {
-            totaltime = time;
+            return;
         }
+        counter3AnimDelta -= totaltime;
+        break;
     }
+
+    posX = (float)CP_Random_RangeInt(lowerX, upperX);
+    posY = (float)CP_Random_RangeInt(lowerY, upperY);
+    if (isLerp)
+    {
+        endposX = posX - (float)CP_Random_RangeInt(300, upperX);
+        endposY = posY + (float)CP_Random_RangeInt(200, upperY);
+        //posX += 200;
+        //posY -= 200;
+    }
+    else 
+    {
+        endposX = posX;
+        endposY = posY;
+    }
+
+    SpawnAnimation(posX, posY, endposX, endposY, scaleX, scaleY, index, timeToDeath, 0);
+    if (isTimeVariance)
+    {
+        check = CP_Random_GetBool();
+        if (check)
+        {
+            totaltime += CP_Random_GetFloat();
+
+        }
+        else
+        {
+            totaltime -= CP_Random_GetFloat();
+        }  
+    }
+    if (totaltime <= 0)
+    {
+        totaltime = time;
+    }
+    else if (totaltime >= (time * 2))
+    {
+        totaltime = time;
+    }
+    
 }
+
+
 
 CP_Image addGold;
 CP_Image minusGold;
 CP_Image addFood;
-CP_Image minusFood;
+CP_Image loseFood;
 CP_Image addMorale;
 CP_Image minusMorale;
+LINEARVFX vfxList[50];
 
 void InitVfx()
 {
     addGold = CP_Image_Load("./Assets/addGold2.png");
     minusGold = CP_Image_Load("./Assets/minusGold2.png");
     addFood = CP_Image_Load("./Assets/addFood2.png");
-    minusFood = CP_Image_Load("./Assets/minusFood2.png");
+    loseFood = CP_Image_Load("./Assets/minusFood2.png");
     addMorale = CP_Image_Load("./Assets/addMorale2.png");
     minusMorale = CP_Image_Load("./Assets/minusMorale2.png");
+    for (int i = 0; i < 50; ++i)
+    {
+        vfxList[i] = (LINEARVFX){ 0 };
+    }
 }
 
 CP_Image* GetVfxSpriteByIndex(int index)
@@ -322,7 +382,7 @@ CP_Image* GetVfxSpriteByIndex(int index)
     case 3:
         return &addFood;
     case 4:
-        return &minusFood;
+        return &loseFood;
     case 5:
         return &addMorale;
     case 6:
@@ -332,7 +392,7 @@ CP_Image* GetVfxSpriteByIndex(int index)
     }
 }
 
-LINEARVFX vfxList[50];
+
 
 void SpawnLinearVfx(int spriteIndex, CP_Vector startPos, CP_Vector endPos, float lifetime, CP_Vector size, float spawnDelay)
 {
@@ -352,6 +412,12 @@ void SpawnLinearVfx(int spriteIndex, CP_Vector startPos, CP_Vector endPos, float
     }
 }
 
+float EaseInQuad(float start, float end, float value)
+{
+    end -= start;
+    return end * value * value + start;
+}
+
 void DrawAllLinearVfx()
 {
     float deltatVfx = CP_System_GetDt();
@@ -368,10 +434,33 @@ void DrawAllLinearVfx()
                 vfxList[i].curlifetime += deltatVfx;
                 if (vfxList[i].curlifetime < vfxList[i].lifetime)
                 {
-                    CP_Image_Draw(*GetVfxSpriteByIndex(vfxList[i].spriteIndex)
-                        , CP_Math_LerpFloat(vfxList[i].startPos.x, vfxList[i].endPos.x, vfxList[i].curlifetime / vfxList[i].lifetime)
-                        , CP_Math_LerpFloat(vfxList[i].startPos.y, vfxList[i].endPos.y, vfxList[i].curlifetime / vfxList[i].lifetime)
-                        , vfxList[i].size.x, vfxList[i].size.y, 255);
+                    switch (vfxList[i].movementIndex)
+                    {
+                    case 0:
+                        CP_Image_Draw(*GetVfxSpriteByIndex(vfxList[i].spriteIndex)
+                            , CP_Math_LerpFloat(vfxList[i].startPos.x, vfxList[i].endPos.x, vfxList[i].curlifetime / vfxList[i].lifetime)
+                            , CP_Math_LerpFloat(vfxList[i].startPos.y, vfxList[i].endPos.y, vfxList[i].curlifetime / vfxList[i].lifetime)
+                            , vfxList[i].size.x, vfxList[i].size.y, 255);
+                        break;
+                    case 1:
+                        CP_Image_Draw(*GetVfxSpriteByIndex(vfxList[i].spriteIndex)
+                            , CP_Math_LerpFloat(vfxList[i].startPos.x, vfxList[i].endPos.x, vfxList[i].curlifetime / vfxList[i].lifetime)
+                            , CP_Math_LerpFloat(vfxList[i].startPos.y, vfxList[i].endPos.y, vfxList[i].curlifetime / vfxList[i].lifetime)
+                            , vfxList[i].size.x, vfxList[i].size.y, 255);
+                        break;
+                    case 2:
+                        CP_Image_Draw(*GetVfxSpriteByIndex(vfxList[i].spriteIndex)
+                            , EaseInQuad(vfxList[i].startPos.x, vfxList[i].endPos.x, vfxList[i].curlifetime / vfxList[i].lifetime)
+                            , EaseInQuad(vfxList[i].startPos.y, vfxList[i].endPos.y, vfxList[i].curlifetime / vfxList[i].lifetime)
+                            , vfxList[i].size.x, vfxList[i].size.y, 255);
+                        break;
+                    default:
+                        CP_Image_Draw(*GetVfxSpriteByIndex(vfxList[i].spriteIndex)
+                            , EaseInQuad(vfxList[i].startPos.x, vfxList[i].endPos.x, vfxList[i].curlifetime / vfxList[i].lifetime)
+                            , EaseInQuad(vfxList[i].startPos.y, vfxList[i].endPos.y, vfxList[i].curlifetime / vfxList[i].lifetime)
+                            , vfxList[i].size.x, vfxList[i].size.y, 255);
+                        break;
+                    }
                 }
                 else
                 {
@@ -381,6 +470,45 @@ void DrawAllLinearVfx()
         }
     }
 }
+
+void SpawnVfxEaseInToEaseOut(int spriteIndex, CP_Vector startPos, CP_Vector checkpoint, CP_Vector endPos, float lifetime, CP_Vector size, float spawnDelay)
+{
+    int count = 2;
+    for (int i = 0; i < 50; ++i)
+    {
+        if (vfxList[i].spriteIndex == 0)
+        {
+            if (count == 2)
+            {
+                vfxList[i].spriteIndex = spriteIndex;
+                vfxList[i].movementIndex = 2;
+                vfxList[i].startPos = startPos;
+                vfxList[i].endPos = checkpoint;
+                vfxList[i].lifetime = lifetime;
+                vfxList[i].curlifetime = 0;
+                vfxList[i].size = size;
+                vfxList[i].spawnDelay = spawnDelay;
+                --count;
+            }
+            else if (count == 1)
+            {
+                vfxList[i].spriteIndex = spriteIndex;
+                vfxList[i].movementIndex = 1;
+                vfxList[i].startPos = checkpoint;
+                vfxList[i].endPos = endPos;
+                vfxList[i].lifetime = lifetime;
+                vfxList[i].curlifetime = 0;
+                vfxList[i].size = size;
+                vfxList[i].spawnDelay = spawnDelay + lifetime;
+                return;
+            }
+        }
+    }
+}
+
+
+
+
 
 
 

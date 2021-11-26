@@ -8,18 +8,21 @@ SPRITESHEET GetSpriteAnimationByIndex(int index);
 CP_Image GetSpriteSheetByIndex(int index);
 void InitSpritesheets(void);
 void DrawAnimation(float x, float y, float scaleX, float scaleY, float delay, int index);
-void SpawnAnimation(float x, float y, float scaleX, float scaleY, int index, float timeToDeath, int isInfinteLoop);
+
 
 //have to add more in for more spritesheets
 enum SpriteAnimationIndex
 {
-    TILESET_TESTENEMY = 1
-    ,TILESET_STARS = 2 
+    TILESET_NULL,
+    TILESET_TESTENEMY,
+    TILESET_STARS,
+    TILESET_STARFALL
 };
 
 typedef struct
 {
     int spriteIndex;
+    int movementIndex;
     CP_Vector startPos;
     CP_Vector endPos;
     float curlifetime;
@@ -27,3 +30,5 @@ typedef struct
     CP_Vector size;
     float spawnDelay;
 }LINEARVFX;
+
+float EaseInQuad(float start, float end, float value);
