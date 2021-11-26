@@ -287,7 +287,7 @@ bool CheckCurrent(int typeofeffect, int x, int y);
 // UI VFX
 void SpawnLinearVfx(int spriteIndex, CP_Vector startPos, CP_Vector endPos, float lifetime, CP_Vector size, float spawnDelay);
 void SpawnVfxEaseInToEaseOut(int spriteIndex, CP_Vector startPos, CP_Vector checkpoint, CP_Vector endPos, float lifetime, CP_Vector size, float spawnDelay);
-void DrawAllLinearVfx();
+void DrawAllVfx();
 void InitVfx();
 
 //Menu CallBacks

@@ -1,10 +1,12 @@
 #include <stdio.h>
 #include <stdbool.h>
+#include <math.h>
 #include "cprocessing.h"
 #include "Common_Headers.h"
 #include "UI_Animations.h"
 
-
+#define NATURAL_LOG_OF_2    0.693147181f
+#define PI                3.14159265358979323846f  /* pi */
 
 //SPRITESHEET tileset_testenemy = { setNextSprite,minX,maxX,minY,maxY,maxSprites,spriteSizeX,spritesizeY,timeToDeath,posX,PosY,scaleX,scaleY,timeElapse,index,isInfiniteLoop };
 //SPRITESHEET tileset_testenemy = { setNextSprite,minX,maxX,minY,maxY,maxSprites,spriteSizeX,spritesizeY,scaleX,scaleY,index,isInfiniteLoop,posX,PosY,endposX,endposY,timeElapse,timeToDeath};
@@ -412,13 +414,26 @@ void SpawnLinearVfx(int spriteIndex, CP_Vector startPos, CP_Vector endPos, float
     }
 }
 
+//Movement types
 float EaseInQuad(float start, float end, float value)
 {
     end -= start;
     return end * value * value + start;
 }
 
-void DrawAllLinearVfx()
+float EaseInSine(float start, float end, float value)
+{
+    end -= start;
+    return -end * cosf(value * (PI * 0.5f)) + end + start;
+}
+
+float EaseOutSine(float start, float end, float value)
+{
+    end -= start;
+    return end * sinf(value * (PI * 0.5f)) + start;
+}
+
+void DrawAllVfx()
 {
     float deltatVfx = CP_System_GetDt();
     for (int i = 0; i < 50; ++i)
@@ -436,22 +451,24 @@ void DrawAllLinearVfx()
                 {
                     switch (vfxList[i].movementIndex)
                     {
+                    // Linear movement
                     case 0:
                         CP_Image_Draw(*GetVfxSpriteByIndex(vfxList[i].spriteIndex)
                             , CP_Math_LerpFloat(vfxList[i].startPos.x, vfxList[i].endPos.x, vfxList[i].curlifetime / vfxList[i].lifetime)
                             , CP_Math_LerpFloat(vfxList[i].startPos.y, vfxList[i].endPos.y, vfxList[i].curlifetime / vfxList[i].lifetime)
                             , vfxList[i].size.x, vfxList[i].size.y, 255);
                         break;
+
                     case 1:
                         CP_Image_Draw(*GetVfxSpriteByIndex(vfxList[i].spriteIndex)
-                            , CP_Math_LerpFloat(vfxList[i].startPos.x, vfxList[i].endPos.x, vfxList[i].curlifetime / vfxList[i].lifetime)
-                            , CP_Math_LerpFloat(vfxList[i].startPos.y, vfxList[i].endPos.y, vfxList[i].curlifetime / vfxList[i].lifetime)
+                            , EaseInSine(vfxList[i].startPos.x, vfxList[i].endPos.x, vfxList[i].curlifetime / vfxList[i].lifetime)
+                            , EaseInSine(vfxList[i].startPos.y, vfxList[i].endPos.y, vfxList[i].curlifetime / vfxList[i].lifetime)
                             , vfxList[i].size.x, vfxList[i].size.y, 255);
                         break;
                     case 2:
                         CP_Image_Draw(*GetVfxSpriteByIndex(vfxList[i].spriteIndex)
-                            , EaseInQuad(vfxList[i].startPos.x, vfxList[i].endPos.x, vfxList[i].curlifetime / vfxList[i].lifetime)
-                            , EaseInQuad(vfxList[i].startPos.y, vfxList[i].endPos.y, vfxList[i].curlifetime / vfxList[i].lifetime)
+                            , EaseOutSine(vfxList[i].startPos.x, vfxList[i].endPos.x, vfxList[i].curlifetime / vfxList[i].lifetime)
+                            , EaseOutSine(vfxList[i].startPos.y, vfxList[i].endPos.y, vfxList[i].curlifetime / vfxList[i].lifetime)
                             , vfxList[i].size.x, vfxList[i].size.y, 255);
                         break;
                     default:
@@ -481,7 +498,7 @@ void SpawnVfxEaseInToEaseOut(int spriteIndex, CP_Vector startPos, CP_Vector chec
             if (count == 2)
             {
                 vfxList[i].spriteIndex = spriteIndex;
-                vfxList[i].movementIndex = 2;
+                vfxList[i].movementIndex = 1;
                 vfxList[i].startPos = startPos;
                 vfxList[i].endPos = checkpoint;
                 vfxList[i].lifetime = lifetime;
@@ -493,7 +510,7 @@ void SpawnVfxEaseInToEaseOut(int spriteIndex, CP_Vector startPos, CP_Vector chec
             else if (count == 1)
             {
                 vfxList[i].spriteIndex = spriteIndex;
-                vfxList[i].movementIndex = 1;
+                vfxList[i].movementIndex = 2;
                 vfxList[i].startPos = checkpoint;
                 vfxList[i].endPos = endPos;
                 vfxList[i].lifetime = lifetime;

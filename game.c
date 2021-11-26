@@ -534,6 +534,6 @@ void MainGame_Update(void)
     DrawOngoingEvents();
     GameStateControl();
     DrawTempTextResources();
-    DrawAllLinearVfx();
+    DrawAllVfx();
     DrawAllAnimations();
 }
