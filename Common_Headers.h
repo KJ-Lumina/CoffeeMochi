@@ -65,6 +65,9 @@
 void SetGameSceneEndPhase();
 void RestartGame();
 
+
+
+
 typedef enum 
 {
 	SCENE_SPLASH_DIGIPEN,
@@ -100,6 +103,8 @@ typedef struct
 	int rewardAmount;
 
 }REWARD;
+
+
 
 typedef struct
 {
