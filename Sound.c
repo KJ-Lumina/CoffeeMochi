@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "cprocessing.h"
 #include <stdbool.h>
+#include "Sound.h"
 
 #define PLAY 1
 #define STOP 0
@@ -12,7 +13,6 @@
 #define TAVERN 4
 #define GOLD 5
 #define RAT 6
-
 
 
 typedef struct {
@@ -30,8 +30,9 @@ CP_Sound Market_S;
 CP_Sound RatE_S;
 CP_Sound Tavern_S;
 CP_Sound Crops_S;
+CP_Sound BGM_Test;
 //PlayingSound[20];
-void Init()
+void InitSound()
 {
     CardDeck_S = CP_Sound_Load("./Sounds/CardSFX.wav3");
     Click_S = CP_Sound_Load("./Sounds/ClickSFX.wav3");
@@ -41,11 +42,17 @@ void Init()
     RatE_S = CP_Sound_Load("./Sounds/RatSFX.wav3");
     Tavern_S = CP_Sound_Load("./Sounds/TavernSFX.wav3");
     Crops_S = CP_Sound_Load("./Sounds/HouseSFX.wav3");
+    BGM_Test = CP_Sound_Load("./ImperoArtAssets/Music/Test_BGMT.wav");
+    LoopSound();
+    
+}
+void LoopSound() {
+    CP_Sound_PlayAdvanced(BGM_Test, 1.0f, 1.0f, TRUE, CP_SOUND_GROUP_1);
 }
 
 void PlaySound(int SoundIndex)
 {
-    if (CP_Input_MouseTriggered(MOUSE_BUTTON_1)) 
+    if (CP_Input_MouseTriggered(MOUSE_BUTTON_1))
     {
         CP_Sound_Play(Click_S);
         CP_Sound_Free(&Click_S);
@@ -55,29 +62,29 @@ void PlaySound(int SoundIndex)
     {
     case CARD:
         CP_Sound_Play(CardDeck_S);
-        break;
-    
+        return;
+
     case HOUSE:
         CP_Sound_Play(House_S);
-        break;
+        return;
 
     case MARKET:
         CP_Sound_Play(Market_S);
-        break;
+        return;
 
     case FARM:
         //CP_Sound_Play(Farm_S);
-        break;
+        return;
 
     case GOLD:
         CP_Sound_Play(Gold_S);
-        break;
+        return;
 
     case RAT:
         CP_Sound_Play(RatE_S);
-        break;
+        return;
     }
-    
+
 }
 
 void Shutdown(int SoundIndex)
@@ -86,27 +93,30 @@ void Shutdown(int SoundIndex)
     {
     case CARD:
         CP_Sound_Free(&CardDeck_S);
-        break;
+        return;
 
     case HOUSE:
         CP_Sound_Free(&House_S);
-        break;
+        return;
 
     case MARKET:
         CP_Sound_Free(&Market_S);
-        break;
+        return;
 
     case FARM:
         //CP_Sound_Free(&Farm_S);
-        break;
+        return;
 
     case GOLD:
         CP_Sound_Free(&Gold_S);
-        break;
+        return;
 
     case RAT:
         CP_Sound_Play(RatE_S);
-        break;
+        return;
+    case 7:
+        CP_Sound_Play(BGM_Test);
+        return;
     }
 
 
