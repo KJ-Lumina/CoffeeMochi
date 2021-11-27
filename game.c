@@ -7,7 +7,7 @@
 #include "UI_mechanics.h"
 #include "UI_Animations.h"
 #include "Npc.h"
-
+#include "Resource_Stats.h"
 
 
 #pragma region Game Options Control
@@ -33,6 +33,7 @@ int rewardCardsLeft[NUMBER_OF_MAX_REWARDS];
 int rewardIndex = 0;
 
 float endTurnTimer = 0;
+bool endTurnAnim2 = false;
 
 
 #pragma region Turn & Win Lose Functions
@@ -55,7 +56,7 @@ void GameOver()
 
 bool LoseCondition_Resources()
 {
-    if (Get_current_food() <= loseCondition_FoodValue || Get_current_population() <= loseCondition_PopulationValue || Get_current_gold() < 0 || Get_current_morale() < 0) {
+    if (Get_current_food() <= 0 || Get_current_population() <= 0 || Get_current_gold() < 0 || Get_current_morale() < 0) {
         return true;
     }
     return false;
@@ -245,6 +246,14 @@ void MouseClick()
         case State_PlaceYourBuilding:
             if (AttemptPlaceBuilding(currentMousePos))
             {
+                if (selectedReward[rewardIndex]->eventIndex == B_HOUSE_INDEX)
+                {
+                    ScreenToWorldPosition(&currentMousePos);
+                    SpawnNpc(CP_Vector_Set(currentMousePos.x - GetWorldSpaceOrigin().x - 30, currentMousePos.y - GetWorldSpaceOrigin().y + 60), 1);
+                    SpawnNpc(CP_Vector_Set(currentMousePos.x - GetWorldSpaceOrigin().x, currentMousePos.y - GetWorldSpaceOrigin().y + 60), 1);
+                    SpawnNpc(CP_Vector_Set(currentMousePos.x - GetWorldSpaceOrigin().x + 30, currentMousePos.y - GetWorldSpaceOrigin().y + 60), 1);
+                }
+
                 switch(rewardIndex) //Prevention for going out of bounds
                 {
                 case 0: //Check Reward Index = 0
@@ -290,7 +299,7 @@ void MouseClick()
             break;
     }
 }
-void GameStateControl() 
+void GameStateControl()
 {
     DrawGridIndicator(currentMousePos);
     switch (gameState)
@@ -318,15 +327,6 @@ void GameStateControl()
         AnimTimer -= CP_System_GetDt();
         if (AnimTimer <= 0)
         {
-            switch (selectedChoice)
-            {
-            case 1:
-                //ApplyEventResourceChange(selectedEvent->resourceChangeA);
-                break;
-            case 2:
-                //ApplyEventResourceChange(selectedEvent->resourceChangeB);
-                break;
-            }
             if (rewardCardsLeft[rewardIndex])
             {
                 // reward cards exist
@@ -336,6 +336,7 @@ void GameStateControl()
             else
             {
                 // no reward cards
+                AnimTimer = 0.6f;
                 gameState = State_EndOfTurn;
             }
         }
@@ -379,10 +380,14 @@ void GameStateControl()
         default:
             gameState = State_EndOfTurn;
             break;
-        }   
+        }
         break;
     case State_EndOfTurn:
-        if (endTurnTimer <= 0)
+        if (AnimTimer > 0)
+        {
+            AnimTimer -= CP_System_GetDt();
+        }
+        else if (endTurnTimer <= 0 && !endTurnAnim2)
         {
             rewardIndex = 0;  // Reset Reward Index Before Event Begin
             float animCount = 0;
@@ -404,8 +409,6 @@ void GameStateControl()
                             SpawnMoraleGainAnimation(-1, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), CP_Vector_Set(520, 360), 0.6f, animCount * animDelay);
                             //SpawnVfxEaseInToEaseOut(6, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), CP_Vector_Set(50, 180), 0.6f, CP_Vector_Set(128, 128), animCount * animDelay);
                         }
-                        // house consume food
-                        SpawnFoodGainAnimation(-1, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), CP_Vector_Set(520, 180), 0.6f, animCount * animDelay);
                         ++animCount;
                         break;
                     case B_FARM_INDEX:
@@ -419,7 +422,7 @@ void GameStateControl()
                         else
                         {
                             // farm generate food
-                            SpawnFoodGainAnimation(1, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), CP_Vector_Set(520, 180), 0.6f, animCount* animDelay);
+                            SpawnFoodGainAnimation(FARM_FOODGEN, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), CP_Vector_Set(520, 180), 0.6f, animCount * animDelay);
                         }
                         ++animCount;
                         break;
@@ -429,12 +432,12 @@ void GameStateControl()
                         // market broke, no gold
                         if (CheckCurrent(B_MARKET_INDEX, i, j))
                         {
-                            
+
                         }
                         else
                         {
                             // market generate gold
-                            SpawnGoldGainAnimation(1, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), CP_Vector_Set(520, 90), 0.6f, animCount* animDelay);
+                            SpawnGoldGainAnimation(MARKET_GOLDGEN, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), CP_Vector_Set(520, 90), 0.6f, animCount * animDelay);
                         }
                         ++animCount;
                         break;
@@ -449,7 +452,7 @@ void GameStateControl()
                         else
                         {
                             // tavern generate morale
-                            SpawnMoraleGainAnimation(0, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), CP_Vector_Set(520, 360), 0.6f, animCount* animDelay);
+                            SpawnMoraleGainAnimation(TAVERN_MORGEN, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), CP_Vector_Set(520, 360), 0.6f, animCount * animDelay);
                         }
                         ++animCount;
                         break;
@@ -458,9 +461,12 @@ void GameStateControl()
                     }
                 }
             }
+
+
+
             endTurnTimer = animCount * animDelay + 1.0f;
         }
-        else
+        else if (endTurnTimer < 0 && endTurnAnim2)
         {
             endTurnTimer -= CP_System_GetDt();
             if (GetCardsLeft() == 0)
@@ -469,8 +475,27 @@ void GameStateControl()
             }
             else if (endTurnTimer <= 0)
             {
+                endTurnAnim2 = false;
                 EndTurn();  //State Set to Start Turn is in EndTurn()       
             }
+        }
+        else
+        {
+            endTurnAnim2 = true;
+            float animCount = 0;
+            float animDelay = 0.1f;
+            CP_Vector worldOrigin = GetWorldSpaceOrigin();
+            CP_Vector tempVector;
+            for (int i = 0; i < MAXNPC; ++i)
+            {
+                if (GetNpc(i).x != 0)
+                {
+                    tempVector = GetNpc(i);
+                    tempVector = CP_Vector_Set(tempVector.x + worldOrigin.x, tempVector.y + worldOrigin.y);
+                    SpawnFoodGainAnimation(-1, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - 40), CP_Vector_Set(520, 180), 0.6f, animCount * animDelay);
+                }
+            }
+            endTurnTimer = animCount * animDelay + 1.0f;
         }
         break;
     case State_GameOver:

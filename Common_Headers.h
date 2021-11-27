@@ -299,6 +299,10 @@ void SpawnAnimation(float x, float y, float endx, float endy, float scaleX, floa
 void InitSpritesheets(void);
 void DrawAllAnimations(void);
 
+float EaseInQuad(float start, float end, float value);
+float EaseInSine(float start, float end, float value);
+float EaseOutSine(float start, float end, float value);
+
 
 
 

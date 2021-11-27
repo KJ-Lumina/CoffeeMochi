@@ -458,19 +458,21 @@ void DrawAllVfx()
                             , CP_Math_LerpFloat(vfxList[i].startPos.y, vfxList[i].endPos.y, vfxList[i].curlifetime / vfxList[i].lifetime)
                             , vfxList[i].size.x, vfxList[i].size.y, 255);
                         break;
-
+                    // Ease in Sine
                     case 1:
                         CP_Image_Draw(*GetVfxSpriteByIndex(vfxList[i].spriteIndex)
                             , EaseInSine(vfxList[i].startPos.x, vfxList[i].endPos.x, vfxList[i].curlifetime / vfxList[i].lifetime)
                             , EaseInSine(vfxList[i].startPos.y, vfxList[i].endPos.y, vfxList[i].curlifetime / vfxList[i].lifetime)
                             , vfxList[i].size.x, vfxList[i].size.y, 255);
                         break;
+                    // Ease out Sine
                     case 2:
                         CP_Image_Draw(*GetVfxSpriteByIndex(vfxList[i].spriteIndex)
                             , EaseOutSine(vfxList[i].startPos.x, vfxList[i].endPos.x, vfxList[i].curlifetime / vfxList[i].lifetime)
                             , EaseOutSine(vfxList[i].startPos.y, vfxList[i].endPos.y, vfxList[i].curlifetime / vfxList[i].lifetime)
                             , vfxList[i].size.x, vfxList[i].size.y, 255);
                         break;
+                    // Ease in Quad
                     default:
                         CP_Image_Draw(*GetVfxSpriteByIndex(vfxList[i].spriteIndex)
                             , EaseInQuad(vfxList[i].startPos.x, vfxList[i].endPos.x, vfxList[i].curlifetime / vfxList[i].lifetime)

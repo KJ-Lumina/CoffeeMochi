@@ -17,7 +17,7 @@
 	CP_Vector checkPoints[6];
 }NPC;*/
 
-NPC npcList[100] = { 0 };
+NPC npcList[MAXNPC] = { 0 };
 float deltaTime;
 CP_Vector worldSpaceOrigin;
 CP_Image npcSprite;
@@ -25,12 +25,17 @@ CP_Image npcSprite;
 void InitNpc()
 {
 	npcSprite = CP_Image_Load("./Assets/best_npc.png");
+
+	for (int i = 0; i < MAXNPC; i++)
+	{
+		npcList[i] = (NPC){ 0 };
+	}
 }
 
 void SpawnNpc(CP_Vector position, int amtToSpawn)
 {
-	NPC newNpc = { 1, position, CP_Vector_Set(0, 0), 0, 0, 0, 100, {0} };
-	for (int i = 0; i < 100; ++i)
+	NPC newNpc = { 1, position, CP_Vector_Set(0, 0), 0, 0, 0, CP_Random_RangeFloat(80,160), {0} };
+	for (int i = 0; i < MAXNPC; ++i)
 	{
 		if (npcList[i].spriteIndex == 0)
 		{
@@ -272,7 +277,20 @@ void UpdateAllNpc()
 		if (npcList[i].spriteIndex != 0)
 		{
 			CP_Image_Draw(npcSprite, npcList[i].worldPosition.x + worldSpaceOrigin.x , npcList[i].worldPosition.y + worldSpaceOrigin.y, 100, 100, 255);
+		
 		}
+	}
+}
+
+CP_Vector GetNpc(int index)
+{
+	if (npcList[index].spriteIndex == 0)
+	{
+		return CP_Vector_Set(0,0);
+	}
+	else
+	{
+		return npcList[index].worldPosition;
 	}
 }
 

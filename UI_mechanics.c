@@ -209,7 +209,7 @@ void DrawUI_Deck()
     // Draw back of card
     //CP_Image_Draw(image_CardDeck, windowWidth - 130, (windowHeight / 2) + 260, 228, 309, 255);
 }
-void DrawUI_TopPile()
+void DrawUI_TopCard()
 {
     // Hovering Deck
     if (CheckWithinBounds(EventCardAnim.startingPos, 185, 243))
@@ -223,13 +223,22 @@ void DrawUI_TopPile()
     EventCardAnim.currentTime = CP_Math_ClampFloat(EventCardAnim.currentTime, 0, EventCardAnim.totalTime / 8);
     CP_Image_Draw(EventCardAnim.image, CP_Math_LerpFloat(EventCardAnim.startingPos.x, EventCardAnim.endingPos.x, EventCardAnim.currentTime / EventCardAnim.totalTime),
         CP_Math_LerpFloat(EventCardAnim.startingPos.y, EventCardAnim.endingPos.y, EventCardAnim.currentTime / EventCardAnim.totalTime), 185, 243, 255);
+
+
 }
-void DrawUI_TopPileInsert()
+void DrawUI_TopCardTransition()
 {
     EventCardAnim.currentTime += CP_System_GetDt();
     EventCardAnim.currentTime = CP_Math_ClampFloat(EventCardAnim.currentTime, 0, EventCardAnim.totalTime);
-    CP_Image_Draw(EventCardAnim.image, CP_Math_LerpFloat(EventCardAnim.startingPos.x, EventCardAnim.endingPos.x, EventCardAnim.currentTime / EventCardAnim.totalTime),
-        CP_Math_LerpFloat(EventCardAnim.startingPos.y, EventCardAnim.endingPos.y, EventCardAnim.currentTime / EventCardAnim.totalTime), 185, 243, 255);
+    CP_Image_Draw(EventCardAnim.image, EaseOutSine(EventCardAnim.startingPos.x, EventCardAnim.endingPos.x, EventCardAnim.currentTime / EventCardAnim.totalTime),
+        EaseOutSine(EventCardAnim.startingPos.y, EventCardAnim.endingPos.y, EventCardAnim.currentTime / EventCardAnim.totalTime), 185, 243, 255);
+
+    cardflashTimer = 0;
+    cardhighlightTimer[0] = 0;
+    cardhighlightTimer[1] = 0;
+    cardhighlightTimer[2] = 0;
+    cardhighlightTimer[3] = 0;
+    cardhighlightTimer[4] = 0;
 }
 void DrawUI_RewardCards(bool rewardPicked)
 {
@@ -338,24 +347,18 @@ void DrawUI(GAMESTATE state)
     case State_StartOfTurn:
         DrawUI_Textbox();
         DrawUI_Deck();
-        DrawUI_TopPile();
+        DrawUI_TopCard();
         break;
     case State_Idle:
         DrawUI_Textbox();
         DrawUI_Title("Click on the card below to start an event");
         DrawUI_Deck();
-        DrawUI_TopPile();
+        DrawUI_TopCard();
         break;
     case State_CardDraw:
         DrawUI_Textbox();
         DrawUI_Deck();
-        DrawUI_TopPileInsert();
-        cardflashTimer = 0;
-        cardhighlightTimer[0] = 0;
-        cardhighlightTimer[1] = 0;
-        cardhighlightTimer[2] = 0;
-        cardhighlightTimer[3] = 0;
-        cardhighlightTimer[4] = 0;
+        DrawUI_TopCardTransition();
         break;
     case State_MakeAChoice:
         DrawUI_Textbox();

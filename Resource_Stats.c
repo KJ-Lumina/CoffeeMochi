@@ -165,7 +165,7 @@ void Gold_generated_per_turn()
 
 	// Net total Gold generated
 	//curGold += gold_generated_by_markets + gold_generated_by_tax - gold_deducted_from_upkeep;
-    IncreaseGold((numMarkets * GOLD_AMT_FROM_MARKETS) - (numTaverns * TAVERN_UPKEEP_COST));
+    //IncreaseGold((numMarkets * GOLD_AMT_FROM_MARKETS) - (numTaverns * TAVERN_UPKEEP_COST));
 }
 
 // Function to check amount of Food resource generated per turn
@@ -179,7 +179,7 @@ void Food_generated_per_turn()
 
 	// Net total Food generated
 	//curFood += food_generated_by_farms - food_deducted_from_consumption;
-    IncreaseFood((numFarms * FOOD_AMT_FROM_FARMS) - (numHouses * FOOD_CONSUMPTION_PER_PAX));
+    //IncreaseFood((numFarms * FOOD_AMT_FROM_FARMS) - (numHouses * FOOD_CONSUMPTION_PER_PAX));
 }
 
 void Population_per_turn()
@@ -245,7 +245,7 @@ void Morale_per_turn()
 			curMorale = (curPopulation/LOW_MORALE) + (numTaverns * (tavernModifier - LOW_MORALE));
 			break;
 	}*/
-    IncreaseMorale(numTaverns * 2);
+    //IncreaseMorale(numTaverns * 2);
 }
 
 int delayedGold = 0;
