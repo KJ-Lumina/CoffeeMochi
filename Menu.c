@@ -129,6 +129,62 @@ void game_update(void)
 			currentTimer += CP_System_GetDt();
 			CP_Image_Draw(whiteFlash, windowsWidth / 2, windowsHeight / 2, 1600, 900, CP_Math_LerpInt(255, 0, (currentTimer)));
 		}
+
+		if (CP_Input_KeyTriggered(KEY_ESCAPE)) {
+
+			gameScene = SCENE_GAMEOPTIONS;
+
+		}
+	}
+	else if (gameScene == SCENE_GAMEOPTIONS) {
+
+		CP_Graphics_ClearBackground(CP_Color_Create(0, 0, 0, 255));
+
+		CP_Image_Draw(OptionsScreenImage, 800, 450, 1600, 900, 255);
+
+		//Return to main menu
+		if (CheckWithinBounds(CP_Vector_Set(1150, 700), 281, 87))
+		{
+			CP_Image_Draw(ReturnToMainMenuButtonHover, 1150, 700, 281, 87, 255);
+			if (CP_Input_MouseClicked())
+			{
+				gameScene = SCENE_MAINMENU;
+				currentTimer = 0;
+			}
+		}
+		else {
+			CP_Image_Draw(ReturnToMainMenuButton, 1150, 700, 281, 87, 255);
+		}
+
+		if (CheckWithinBounds(CP_Vector_Set(450, 700), 281, 87))
+		{
+			CP_Image_Draw(ResumeGameButtonHover, 450, 700, 281, 87, 255);
+			if (CP_Input_MouseClicked())
+			{
+				gameScene = SCENE_GAMEPHASE;
+			}
+		}
+		else {
+			CP_Image_Draw(ResumeGameButton, 450, 700, 281, 87, 255);
+		}
+
+		if (CheckWithinBounds(CP_Vector_Set(800, 700), 281, 87))
+		{
+			CP_Image_Draw(RestartGameButtonHover, 800, 700, 281, 87, 255);
+			if (CP_Input_MouseClicked())
+			{
+				RestartGame();
+				currentTimer = 0;
+			}
+		}
+		else {
+			CP_Image_Draw(RestartGameButton, 800, 700, 281, 87, 255);
+		}
+
+		CP_Image_Draw(Vol_Slider, currentSliderPos.x, currentSliderPos.y, 35, 58, 255);
+		CP_Image_Draw(ResolutionBtn_1600, 800, 365, 241, 90, 255);
+		AdjustVolumeSlider();
+
 	}
 	else if (gameScene == SCENE_SPLASH_DIGIPEN)
 	{
@@ -326,21 +382,17 @@ void SetGameSceneEndPhase()
 	gameScene = SCENE_ENDPHASE;
 }
 
-//OPTIONS/SETTINGS
-int OptionsOpen = FALSE;
-CP_Image OptionMenu; //Might consider moving to UI_Mechanics?
-
 void OpenOptions()
 {
-	OptionsOpen = !OptionsOpen;
-	if (OptionsOpen)
-	{
-		//CP IMAGE DRAW OPTION MENU
-	}
-	else
-	{
+	//if (CP_Input_KeyTriggered(KEY_ESCAPE)) {
+	//	OptionsOpen = !OptionsOpen;
+	//}
 
-	}
+	//if (OptionsOpen)
+	//{
+	//	//CP IMAGE DRAW OPTION MENU
+	//	gameScene = SCENE_OPTIONS;
+	//}
 }
 void ChangeVolume(float vol)
 {
