@@ -32,8 +32,12 @@ int selectedChoice;
 int rewardCardsLeft[NUMBER_OF_MAX_REWARDS];
 int rewardIndex = 0;
 
+int endState = 0;
 float endTurnTimer = 0;
-bool endTurnAnim2 = false;
+float animCount = 0;
+float animDelay = 0.1f;
+CP_Vector tempVector;
+CP_Vector worldOrigin;
 
 
 #pragma region Turn & Win Lose Functions
@@ -71,7 +75,7 @@ void EndTurn()
         GameOver();
     }
     else {
-        gameState = State_StartOfTurn;
+        gameState = State_GameEntry;
     }
 }
 #pragma endregion
@@ -305,10 +309,15 @@ void GameStateControl()
     switch (gameState)
     {
     case State_GameEntry:
-        gameState = State_Idle;
+        AnimTimer = 1.0f;
+        gameState = State_StartOfTurn;
         break;
     case State_StartOfTurn:
-        gameState = State_Idle;
+        AnimTimer -= CP_System_GetDt();
+        if (AnimTimer < 0)
+        {
+            gameState = State_Idle;
+        }
         break;
     case State_Idle:
         break;
@@ -383,96 +392,89 @@ void GameStateControl()
         }
         break;
     case State_EndOfTurn:
-        if (AnimTimer > 0)
+        endTurnTimer -= CP_System_GetDt();
+        if (endTurnTimer <= 0)
         {
-            AnimTimer -= CP_System_GetDt();
-        }
-        else if (endTurnTimer <= 0 && !endTurnAnim2)
-        {
-            rewardIndex = 0;  // Reset Reward Index Before Event Begin
-            float animCount = 0;
-            float animDelay = 0.1f;
-            CP_Vector worldOrigin = GetWorldSpaceOrigin();
-            CP_Vector tempVector;
-            for (int j = 0; j < WORLDGRIDY; ++j)
+            switch (endState)
             {
-                for (int i = 0; i < WORLDGRIDX; ++i)
+            //generate resources from buildings
+            case 0:
+                rewardIndex = 0;  // Reset Reward Index Before Event Begin
+                worldOrigin = GetWorldSpaceOrigin();
+                for (int j = 0; j < WORLDGRIDY; ++j)
                 {
-                    switch (GetOccupiedIndex(i, j))
+                    for (int i = 0; i < WORLDGRIDX; ++i)
                     {
-                    case B_HOUSE_INDEX:
-                        tempVector.x = i * TILEWIDTH + TILEWIDTH / 2 + worldOrigin.x;
-                        tempVector.y = j * TILEHEIGHT + TILEHEIGHT / 3 + worldOrigin.y;
-                        if (CheckCurrent(B_HOUSE_INDEX, i, j))
+                        switch (GetOccupiedIndex(i, j))
                         {
-                            // house broken, lose morale
-                            SpawnMoraleGainAnimation(-1, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), CP_Vector_Set(520, 360), 0.6f, animCount * animDelay);
-                            //SpawnVfxEaseInToEaseOut(6, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), CP_Vector_Set(50, 180), 0.6f, CP_Vector_Set(128, 128), animCount * animDelay);
-                        }
-                        ++animCount;
-                        break;
-                    case B_FARM_INDEX:
-                        tempVector.x = i * TILEWIDTH + TILEWIDTH / 2 + worldOrigin.x;
-                        tempVector.y = j * TILEHEIGHT + TILEHEIGHT / 3 + worldOrigin.y;
-                        // farm broken, no food
-                        if (CheckCurrent(B_FARM_INDEX, i, j))
-                        {
-                            //SpawnFoodGainAnimation(0, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), CP_Vector_Set(520, 180), 0.6f, animCount * animDelay);
-                        }
-                        else
-                        {
-                            // farm generate food
-                            SpawnFoodGainAnimation(FARM_FOODGEN, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), CP_Vector_Set(520, 180), 0.6f, animCount * animDelay);
-                        }
-                        ++animCount;
-                        break;
-                    case B_MARKET_INDEX:
-                        tempVector.x = i * TILEWIDTH + TILEWIDTH / 2 + worldOrigin.x;
-                        tempVector.y = j * TILEHEIGHT + TILEHEIGHT / 3 + worldOrigin.y;
-                        // market broke, no gold
-                        if (CheckCurrent(B_MARKET_INDEX, i, j))
-                        {
+                        case B_HOUSE_INDEX:
+                            tempVector.x = i * TILEWIDTH + TILEWIDTH / 2 + worldOrigin.x;
+                            tempVector.y = j * TILEHEIGHT + TILEHEIGHT / 3 + worldOrigin.y;
+                            if (CheckCurrent(B_HOUSE_INDEX, i, j))
+                            {
+                                // house broken, lose morale
+                                SpawnMoraleGainAnimation(-1, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), CP_Vector_Set(520, 360), 0.6f, animCount * animDelay);
+                                //SpawnVfxEaseInToEaseOut(6, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), CP_Vector_Set(50, 180), 0.6f, CP_Vector_Set(128, 128), animCount * animDelay);
+                            }
+                            ++animCount;
+                            break;
+                        case B_FARM_INDEX:
+                            tempVector.x = i * TILEWIDTH + TILEWIDTH / 2 + worldOrigin.x;
+                            tempVector.y = j * TILEHEIGHT + TILEHEIGHT / 3 + worldOrigin.y;
+                            // farm broken, no food
+                            if (CheckCurrent(B_FARM_INDEX, i, j))
+                            {
+                                //SpawnFoodGainAnimation(0, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), CP_Vector_Set(520, 180), 0.6f, animCount * animDelay);
+                            }
+                            else
+                            {
+                                // farm generate food
+                                SpawnFoodGainAnimation(FARM_FOODGEN, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), CP_Vector_Set(520, 180), 0.6f, animCount * animDelay);
+                            }
+                            ++animCount;
+                            break;
+                        case B_MARKET_INDEX:
+                            tempVector.x = i * TILEWIDTH + TILEWIDTH / 2 + worldOrigin.x;
+                            tempVector.y = j * TILEHEIGHT + TILEHEIGHT / 3 + worldOrigin.y;
+                            // market broke, no gold
+                            if (CheckCurrent(B_MARKET_INDEX, i, j))
+                            {
 
-                        }
-                        else
-                        {
-                            // market generate gold
-                            SpawnGoldGainAnimation(MARKET_GOLDGEN, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), CP_Vector_Set(520, 90), 0.6f, animCount * animDelay);
-                        }
-                        ++animCount;
-                        break;
-                    case B_TAVERN_INDEX:
-                        tempVector.x = i * TILEWIDTH + TILEWIDTH / 2 + worldOrigin.x;
-                        tempVector.y = j * TILEHEIGHT + TILEHEIGHT / 3 + worldOrigin.y;
-                        // tavern broken, no morale
-                        if (CheckCurrent(B_TAVERN_INDEX, i, j))
-                        {
+                            }
+                            else
+                            {
+                                // market generate gold
+                                SpawnGoldGainAnimation(MARKET_GOLDGEN, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), CP_Vector_Set(520, 90), 0.6f, animCount * animDelay);
+                            }
+                            ++animCount;
+                            break;
+                        case B_TAVERN_INDEX:
+                            tempVector.x = i * TILEWIDTH + TILEWIDTH / 2 + worldOrigin.x;
+                            tempVector.y = j * TILEHEIGHT + TILEHEIGHT / 3 + worldOrigin.y;
+                            // tavern broken, no morale
+                            if (CheckCurrent(B_TAVERN_INDEX, i, j))
+                            {
 
+                            }
+                            else
+                            {
+                                // tavern generate morale
+                                SpawnMoraleGainAnimation(TAVERN_MORGEN, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), CP_Vector_Set(520, 360), 0.6f, animCount * animDelay);
+                            }
+                            ++animCount;
+                            break;
+                        default:
+                            break;
                         }
-                        else
-                        {
-                            // tavern generate morale
-                            SpawnMoraleGainAnimation(TAVERN_MORGEN, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), CP_Vector_Set(520, 360), 0.6f, animCount * animDelay);
-                        }
-                        ++animCount;
-                        break;
-                    default:
-                        break;
                     }
                 }
-            }
-            endTurnTimer = animCount * animDelay + 0.4f;
-        }
-        else if (endTurnTimer > 0 && !endTurnAnim2)
-        {
-            endTurnTimer -= CP_System_GetDt();
-            if (endTurnTimer <= 0)
-            {
-                endTurnAnim2 = true;
-                float animCount = 0;
-                float animDelay = 0.1f;
-                CP_Vector worldOrigin = GetWorldSpaceOrigin();
-                CP_Vector tempVector;
+                endTurnTimer = animCount * animDelay + 0.5f;
+                endState = 1;
+                break;
+            //consume food from citizens
+            case 1:
+                animCount = 0;
+                worldOrigin = GetWorldSpaceOrigin();
                 for (int i = 0; i < MAXNPC; ++i)
                 {
                     if (GetNpc(i).x != 0)
@@ -483,16 +485,30 @@ void GameStateControl()
                         ++animCount;
                     }
                 }
-                endTurnTimer = animCount * animDelay + 1.0f;
-            }
-            
-        }
-        else
-        {
-            endTurnTimer -= CP_System_GetDt();
-            if (endTurnTimer <= 0)
-            {
-                endTurnAnim2 = false;
+                endTurnTimer = animCount * animDelay + 1.5f;
+                endState = 2;
+                break;
+            // generate gold points
+            case 2:
+                animCount = 0;
+                worldOrigin = GetWorldSpaceOrigin();
+                for (int i = 0; i < MAXNPC; ++i)
+                {
+                    if (GetNpc(i).x != 0)
+                    {
+                        tempVector = GetNpc(i);
+                        tempVector = CP_Vector_Set(tempVector.x + worldOrigin.x, tempVector.y + worldOrigin.y);
+                        SpawnBlessingGainAnimation(1, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - 40), CP_Vector_Set(100, 450), 0.8f, animCount * animDelay);
+                        ++animCount;
+                    }
+                }
+                endTurnTimer = animCount * animDelay + 3.0f;
+                endState = 3;
+                UI_SetBlessingsTimer(endTurnTimer + 2.2f);
+                break;
+            // end turn
+            case 3:
+                endState = 0;
                 if (GetCardsLeft() == 0)
                 {
                     GameEnd();
@@ -501,6 +517,8 @@ void GameStateControl()
                 {
                     EndTurn();  //State Set to Start Turn is in EndTurn()       
                 }
+                break;
+
             }
         }
         break;

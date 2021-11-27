@@ -227,6 +227,7 @@ void DrawUI_Title(const char* text);
 void DrawTempTextResources();
 void UI_SetReward(REWARDCARD* rewardCard, int cardsLeft);
 void UI_SetEvent(CARDEVENT*);
+void UI_SetBlessingsTimer(float timer);
 
 
 // Resources
@@ -258,13 +259,16 @@ void IncreaseGold(int amount);
 void IncreaseFood(int amount);
 void IncreasePop(int amount);
 void IncreaseMorale(int amount);
+void IncreaseBlessing(int amount);
 int GetDelayedGold();
 int GetDelayedFood();
 int GetDelayedPop();
 int GetDelayedMorale();
+int GetDelayedBlessing();
 void SpawnGoldGainAnimation(int amount, CP_Vector startPos, CP_Vector checkpoint, CP_Vector endPos, float lifeTime, float spawnDelay);
 void SpawnFoodGainAnimation(int amount, CP_Vector startPos, CP_Vector checkpoint, CP_Vector endPos, float lifeTime, float spawnDelay);
 void SpawnMoraleGainAnimation(int amount, CP_Vector startPos, CP_Vector checkpoint, CP_Vector endPos, float lifeTime, float spawnDelay);
+void SpawnBlessingGainAnimation(int amount, CP_Vector startPos, CP_Vector checkpoint, CP_Vector endPos, float lifeTime, float spawnDelay);
 
 // Card Events
 int GetCardsLeft();

@@ -12,7 +12,7 @@
 
 // SPRITES
 CP_Image EventCard;
-MOVINGSPRITES EventCardAnim;
+MOVINGSPRITES cardDraw;
 CP_Image image_CardBack;
 CP_Image image_CardDeck;
 CP_Image image_CardFlipped;
@@ -34,6 +34,13 @@ int UIselectedChoice;
 char textDescBuffer[100];
 CP_Image image_descbox;
 CP_Image image_descboxcover;
+
+//Gold Card
+CP_Image blessCard;
+MOVINGSPRITES blessingCard;
+float blessFill = 0;
+float blessTimer = 0;
+
 
 
 //Button normalinitialize = {width,height,xPos,yPos,isSplashScreenActive,isSettingActive,index}
@@ -83,10 +90,11 @@ void InitUI()
     image_descbox = CP_Image_Load("./ImperoArtAssets/ResourceBarAssets/Impero_Textbox.png");
     image_descboxcover = CP_Image_Load("./ImperoArtAssets/ResourceBarAssets/Impero_TextboxBG.png");
 
-    cardSeletorPos = CP_Vector_Set(200, 450);
+    cardSeletorPos = CP_Vector_Set(250, 450);
     optionAPos = CP_Vector_Set(cardSeletorPos.x - 43, cardSeletorPos.y);
     optionBPos = CP_Vector_Set(cardSeletorPos.x + 43, cardSeletorPos.y);
-    EventCardAnim = (MOVINGSPRITES){ image_CardBack, CP_Vector_Set(130, (windowHeight / 2) + 230), CP_Vector_Set(cardSeletorPos.x, cardSeletorPos.y), 0.6f, 0 };
+    cardDraw = (MOVINGSPRITES){ image_CardBack, CP_Vector_Set(130, (windowHeight / 2) + 230), CP_Vector_Set(cardSeletorPos.x, cardSeletorPos.y), 0.6f, 1 };
+    blessingCard = (MOVINGSPRITES){ image_CardBack, CP_Vector_Set(-100, cardSeletorPos.y), CP_Vector_Set(100, cardSeletorPos.y), 0.6f, 0 };
 
     image_CardFlash = CP_Image_Load("./ImperoArtAssets/Impero_Cardflash.png");
     image_CardHighlight = CP_Image_Load("./ImperoArtAssets/Impero_Cardhighlight.png");
@@ -100,20 +108,18 @@ void InitUI()
     image_barBGfood = CP_Image_Load("./ImperoArtAssets/ResourceBarAssets/Impero_FoodBarBG.png");
     image_barBGpop = CP_Image_Load("./ImperoArtAssets/ResourceBarAssets/Impero_PopBarBG.png");
     image_barBGmorale = CP_Image_Load("./ImperoArtAssets/ResourceBarAssets/Impero_MoraleBarBG.png");
-
+    blessFill = 0;
+    blessTimer = 0;
 }
-
 void UI_SetEvent(CARDEVENT* newEvent)
 {
     UIselectedEvent = newEvent;
 }
-
 void UI_SetReward(REWARDCARD* rewardCard, int cardsLeft)
 {
     UIselectedReward = rewardCard;
     UIrewardCardsLeft = abs(cardsLeft);
 }
-
 void UI_SetResourceAffected(int resourceChange[4])
 {
     goldAffected = (bool)resourceChange[0];
@@ -121,10 +127,14 @@ void UI_SetResourceAffected(int resourceChange[4])
     popAffected = (bool)resourceChange[2];
     moraleAffected = (bool)resourceChange[3];
 }
+void UI_SetBlessingsTimer(float timer)
+{
+    blessTimer = timer;
+}
 
 bool ClickCheck_CardDraw()
 {
-    if (CheckWithinBounds(EventCardAnim.startingPos, 185, 243))
+    if (CheckWithinBounds(cardDraw.startingPos, 185, 243))
     {
         return true;
     }
@@ -212,33 +222,44 @@ void DrawUI_Deck()
 void DrawUI_TopCard()
 {
     // Hovering Deck
-    if (CheckWithinBounds(EventCardAnim.startingPos, 185, 243))
+    if (CheckWithinBounds(cardDraw.startingPos, 185, 243))
     {
-        EventCardAnim.currentTime += CP_System_GetDt();
+        cardDraw.currentTime += CP_System_GetDt();
     }
     else
     {
-        EventCardAnim.currentTime -= CP_System_GetDt();
+        cardDraw.currentTime -= CP_System_GetDt();
     }
-    EventCardAnim.currentTime = CP_Math_ClampFloat(EventCardAnim.currentTime, 0, EventCardAnim.totalTime / 8);
-    CP_Image_Draw(EventCardAnim.image, CP_Math_LerpFloat(EventCardAnim.startingPos.x, EventCardAnim.endingPos.x, EventCardAnim.currentTime / EventCardAnim.totalTime),
-        CP_Math_LerpFloat(EventCardAnim.startingPos.y, EventCardAnim.endingPos.y, EventCardAnim.currentTime / EventCardAnim.totalTime), 185, 243, 255);
+    cardDraw.currentTime = CP_Math_ClampFloat(cardDraw.currentTime, 0, cardDraw.totalTime / 8);
+    CP_Image_Draw(cardDraw.image, CP_Math_LerpFloat(cardDraw.startingPos.x, cardDraw.endingPos.x, cardDraw.currentTime / cardDraw.totalTime),
+        CP_Math_LerpFloat(cardDraw.startingPos.y, cardDraw.endingPos.y, cardDraw.currentTime / cardDraw.totalTime), 185, 243, 255);
 
 
 }
-void DrawUI_TopCardTransition()
+void DrawUI_cardDraw(bool entry)
 {
-    EventCardAnim.currentTime += CP_System_GetDt();
-    EventCardAnim.currentTime = CP_Math_ClampFloat(EventCardAnim.currentTime, 0, EventCardAnim.totalTime);
-    CP_Image_Draw(EventCardAnim.image, EaseOutSine(EventCardAnim.startingPos.x, EventCardAnim.endingPos.x, EventCardAnim.currentTime / EventCardAnim.totalTime),
-        EaseOutSine(EventCardAnim.startingPos.y, EventCardAnim.endingPos.y, EventCardAnim.currentTime / EventCardAnim.totalTime), 185, 243, 255);
+    if (entry)
+    {
+        cardDraw.currentTime -= CP_System_GetDt();
+        cardDraw.currentTime = CP_Math_ClampFloat(cardDraw.currentTime, 0, 0.5);
+        CP_Image_Draw(cardDraw.image, cardDraw.startingPos.x,
+            EaseInSine(cardDraw.startingPos.y, 1000, cardDraw.currentTime / 0.5f), 185, 243, 255);
 
-    cardflashTimer = 0;
-    cardhighlightTimer[0] = 0;
-    cardhighlightTimer[1] = 0;
-    cardhighlightTimer[2] = 0;
-    cardhighlightTimer[3] = 0;
-    cardhighlightTimer[4] = 0;
+    }
+    else
+    {
+        cardDraw.currentTime += CP_System_GetDt();
+        cardDraw.currentTime = CP_Math_ClampFloat(cardDraw.currentTime, 0, cardDraw.totalTime);
+        CP_Image_Draw(cardDraw.image, EaseOutSine(cardDraw.startingPos.x, cardDraw.endingPos.x, cardDraw.currentTime / cardDraw.totalTime),
+            EaseOutSine(cardDraw.startingPos.y, cardDraw.endingPos.y, cardDraw.currentTime / cardDraw.totalTime), 185, 243, 255);
+
+        cardflashTimer = 0;
+        cardhighlightTimer[0] = 0;
+        cardhighlightTimer[1] = 0;
+        cardhighlightTimer[2] = 0;
+        cardhighlightTimer[3] = 0;
+        cardhighlightTimer[4] = 0;
+    }
 }
 void DrawUI_RewardCards(bool rewardPicked)
 {
@@ -337,17 +358,44 @@ void DrawUI_AffectedLand()
         break;
     }
 }
+void DrawUI_BlessFill()
+{
+    if (blessTimer <= 0)
+    {
+        return;
+    }
+    else if (blessTimer > 1)
+    {
+        blessTimer -= CP_System_GetDt();
+        blessingCard.currentTime += CP_System_GetDt();
+        blessingCard.currentTime = CP_Math_ClampFloat(blessingCard.currentTime, 0, blessingCard.totalTime);
+        CP_Image_Draw(blessingCard.image, EaseInSine(blessingCard.startingPos.x, blessingCard.endingPos.x, blessingCard.currentTime / blessingCard.totalTime),
+            EaseInSine(blessingCard.startingPos.y, blessingCard.endingPos.y, blessingCard.currentTime / blessingCard.totalTime), 185, 243, 255);
+    }
+    else
+    {
+        blessTimer -= CP_System_GetDt();
+        blessingCard.currentTime -= CP_System_GetDt();
+        blessingCard.currentTime = CP_Math_ClampFloat(blessingCard.currentTime, 0, blessingCard.totalTime);
+        CP_Image_Draw(blessingCard.image, EaseInSine(blessingCard.startingPos.x, blessingCard.endingPos.x, blessingCard.currentTime / blessingCard.totalTime),
+            EaseInSine(blessingCard.startingPos.y, blessingCard.endingPos.y, blessingCard.currentTime / blessingCard.totalTime), 185, 243, 255);
+    }
+}
 
 void DrawUI(GAMESTATE state)
 {
     switch (state)
     {
     case State_GameEntry:
+        DrawUI_Textbox();
+        DrawUI_Deck();
+        DrawUI_BlessFill(false);
         break;
     case State_StartOfTurn:
         DrawUI_Textbox();
         DrawUI_Deck();
-        DrawUI_TopCard();
+        DrawUI_BlessFill(false);
+        DrawUI_cardDraw(true);
         break;
     case State_Idle:
         DrawUI_Textbox();
@@ -358,7 +406,7 @@ void DrawUI(GAMESTATE state)
     case State_CardDraw:
         DrawUI_Textbox();
         DrawUI_Deck();
-        DrawUI_TopCardTransition();
+        DrawUI_cardDraw(false);
         break;
     case State_MakeAChoice:
         DrawUI_Textbox();
@@ -389,9 +437,12 @@ void DrawUI(GAMESTATE state)
     case State_EndOfTurn:
         DrawUI_Textbox();
         DrawUI_Deck();
-        EventCardAnim.currentTime = 0;
+        DrawUI_BlessFill(true);
+        cardDraw.currentTime = 1;
         break;
     }
+    //independent draws
+    DrawUI_BlessFill();
 }
 
 

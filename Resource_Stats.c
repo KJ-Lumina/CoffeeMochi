@@ -39,6 +39,7 @@ Buff/Debuff effects will be seperated to a different header file
 #define MEDIUM_MORALE 1
 #define LOW_MORALE 2
 
+#define MAX_DELAYRES 50
 
 int curGold = 100;
 int curFood = 40;
@@ -46,6 +47,7 @@ int curPopulation = 0;
 int initPopulation = 100;
 int curMorale = 50;
 int additionalMorale = 0;
+int curBlessing = 0;
 
 //Gold Related Variables
 int numMarkets = 0;
@@ -113,6 +115,11 @@ int Get_current_morale()
 int Get_additional_morale() 
 {
 	return additionalMorale;
+}
+
+int Get_current_blessing()
+{
+    return curBlessing;
 }
 
 /*--------------------
@@ -252,10 +259,12 @@ int delayedGold = 0;
 int delayedFood = 0;
 int delayedPop = 0;
 int delayedMorale = 0;
+int delayedBlessing = 0;
 float lerpGold = 0;
 float lerpFood = 0;
 float lerpPop = 0;
 float lerpMorale = 0;
+float lerpBlessing = 0;
 
 typedef struct
 {
@@ -264,7 +273,8 @@ typedef struct
     float timer;
 }DELAYEDRESOURCE;
 
-DELAYEDRESOURCE delayedList[20];
+
+DELAYEDRESOURCE delayedList[MAX_DELAYRES];
 
 
 void InitResources(int startingGold, int startingFood, int startingPopulation, int startingMorale) {
@@ -272,6 +282,7 @@ void InitResources(int startingGold, int startingFood, int startingPopulation, i
     curFood = startingFood;
     curPopulation = startingPopulation;
     curMorale = startingMorale;
+    curBlessing = 0;
     additionalMorale = 0;
 
     numHouses = 0;
@@ -279,7 +290,7 @@ void InitResources(int startingGold, int startingFood, int startingPopulation, i
     numTaverns = 0;
     numMarkets = 0;
 
-    for (int i = 0; i < 20; ++i)
+    for (int i = 0; i < MAX_DELAYRES; ++i)
     {
         delayedList[i].timer = 0;
     }
@@ -287,21 +298,26 @@ void InitResources(int startingGold, int startingFood, int startingPopulation, i
 
 void UpdateResources()
 {
+    float deltaRes = CP_System_GetDt();
     if (lerpGold < 1)
     {
-        lerpGold += CP_System_GetDt();
+        lerpGold += deltaRes;
     }
     if (lerpFood < 1)
     {
-        lerpFood += CP_System_GetDt();
+        lerpFood += deltaRes;
     }
     if (lerpPop < 1)
     {
-        lerpPop += CP_System_GetDt();
+        lerpPop += deltaRes;
     }
     if (lerpMorale < 1)
     {
-        lerpMorale += CP_System_GetDt();
+        lerpMorale += deltaRes;
+    }
+    if (lerpBlessing > 1)
+    {
+        lerpBlessing += deltaRes;
     }
 
     float resourceDelta = CP_System_GetDt();
@@ -325,6 +341,9 @@ void UpdateResources()
                     break;
                 case 4:
                     IncreaseMorale(delayedList[i].resourceAmt);
+                    break;
+                case 5:
+                    IncreaseBlessing(delayedList[i].resourceAmt);
                     break;
                 }
             }
@@ -405,7 +424,7 @@ void AddNewResourceBuilding(int buildingIndex)
 
 void AddDelayedResource(int type, int amt, float delay)
 {
-    for (int i = 0; i < 20; ++i)
+    for (int i = 0; i < MAX_DELAYRES; ++i)
     {
         if (delayedList[i].timer <= 0)
         {
@@ -433,6 +452,12 @@ int GetDelayedMorale()
 {
     return CP_Math_LerpInt(delayedMorale, curMorale, lerpMorale);
 }
+int GetDelayedBlessing()
+{
+    return CP_Math_LerpInt(delayedBlessing, curBlessing, lerpBlessing);
+}
+
+
 
 void SpawnGoldGainAnimation(int amount, CP_Vector startPos, CP_Vector checkpoint, CP_Vector endPos, float lifeTime, float spawnDelay)
 {
@@ -473,6 +498,15 @@ void SpawnMoraleGainAnimation(int amount, CP_Vector startPos, CP_Vector checkpoi
     {
         SpawnVfxEaseInToEaseOut(6, startPos, checkpoint, endPos, lifeTime, CP_Vector_Set(128, 128), spawnDelay);
         AddDelayedResource(4, amount, lifeTime * 2 + spawnDelay);
+    }
+}
+
+void SpawnBlessingGainAnimation(int amount, CP_Vector startPos, CP_Vector checkpoint, CP_Vector endPos, float lifeTime, float spawnDelay)
+{
+    if (amount > 0)
+    {
+        SpawnVfxEaseInToEaseOut(7, startPos, checkpoint, endPos, lifeTime, CP_Vector_Set(128, 128), spawnDelay);
+        AddDelayedResource(5, amount, lifeTime * 2 + spawnDelay);
     }
 }
 
@@ -518,6 +552,13 @@ void IncreaseMorale(int amount)
     delayedMorale = CP_Math_LerpInt(delayedMorale, curMorale, lerpMorale);
     lerpMorale = 0;
     curMorale += amount;
+}
+
+void IncreaseBlessing(int amount)
+{
+    delayedBlessing = CP_Math_LerpInt(delayedBlessing, curBlessing, lerpBlessing);
+    lerpBlessing = 0;
+    curBlessing += amount;
 }
 
 void ApplyEventResourceChange(int resourceChange[4])

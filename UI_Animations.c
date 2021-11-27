@@ -357,6 +357,7 @@ CP_Image addFood;
 CP_Image loseFood;
 CP_Image addMorale;
 CP_Image minusMorale;
+CP_Image addBlessing;
 LINEARVFX vfxList[50];
 
 void InitVfx()
@@ -367,6 +368,7 @@ void InitVfx()
     loseFood = CP_Image_Load("./Assets/minusFood2.png");
     addMorale = CP_Image_Load("./Assets/addMorale2.png");
     minusMorale = CP_Image_Load("./Assets/minusMorale2.png");
+    addBlessing = CP_Image_Load("./Assets/addBlessing.png");
     for (int i = 0; i < 50; ++i)
     {
         vfxList[i] = (LINEARVFX){ 0 };
@@ -389,6 +391,8 @@ CP_Image* GetVfxSpriteByIndex(int index)
         return &addMorale;
     case 6:
         return &minusMorale;
+    case 7:
+        return &addBlessing;
     default:
         return &addGold;
     }
