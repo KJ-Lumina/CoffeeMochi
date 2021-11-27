@@ -417,16 +417,23 @@ void DrawUI_BlessFill()
         blessTimer -= CP_System_GetDt();
         blessingCard.currentTime += CP_System_GetDt();
         blessingCard.currentTime = CP_Math_ClampFloat(blessingCard.currentTime, 0, blessingCard.totalTime);
-        CP_Image_Draw(blessingCard.image, EaseInSine(blessingCard.startingPos.x, blessingCard.endingPos.x, blessingCard.currentTime / blessingCard.totalTime),
-            EaseInSine(blessingCard.startingPos.y, blessingCard.endingPos.y, blessingCard.currentTime / blessingCard.totalTime), 185, 243, 255);
+        
+        CP_Image_DrawSubImage(blessingCard.image, EaseInSine(blessingCard.startingPos.x, blessingCard.endingPos.x, blessingCard.currentTime / blessingCard.totalTime),
+            EaseInSine(blessingCard.startingPos.y - Get_current_blessing() * 3.0f, blessingCard.endingPos.y - Get_current_blessing() * 3.0f, blessingCard.currentTime / blessingCard.totalTime),
+            185, 243 - Get_current_blessing() * 6.0f, 0, 0, 185, 243 - Get_current_blessing() * 6.0f, 255);
     }
     else
     {
         blessTimer -= CP_System_GetDt();
         blessingCard.currentTime -= CP_System_GetDt();
         blessingCard.currentTime = CP_Math_ClampFloat(blessingCard.currentTime, 0, blessingCard.totalTime);
-        CP_Image_Draw(blessingCard.image, EaseInSine(blessingCard.startingPos.x, blessingCard.endingPos.x, blessingCard.currentTime / blessingCard.totalTime),
-            EaseInSine(blessingCard.startingPos.y, blessingCard.endingPos.y, blessingCard.currentTime / blessingCard.totalTime), 185, 243, 255);
+        CP_Image_DrawSubImage(blessingCard.image, EaseInSine(blessingCard.startingPos.x, blessingCard.endingPos.x, blessingCard.currentTime / blessingCard.totalTime),
+            EaseInSine(blessingCard.startingPos.y - Get_current_blessing() * 3.0f, blessingCard.endingPos.y - Get_current_blessing() * 3.0f, blessingCard.currentTime / blessingCard.totalTime),
+            185, 243 - Get_current_blessing() * 6.0f, 0, 0, 185, 243 - Get_current_blessing() * 6.0f, 255);
+
+
+        //CP_Image_Draw(blessingCard.image, EaseInSine(blessingCard.startingPos.x, blessingCard.endingPos.x, blessingCard.currentTime / blessingCard.totalTime),
+        //    EaseInSine(blessingCard.startingPos.y, blessingCard.endingPos.y, blessingCard.currentTime / blessingCard.totalTime), 185, 243, 255);
     }
 }
 
@@ -517,7 +524,6 @@ void DrawUI(GAMESTATE state)
         CP_Image_DrawAdvanced(image_CardBack, CP_Math_LerpFloat(beylist[i].BeyBladexpre, beylist[i].BeyBladex, beylist[i].BeyBladelerp / 1), CP_Math_LerpFloat(beylist[i].BeyBladeypre, beylist[i].BeyBladey, beylist[i].BeyBladelerp / 1), 185, 243, 255, beylist[i].anglelerp);
     }
     
-
 }
 
 

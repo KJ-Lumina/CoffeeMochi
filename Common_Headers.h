@@ -73,6 +73,8 @@ typedef enum
 	SCENE_SPLASH_DIGIPEN,
 	SCENE_SPLASH_COFFEEMOCHI,
 	SCENE_MAINMENU,
+	SCENE_CREDITS,
+	SCENE_HOWTOPLAY,
 	SCENE_OPTIONS,
 	SCENE_GAMEENTRY,
 	SCENE_RESTART,
@@ -244,6 +246,8 @@ void Set_current_gold(int gold);
 void Set_current_food(int food);
 void Set_current_population(int population);
 void Set_additional_morale(int addMorale);
+int Get_current_blessing();
+int Get_current_blessing();
 int Get_current_gold();
 int Get_current_food();
 int Get_current_population();
