@@ -77,13 +77,26 @@ bool moraleAffected = false;
 extern int rewardIndex;
 
 
+typedef struct
+{
+    float anglelerp;
+    float BeyBladelerp;
+    float BeyBladexpre;
+    float BeyBladeypre;
+    float BeyBladex;
+    float BeyBladey;
+}BeyBlade;
+
+BeyBlade beylist[10];
+
+
 void InitUI()
 {
     windowWidth = (float)CP_System_GetWindowWidth();
     windowHeight = (float)CP_System_GetWindowHeight();
     image_CardBack = CP_Image_Load("./ImperoArtAssets/Impero_CardBack.png");
     image_CardDeck = CP_Image_Load("./ImperoArtAssets/Impero_CardDeck.png");
-    
+
     image_CardFlipped = CP_Image_Load("./ImperoArtAssets/Impero_CardFlip.png");
     image_CardA = CP_Image_Load("./ImperoArtAssets/Impero_CardBlue.png");
     image_CardB = CP_Image_Load("./ImperoArtAssets/Impero_CardRed.png");
@@ -114,6 +127,18 @@ void InitUI()
     image_barBGmorale = CP_Image_Load("./ImperoArtAssets/ResourceBarAssets/Impero_MoraleBarBG.png");
     blessFill = 0;
     blessTimer = 0;
+
+    BeyBlade newBeyBlade = { 0,0,0,0,0,0 };
+    beylist[0] = newBeyBlade;
+    beylist[1] = newBeyBlade;
+    beylist[2] = newBeyBlade;
+    beylist[3] = newBeyBlade;
+    beylist[4] = newBeyBlade;
+    beylist[5] = newBeyBlade;
+    beylist[6] = newBeyBlade;
+    beylist[7] = newBeyBlade;
+    beylist[8] = newBeyBlade;
+    beylist[9] = newBeyBlade;
 }
 void UI_SetEvent(CARDEVENT* newEvent)
 {
@@ -392,16 +417,23 @@ void DrawUI_BlessFill()
         blessTimer -= CP_System_GetDt();
         blessingCard.currentTime += CP_System_GetDt();
         blessingCard.currentTime = CP_Math_ClampFloat(blessingCard.currentTime, 0, blessingCard.totalTime);
-        CP_Image_Draw(blessingCard.image, EaseInSine(blessingCard.startingPos.x, blessingCard.endingPos.x, blessingCard.currentTime / blessingCard.totalTime),
-            EaseInSine(blessingCard.startingPos.y, blessingCard.endingPos.y, blessingCard.currentTime / blessingCard.totalTime), 185, 243, 255);
+        
+        CP_Image_DrawSubImage(blessingCard.image, EaseInSine(blessingCard.startingPos.x, blessingCard.endingPos.x, blessingCard.currentTime / blessingCard.totalTime),
+            EaseInSine(blessingCard.startingPos.y - Get_current_blessing() * 3.0f, blessingCard.endingPos.y - Get_current_blessing() * 3.0f, blessingCard.currentTime / blessingCard.totalTime),
+            185, 243 - Get_current_blessing() * 6.0f, 0, 0, 185, 243 - Get_current_blessing() * 6.0f, 255);
     }
     else
     {
         blessTimer -= CP_System_GetDt();
         blessingCard.currentTime -= CP_System_GetDt();
         blessingCard.currentTime = CP_Math_ClampFloat(blessingCard.currentTime, 0, blessingCard.totalTime);
-        CP_Image_Draw(blessingCard.image, EaseInSine(blessingCard.startingPos.x, blessingCard.endingPos.x, blessingCard.currentTime / blessingCard.totalTime),
-            EaseInSine(blessingCard.startingPos.y, blessingCard.endingPos.y, blessingCard.currentTime / blessingCard.totalTime), 185, 243, 255);
+        CP_Image_DrawSubImage(blessingCard.image, EaseInSine(blessingCard.startingPos.x, blessingCard.endingPos.x, blessingCard.currentTime / blessingCard.totalTime),
+            EaseInSine(blessingCard.startingPos.y - Get_current_blessing() * 3.0f, blessingCard.endingPos.y - Get_current_blessing() * 3.0f, blessingCard.currentTime / blessingCard.totalTime),
+            185, 243 - Get_current_blessing() * 6.0f, 0, 0, 185, 243 - Get_current_blessing() * 6.0f, 255);
+
+
+        //CP_Image_Draw(blessingCard.image, EaseInSine(blessingCard.startingPos.x, blessingCard.endingPos.x, blessingCard.currentTime / blessingCard.totalTime),
+        //    EaseInSine(blessingCard.startingPos.y, blessingCard.endingPos.y, blessingCard.currentTime / blessingCard.totalTime), 185, 243, 255);
     }
 }
 
@@ -476,6 +508,22 @@ void DrawUI(GAMESTATE state)
     }
     //independent draws
     DrawUI_BlessFill();
+
+    for (int i = 0; i < 10; ++i)
+    {
+        beylist[i].BeyBladelerp += CP_System_GetDt() * 3;
+        beylist[i].anglelerp += CP_System_GetDt() * 2000;
+        if (beylist[i].BeyBladelerp >= 1)
+        {
+            beylist[i].BeyBladexpre = beylist[i].BeyBladex;
+            beylist[i].BeyBladeypre = beylist[i].BeyBladey;
+            beylist[i].BeyBladex = CP_Random_RangeFloat(0, 1600);
+            beylist[i].BeyBladey = CP_Random_RangeFloat(0, 900);
+            beylist[i].BeyBladelerp = 0;
+        }
+        CP_Image_DrawAdvanced(image_CardBack, CP_Math_LerpFloat(beylist[i].BeyBladexpre, beylist[i].BeyBladex, beylist[i].BeyBladelerp / 1), CP_Math_LerpFloat(beylist[i].BeyBladeypre, beylist[i].BeyBladey, beylist[i].BeyBladelerp / 1), 185, 243, 255, beylist[i].anglelerp);
+    }
+    
 }
 
 

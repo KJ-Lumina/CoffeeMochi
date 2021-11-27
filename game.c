@@ -8,6 +8,7 @@
 #include "UI_Animations.h"
 #include "Npc.h"
 #include "Resource_Stats.h"
+#include "Sound.h"
 
 
 #pragma region Game Options Control
@@ -567,6 +568,8 @@ void MainGame_Initialize(void)
     InitUI();
     InitVfx();
     InitOngoingEvents();
+    InitSound();
+    
 }
 
 void MainGame_Update(void)
@@ -585,4 +588,6 @@ void MainGame_Update(void)
     DrawTempTextResources();
     DrawAllVfx();
     DrawAllAnimations();
+    //LoopSound();
+    
 }
