@@ -19,6 +19,10 @@ CP_Image SettingsButtonImage;
 CP_Image SettingsButtonImageHover;
 CP_Image ExitButtonImage;
 CP_Image ExitButtonImageHover;
+CP_Image CreditsButtonImage;
+CP_Image CreditsButtonImageHover;
+CP_Image HowToPlayButtonImage;
+CP_Image HowToPlayButtonImageHover;
 CP_Image game_Background;
 CP_Image game_UIBackground;
 
@@ -28,6 +32,8 @@ CP_Image ResumeGameButton;
 CP_Image ResumeGameButtonHover;
 CP_Image RestartGameButton;
 CP_Image RestartGameButtonHover;
+CP_Image CreditsScreenImage;
+CP_Image HowToPlayScreenImage;
 CP_Image OptionsScreenImage;
 CP_Image ResolutionBtn_1600;
 CP_Image ResolutionBtn_1920;
@@ -87,6 +93,10 @@ void game_init(void)
 	SettingsButtonImageHover = CP_Image_Load("./ImperoArtAssets/MainMenuAssets/Impero_SettingsButtonHover.png");
 	ExitButtonImage = CP_Image_Load("./ImperoArtAssets/MainMenuAssets/Impero_ExitButton.png");
 	ExitButtonImageHover = CP_Image_Load("./ImperoArtAssets/MainMenuAssets/Impero_ExitButtonHover.png");
+	CreditsButtonImage = CP_Image_Load("./ImperoArtAssets/MainMenuAssets/Impero_CreditsButton.png");
+	CreditsButtonImageHover = CP_Image_Load("./ImperoArtAssets/MainMenuAssets/Impero_CreditsButtonHover.png");
+	HowToPlayButtonImage = CP_Image_Load("./ImperoArtAssets/MainMenuAssets/Impero_HowtoplayButton.png");
+	HowToPlayButtonImageHover = CP_Image_Load("./ImperoArtAssets/MainMenuAssets/Impero_HowtoplayButtonHover.png");
 	game_Background = CP_Image_Load("./ImperoArtAssets/Impero_GameBG.png");
 	game_UIBackground = CP_Image_Load("./ImperoArtAssets/UI bg.png"); 
 
@@ -103,6 +113,9 @@ void game_init(void)
 	Vol_Slider = CP_Image_Load("./ImperoArtAssets/OtherMenuAssets/Impero_slider.png");
 	currentSliderPos = CP_Vector_Set(1050, 508);
 	
+	CreditsScreenImage = CP_Image_Load("./ImperoArtAssets/OtherMenuAssets/Impero_Credits.png");
+	HowToPlayScreenImage = CP_Image_Load("./ImperoArtAssets/OtherMenuAssets/Impero_HowToPlay.png");
+
 	whiteFlash = CP_Image_Load("./Assets/WhiteFlash.png");
 	InitSpritesheets();
 
@@ -249,10 +262,11 @@ void game_update(void)
 		CP_Image_Draw(mainScreenImage, 800, mainScreenYLerpStart, 1600, 2700, 255);
 		DrawAllAnimations();
 		CP_Image_Draw(titleImage, 800, titleImageYLerpStart, 985, 440, 255);
+
 		// Play button
-		if (CheckWithinBounds(CP_Vector_Set(1200, 700), 328, 99))
+		if (CheckWithinBounds(CP_Vector_Set(800, 550), 328, 99))
 		{
-			CP_Image_Draw(StartButtonImageHover, 1200, 700, 328, 99, 255);
+			CP_Image_Draw(StartButtonImageHover, 800, 550, 328, 99, 255);
 			if (CP_Input_MouseClicked())
 			{
 				gameScene = SCENE_GAMEENTRY;
@@ -263,12 +277,27 @@ void game_update(void)
 		{
 			//crazy ass star near start button
 			ConstantAnimSpawner(3, 2, 5.f, 1370, 1370, 645, 645, 300, 300, 0.75f, 0, 0);
-			CP_Image_Draw(StartButtonImage, 1200, 700, 328, 99, 255);
+			CP_Image_Draw(StartButtonImage, 800, 550, 328, 99, 255);
 		}
-		// Settings button
-		if (CheckWithinBounds(CP_Vector_Set(800, 700), 328, 99))
+
+		// How To Play Button
+		if (CheckWithinBounds(CP_Vector_Set(275, 700), 328, 99))
 		{
-			CP_Image_Draw(SettingsButtonImageHover, 800, 700, 328, 99, 255);
+			CP_Image_Draw(HowToPlayButtonImageHover, 275, 700, 328, 99, 255);
+			if (CP_Input_MouseClicked()) {
+				gameScene = SCENE_HOWTOPLAY;
+				currentTimer = 0;
+			}
+		}
+		else
+		{
+			CP_Image_Draw(HowToPlayButtonImage, 275, 700, 328, 99, 255);
+		}
+
+		// Settings button
+		if (CheckWithinBounds(CP_Vector_Set(625, 700), 328, 99))
+		{
+			CP_Image_Draw(SettingsButtonImageHover, 625, 700, 328, 99, 255);
 			if (CP_Input_MouseClicked())
 			{
 				gameScene = SCENE_OPTIONS;
@@ -277,20 +306,37 @@ void game_update(void)
 		}
 		else
 		{
-			CP_Image_Draw(SettingsButtonImage, 800, 700, 328, 99, 255);
+			CP_Image_Draw(SettingsButtonImage, 625, 700, 328, 99, 255);
 		}
-		// Exit button
-		if (CheckWithinBounds(CP_Vector_Set(400, 700), 328, 99))
+
+		// Credit Button
+		if (CheckWithinBounds(CP_Vector_Set(975, 700), 328, 99))
 		{
-			CP_Image_Draw(ExitButtonImageHover, 400, 700, 328, 99, 255);
+			CP_Image_Draw(CreditsButtonImageHover, 975, 700, 328, 99, 255);
+			if (CP_Input_MouseClicked()) {
+				gameScene = SCENE_CREDITS;
+				currentTimer = 0;
+			}
+		}
+		else
+		{
+			CP_Image_Draw(CreditsButtonImage, 975, 700, 328, 99, 255);
+		}
+
+		// Exit button
+		if (CheckWithinBounds(CP_Vector_Set(1325, 700), 328, 99))
+		{
+			CP_Image_Draw(ExitButtonImageHover, 1325, 700, 328, 99, 255);
 			if (CP_Input_MouseClicked()) {
 				ExitGame();
 			}
 		}
 		else
 		{
-			CP_Image_Draw(ExitButtonImage, 400, 700, 328, 99, 255);
+			CP_Image_Draw(ExitButtonImage, 1325, 700, 328, 99, 255);
 		}
+
+
 	}
 	else if (gameScene == SCENE_OPTIONS) {
 
@@ -314,9 +360,49 @@ void game_update(void)
 		CP_Image_Draw(Vol_Slider, currentSliderPos.x, currentSliderPos.y, 35, 58, 255);
 		CP_Image_Draw(ResolutionBtn_1600, 800, 365, 241,90, 255);
 		AdjustVolumeSlider();
-
-
 	}
+
+	else if (gameScene == SCENE_CREDITS) {
+
+		CP_Graphics_ClearBackground(CP_Color_Create(0, 0, 0, 255));
+
+		CP_Image_Draw(CreditsScreenImage, 800, 450, 1600, 900, 255);
+
+		if (CheckWithinBounds(CP_Vector_Set(800, 825), 281, 87))
+		{
+			CP_Image_Draw(ReturnToMainMenuButtonHover, 800, 825, 281, 87, 255);
+			if (CP_Input_MouseClicked())
+			{
+				gameScene = SCENE_MAINMENU;
+				currentTimer = 0;
+			}
+		}
+		else {
+			CP_Image_Draw(ReturnToMainMenuButton, 800, 825, 281, 87, 255);
+		}
+	}
+
+	else if (gameScene == SCENE_HOWTOPLAY) {
+
+	CP_Graphics_ClearBackground(CP_Color_Create(0, 0, 0, 255));
+
+	CP_Image_Draw(HowToPlayScreenImage, 800, 450, 1600, 900, 255);
+
+	if (CheckWithinBounds(CP_Vector_Set(1425, 75), 281, 87))
+	{
+		CP_Image_Draw(ReturnToMainMenuButtonHover, 1425, 75, 281, 87, 255);
+		if (CP_Input_MouseClicked())
+		{
+			gameScene = SCENE_MAINMENU;
+			currentTimer = 0;
+		}
+	}
+
+	else {
+		CP_Image_Draw(ReturnToMainMenuButton, 1425, 75, 281, 87, 255);
+	}
+	}
+
 	else if (gameScene == SCENE_GAMEENTRY)
 	{
 		if (currentTimer <= 3)
