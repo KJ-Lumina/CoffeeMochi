@@ -540,19 +540,19 @@ void DrawTempTextResources()
     CP_Settings_Fill(CP_Color_Create(255, 255, 255, 255));
 
     //Draw Text for current gold amount
-    sprintf_s(resourceBuffer, 20, "%d", GetDelayedGold());
+    sprintf_s(resourceBuffer, 20, "%d", Get_current_gold());
     CP_Font_DrawText(resourceBuffer, 660, 74);
     
     //Draw Text For current food amount
-    sprintf_s(resourceBuffer, 20, "%d", GetDelayedFood());
+    sprintf_s(resourceBuffer, 20, "%d", Get_current_food());
     CP_Font_DrawText(resourceBuffer, 660, 164);
 
     //Draw Text for current population amount
-    sprintf_s(resourceBuffer, 20, "%d", GetDelayedPop());
+    sprintf_s(resourceBuffer, 20, "%d", Get_current_population());
     CP_Font_DrawText(resourceBuffer, 660, 254);
 
     //Draw Text for current morale
-    sprintf_s(resourceBuffer, 20, "%d", GetDelayedMorale() + Get_additional_morale());
+    sprintf_s(resourceBuffer, 20, "%d", Get_current_morale() + Get_additional_morale());
     CP_Font_DrawText(resourceBuffer, 660, 344);
 
     //Draw text for number of cards left

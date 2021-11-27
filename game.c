@@ -461,41 +461,47 @@ void GameStateControl()
                     }
                 }
             }
-
-
-
-            endTurnTimer = animCount * animDelay + 1.0f;
+            endTurnTimer = animCount * animDelay + 0.4f;
         }
-        else if (endTurnTimer < 0 && endTurnAnim2)
+        else if (endTurnTimer > 0 && !endTurnAnim2)
         {
             endTurnTimer -= CP_System_GetDt();
-            if (GetCardsLeft() == 0)
+            if (endTurnTimer <= 0)
             {
-                GameEnd();
+                endTurnAnim2 = true;
+                float animCount = 0;
+                float animDelay = 0.1f;
+                CP_Vector worldOrigin = GetWorldSpaceOrigin();
+                CP_Vector tempVector;
+                for (int i = 0; i < MAXNPC; ++i)
+                {
+                    if (GetNpc(i).x != 0)
+                    {
+                        tempVector = GetNpc(i);
+                        tempVector = CP_Vector_Set(tempVector.x + worldOrigin.x, tempVector.y + worldOrigin.y);
+                        SpawnFoodGainAnimation(-1, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - 40), CP_Vector_Set(520, 180), 0.6f, animCount * animDelay);
+                        ++animCount;
+                    }
+                }
+                endTurnTimer = animCount * animDelay + 1.0f;
             }
-            else if (endTurnTimer <= 0)
-            {
-                endTurnAnim2 = false;
-                EndTurn();  //State Set to Start Turn is in EndTurn()       
-            }
+            
         }
         else
         {
-            endTurnAnim2 = true;
-            float animCount = 0;
-            float animDelay = 0.1f;
-            CP_Vector worldOrigin = GetWorldSpaceOrigin();
-            CP_Vector tempVector;
-            for (int i = 0; i < MAXNPC; ++i)
+            endTurnTimer -= CP_System_GetDt();
+            if (endTurnTimer <= 0)
             {
-                if (GetNpc(i).x != 0)
+                endTurnAnim2 = false;
+                if (GetCardsLeft() == 0)
                 {
-                    tempVector = GetNpc(i);
-                    tempVector = CP_Vector_Set(tempVector.x + worldOrigin.x, tempVector.y + worldOrigin.y);
-                    SpawnFoodGainAnimation(-1, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - 40), CP_Vector_Set(520, 180), 0.6f, animCount * animDelay);
+                    GameEnd();
+                }
+                else
+                {
+                    EndTurn();  //State Set to Start Turn is in EndTurn()       
                 }
             }
-            endTurnTimer = animCount * animDelay + 1.0f;
         }
         break;
     case State_GameOver:
