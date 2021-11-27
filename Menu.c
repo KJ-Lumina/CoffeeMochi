@@ -70,10 +70,10 @@ void game_init(void)
 	windowsHeight = (float)CP_System_GetWindowHeight();
 
 	//START FROM BEGINNING
-	gameScene = SCENE_SPLASH_DIGIPEN;
+	//gameScene = SCENE_SPLASH_DIGIPEN;
 	//SKIP TO GAME
-	/*MainGame_Initialize();
-	gameScene = SCENE_GAMEPHASE;*/
+	MainGame_Initialize();
+	gameScene = SCENE_GAMEPHASE;
 	//CHANGEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
 	Splash_Digipen = CP_Image_Load("./ImperoArtAssets/Impero_Digipen.png");
 	Splash_CoffeeMochi = CP_Image_Load("./ImperoArtAssets/CoffeeMochi_BG.png");
