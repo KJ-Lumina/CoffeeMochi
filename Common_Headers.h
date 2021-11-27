@@ -229,6 +229,7 @@ void DrawTempTextResources();
 void UI_SetReward(REWARDCARD* rewardCard, int cardsLeft);
 void UI_SetEvent(CARDEVENT*);
 void UI_SetBlessingsTimer(float timer);
+void DrawUI_Settings();
 
 
 // Resources
@@ -297,6 +298,7 @@ void InitVfx();
 
 //Menu CallBacks
 void SetGameSceneEndPhase();
+void OpenOptions();
  
 //graphics Animspawn
 void ConstantAnimSpawner(int counterIndex, int index, float time, int lowerX, int upperX, int lowerY, int upperY, float scaleX, float scaleY, float timeToDeath, int isTimeVariance, int isLerp);

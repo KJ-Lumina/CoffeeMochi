@@ -36,6 +36,7 @@ float sliderMinPos = 620;
 float sliderMaxPos = 1050;
 CP_Vector currentSliderPos;
 float current_Volume = 1.0f;
+bool isOptionsOpen = false;
 
 CP_Sound Test_BGM; //Delete after use
 
@@ -130,10 +131,8 @@ void game_update(void)
 			CP_Image_Draw(whiteFlash, windowsWidth / 2, windowsHeight / 2, 1600, 900, CP_Math_LerpInt(255, 0, (currentTimer)));
 		}
 
-		if (CP_Input_KeyTriggered(KEY_ESCAPE)) {
-
+		if (isOptionsOpen) {
 			gameScene = SCENE_GAMEOPTIONS;
-
 		}
 	}
 	else if (gameScene == SCENE_GAMEOPTIONS) {
@@ -161,6 +160,7 @@ void game_update(void)
 			CP_Image_Draw(ResumeGameButtonHover, 450, 700, 281, 87, 255);
 			if (CP_Input_MouseClicked())
 			{
+				isOptionsOpen = false;
 				gameScene = SCENE_GAMEPHASE;
 			}
 		}
@@ -384,15 +384,7 @@ void SetGameSceneEndPhase()
 
 void OpenOptions()
 {
-	//if (CP_Input_KeyTriggered(KEY_ESCAPE)) {
-	//	OptionsOpen = !OptionsOpen;
-	//}
-
-	//if (OptionsOpen)
-	//{
-	//	//CP IMAGE DRAW OPTION MENU
-	//	gameScene = SCENE_OPTIONS;
-	//}
+	if (!isOptionsOpen) isOptionsOpen = true;
 }
 void ChangeVolume(float vol)
 {

@@ -47,7 +47,8 @@ float blessTimer = 0;
 BUTTON start_game = { true,100,100,200,200,1,0,START_GAME };
 
 
-
+CP_Image settingsButton;
+CP_Image settingsButtonHover;
 
 // reward card effect, to be optimized later
 CP_Image image_CardFlash;
@@ -89,6 +90,9 @@ void InitUI()
     image_redZone = CP_Image_Load("./Assets/RedZone.png");
     image_descbox = CP_Image_Load("./ImperoArtAssets/ResourceBarAssets/Impero_Textbox.png");
     image_descboxcover = CP_Image_Load("./ImperoArtAssets/ResourceBarAssets/Impero_TextboxBG.png");
+
+    settingsButton = CP_Image_Load("./ImperoArtAssets/ResourceBarAssets/Impero_SettingsButton.png");
+    settingsButtonHover = CP_Image_Load("./ImperoArtAssets/ResourceBarAssets/Impero_SettingsButtonHover.png");
 
     cardSeletorPos = CP_Vector_Set(250, 450);
     optionAPos = CP_Vector_Set(cardSeletorPos.x - 43, cardSeletorPos.y);
@@ -311,12 +315,31 @@ void DrawUI_Textbox()
     CP_Image_Draw(image_descboxcover, 260, 190, 455, 270, 255);
     CP_Image_Draw(image_descbox, 260, 190, 455, 270, 255);
 }
+
+void DrawUI_Settings() {
+
+    if (CheckWithinBounds(CP_Vector_Set(1540, 60), 98, 93)) {
+        CP_Image_Draw(settingsButtonHover, 1540, 60, 98, 93, 255);
+        if (CP_Input_MouseClicked()) {
+            printf("Clicked");
+            OpenOptions();
+        }
+    }
+    else {
+        CP_Image_Draw(settingsButton, 1540, 60, 98, 93, 255);
+    }
+
+}
+
+
 void DrawUI_TextDesc(const char* text)
 {
     CP_Settings_TextSize(30);
     CP_Settings_Fill(CP_Color_Create(255, 255, 255, 255));
     CP_Font_DrawTextBox(text, 110, 155, 300);
 }
+
+
 void DrawUI_Title(const char* text)
 {
     CP_Settings_TextSize(50);
@@ -387,54 +410,64 @@ void DrawUI(GAMESTATE state)
     switch (state)
     {
     case State_GameEntry:
+        DrawUI_Settings();
         DrawUI_Textbox();
         DrawUI_Deck();
         DrawUI_BlessFill(false);
         break;
     case State_StartOfTurn:
+        DrawUI_Settings();
         DrawUI_Textbox();
         DrawUI_Deck();
         DrawUI_BlessFill(false);
         DrawUI_cardDraw(true);
         break;
     case State_Idle:
+        DrawUI_Settings();
         DrawUI_Textbox();
         DrawUI_Title("Click on the card below to start an event");
         DrawUI_Deck();
         DrawUI_TopCard();
         break;
     case State_CardDraw:
+        DrawUI_Settings();
         DrawUI_Textbox();
         DrawUI_Deck();
         DrawUI_cardDraw(false);
         break;
     case State_MakeAChoice:
+        DrawUI_Settings();
         DrawUI_Textbox();
         DrawUI_Deck();
         DrawUI_OptionSelector();
         DrawUI_AffectedLand();
         break;
     case State_ResourceChange:
+        DrawUI_Settings();
         DrawUI_Textbox();
         DrawUI_Deck();
         DrawUI_SelectedOption();
         break;
     case State_CollectRewards:
+        DrawUI_Settings();
         DrawUI_Textbox();
         DrawUI_Deck();
         DrawUI_RewardCards(false);
         break;
     case State_PlaceYourBuilding:
+        DrawUI_Settings();
         DrawUI_Textbox();
         DrawUI_Deck();
         DrawUI_RewardCards(true);
         break;
     case State_DestroyBuilding:
+        DrawUI_Settings();
         DrawUI_Textbox();
         DrawUI_Deck();
         DrawUI_RewardCards(true);
         break;
     case State_EndOfTurn:
+        DrawUI_Settings();
         DrawUI_Textbox();
         DrawUI_Deck();
         DrawUI_BlessFill(true);
