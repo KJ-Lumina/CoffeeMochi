@@ -15,6 +15,8 @@ CP_Image mainScreenImage;
 CP_Image titleImage;
 CP_Image StartButtonImage;
 CP_Image StartButtonImageHover;
+CP_Image OptionsButtonImage;
+CP_Image OptionsButtonImageHover;
 CP_Image SettingsButtonImage;
 CP_Image SettingsButtonImageHover;
 CP_Image ExitButtonImage;
@@ -89,6 +91,8 @@ void game_init(void)
 	titleImage = CP_Image_Load("./ImperoArtAssets/MainMenuAssets/Impero_TitleTrim.png");
 	StartButtonImage = CP_Image_Load("./ImperoArtAssets/MainMenuAssets/Impero_StartButton.png");
 	StartButtonImageHover = CP_Image_Load("./ImperoArtAssets/MainMenuAssets/Impero_StartButtonHover.png");
+	OptionsButtonImage = CP_Image_Load("./ImperoArtAssets/MainMenuAssets/Impero_OptionsButton.png");
+	OptionsButtonImageHover = CP_Image_Load("./ImperoArtAssets/MainMenuAssets/Impero_OptionsButtonHover.png");
 	SettingsButtonImage = CP_Image_Load("./ImperoArtAssets/MainMenuAssets/Impero_SettingsButton.png");
 	SettingsButtonImageHover = CP_Image_Load("./ImperoArtAssets/MainMenuAssets/Impero_SettingsButtonHover.png");
 	ExitButtonImage = CP_Image_Load("./ImperoArtAssets/MainMenuAssets/Impero_ExitButton.png");
@@ -276,7 +280,7 @@ void game_update(void)
 		else
 		{
 			//crazy ass star near start button
-			ConstantAnimSpawner(3, 2, 5.f, 1370, 1370, 645, 645, 300, 300, 0.75f, 0, 0);
+			ConstantAnimSpawner(3, 2, 5.f, 970, 970, 500, 500, 300, 300, 0.75f, 0, 0);
 			CP_Image_Draw(StartButtonImage, 800, 550, 328, 99, 255);
 		}
 
@@ -294,10 +298,10 @@ void game_update(void)
 			CP_Image_Draw(HowToPlayButtonImage, 275, 700, 328, 99, 255);
 		}
 
-		// Settings button
+		// Optionss button
 		if (CheckWithinBounds(CP_Vector_Set(625, 700), 328, 99))
 		{
-			CP_Image_Draw(SettingsButtonImageHover, 625, 700, 328, 99, 255);
+			CP_Image_Draw(OptionsButtonImageHover, 625, 700, 328, 99, 255);
 			if (CP_Input_MouseClicked())
 			{
 				gameScene = SCENE_OPTIONS;
@@ -306,7 +310,7 @@ void game_update(void)
 		}
 		else
 		{
-			CP_Image_Draw(SettingsButtonImage, 625, 700, 328, 99, 255);
+			CP_Image_Draw(OptionsButtonImage, 625, 700, 328, 99, 255);
 		}
 
 		// Credit Button
