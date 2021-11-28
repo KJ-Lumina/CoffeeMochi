@@ -276,7 +276,7 @@ void game_update(void)
 		else
 		{
 			//crazy ass star near start button
-			ConstantAnimSpawner(3, 2, 5.f, 1370, 1370, 645, 645, 300, 300, 0.75f, 0, 0);
+			ConstantAnimSpawner(3, 2, 5.f, 970, 970, 500, 500, 300, 300, 0.75f, 0, 0);
 			CP_Image_Draw(StartButtonImage, 800, 550, 328, 99, 255);
 		}
 
