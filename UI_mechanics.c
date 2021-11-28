@@ -167,9 +167,7 @@ void UI_SetBlessingsTimer(float timer)
 }
 void UI_SetGoldCard()
 {
-    printf("in");
     cardDraw.image = image_CardGold;
-
 }
 void UI_SetNormalCard()
 {
@@ -338,13 +336,27 @@ void DrawUI_RewardCards(bool rewardPicked)
 
     if (rewardPicked)
     {
-        DrawUI_TextDesc(UIselectedReward->description);
+        DrawUI_TextDesc(UIselectedReward->collectedDesc);
     }
     else
     {
-        DrawUI_TextDesc("Click on the card below to claim your reward.");
+        DrawUI_TextDesc(UIselectedReward->rewardDesc);
     }
 }
+
+void DrawUI_EventResult()
+{
+    DrawUI_Title(UIselectedEvent->title);
+    if (UIselectedChoice == 1)
+    {
+        DrawUI_TextDesc(UIselectedEvent->resultDescA);
+    }
+    else
+    {
+        DrawUI_TextDesc(UIselectedEvent->resultDescB);
+    }
+}
+
 void DrawUI_Textbox()
 {
     CP_Image_Draw(image_descboxcover, 260, 190, 455, 270, 255);
@@ -506,6 +518,7 @@ void DrawUI(GAMESTATE state)
     case State_EndOfTurn:
         DrawUI_Settings();
         DrawUI_Textbox();
+        DrawUI_EventResult();
         DrawUI_BlessFill(true);
         cardDraw.currentTime = 1;
         break;

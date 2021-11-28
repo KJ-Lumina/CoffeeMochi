@@ -253,7 +253,6 @@ void MouseClick()
                     rewardIndex++;
                 }
                 gameState = State_EndOfTurn;
-                break;
             }
             break;
         case State_PlaceYourBuilding:
@@ -517,7 +516,7 @@ void GameStateControl()
                     {
                         tempVector = GetNpc(i);
                         tempVector = CP_Vector_Set(tempVector.x + worldOrigin.x, tempVector.y + worldOrigin.y);
-                        SpawnBlessingGainAnimation(10, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - 40), CP_Vector_Set(100, 450), 0.8f, animCount * animDelay);
+                        SpawnBlessingGainAnimation(2, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - 40), CP_Vector_Set(100, 450), 0.8f, animCount * animDelay);
                         ++animCount;
                     }
                 }

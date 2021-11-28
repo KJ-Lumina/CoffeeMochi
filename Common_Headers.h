@@ -50,7 +50,8 @@
 #define DESTROY_TYPE_EVENT 3
 #define ONGOING_TYPE_EVENT 4
 #define GOLDEN_TYPE_EVENT 5
-#define EVENT_TYPE_REWARD 6
+#define TEXT_TYPE_EVENT 6
+#define EVENT_TYPE_REWARD 7
 
 
 //Resources
@@ -115,9 +116,11 @@ typedef struct
 	int resourceChangeA[4];
 	REWARD resourceRewardA[NUMBER_OF_MAX_REWARDS];
 	char* descriptionA;
+	char* resultDescA;
 	int resourceChangeB[4];
 	REWARD resourceRewardB[NUMBER_OF_MAX_REWARDS];
 	char* descriptionB;
+	char* resultDescB;
 	int affectedLand[25];
 }CARDEVENT;
 
@@ -127,7 +130,8 @@ typedef struct
 	int eventIndex;
 	int cardType;
 	int resourceType;
-	char* description;
+	char* rewardDesc;
+	char* collectedDesc;
 }REWARDCARD;
 
 typedef struct
