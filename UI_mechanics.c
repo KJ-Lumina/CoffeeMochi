@@ -13,11 +13,14 @@
 // SPRITES
 CP_Image EventCard;
 MOVINGSPRITES cardDraw;
-CP_Image image_CardBack;
+CP_Image image_CardNormal;
 CP_Image image_CardDeck;
 CP_Image image_CardFlipped;
 CP_Image image_CardA;
 CP_Image image_CardB;
+CP_Image image_CardGrey;
+CP_Image image_CardGold;
+
 
 CP_Image image_redZone;
 CARDEVENT* UIselectedEvent;
@@ -94,8 +97,10 @@ void InitUI()
 {
     windowWidth = (float)CP_System_GetWindowWidth();
     windowHeight = (float)CP_System_GetWindowHeight();
-    image_CardBack = CP_Image_Load("./ImperoArtAssets/Impero_CardBack.png");
+    image_CardNormal = CP_Image_Load("./ImperoArtAssets/Impero_CardBack.png");
     image_CardDeck = CP_Image_Load("./ImperoArtAssets/Impero_CardDeck.png");
+    image_CardGrey = CP_Image_Load("./ImperoArtAssets/Impero_CardGrey.png");
+    image_CardGold = CP_Image_Load("./ImperoArtAssets/Impero_CardGold.png");
 
     image_CardFlipped = CP_Image_Load("./ImperoArtAssets/Impero_CardFlip.png");
     image_CardA = CP_Image_Load("./ImperoArtAssets/Impero_CardBlue.png");
@@ -110,8 +115,8 @@ void InitUI()
     cardSeletorPos = CP_Vector_Set(250, 450);
     optionAPos = CP_Vector_Set(cardSeletorPos.x - 43, cardSeletorPos.y);
     optionBPos = CP_Vector_Set(cardSeletorPos.x + 43, cardSeletorPos.y);
-    cardDraw = (MOVINGSPRITES){ image_CardBack, CP_Vector_Set(130, (windowHeight / 2) + 230), CP_Vector_Set(cardSeletorPos.x, cardSeletorPos.y), 0.6f, 1 };
-    blessingCard = (MOVINGSPRITES){ image_CardBack, CP_Vector_Set(-100, cardSeletorPos.y), CP_Vector_Set(100, cardSeletorPos.y), 0.6f, 0 };
+    cardDraw = (MOVINGSPRITES){ image_CardNormal, CP_Vector_Set(130, (windowHeight / 2) + 230), CP_Vector_Set(cardSeletorPos.x, cardSeletorPos.y), 0.6f, 1 };
+    blessingCard = (MOVINGSPRITES){ image_CardNormal, CP_Vector_Set(-100, cardSeletorPos.y), CP_Vector_Set(100, cardSeletorPos.y), 0.6f, 0 };
 
     image_CardFlash = CP_Image_Load("./ImperoArtAssets/Impero_Cardflash.png");
     image_CardHighlight = CP_Image_Load("./ImperoArtAssets/Impero_Cardhighlight.png");
@@ -159,6 +164,16 @@ void UI_SetResourceAffected(int resourceChange[4])
 void UI_SetBlessingsTimer(float timer)
 {
     blessTimer = timer;
+}
+void UI_SetGoldCard()
+{
+    printf("in");
+    cardDraw.image = image_CardGold;
+
+}
+void UI_SetNormalCard()
+{
+    cardDraw.image = image_CardNormal;
 }
 
 bool ClickCheck_CardDraw()
@@ -242,11 +257,6 @@ void DrawUI_SelectedOption()
         DrawUI_TextDesc(UIselectedEvent->descriptionB);
         break;
     }
-}
-void DrawUI_Deck()
-{
-    // Draw back of card
-    //CP_Image_Draw(image_CardDeck, windowWidth - 130, (windowHeight / 2) + 260, 228, 309, 255);
 }
 void DrawUI_TopCard()
 {
@@ -417,23 +427,27 @@ void DrawUI_BlessFill()
         blessTimer -= CP_System_GetDt();
         blessingCard.currentTime += CP_System_GetDt();
         blessingCard.currentTime = CP_Math_ClampFloat(blessingCard.currentTime, 0, blessingCard.totalTime);
-        
-        CP_Image_DrawSubImage(blessingCard.image, EaseInSine(blessingCard.startingPos.x, blessingCard.endingPos.x, blessingCard.currentTime / blessingCard.totalTime),
-            EaseInSine(blessingCard.startingPos.y - Get_current_blessing() * 3.0f, blessingCard.endingPos.y - Get_current_blessing() * 3.0f, blessingCard.currentTime / blessingCard.totalTime),
-            185, 243 - Get_current_blessing() * 6.0f, 0, 0, 185, 243 - Get_current_blessing() * 6.0f, 255);
+
+        //gold card
+        CP_Image_Draw(image_CardGold, EaseInSine(blessingCard.startingPos.x, blessingCard.endingPos.x, blessingCard.currentTime / blessingCard.totalTime),
+            EaseInSine(blessingCard.startingPos.y, blessingCard.endingPos.y, blessingCard.currentTime / blessingCard.totalTime), 185, 243, 255);
+        //greyscale
+        CP_Image_DrawSubImage(image_CardGrey, EaseInSine(blessingCard.startingPos.x, blessingCard.endingPos.x, blessingCard.currentTime / blessingCard.totalTime),
+            EaseInSine(blessingCard.startingPos.y - Get_current_blessing() * 1.215f, blessingCard.endingPos.y - Get_current_blessing() * 1.215f, blessingCard.currentTime / blessingCard.totalTime),
+            185, 243 - Get_current_blessing() * 2.43f, 0, 0, 185, 243 - Get_current_blessing() * 2.43f, 255);
     }
     else
     {
         blessTimer -= CP_System_GetDt();
         blessingCard.currentTime -= CP_System_GetDt();
         blessingCard.currentTime = CP_Math_ClampFloat(blessingCard.currentTime, 0, blessingCard.totalTime);
-        CP_Image_DrawSubImage(blessingCard.image, EaseInSine(blessingCard.startingPos.x, blessingCard.endingPos.x, blessingCard.currentTime / blessingCard.totalTime),
-            EaseInSine(blessingCard.startingPos.y - Get_current_blessing() * 3.0f, blessingCard.endingPos.y - Get_current_blessing() * 3.0f, blessingCard.currentTime / blessingCard.totalTime),
-            185, 243 - Get_current_blessing() * 6.0f, 0, 0, 185, 243 - Get_current_blessing() * 6.0f, 255);
-
-
-        //CP_Image_Draw(blessingCard.image, EaseInSine(blessingCard.startingPos.x, blessingCard.endingPos.x, blessingCard.currentTime / blessingCard.totalTime),
-        //    EaseInSine(blessingCard.startingPos.y, blessingCard.endingPos.y, blessingCard.currentTime / blessingCard.totalTime), 185, 243, 255);
+        //gold card
+        CP_Image_Draw(image_CardGold, EaseInSine(blessingCard.startingPos.x, blessingCard.endingPos.x, blessingCard.currentTime / blessingCard.totalTime),
+            EaseInSine(blessingCard.startingPos.y, blessingCard.endingPos.y, blessingCard.currentTime / blessingCard.totalTime), 185, 243, 255);
+        //grey scale
+        CP_Image_DrawSubImage(image_CardGrey, EaseInSine(blessingCard.startingPos.x, blessingCard.endingPos.x, blessingCard.currentTime / blessingCard.totalTime),
+            EaseInSine(blessingCard.startingPos.y - Get_current_blessing() * 1.215f, blessingCard.endingPos.y - Get_current_blessing() * 1.215f, blessingCard.currentTime / blessingCard.totalTime),
+            185, 243 - Get_current_blessing() * 2.43f, 0, 0, 185, 243 - Get_current_blessing() * 2.43f, 255);
     }
 }
 
@@ -444,13 +458,11 @@ void DrawUI(GAMESTATE state)
     case State_GameEntry:
         DrawUI_Settings();
         DrawUI_Textbox();
-        DrawUI_Deck();
         DrawUI_BlessFill(false);
         break;
     case State_StartOfTurn:
         DrawUI_Settings();
         DrawUI_Textbox();
-        DrawUI_Deck();
         DrawUI_BlessFill(false);
         DrawUI_cardDraw(true);
         break;
@@ -458,50 +470,42 @@ void DrawUI(GAMESTATE state)
         DrawUI_Settings();
         DrawUI_Textbox();
         DrawUI_Title("Click on the card below to start an event");
-        DrawUI_Deck();
         DrawUI_TopCard();
         break;
     case State_CardDraw:
         DrawUI_Settings();
         DrawUI_Textbox();
-        DrawUI_Deck();
         DrawUI_cardDraw(false);
         break;
     case State_MakeAChoice:
         DrawUI_Settings();
         DrawUI_Textbox();
-        DrawUI_Deck();
         DrawUI_OptionSelector();
         DrawUI_AffectedLand();
         break;
     case State_ResourceChange:
         DrawUI_Settings();
         DrawUI_Textbox();
-        DrawUI_Deck();
         DrawUI_SelectedOption();
         break;
     case State_CollectRewards:
         DrawUI_Settings();
         DrawUI_Textbox();
-        DrawUI_Deck();
         DrawUI_RewardCards(false);
         break;
     case State_PlaceYourBuilding:
         DrawUI_Settings();
         DrawUI_Textbox();
-        DrawUI_Deck();
         DrawUI_RewardCards(true);
         break;
     case State_DestroyBuilding:
         DrawUI_Settings();
         DrawUI_Textbox();
-        DrawUI_Deck();
         DrawUI_RewardCards(true);
         break;
     case State_EndOfTurn:
         DrawUI_Settings();
         DrawUI_Textbox();
-        DrawUI_Deck();
         DrawUI_BlessFill(true);
         cardDraw.currentTime = 1;
         break;
@@ -521,7 +525,7 @@ void DrawUI(GAMESTATE state)
             beylist[i].BeyBladey = CP_Random_RangeFloat(0, 900);
             beylist[i].BeyBladelerp = 0;
         }
-        CP_Image_DrawAdvanced(image_CardBack, CP_Math_LerpFloat(beylist[i].BeyBladexpre, beylist[i].BeyBladex, beylist[i].BeyBladelerp / 1), CP_Math_LerpFloat(beylist[i].BeyBladeypre, beylist[i].BeyBladey, beylist[i].BeyBladelerp / 1), 185, 243, 255, beylist[i].anglelerp);
+        //CP_Image_DrawAdvanced(image_CardNormal, CP_Math_LerpFloat(beylist[i].BeyBladexpre, beylist[i].BeyBladex, beylist[i].BeyBladelerp / 1), CP_Math_LerpFloat(beylist[i].BeyBladeypre, beylist[i].BeyBladey, beylist[i].BeyBladelerp / 1), 185, 243, 255, beylist[i].anglelerp);
     }
     
 }
