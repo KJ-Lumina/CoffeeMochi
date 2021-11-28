@@ -426,12 +426,15 @@ void game_update(void)
 			CP_Image_Draw(StartButtonImage, 1200, 700, 328, 99, CP_Math_LerpInt(255, 0, (currentTimer * 2)));
 			CP_Image_Draw(SettingsButtonImage, 800, 700, 328, 99, CP_Math_LerpInt(255, 0, (currentTimer * 2)));
 			CP_Image_Draw(ExitButtonImage, 400, 700, 328, 99, CP_Math_LerpInt(255, 0, (currentTimer * 2)));
+			fadeInAlpha = CP_Math_LerpInt(0, 255, ((currentTimer - (entryDuration / 2)) / (entryDuration / 2)));
 
 			if (currentTimer >= entryDuration / 2)
-			{
-				fadeInAlpha = CP_Math_LerpInt(0, 255, ((currentTimer - (entryDuration / 2)) / (entryDuration / 2)));
-				DrawIntroNarritive(fadeInAlpha);
+			{				
 				CP_Image_Draw(whiteFlash, windowsWidth / 2, windowsHeight / 2, 1600, 900, fadeInAlpha);
+			}
+
+			if (currentTimer >= entryDuration) {
+				DrawIntroNarritive(fadeInAlpha);
 			}
 		}
 
