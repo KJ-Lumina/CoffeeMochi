@@ -28,6 +28,7 @@ CP_Image HowToPlayButtonImageHover;
 CP_Image game_Background;
 CP_Image game_UIBackground;
 
+bool ShowWinScreen = false;
 CP_Image GameWinScreen;
 CP_Image GameLoseScreen;
 
@@ -47,17 +48,15 @@ float sliderMinPos = 620;
 float sliderMaxPos = 1050;
 CP_Vector currentSliderPos;
 float current_Volume = 1.0f;
-bool isOptionsOpen = false;
-
-CP_Sound Test_BGM; //Delete after use
+int isOptionsOpen = false;
 
 float splashdigipentimer = 0;
 float splashcoffeemochitimer = 0;
 
 float mainScreenYLerpStart = 1350;
 float mainScreenYLerpEnd = -600;
-float exitScreenYLerpStart = -600;
-float exitScreenYLerpEnd = 1350;
+float exitScreenYLerpStart = 1350;
+float exitScreenYLerpEnd = -600;
 float titleImageYLerpStart = 250;
 float titleImageYLerpEnd = -700;
 
@@ -133,7 +132,6 @@ void game_init(void)
 	whiteFlash = CP_Image_Load("./Assets/WhiteFlash.png");
 	InitSpritesheets();
 
-	Test_BGM = CP_Sound_Load("./ImperoArtAssets/Music/Test_BGM.wav");
 	//CP_Sound_PlayAdvanced(Test_BGM, 1.0f, 1.0f, TRUE, CP_SOUND_GROUP_0);
 }
 
@@ -462,33 +460,41 @@ void game_update(void)
 	else if (gameScene == SCENE_ENDENTRY)
 	{
 		if (currentTimer <= 3)
-		{
-			currentTimer += CP_System_GetDt();
+		{		
+			currentTimer -= CP_System_GetDt();
 			CP_Image_Draw(mainScreenImage, windowsWidth / 2, CP_Math_LerpFloat(exitScreenYLerpStart, exitScreenYLerpEnd, currentTimer / exitDuration), 1600, 2700, 255);
+			//CP_Image_Draw(mainScreenImage, windowsWidth / 2, CP_Math_LerpFloat(exitScreenYLerpStart, exitScreenYLerpEnd, currentTimer / exitDuration), 1600, 2700, 255);
 			/*CP_Image_Draw(titleImage, windowsWidth / 2, CP_Math_LerpFloat(titleImageYLerpStart, titleImageYLerpEnd, currentTimer / entryDuration), 985, 440, 255);
 			CP_Image_Draw(StartButtonImage, 1200, 700, 328, 99, CP_Math_LerpInt(255, 0, (currentTimer * 2)));
 			CP_Image_Draw(SettingsButtonImage, 800, 700, 328, 99, CP_Math_LerpInt(255, 0, (currentTimer * 2)));
 			CP_Image_Draw(ExitButtonImage, 400, 700, 328, 99, CP_Math_LerpInt(255, 0, (currentTimer * 2)));*/
 
-			if (currentTimer >= entryDuration / 2)
+			if (currentTimer >= exitDuration / 2)
 			{
+				currentTimer -= CP_System_GetDt()/2;
 				CP_Image_Draw(whiteFlash, windowsWidth / 2, windowsHeight / 2, 1600, 900, CP_Math_LerpInt(0, 255, (currentTimer - (exitDuration / 2) / (exitDuration / 2))));
 			}
+
 		}
-		if (currentTimer >= entryDuration)
+		if (currentTimer <= 0)
 		{
-			CP_Image_Draw(whiteFlash, windowsWidth / 2, windowsHeight / 2, 1600, 900, 255);
+			//CP_Image_Draw(whiteFlash, windowsWidth / 2, windowsHeight / 2, 1600, 900, 255);
 			currentTimer = 0;
 			gameScene = SCENE_ENDPHASE;
 		}		
 	}
 	else if (gameScene == SCENE_ENDPHASE)
 	{	
-		CP_Image_Draw(GameWinScreen, 800, 450, 1600, 900,255);
+		if (ShowWinScreen) {
+			CP_Image_Draw(GameWinScreen, 800, 450, 1600, 900, 255);
+		}
+		else {
+			CP_Image_Draw(GameLoseScreen, 800, 450, 1600, 900, 255);
+		}
 
-		if (CheckWithinBounds(CP_Vector_Set(800, 700), 281, 87))
+		if (CheckWithinBounds(CP_Vector_Set(1100, 700), 281, 87))
 		{
-			CP_Image_Draw(ReturnToMainMenuButtonHover, 800, 700, 281, 87, 255);
+			CP_Image_Draw(ReturnToMainMenuButtonHover, 1100, 700, 281, 87, 255);
 			if (CP_Input_MouseClicked())
 			{
 				gameScene = SCENE_MAINMENU;
@@ -496,7 +502,20 @@ void game_update(void)
 			}
 		}
 		else {
-			CP_Image_Draw(ReturnToMainMenuButton, 800, 700, 281, 87, 255);
+			CP_Image_Draw(ReturnToMainMenuButton, 1100, 700, 281, 87, 255);
+		}
+
+		if (CheckWithinBounds(CP_Vector_Set(500, 700), 281, 87))
+		{
+			CP_Image_Draw(RestartGameButtonHover, 500, 700, 281, 87, 255);
+			if (CP_Input_MouseClicked())
+			{
+				RestartGame();
+				currentTimer = 0;
+			}
+		}
+		else {
+			CP_Image_Draw(RestartGameButton, 500, 700, 281, 87, 255);
 		}
 
 		/*currentTimer += CP_System_GetDt();
@@ -514,9 +533,10 @@ void game_exit(void)
 
 }
 
-void SetGameSceneEndPhase()
+void SetGameSceneEndPhase(int isWin)
 {
-	currentTimer = 0;
+	currentTimer = 3;
+	ShowWinScreen = isWin;
 	gameScene = SCENE_ENDENTRY;
 }
 

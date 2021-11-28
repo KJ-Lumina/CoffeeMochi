@@ -34,6 +34,7 @@ CP_Sound BGM_Test;
 //PlayingSound[20];
 void InitSound()
 {
+    CP_Sound_StopAll(); //Stop All Sound before playing new ones
     CardDeck_S = CP_Sound_Load("./Sounds/CardSFX.wav3");
     Click_S = CP_Sound_Load("./Sounds/ClickSFX.wav3");
     Gold_S = CP_Sound_Load("./Sounds/GoldSFX.wav3");

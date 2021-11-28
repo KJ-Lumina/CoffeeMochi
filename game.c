@@ -24,6 +24,8 @@ CP_Vector mouseDragPos;
 int loseCondition_FoodValue = 0;
 int loseCondition_PopulationValue = 0;
 
+int GameWin = false;
+
 //bool isTutorial = true;
 
 float AnimTimer = 1;
@@ -50,12 +52,14 @@ void StartTurn()
 
 //End Game Functions
 void GameEnd() {
+    GameWin = true;
     gameState = State_GameOver;
 }
 
 void GameOver() 
 {
     //Lose UI Pop Up
+    GameWin = false;
     gameState = State_GameOver;
 }
 
@@ -111,6 +115,10 @@ void AdminControlInput()
     if (CP_Input_KeyTriggered(KEY_E)) 
     {
         SpawnVfxEaseInToEaseOut(1, currentMousePos, CP_Vector_Set(CP_Random_RangeFloat(-50, 50) + currentMousePos.x, CP_Random_RangeFloat(-50, 50) + currentMousePos.y), CP_Vector_Set(50, 50), 1, CP_Vector_Set(128, 128), 0);
+    }
+
+    if (CP_Input_KeyTriggered(KEY_H)) {
+        GameOver();
     }
 
     if (CP_Input_KeyTriggered(KEY_1))
@@ -534,7 +542,12 @@ void GameStateControl()
         }
         break;
     case State_GameOver:
-        SetGameSceneEndPhase();
+        SetGameSceneEndPhase(GameWin);
+        gameState = State_End;
+        break;
+
+    case State_End:
+
         break;
     }
 }

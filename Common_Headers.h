@@ -63,11 +63,6 @@
 //buttons names in-progress
 #define START_GAME 0
 
-void SetGameSceneEndPhase();
-void RestartGame();
-
-
-
 
 typedef enum 
 {
@@ -97,7 +92,8 @@ typedef enum
 	State_PlaceYourBuilding,
 	State_DestroyBuilding,
 	State_EndOfTurn,
-	State_GameOver
+	State_GameOver,
+	State_End
 
 }GAMESTATE;
 
@@ -311,8 +307,9 @@ void DrawAllVfx();
 void InitVfx();
 
 //Menu CallBacks
-void SetGameSceneEndPhase();
+void SetGameSceneEndPhase(int isWin);
 void OpenOptions();
+void RestartGame();
  
 //graphics Animspawn
 void ConstantAnimSpawner(int counterIndex, int index, float time, int lowerX, int upperX, int lowerY, int upperY, float scaleX, float scaleY, float timeToDeath, int isTimeVariance, int isLerp);
