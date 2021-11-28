@@ -311,6 +311,16 @@ void GameStateControl()
     {
     case State_GameEntry:
         AnimTimer = 1.0f;
+        if (Get_current_blessing() >= 100)
+        {
+            UI_SetGoldCard();
+            EventSetGoldenCard();
+            ResetBlessing();
+        }
+        else
+        {
+            UI_SetNormalCard();
+        }
         gameState = State_StartOfTurn;
         break;
     case State_StartOfTurn:
@@ -499,7 +509,7 @@ void GameStateControl()
                     {
                         tempVector = GetNpc(i);
                         tempVector = CP_Vector_Set(tempVector.x + worldOrigin.x, tempVector.y + worldOrigin.y);
-                        SpawnBlessingGainAnimation(1, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - 40), CP_Vector_Set(100, 450), 0.8f, animCount * animDelay);
+                        SpawnBlessingGainAnimation(10, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - 40), CP_Vector_Set(100, 450), 0.8f, animCount * animDelay);
                         ++animCount;
                     }
                 }

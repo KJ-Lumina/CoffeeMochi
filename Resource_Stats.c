@@ -393,6 +393,11 @@ void SubtractTavern()
 	}
 }
 
+void ResetBlessing()
+{
+    curBlessing = 0;
+}
+
 void GenerateResourcesOnEndTurn()
 {
 	Gold_generated_per_turn();
