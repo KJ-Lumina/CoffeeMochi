@@ -49,7 +49,8 @@
 #define RESOURCE_TYPE_EVENT 2
 #define DESTROY_TYPE_EVENT 3
 #define ONGOING_TYPE_EVENT 4
-#define EVENT_TYPE_REWARD 5
+#define GOLDEN_TYPE_EVENT 5
+#define EVENT_TYPE_REWARD 6
 
 
 //Resources
@@ -228,7 +229,6 @@ bool CheckWithinBounds(CP_Vector position, float width, float height);
 bool ClickCheck_CardDraw();
 int ClickCheck_CardChoice();
 int ClickCheck_Rewards();
-void DrawUI_Deck();
 void DrawUI(GAMESTATE state);
 void DrawUI_TextDesc(const char* text); 
 void DrawUI_Title(const char* text);
@@ -236,6 +236,8 @@ void DrawTempTextResources();
 void UI_SetReward(REWARDCARD* rewardCard, int cardsLeft);
 void UI_SetEvent(CARDEVENT*);
 void UI_SetBlessingsTimer(float timer);
+void UI_SetGoldCard();
+void UI_SetNormalCard();
 void DrawUI_Settings();
 
 
@@ -261,6 +263,7 @@ void SubtractMarket();
 void SubtractFarm();
 void SubtractHouse();
 void SubtractTavern();
+void ResetBlessing();
 void GenerateResourcesOnEndTurn();
 bool LoseCondition_Resources();
 bool IsCostPayable(int costAmt);
@@ -291,6 +294,7 @@ CP_Image* GetBuildingSpriteByIndex(int);
 CP_Image* GetBuildingSpriteButtonByIndex(int);
 CP_Image* GetCardSpriteByType(int type);
 CARDEVENT* GetEventByIndex(int index);
+void EventSetGoldenCard();
 
 // Ongoing Events
 void InitOngoingEvents();

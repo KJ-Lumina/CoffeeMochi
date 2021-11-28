@@ -27,7 +27,7 @@ typedef struct
 CP_Image buildCardSprite;
 CP_Image destroyCardSprite;
 
-#define TOTALCARDCOUNT 26
+#define TOTALCARDCOUNT 50
 #define TOTALTUTORIALCARDSCOUNT 3
 #define TOTALREWARDCARDCOUNT 11
 CARDEVENT* cardList[TOTALCARDCOUNT];
@@ -43,6 +43,8 @@ CARDDECK debugDeck = { 11, 1, 2, 24, 12, 12, 12, 12, 12, 23, 23, 23 };
 CARDDECK* currentDeck;
 CARDEVENT* currentEvent;
 int currentCardIndex;
+CARDEVENT* forcedCard;
+bool forcedCardActive;
 
 #pragma region Reward Cards
 REWARDCARD R_NullCard				= { 0, NULL_CHOICE, R_NULL_INDEX, "This is a null reward.", };
@@ -154,13 +156,24 @@ CARDEVENT E_HeavyRain = { 25, ONGOING_TYPE_EVENT,"Raining Season", "Looks like a
 , {-30, 0,0, 0}, { {0,0},{0,0} }, "Reinforce our shelters" };
 
 //DESTROY TYPE EVENTS
-//CARDEVENT E_EarthquakeIncoming = { 23, DESTROY_TYPE_EVENT,"Disaster Strike", "Gorvernor, news from nearby kingdom have reach our ears that a earthquake is coming and would reach our kingdom soon. There is an urgent need to prepare for it when it arrives."
-//,{0,-20,0,-30},{ {2, -1}, {4, -1} }, "Sound the emergency alarm. Get all of our citizen to start reinforcing all our building but focus on the House and Markets."
-//,{-20,0,0,-15},{ {1, -1}, {3, -1} }, "Sound the emergency alarm. Get all of our citizen to start reinforcing all our building but focus on the Farms and Taverns." };
 
 CARDEVENT E_EarthquakeIncoming = { 23, DESTROY_TYPE_EVENT,"Disaster Strike", "Gorvernor, news from nearby kingdom have reach our ears that a earthquake is coming and would reach our kingdom soon. There is an urgent need to prepare for it when it arrives."
 ,{0,-20,0,-30},{ {6, 1}, {8, 1} }, "Sound the emergency alarm. Get all of our citizen to start reinforcing all our building but focus on the House and Markets."
 ,{-20,0,0,-15},{ {5, 1}, {7, 1} }, "Sound the emergency alarm. Get all of our citizen to start reinforcing all our building but focus on the Farms and Taverns.", {26, 0} };
+
+//GOLD CARDS
+CARDEVENT E_GoldenOne = { 26 , BUILD_TYPE_EVENT, "Mysterious Man", "A mysterious man arrived in your kingdom. He seems to know the ins-and-outs of your kingdom"
+, {0,0,0,0}, { {0,0}, {0,0} }, "Welcome him in peacefully."
+, {0,0,0,0}, { {0,0}, {0,0} }, "Idk." };
+
+
+
+
+
+/*CARDEVENT E_GoldenOne = {00 , BUILD_TYPE_EVENT, "", ""
+, {0,0,0,0}, { {0,0}, {0,0} }, ""
+, {0,0,0,0}, { {0,0}, {0,0} }, "" }*/
+
 #pragma endregion
 
 
@@ -198,6 +211,7 @@ void InitCardList()
 	cardList[23] = &E_EarthquakeIncoming;
 	cardList[24] = &E_RatInfestation;
 	cardList[25] = &E_HeavyRain;
+	cardList[26] = &E_GoldenOne;
 
 	rewardCardList[0] = &R_NullCard;
 	rewardCardList[1] = &R_HouseCard;
@@ -235,10 +249,18 @@ int GetCardsLeft()
 
 CARDEVENT* GetNextEvent()
 {
-	currentEvent = GetEventByIndex(currentDeck->cardIndexes[currentCardIndex]);
-	++currentCardIndex;
-
-	return currentEvent;
+	if (forcedCardActive)
+	{
+		currentEvent = forcedCard;
+		forcedCardActive = false;
+		return forcedCard;
+	}
+	else
+	{
+		currentEvent = GetEventByIndex(currentDeck->cardIndexes[currentCardIndex]);
+		++currentCardIndex;
+		return currentEvent;
+	}
 }
 
 CARDEVENT* GetEventByIndex(int index)
@@ -262,5 +284,11 @@ CP_Image* GetCardSpriteByType(int type)
 	default:
 		return &buildCardSprite;
 	}
+}
+
+void EventSetGoldenCard()
+{
+	forcedCard = &E_GoldenOne;
+	forcedCardActive = true;
 }
 
