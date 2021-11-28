@@ -60,6 +60,7 @@ float exitScreenYLerpEnd = -600;
 float titleImageYLerpStart = 250;
 float titleImageYLerpEnd = -700;
 
+int fadeInAlpha = 0;
 float entryDuration = 2;
 float exitDuration = 2;
 float currentTimer;
@@ -83,10 +84,10 @@ void game_init(void)
 	windowsHeight = (float)CP_System_GetWindowHeight();
 
 	//START FROM BEGINNING
-	//gameScene = SCENE_SPLASH_DIGIPEN;
+	gameScene = SCENE_SPLASH_DIGIPEN;
 	//SKIP TO GAME
-	MainGame_Initialize();
-	gameScene = SCENE_GAMEPHASE;
+	/*MainGame_Initialize();
+	gameScene = SCENE_GAMEPHASE;*/
 	//CHANGEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
 	Splash_Digipen = CP_Image_Load("./ImperoArtAssets/Impero_Digipen.png");
 	Splash_CoffeeMochi = CP_Image_Load("./ImperoArtAssets/CoffeeMochi_BG.png");
@@ -428,13 +429,38 @@ void game_update(void)
 
 			if (currentTimer >= entryDuration / 2)
 			{
-				CP_Image_Draw(whiteFlash, windowsWidth / 2, windowsHeight / 2, 1600, 900, CP_Math_LerpInt(0, 255, (currentTimer - (entryDuration / 2) / (entryDuration / 2))));
+				fadeInAlpha = CP_Math_LerpInt(0, 255, ((currentTimer - (entryDuration / 2)) / (entryDuration / 2)));
+				DrawIntroNarritive(fadeInAlpha);
+				CP_Image_Draw(whiteFlash, windowsWidth / 2, windowsHeight / 2, 1600, 900, fadeInAlpha);
 			}
 		}
+
 		if (currentTimer >= entryDuration)
 		{
 			CP_Image_Draw(whiteFlash, windowsWidth / 2, windowsHeight / 2, 1600, 900, 255);
-			MainGame_Initialize();
+
+			DrawIntroNarritive(255);
+
+			if (CP_Input_MouseClicked()) {
+				MainGame_Initialize();
+				currentTimer = 2;
+				gameScene = SCENE_GAMEENTRY_EXIT;
+			}
+		}
+	}
+	else if (gameScene == SCENE_GAMEENTRY_EXIT)
+	{
+		if (currentTimer <= 2)
+		{
+			currentTimer -= CP_System_GetDt();
+			fadeInAlpha = CP_Math_LerpInt(0, 255, ((currentTimer - (entryDuration / 2)) / (entryDuration / 2)));
+			DrawIntroNarritive(fadeInAlpha);
+			CP_Image_Draw(whiteFlash, windowsWidth / 2, windowsHeight / 2, 1600, 900, fadeInAlpha);
+		}
+		if (currentTimer <= 0)
+		{
+			CP_Image_Draw(whiteFlash, windowsWidth / 2, windowsHeight / 2, 1600, 900, 0);
+			DrawIntroNarritive(0);
 			currentTimer = 0;
 			gameScene = SCENE_GAMEPHASE;
 		}
@@ -472,7 +498,7 @@ void game_update(void)
 			if (currentTimer >= exitDuration / 2)
 			{
 				currentTimer -= CP_System_GetDt()/2;
-				CP_Image_Draw(whiteFlash, windowsWidth / 2, windowsHeight / 2, 1600, 900, CP_Math_LerpInt(0, 255, (currentTimer - (exitDuration / 2) / (exitDuration / 2))));
+				CP_Image_Draw(whiteFlash, windowsWidth / 2, windowsHeight / 2, 1600, 900, CP_Math_LerpInt(0, 255, ((currentTimer - (exitDuration / 2)) / (exitDuration / 2))));
 			}
 
 		}
@@ -531,6 +557,19 @@ void game_update(void)
 void game_exit(void)
 {
 
+}
+
+void DrawIntroNarritive(int alpha) {
+
+	const char* text = "In A.D. 1300, Someday in an Unknown Kingdom.\n The citizens have revolted against their king, the king is dethroned and exiled.\n\n You are among the royal family and next in line as kingand the citizens have high expections from you.\n Do meet their expectations and good luck.\n\n\n\n - Click Anywhere to Continue - ";
+
+	CP_Settings_TextSize(60);
+
+	CP_Settings_Fill(CP_Color_Create(128, 128, 128, alpha));
+
+	//Draw Text for Starting Narrative
+
+	CP_Font_DrawTextBox(text, 350, 150, 900);
 }
 
 void SetGameSceneEndPhase(int isWin)

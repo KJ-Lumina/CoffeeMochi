@@ -4,4 +4,5 @@
 void OpenOptions();
 void ChangeVolume(float vol);
 void ExitGame();
+void DrawIntroNarritive(int alpha);
 void AdjustVolumeSlider();

@@ -1,8 +1,8 @@
-﻿  Sound.c
+﻿  Menu.c
   Generating code
-  7 of 151 functions ( 4.6%) were compiled, the rest were copied from previous compilation.
+  3 of 154 functions ( 1.9%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    1 functions had inline decision re-evaluated but remain unchanged
+    2 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
   Processing_Sample.vcxproj -> C:\Users\Seow Kai Jun\Documents\GitHub\CoffeeMochi\x64\Release\Processing_Sample.exe
   1 File(s) copied
