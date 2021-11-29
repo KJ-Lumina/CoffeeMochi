@@ -379,19 +379,27 @@ void game_update(void)
 
 		CP_Graphics_ClearBackground(CP_Color_Create(0, 0, 0, 255));
 
-		CP_Image_Draw(CreditsScreenImage, 800, 450, 1600, 900, 255);
+		if (currentTimer <= 1) {
+			currentTimer += CP_System_GetDt() / 6;
+			CP_Image_Draw(CreditsScreenImage, 800, CP_Math_LerpFloat(900,0, currentTimer), 1600, 1800, 255);
 
-		if (CheckWithinBounds(CP_Vector_Set(800, 825), 281, 87))
-		{
-			CP_Image_Draw(ReturnToMainMenuButtonHover, 800, 825, 281, 87, 255);
-			if (CP_Input_MouseClicked())
-			{
-				gameScene = SCENE_MAINMENU;
-				currentTimer = 0;
-			}
 		}
-		else {
-			CP_Image_Draw(ReturnToMainMenuButton, 800, 825, 281, 87, 255);
+	
+		if (currentTimer > 1) {
+			CP_Image_Draw(CreditsScreenImage, 800, 0, 1600, 1800, 255);
+			if (CheckWithinBounds(CP_Vector_Set(1300, 475), 281, 87))
+			{
+				CP_Image_Draw(ReturnToMainMenuButtonHover, 1300, 475, 281, 87, 255);
+				if (CP_Input_MouseClicked())
+				{
+					gameScene = SCENE_MAINMENU;
+					currentTimer = 0;
+				}
+
+			}
+			else {
+				CP_Image_Draw(ReturnToMainMenuButton, 1300, 475, 281, 87, 255);
+			}
 		}
 	}
 
