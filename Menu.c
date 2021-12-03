@@ -48,7 +48,9 @@ float sliderMinPos = 620;
 float sliderMaxPos = 1050;
 CP_Vector currentSliderPos;
 float current_Volume = 1.0f;
+int scrollSpeed = 6;
 int isOptionsOpen = false;
+int isCreditRolling = false;
 
 float splashdigipentimer = 0;
 float splashcoffeemochitimer = 0;
@@ -383,26 +385,42 @@ void game_update(void)
 	else if (gameScene == SCENE_CREDITS) {
 
 		CP_Graphics_ClearBackground(CP_Color_Create(0, 0, 0, 255));
-
-		if (currentTimer <= 1) {
-			currentTimer += CP_System_GetDt() / 6;
-			CP_Image_Draw(CreditsScreenImage, 800, CP_Math_LerpFloat(900,0, currentTimer), 1600, 1800, 255);
-
+		CP_Image_Draw(CreditsScreenImage, 800, 1000, 1600, 2000, 255);
+		
+		if (CP_Input_MouseTriggered(0) && isCreditRolling == false) {
+			isCreditRolling = true;	
 		}
-	
-		if (currentTimer > 1) {
-			CP_Image_Draw(CreditsScreenImage, 800, 0, 1600, 1800, 255);
-			if (CheckWithinBounds(CP_Vector_Set(1300, 475), 281, 87))
-			{
-				CP_Image_Draw(ReturnToMainMenuButtonHover, 1300, 475, 281, 87, 255);
-				if (CP_Input_MouseClicked())
-				{
-					gameScene = SCENE_MAINMENU;
-					currentTimer = 0;
-				}
+
+		if (CP_Input_MouseDown(0)) {
+			scrollSpeed = 2;
+		}
+		else {
+			scrollSpeed = 6;
+		}
+
+		if (isCreditRolling) {
+			if (currentTimer <= 1) {
+				currentTimer += CP_System_GetDt() / scrollSpeed;
+				CP_Image_Draw(CreditsScreenImage, 800, CP_Math_LerpFloat(1000, -100, currentTimer), 1600, 2000, 255);
+
 			}
-			else {
-				CP_Image_Draw(ReturnToMainMenuButton, 1300, 475, 281, 87, 255);
+
+			if (currentTimer > 1) {
+				CP_Image_Draw(CreditsScreenImage, 800, -100, 1600, 2000, 255);
+				if (CheckWithinBounds(CP_Vector_Set(1300, 475), 281, 87))
+				{
+					CP_Image_Draw(ReturnToMainMenuButtonHover, 1300, 475, 281, 87, 255);
+					if (CP_Input_MouseClicked())
+					{
+						gameScene = SCENE_MAINMENU;
+						isCreditRolling = false;
+						scrollSpeed = 6;
+						currentTimer = 0;
+					}
+				}
+				else {
+					CP_Image_Draw(ReturnToMainMenuButton, 1300, 475, 281, 87, 255);
+				}
 			}
 		}
 	}
