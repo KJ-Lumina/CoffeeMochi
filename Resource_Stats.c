@@ -1,25 +1,24 @@
+/*!_____________________________________________________________________________
+@file       Resource_Stats.c
+@author     Erron Quek (e.quek@digipen.edu)
+@co-authors Seow Kai Jun
+            Travess Tan
+@course     CSD1120
+@section    B
+@team       CoffeeMochi
+@brief      This file contains the function definitions that are used in
+            resource calculation, generation and distribution in the core game
+            loop of Impero.
+*//*__________________________________________________________________________*/
+
 #include <stdio.h>
 #include "cprocessing.h"
 #include <stdbool.h>
 #include "Common_Headers.h"
-/*
-Extra Notes from Erron:
-Basic calculation for all resources per turn has been added but not tested until
-we have a running turn-based time mechanic
-Most of the default values are simplified estimations and will require multiple
-testing to fine-tune
-Buff/Debuff effects will be seperated to a different header file
-*/
 
-// For now Gold generated from 'Market' tiles and 'merchant' citizens 
-// and tax amount is defaulted to the following values
-// Subject to adjustments if Levels/Ranks are to be implemented
 #define GOLD_AMT_FROM_MARKETS 3
 #define TAX_AMOUNT 1
 
-// For now Food generated from 'Farm' tiles and 'farmer' citizens 
-// and consumption amount is defaulted to the following values
-// Subject to adjustments if Levels/Ranks are to be implemented
 #define FOOD_AMT_FROM_FARMS 7
 #define FOOD_CONSUMPTION_PER_PAX 5
 
@@ -28,12 +27,7 @@ Buff/Debuff effects will be seperated to a different header file
 #define PAX_LOW_MODIFIER 0.1
 #define PAX_MEDIUM_MODIFIER 0.25
 
-// Upkeep costs for every tile are defaulted to the following values
-// Subject to adjustments if Levels/Ranks are to be implemented
 #define TAVERN_UPKEEP_COST 5
-//#define FARM_UPKEEP_COST 5
-//#define HOUSING_UPKEEP_COST 5
-
 
 #define HIGH_MORALE 0
 #define MEDIUM_MORALE 1
@@ -68,6 +62,13 @@ int tavernModifier = 4;
 /*--------------------
 SET RESOURCE FUNCTIONS
 ---------------------*/
+/*!_____________________________________________________________________________
+@brief      This set of functions are used to set the values of the individual
+            resources Gold, Food, Population and Morale to their respective
+            global variables. All functions take an input int and return no
+            output.
+*//*__________________________________________________________________________*/
+
 
 void Set_current_gold(int gold)
 {
@@ -84,14 +85,19 @@ void Set_current_population(int population)
 	curPopulation = population;
 }
 
-void Set_additional_morale(int addMorale) {
+void Set_additional_morale(int addMorale) 
+{
 	additionalMorale = addMorale;
 }
 
 /*--------------------
 GET RESOURCE FUNCTIONS
 ---------------------*/
-
+/*!_____________________________________________________________________________
+@brief      This set of functions are used retrieve the values of the resources
+            from their respective global variables. All functions take in 
+            no input, and return an int corresponding to the global value.
+*//*__________________________________________________________________________*/
 int Get_current_gold()
 {
 	return curGold;
@@ -125,6 +131,12 @@ int Get_current_blessing()
 /*--------------------
 DURING TURN FUNCTIONS
 ---------------------*/
+/*!_____________________________________________________________________________
+@brief      This set of functions are used retrieve the expected resource gain
+            from the current total number of building tiles the player has set.
+            All functions take in no input and return an int corresponding to 
+            the global variable of the expected resource gain.
+*//*__________________________________________________________________________*/
 
 int market_gold_prediction()
 {
@@ -141,119 +153,15 @@ int house_pop_prediction()
 	return PAX_PER_HOUSING;
 }
 
-
 /*--------------------
 END OF TURN FUNCTIONS
 ---------------------*/
+/*!_____________________________________________________________________________
+@brief      This set of functions are used to calculate the amount of resource
+            gain or loss at the end of a turn, after the player has chosen a 
+            decision and finished setting any building tiles, if applicable.
+*//*__________________________________________________________________________*/
 
-//int Lerp_Resources(int start, int end, float duration)
-//{   
-//    float dt = duration / CP_System_GetDt();
-//    float t = 0;
-//    while (t <= duration)
-//    {
-//        t += dt;
-//        return (int)((end - start)/dt);
-//    }
-//    return 0;
-//}
-
-// Function to check amount of Gold resource generated per turn
-void Gold_generated_per_turn()
-{
-	// Gold generated from market
-	//int gold_generated_by_markets = (numMarkets * GOLD_AMT_FROM_MARKETS);
-
-	// Gold generated from population tax
-	//int gold_generated_by_tax = curPopulation * TAX_AMOUNT;
-
-	// Gold deducted from facility upkeep
-	//int gold_deducted_from_upkeep = (MARKET_UPKEEP_COST * numMarkets) + (FARM_UPKEEP_COST * numFarms) + (HOUSING_UPKEEP_COST * numHouses);
-
-	// Net total Gold generated
-	//curGold += gold_generated_by_markets + gold_generated_by_tax - gold_deducted_from_upkeep;
-    //IncreaseGold((numMarkets * GOLD_AMT_FROM_MARKETS) - (numTaverns * TAVERN_UPKEEP_COST));
-}
-
-// Function to check amount of Food resource generated per turn
-void Food_generated_per_turn()
-{
-	// Food generated from farms and farmer citizens
-	//int food_generated_by_farms = (numFarms * FOOD_AMT_FROM_FARMS);
-
-	// Food deducted from population consumption
-	//int food_deducted_from_consumption = curPopulation * FOOD_CONSUMPTION_PER_PAX;
-
-	// Net total Food generated
-	//curFood += food_generated_by_farms - food_deducted_from_consumption;
-    //IncreaseFood((numFarms * FOOD_AMT_FROM_FARMS) - (numHouses * FOOD_CONSUMPTION_PER_PAX));
-}
-
-void Population_per_turn()
-{
-    /*
-	//curPopulation = initPopulation + (numHouses * PAX_PER_HOUSING);
-    if (!isStarved) {
-        curPopulation += numHouses * PAX_PER_HOUSING * INCREMENT_PERCENTAGE_PER_PAX;
-    }
-    else {
-        curPopulation -= numHouses * PAX_PER_HOUSING * INCREMENT_PERCENTAGE_PER_PAX;
-    }
-
-    switch (currentMoraleStatus) {
-
-    case MEDIUM_MORALE:
-        curPopulation -= (int)(curPopulation * PAX_MEDIUM_MODIFIER);
-        break;
-
-    case LOW_MORALE:
-        curPopulation -= (int)(curPopulation * PAX_LOW_MODIFIER);
-        break;
-
-    }*/
-    curPopulation =  numHouses * PAX_PER_HOUSING * 10;
-
-}
-
-void Gold_check()
-{
-	if (curGold < 30)
-		isPoor = TRUE;
-	else
-		isPoor = FALSE;
-}
-
-void Food_check()
-{
-	if (curFood < (curPopulation * 2))
-		isStarved = TRUE;
-	else
-		isStarved = FALSE;
-}
-
-
-void Morale_per_turn()
-{
-	//for now morale calculation is simply based on whether 2 conditions are true, if we want to add
-	//event effects then we will just have to add a seperate counter for it
-	//Tavern morale modifier affected by Morale debuff i.e. More debuff, lower Morale increase
-
-    /*currentMoraleStatus = isPoor + isStarved;
-
-	switch (currentMoraleStatus)
-	{
-		case HIGH_MORALE:
-			curMorale = curPopulation + (numTaverns * tavernModifier);
-			break;
-		case MEDIUM_MORALE:
-			curMorale = (curPopulation/MEDIUM_MORALE) + (numTaverns * (tavernModifier - MEDIUM_MORALE));
-			break;
-		case LOW_MORALE:
-			curMorale = (curPopulation/LOW_MORALE) + (numTaverns * (tavernModifier - LOW_MORALE));
-			break;
-	}*/
-    //IncreaseMorale(numTaverns * 2);
-}
 
 int delayedGold = 0;
 int delayedFood = 0;
@@ -273,10 +181,21 @@ typedef struct
     float timer;
 }DELAYEDRESOURCE;
 
-
 DELAYEDRESOURCE delayedList[MAX_DELAYRES];
 
+/*!_____________________________________________________________________________
+@brief      This function calculates the amount of Population at the end of a
+            turn. It takes no input and gives no output.
+*//*__________________________________________________________________________*/
+void GenerateResourcesOnEndTurn()
+{
+    curPopulation = numHouses * PAX_PER_HOUSING * 10;
+}
 
+/*!_____________________________________________________________________________
+@brief      This function initialises the resources for a new round of game.
+            It takes in 4 seperate int values and returns no output.
+*//*__________________________________________________________________________*/
 void InitResources(int startingGold, int startingFood, int startingPopulation, int startingMorale) {
 	curGold = startingGold;
     curFood = startingFood;
@@ -296,6 +215,11 @@ void InitResources(int startingGold, int startingFood, int startingPopulation, i
     }
 }
 
+/*!_____________________________________________________________________________
+@brief      This function updates the value of the resources shown on the UI 
+            with lerp() function whenever there is a change in resource value.
+            It takes no input and returns no output.
+*//*__________________________________________________________________________*/
 void UpdateResources()
 {
     float deltaRes = CP_System_GetDt();
@@ -351,6 +275,70 @@ void UpdateResources()
     }
 }
 
+/*!_____________________________________________________________________________
+@brief      This function stores the 'delayed' resource value for calculation
+            in the lerp() function in UpdateResource() function. It takes 2 int
+            values corresponding to the resource type and the amount, and
+            a float for the delay timer, and returns no output;
+*//*__________________________________________________________________________*/
+void AddDelayedResource(int type, int amt, float delay)
+{
+    for (int i = 0; i < MAX_DELAYRES; ++i)
+    {
+        if (delayedList[i].timer <= 0)
+        {
+            delayedList[i].resourceType = type;
+            delayedList[i].resourceAmt = amt;
+            delayedList[i].timer = delay;
+            return;
+        }
+    }
+}
+
+/*!_____________________________________________________________________________
+@brief      The following functions return an int value that calculates the lerp
+            transition value corresponding to the resource type and resource 
+            amount and timer delay value. They all take no input, and return an
+            int output.
+*//*__________________________________________________________________________*/
+int GetDelayedGold()
+{
+    return CP_Math_LerpInt(delayedGold, curGold, lerpGold);
+}
+int GetDelayedFood()
+{
+    return CP_Math_LerpInt(delayedFood, curFood, lerpFood);
+}
+int GetDelayedPop()
+{
+    return CP_Math_LerpInt(delayedPop, curPopulation, lerpPop);
+}
+int GetDelayedMorale()
+{
+    return CP_Math_LerpInt(delayedMorale, curMorale, lerpMorale);
+}
+int GetDelayedBlessing()
+{
+    return CP_Math_LerpInt(delayedBlessing, curBlessing, lerpBlessing);
+}
+
+/*!_____________________________________________________________________________
+@brief      This function resets the 'Blessing' value to 0. It takes no input
+            and returns no output.
+*//*__________________________________________________________________________*/
+void ResetBlessing()
+{
+    curBlessing = 0;
+}
+
+/*--------------------
+BUILDING FUNCTIONS
+---------------------*/
+/*!_____________________________________________________________________________
+@brief      The following functions increments the current number of buildings
+            based on its type that the player currently has in their playing
+            field. These functions take no input and returns no output.
+*//*__________________________________________________________________________*/
 void AddMarket()
 {
 	numMarkets++;
@@ -368,6 +356,12 @@ void AddTavern()
 	numTaverns++;
 }
 
+/*!_____________________________________________________________________________
+@brief      The following functions decrements the current number of buildings
+            based on its type that the player currently has in their playing
+            field, but only if the player has at least 1 of the valid building
+            to decrement. These functions take no input and returns no output.
+*//*__________________________________________________________________________*/
 void SubtractMarket()
 {
 	if (numMarkets > 0) {
@@ -393,76 +387,40 @@ void SubtractTavern()
 	}
 }
 
-void ResetBlessing()
-{
-    curBlessing = 0;
-}
-
-void GenerateResourcesOnEndTurn()
-{
-	Gold_generated_per_turn();
-	Food_generated_per_turn();
-	Population_per_turn();
-	Morale_per_turn();
-}
-
+/*!_____________________________________________________________________________
+@brief      This function checks for which building type has been added onto the
+            field and calls its respective 'add' function. It takes an int value
+            corresponding to the building's type index and returns no output.
+*//*__________________________________________________________________________*/
 void AddNewResourceBuilding(int buildingIndex)
 {
-	switch (buildingIndex)
-	{
-	case B_HOUSE_INDEX:
-		AddHouse();
-		break;
-	case B_FARM_INDEX:
-		AddFarm();
-		break;
-	case B_MARKET_INDEX:
-		AddMarket();
-		break;
-	case B_TAVERN_INDEX:
-		AddTavern();
-		break;
-	}
-}
-
-
-
-void AddDelayedResource(int type, int amt, float delay)
-{
-    for (int i = 0; i < MAX_DELAYRES; ++i)
+    switch (buildingIndex)
     {
-        if (delayedList[i].timer <= 0)
-        {
-            delayedList[i].resourceType = type;
-            delayedList[i].resourceAmt = amt;
-            delayedList[i].timer = delay;
-            return;
-        }
+    case B_HOUSE_INDEX:
+        AddHouse();
+        break;
+    case B_FARM_INDEX:
+        AddFarm();
+        break;
+    case B_MARKET_INDEX:
+        AddMarket();
+        break;
+    case B_TAVERN_INDEX:
+        AddTavern();
+        break;
     }
 }
 
-int GetDelayedGold()
-{
-    return CP_Math_LerpInt(delayedGold, curGold, lerpGold);
-}
-int GetDelayedFood()
-{
-    return CP_Math_LerpInt(delayedFood, curFood, lerpFood);
-}
-int GetDelayedPop()
-{
-    return CP_Math_LerpInt(delayedPop, curPopulation, lerpPop);
-}
-int GetDelayedMorale()
-{
-    return CP_Math_LerpInt(delayedMorale, curMorale, lerpMorale);
-}
-int GetDelayedBlessing()
-{
-    return CP_Math_LerpInt(delayedBlessing, curBlessing, lerpBlessing);
-}
-
-
+/*---------------------------
+RESOURCE ANIMATION FUNCTIONS
+---------------------------*/
+/*!_____________________________________________________________________________
+@brief      The following functions create an animation sequence that generates
+            each respective resource's VFX and moves them via lerp() to the 
+            resource UI. Each function takes in an int for amount of resource
+            change, 3 CP_Vector values for the movement, a float value for the
+            lifetime of the VFX and a float value for its spawn delay.
+*//*__________________________________________________________________________*/
 
 void SpawnGoldGainAnimation(int amount, CP_Vector startPos, CP_Vector checkpoint, CP_Vector endPos, float lifeTime, float spawnDelay)
 {
@@ -515,12 +473,26 @@ void SpawnBlessingGainAnimation(int amount, CP_Vector startPos, CP_Vector checkp
     }
 }
 
+/*!_____________________________________________________________________________
+@brief      This function calls for the respective resource spawn animation when
+            the player receives resources via an event trigger. It takes in an
+            int value and returns no output.
+*//*__________________________________________________________________________*/
+
 void ApplyEventResourceAnim(int resourceChange[4])
 {
     SpawnGoldGainAnimation(resourceChange[0], CP_Vector_Set(200, 450), CP_Vector_Set(CP_Random_RangeFloat(150,250), CP_Random_RangeFloat(400, 500)), CP_Vector_Set(520, 90), 0.6f, 0);
     SpawnFoodGainAnimation(resourceChange[1], CP_Vector_Set(200, 450), CP_Vector_Set(CP_Random_RangeFloat(150, 250), CP_Random_RangeFloat(400, 500)), CP_Vector_Set(520, 180), 0.6f, 0);
     SpawnMoraleGainAnimation(resourceChange[3], CP_Vector_Set(200, 450), CP_Vector_Set(CP_Random_RangeFloat(150, 250), CP_Random_RangeFloat(400, 500)), CP_Vector_Set(520, 360), 0.6f, 0);
 }
+
+
+/*!_____________________________________________________________________________
+@brief      The following function changes the UI value of the respective 
+            resources with a counter animation via lerp when there is a change
+            in resource value. It takes in an int corresponding to the changed
+            value and returns no output.
+*//*__________________________________________________________________________*/
 
 void IncreaseGold(int amount)
 {
@@ -566,6 +538,11 @@ void IncreaseBlessing(int amount)
     curBlessing += amount;
 }
 
+/*!_____________________________________________________________________________
+@brief      This function applies the change in the respective resources during 
+            an event and calls for the respective AddDelayedResource() function
+            for each resources. It takes in an int value and returns no output.
+*//*__________________________________________________________________________*/
 void ApplyEventResourceChange(int resourceChange[4])
 {
     AddDelayedResource(1, resourceChange[0], 0.6f);
@@ -574,6 +551,13 @@ void ApplyEventResourceChange(int resourceChange[4])
     AddDelayedResource(4, resourceChange[3], 0.6f);
 }
 
+/*!_____________________________________________________________________________
+@brief      This function checks whether the player has enough Gold to pay for
+            a cost incurred during their decision phase; if they have enough Gold
+            to pay the function returns true, otherwise it will return false.
+            It takes in an int value for the cost amount to compare with their
+            current Gold and returns a boolean.
+*//*__________________________________________________________________________*/
 bool IsCostPayable(int costAmt)
 {
 	if (curGold >= costAmt)
@@ -583,168 +567,3 @@ bool IsCostPayable(int costAmt)
 	return false;
 }
 
-
-
-
-/*// click on option A
-        if (xPos >= optionAPos.x - 60 && xPos <= optionAPos.x + 60 && yPos >= optionBPos.y - 160 && yPos <= optionBPos.y + 160)
-        {
-
-            //Check for Pre-Requiste 
-            switch (selectedEvent->costTypeA)
-            {
-            case R_NULL_INDEX:
-                //Do Nothing
-                break;
-                //RESOURCE COST
-            case R_GOLD_INDEX:
-                if ((Get_current_gold() - selectedEvent->costAmountA) < 0) return 0;
-                Set_current_gold(Get_current_gold() - selectedEvent->costAmountA);
-                break;
-
-            case R_FOOD_INDEX:
-                if ((Get_current_food() - selectedEvent->costAmountA) < 0) return 0;
-                Set_current_food(Get_current_food() - selectedEvent->costAmountA);
-                break;
-
-            case R_POPULATION_INDEX:
-                if ((Get_current_population() - selectedEvent->costAmountA) < 0) return 0;
-                Set_current_population(Get_current_population() - selectedEvent->costAmountA);
-                break;
-
-            case R_MORALE_INDEX:
-                if ((Get_current_morale() - selectedEvent->costAmountA) < 0) return 0;
-                Set_additional_morale(Get_additional_morale() - selectedEvent->costAmountA);
-                break;
-
-            case R_BUILDING_HOUSE_INDEX:
-                SubtractHouse();
-                DestroyBuildingByIndex(B_HOUSE_INDEX);
-
-                break;
-
-            case R_BUILDING_FARM_INDEX:
-                SubtractFarm();
-                DestroyBuildingByIndex(B_FARM_INDEX);
-
-                break;
-
-            case R_BUILDING_MARKET_INDEX:
-                SubtractMarket();
-                DestroyBuildingByIndex(B_MARKET_INDEX);
-
-                break;
-
-            case R_BUILDING_TAVERN_INDEX:
-                SubtractTavern();
-                DestroyBuildingByIndex(B_TAVERN_INDEX);
-
-                break;
-
-            default:
-                break;
-            }
-
-            //Run the Event depending on the event type if the Pre-Requiste is met
-            switch (selectedEvent->eventType) {
-            case BUILD_TYPE_EVENT:
-                if (selectedEvent->indexOptionA != NULL_CHOICE) {
-                    SetCurrentBuilding(GetBuildingByIndex(selectedEvent->indexOptionA));
-                    SetCurrentAmountToBuild(selectedEvent->optionAmountA);
-                    return 1;
-                }
-                else {
-                    return 2;
-                }           
-                break;
-
-            case RESOURCE_TYPE_EVENT:
-
-                switch (selectedEvent->optionTypeA) {
-
-                case R_NULL_INDEX:
-
-                    break;
-
-                case R_GOLD_INDEX:
-
-                    if (selectedEvent->indexOptionA == E_INCREASE_RESOURCE) {
-                        Set_current_gold(Get_current_gold() + selectedEvent->optionAmountA);
-                    }
-                    else if (selectedEvent->indexOptionA == E_DECREASE_RESOURCE) {
-                        Set_current_gold(Get_current_gold() - selectedEvent->optionAmountA);
-                    }
-
-                    break;
-
-                case R_FOOD_INDEX:
-
-                    if (selectedEvent->indexOptionA == E_INCREASE_RESOURCE) {
-                        Set_current_food(Get_current_food() + selectedEvent->optionAmountA);
-                    }
-                    else if (selectedEvent->indexOptionA == E_DECREASE_RESOURCE) {
-                        Set_current_food(Get_current_food() - selectedEvent->optionAmountA);
-                    }
-
-                    break;
-
-                case R_POPULATION_INDEX:
-
-                    if (selectedEvent->indexOptionA == E_INCREASE_RESOURCE) {
-                        Set_current_population(Get_current_population() + selectedEvent->optionAmountA);
-                    }
-                    else if (selectedEvent->indexOptionA == E_DECREASE_RESOURCE) {
-                        Set_current_population(Get_current_population() - selectedEvent->optionAmountA);
-                    }
-
-                    break;
-
-                default:
-                    break;
-                }
-
-                return 2;
-                break;
-
-            case DESTROY_TYPE_EVENT:
-
-                switch (selectedEvent->optionTypeA) {
-
-                case R_BUILDING_HOUSE_INDEX:
-                    SubtractHouse();
-                    DestroyBuildingByIndex(B_HOUSE_INDEX);
-
-                    break;
-
-                case R_BUILDING_FARM_INDEX:
-                    SubtractFarm();
-                    DestroyBuildingByIndex(B_FARM_INDEX);
-
-                    break;
-
-                case R_BUILDING_MARKET_INDEX:
-                    SubtractMarket();
-                    DestroyBuildingByIndex(B_MARKET_INDEX);
-
-                    break;
-
-                case R_BUILDING_TAVERN_INDEX:
-                    SubtractTavern();
-                    DestroyBuildingByIndex(B_TAVERN_INDEX);
-
-                    break;
-                }
-                return 2;
-                break;
-
-            case ONGOING_TYPE_EVENT:
-
-                break;
-
-            default:
-                break;
-
-            }
-
-            break;
-        }*/
