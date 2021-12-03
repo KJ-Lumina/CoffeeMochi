@@ -31,24 +31,41 @@ CP_Sound RatE_S;
 CP_Sound Tavern_S;
 CP_Sound Crops_S;
 CP_Sound BGM_Test;
+CP_Sound BGM_Home;
+CP_Sound BGM_Lose;
+CP_Sound BGM_Win;
+CP_Sound ThunderE_S;
+CP_Sound Peddler_S;
 //PlayingSound[20];
 void InitSound()
 {
     CP_Sound_StopAll(); //Stop All Sound before playing new ones
-    CardDeck_S = CP_Sound_Load("./Sounds/CardSFX.wav3");
-    Click_S = CP_Sound_Load("./Sounds/ClickSFX.wav3");
-    Gold_S = CP_Sound_Load("./Sounds/GoldSFX.wav3");
-    House_S = CP_Sound_Load("./Sounds/HouseSFX.wav3");
-    Market_S = CP_Sound_Load("./Sounds/MarketSFX.wav3");
-    RatE_S = CP_Sound_Load("./Sounds/RatSFX.wav3");
-    Tavern_S = CP_Sound_Load("./Sounds/TavernSFX.wav3");
-    Crops_S = CP_Sound_Load("./Sounds/HouseSFX.wav3");
-    BGM_Test = CP_Sound_Load("./ImperoArtAssets/Music/Test_BGMT.wav");
+    CardDeck_S = CP_Sound_Load("./Sounds/CardhoverSFX.wav");
+    Click_S = CP_Sound_Load("./Sounds/ClickSFX.wav");
+    Gold_S = CP_Sound_Load("./Sounds/GoldSFX.wav");
+    House_S = CP_Sound_Load("./Sounds/HouseSFX.wav");
+    Market_S = CP_Sound_Load("./Sounds/MarketSFX.wav");
+    RatE_S = CP_Sound_Load("./Sounds/RatSFX.wav");
+    Tavern_S = CP_Sound_Load("./Sounds/TavernSFX.wav");
+    Crops_S = CP_Sound_Load("./Sounds/HouseSFX.wav");
+    ThunderE_S = CP_Sound_Load("./Sounds/ThunderESFX.wav");
+    Peddler_S = CP_Sound_Load("./Sounds/PeddlerSFX.wav");
+    //gameplayscreen
+    BGM_Test = CP_Sound_Load("./Sounds/BGMgame.wav");
+    //homescreen
+    BGM_Home = CP_Sound_load("./Sounds/BGMhome.wav");
+    //losescreen 
+    BGM_Lose = CP_Sound_Load("./Sounds/BGMlose.wav");
+    //winscreen
+    BGM_Win = CP_Sound_Load("./Sounds/BGMwin.wav");
+
+
     LoopSound();
     
 }
 void LoopSound() {
-    CP_Sound_PlayAdvanced(BGM_Test, 1.0f, 1.0f, TRUE, CP_SOUND_GROUP_1);
+    CP_Sound_PlayAdvanced(BGM_Test, 1.0f, 0.5f, TRUE, CP_SOUND_GROUP_1);
+
 }
 
 void PlaySound(int SoundIndex)
