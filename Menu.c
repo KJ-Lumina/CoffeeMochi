@@ -176,6 +176,7 @@ void game_update(void)
 			CP_Image_Draw(ReturnToMainMenuButtonHover, 1150, 700, 281, 87, 255);
 			if (CP_Input_MouseClicked())
 			{
+				isOptionsOpen = false;
 				gameScene = SCENE_MAINMENU;
 				currentTimer = 0;
 			}
@@ -202,6 +203,7 @@ void game_update(void)
 			CP_Image_Draw(RestartGameButtonHover, 800, 700, 281, 87, 255);
 			if (CP_Input_MouseClicked())
 			{
+				isOptionsOpen = false;
 				RestartGame();
 				currentTimer = 0;
 			}
