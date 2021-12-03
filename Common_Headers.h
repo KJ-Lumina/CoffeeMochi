@@ -2,9 +2,6 @@
 #include <stdbool.h>
 #include "cprocessing.h"
 
-
-
-
 #define WORLDGRIDX 5
 #define WORLDGRIDY 5
 #define TILEWIDTH 128.0f
@@ -98,6 +95,35 @@ typedef enum
 	State_End
 
 }GAMESTATE;
+
+typedef enum {
+
+	Sound_SFX_CardHover,
+	Sound_SFX_Card,
+	Sound_SFX_Choice_LHS,
+	Sound_SFX_Choice_RHS,
+	Sound_SFX_Click,
+	Sound_SFX_EarthQuake,
+	Sound_SFX_Burning,
+	Sound_SFX_Peddler,
+	Sound_SFX_Rat,
+	Sound_SFX_Thunder,
+	Sound_SFX_Gold,
+	Sound_SFX_House,
+	Sound_SFX_Farm,
+	Sound_SFX_Tavern,
+	Sound_SFX_Market,
+
+}SOUND_SFX;
+
+typedef enum {
+
+	Sound_BGM_Home,
+	Sound_BGM_Game,
+	Sound_BGM_Lose,
+	Sound_BGM_Win
+
+}SOUND_BGM;
 
 typedef struct
 {
@@ -242,6 +268,13 @@ void UI_SetGoldCard();
 void UI_SetNormalCard();
 void DrawUI_Settings();
 void UI_SetResourceChanage(int resourceChange[4]);
+
+//Sound
+void SetVolume(float vol);
+float GetVolume();
+void PlayBGM(SOUND_BGM sound_BGM);
+void Play_SFX_Sound(SOUND_SFX sound_sfx);
+void StopBGM();
 
 
 // Resources

@@ -183,6 +183,22 @@ typedef struct
 
 DELAYEDRESOURCE delayedList[MAX_DELAYRES];
 
+void CheckMoraleStatus()
+{
+    if (curMorale >= HIGH_MORALE)
+    {
+        currentMoraleStatus = HIGH_MORALE;
+    }
+    else if (curMorale >= MEDIUM_MORALE)
+    {
+        currentMoraleStatus = MEDIUM_MORALE;
+    }
+    else
+    {
+        currentMoraleStatus = LOW_MORALE;
+    }
+}
+
 /*!_____________________________________________________________________________
 @brief      This function calculates the amount of Population at the end of a
             turn. It takes no input and gives no output.
@@ -503,6 +519,7 @@ void ApplyEventResourceAnim(int resourceChange[4])
     SpawnFoodGainAnimation(resourceChange[1], CP_Vector_Set(200, 450), CP_Vector_Set(CP_Random_RangeFloat(150, 250), CP_Random_RangeFloat(400, 500)), CP_Vector_Set(520, 180), 0.6f, 0);
     SpawnMoraleGainAnimation(resourceChange[3], CP_Vector_Set(200, 450), CP_Vector_Set(CP_Random_RangeFloat(150, 250), CP_Random_RangeFloat(400, 500)), CP_Vector_Set(520, 360), 0.6f, 0);
     SpawnNpc(CP_Vector_Set(1620, 450), (resourceChange[2]));
+    IncreasePop((resourceChange[2]));
 }
 
 
