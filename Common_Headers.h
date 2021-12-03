@@ -271,6 +271,11 @@ void UI_SetResourceChanage(int resourceChange[4]);
 
 //Sound
 void SetVolume(float vol);
+float GetVolume();
+void PlayBGM(SOUND_BGM sound_BGM);
+void Play_SFX_Sound(SOUND_SFX sound_sfx);
+void StopBGM();
+
 
 // Resources
 void UpdateResources();

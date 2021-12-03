@@ -1,8 +1,9 @@
 #include <stdio.h>
+#include "Common_Headers.h"
 #include "cprocessing.h"
 #include <stdbool.h>
 #include "Sound.h"
-#include "Common_Headers.h"
+
 
 #define PLAY 1
 #define STOP 0
@@ -46,12 +47,13 @@ CP_Sound BGM_Lose;
 CP_Sound BGM_Win;
 
 float currentVolume = 1.0f;
+bool isBGM_Playing = false;
 
 //PlayingSound[20];
 void InitSound()
 {
     if (!SoundInit) {
-        CP_Sound_StopAll(); //Stop All Sound before playing new ones
+        
 
         //Card Based
         CardDeckHover_S = CP_Sound_Load("./Sounds/CardhoverSFX.wav");
@@ -85,25 +87,35 @@ void InitSound()
         SoundInit = true;
     }
 }
+
+void StopBGM() {
+    CP_Sound_StopAll(); //Stop All Sound before playing new ones
+    isBGM_Playing = false;
+}
 void PlayBGM(SOUND_BGM sound_BGM) {
+    
+    if (isBGM_Playing == false) {
 
-    switch (sound_BGM) {
+        switch (sound_BGM) {
 
-    case Sound_BGM_Home:
-        CP_Sound_PlayAdvanced(BGM_Home, currentVolume, 1.0f, TRUE, CP_SOUND_GROUP_0);
-        break;
+        case Sound_BGM_Home:
+            CP_Sound_PlayAdvanced(BGM_Home, currentVolume, 1.0f, TRUE, CP_SOUND_GROUP_0);
+            break;
 
-    case Sound_BGM_Game:
-        CP_Sound_PlayAdvanced(BGM_Game, currentVolume, 1.0f, TRUE, CP_SOUND_GROUP_0);
-        break;
+        case Sound_BGM_Game:
+            CP_Sound_PlayAdvanced(BGM_Game, currentVolume, 1.0f, TRUE, CP_SOUND_GROUP_0);
+            break;
 
-    case Sound_BGM_Lose:
-        CP_Sound_PlayAdvanced(BGM_Lose, currentVolume, 1.0f, TRUE, CP_SOUND_GROUP_0);
-        break;
+        case Sound_BGM_Lose:
+            CP_Sound_PlayAdvanced(BGM_Lose, currentVolume, 1.0f, TRUE, CP_SOUND_GROUP_0);
+            break;
 
-    case Sound_BGM_Win:
-        CP_Sound_PlayAdvanced(BGM_Win, currentVolume, 1.0f, TRUE, CP_SOUND_GROUP_0);
-        break;
+        case Sound_BGM_Win:
+            CP_Sound_PlayAdvanced(BGM_Win, currentVolume, 1.0f, TRUE, CP_SOUND_GROUP_0);
+            break;
+        }
+
+        isBGM_Playing = true;
     }
 }
 
@@ -177,8 +189,13 @@ void Play_SFX_Sound(SOUND_SFX sound_sfx)
 
 }
 
+float GetVolume() {
+    return currentVolume;
+}
+
 void SetVolume(float vol) {
     currentVolume = vol;
+    printf("Current Volume: %f", currentVolume);
     CP_Sound_SetGroupVolume(CP_SOUND_GROUP_0, currentVolume);
 }
 
@@ -213,6 +230,4 @@ void SetVolume(float vol) {
 //        CP_Sound_Play(BGM_Game);
 //        return;
 //    }
-
-
-}
+//}

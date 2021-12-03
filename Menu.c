@@ -3,6 +3,7 @@
 #include "Common_Headers.h"
 #include <stdlib.h>
 #include "Menu.h"
+#include "Sound.h"
 
 CP_Font accFont;
 float windowsWidth;
@@ -137,8 +138,7 @@ void game_init(void)
 	//Additional Screen Images
 	whiteFlash = CP_Image_Load("./Assets/WhiteFlash.png");
 	InitSpritesheets();
-
-	//CP_Sound_PlayAdvanced(Test_BGM, 1.0f, 1.0f, TRUE, CP_SOUND_GROUP_0);
+	InitSound();
 }
 
 void RestartGame()
@@ -153,6 +153,7 @@ void game_update(void)
 	
 	if (gameScene == SCENE_GAMEPHASE)
 	{
+		PlayBGM(Sound_BGM_Game);
 		CP_Image_Draw(game_Background, 800, 450, 1600, 900, 255);
 		CP_Image_Draw(game_UIBackground, 275, 450, 550, 900, 255);
 		MainGame_Update();
@@ -271,6 +272,7 @@ void game_update(void)
 	}
 	else if (gameScene == SCENE_MAINMENU)
 	{
+		PlayBGM(Sound_BGM_Home);
 		ConstantAnimSpawner(1, 2, 1, 30, 1550, 10, 500, 50, 50, 0.4f, 1, 0);
 		ConstantAnimSpawner(1, 2, 1, 30, 1550, 10, 500, 50, 50, 0.4f, 1, 0);
 		ConstantAnimSpawner(2, 3, 5, 600, 1800, 0, 500, 50, 50, 1.75f, 1, 1);
@@ -348,6 +350,7 @@ void game_update(void)
 		{
 			CP_Image_Draw(ExitButtonImageHover, 1325, 700, 328, 99, 255);
 			if (CP_Input_MouseClicked()) {
+				StopBGM();
 				ExitGame();
 			}
 		}
@@ -494,6 +497,7 @@ void game_update(void)
 			CP_Image_Draw(whiteFlash, windowsWidth / 2, windowsHeight / 2, 1600, 900, 0);
 			DrawIntroNarritive(0);
 			currentTimer = 0;
+			StopBGM();
 			gameScene = SCENE_GAMEPHASE;
 		}
 	}
@@ -511,6 +515,7 @@ void game_update(void)
 			CP_Image_Draw(whiteFlash, windowsWidth / 2, windowsHeight / 2, 1600, 900, 255);
 			MainGame_Initialize();
 			currentTimer = 0;
+			StopBGM();
 			gameScene = SCENE_GAMEPHASE;
 		}
 
@@ -532,15 +537,18 @@ void game_update(void)
 		if (currentTimer <= 0)
 		{
 			currentTimer = 0;
+			StopBGM();
 			gameScene = SCENE_ENDPHASE;
 		}		
 	}
 	else if (gameScene == SCENE_ENDPHASE)
 	{	
 		if (ShowWinScreen) {
+			PlayBGM(Sound_BGM_Win);
 			CP_Image_Draw(GameWinScreen, 800, 450, 1600, 900, 255);
 		}
 		else {
+			PlayBGM(Sound_BGM_Lose);
 			CP_Image_Draw(GameLoseScreen, 800, 450, 1600, 900, 255);
 		}
 
@@ -549,6 +557,7 @@ void game_update(void)
 			CP_Image_Draw(ReturnToMainMenuButtonHover, 1100, 700, 281, 87, 255);
 			if (CP_Input_MouseClicked())
 			{
+				StopBGM();
 				gameScene = SCENE_MAINMENU;
 				currentTimer = 0;
 			}
@@ -562,6 +571,7 @@ void game_update(void)
 			CP_Image_Draw(RestartGameButtonHover, 500, 700, 281, 87, 255);
 			if (CP_Input_MouseClicked())
 			{
+				StopBGM();
 				RestartGame();
 				currentTimer = 0;
 			}
@@ -618,7 +628,7 @@ void AdjustVolumeSlider() {
 
 			float vol_percentageChange = (sliderMovement / (sliderMaxPos - sliderMinPos));
 			
-			float newVol = current_Volume + vol_percentageChange; //Get new vol by the percentage change
+			float newVol = GetVolume() + vol_percentageChange; //Get new vol by the percentage change
 
 			if (newVol <= 0.0f) {
 				newVol = 0.0f;

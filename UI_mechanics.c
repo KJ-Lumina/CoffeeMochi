@@ -184,6 +184,7 @@ int ClickCheck_Rewards()
     if (CheckWithinBounds(CP_Vector_Set(cardSeletorPos.x + 15.0f - 15.0f * UIrewardCardsLeft, cardSeletorPos.y), 150 + UIrewardCardsLeft * rewardCardGap, 240))
     {
         --UIrewardCardsLeft;
+        Play_SFX_Sound(Sound_SFX_Click);
         return UIselectedReward->cardType;
     }
     return 0;
