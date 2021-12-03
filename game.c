@@ -192,6 +192,7 @@ void MouseClick() //Run when Mouse is Clicked
             if (ClickCheck_CardDraw())
             {
                 Play_SFX_Sound(Sound_SFX_Click);
+                Play_SFX_Sound(Sound_SFX_CardHover);
                 AnimTimer = 0.6f;
                 gameState = State_CardDraw;
             }
@@ -340,6 +341,7 @@ void GameStateControl()
         AnimTimer -= CP_System_GetDt();
         if (AnimTimer <= 0)
         {
+            Play_SFX_Sound(Sound_SFX_Card);
             gameState = State_MakeAChoice;
             selectedEvent = GetNextEvent();
             UI_SetEvent(selectedEvent);

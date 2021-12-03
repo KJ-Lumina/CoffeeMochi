@@ -1,10 +1,8 @@
-﻿  UI_mechanics.c
-  WorldSpaceGrid.c
-  game.c
+﻿  Sound.c
   Generating code
-  25 of 156 functions (16.0%) were compiled, the rest were copied from previous compilation.
+  8 of 159 functions ( 5.0%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    4 functions had inline decision re-evaluated but remain unchanged
+    2 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
   Processing_Sample.vcxproj -> C:\Users\Seow Kai Jun\Documents\GitHub\CoffeeMochi\x64\Release\Processing_Sample.exe
   1 File(s) copied

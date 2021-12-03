@@ -190,6 +190,7 @@ bool AttemptPlaceBuilding(CP_Vector cursorPosition)
         if (!IsTileOccupied(cursorPosition))
         {
             Play_SFX_Sound(Sound_SFX_Click);
+            Play_Building_SFX(selectedBuilding->spriteIndex);
             SetNewBuilding((int)cursorPosition.x, (int)cursorPosition.y, selectedBuilding->spriteIndex);
             AddNewResourceBuilding(selectedBuilding->spriteIndex);
             return 1;

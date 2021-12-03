@@ -179,7 +179,9 @@ void game_update(void)
 			CP_Image_Draw(ReturnToMainMenuButtonHover, 1150, 700, 281, 87, 255);
 			if (CP_Input_MouseClicked())
 			{
-				isOptionsOpen = false;
+				StopBGM();
+				Play_SFX_Sound(Sound_SFX_Click);
+				isOptionsOpen = false;			
 				gameScene = SCENE_MAINMENU;
 				currentTimer = 0;
 			}
@@ -193,6 +195,7 @@ void game_update(void)
 			CP_Image_Draw(ResumeGameButtonHover, 450, 700, 281, 87, 255);
 			if (CP_Input_MouseClicked())
 			{
+				Play_SFX_Sound(Sound_SFX_Click);
 				isOptionsOpen = false;
 				gameScene = SCENE_GAMEPHASE;
 			}
@@ -206,6 +209,7 @@ void game_update(void)
 			CP_Image_Draw(RestartGameButtonHover, 800, 700, 281, 87, 255);
 			if (CP_Input_MouseClicked())
 			{
+				Play_SFX_Sound(Sound_SFX_Click);
 				isOptionsOpen = false;
 				RestartGame();
 				currentTimer = 0;
@@ -291,6 +295,7 @@ void game_update(void)
 			CP_Image_Draw(StartButtonImageHover, 800, 550, 328, 99, 255);
 			if (CP_Input_MouseClicked())
 			{
+				Play_SFX_Sound(Sound_SFX_Click);
 				gameScene = SCENE_GAMEENTRY;
 				currentTimer = 0;
 			}
@@ -307,6 +312,7 @@ void game_update(void)
 		{
 			CP_Image_Draw(HowToPlayButtonImageHover, 275, 700, 328, 99, 255);
 			if (CP_Input_MouseClicked()) {
+				Play_SFX_Sound(Sound_SFX_Click);
 				gameScene = SCENE_HOWTOPLAY;
 				currentTimer = 0;
 			}
@@ -322,6 +328,7 @@ void game_update(void)
 			CP_Image_Draw(OptionsButtonImageHover, 625, 700, 328, 99, 255);
 			if (CP_Input_MouseClicked())
 			{
+				Play_SFX_Sound(Sound_SFX_Click);
 				gameScene = SCENE_OPTIONS;
 				currentTimer = 0;
 			}
@@ -336,6 +343,7 @@ void game_update(void)
 		{
 			CP_Image_Draw(CreditsButtonImageHover, 975, 700, 328, 99, 255);
 			if (CP_Input_MouseClicked()) {
+				Play_SFX_Sound(Sound_SFX_Click);
 				gameScene = SCENE_CREDITS;
 				currentTimer = 0;
 			}
@@ -351,6 +359,7 @@ void game_update(void)
 			CP_Image_Draw(ExitButtonImageHover, 1325, 700, 328, 99, 255);
 			if (CP_Input_MouseClicked()) {
 				StopBGM();
+				Play_SFX_Sound(Sound_SFX_Click);
 				ExitGame();
 			}
 		}
@@ -372,6 +381,7 @@ void game_update(void)
 			CP_Image_Draw(ReturnToMainMenuButtonHover, 800, 700, 281, 87, 255);
 			if (CP_Input_MouseClicked())
 			{
+				Play_SFX_Sound(Sound_SFX_Click);
 				gameScene = SCENE_MAINMENU;
 				currentTimer = 0;
 			}
@@ -415,6 +425,7 @@ void game_update(void)
 					CP_Image_Draw(ReturnToMainMenuButtonHover, 1300, 475, 281, 87, 255);
 					if (CP_Input_MouseClicked())
 					{
+						Play_SFX_Sound(Sound_SFX_Click);
 						gameScene = SCENE_MAINMENU;
 						isCreditRolling = false;
 						scrollSpeed = 6;
@@ -438,6 +449,7 @@ void game_update(void)
 			CP_Image_Draw(ReturnToMainMenuButtonHover, 1425, 75, 281, 87, 255);
 			if (CP_Input_MouseClicked())
 			{
+				Play_SFX_Sound(Sound_SFX_Click);
 				gameScene = SCENE_MAINMENU;
 				currentTimer = 0;
 			}
@@ -477,6 +489,7 @@ void game_update(void)
 			DrawIntroNarritive(255);
 
 			if (CP_Input_MouseClicked()) {
+				Play_SFX_Sound(Sound_SFX_Click);
 				MainGame_Initialize();
 				currentTimer = 2;
 				gameScene = SCENE_GAMEENTRY_EXIT;
@@ -558,6 +571,7 @@ void game_update(void)
 			if (CP_Input_MouseClicked())
 			{
 				StopBGM();
+				Play_SFX_Sound(Sound_SFX_Click);
 				gameScene = SCENE_MAINMENU;
 				currentTimer = 0;
 			}
@@ -572,6 +586,7 @@ void game_update(void)
 			if (CP_Input_MouseClicked())
 			{
 				StopBGM();
+				Play_SFX_Sound(Sound_SFX_Click);
 				RestartGame();
 				currentTimer = 0;
 			}

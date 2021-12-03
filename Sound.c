@@ -49,6 +49,9 @@ CP_Sound BGM_Win;
 float currentVolume = 1.0f;
 bool isBGM_Playing = false;
 
+SOUND_SFX previousChoiceSFX;
+bool sfxPlayed = false;
+
 //PlayingSound[20];
 void InitSound()
 {
@@ -92,6 +95,10 @@ void StopBGM() {
     CP_Sound_StopAll(); //Stop All Sound before playing new ones
     isBGM_Playing = false;
 }
+
+void StopSFX() {
+    sfxPlayed = false;
+}
 void PlayBGM(SOUND_BGM sound_BGM) {
     
     if (isBGM_Playing == false) {
@@ -119,6 +126,50 @@ void PlayBGM(SOUND_BGM sound_BGM) {
     }
 }
 
+void Play_Building_SFX(int buildingIndex) {
+
+    switch (buildingIndex) {
+
+    case B_HOUSE_INDEX:
+        CP_Sound_PlayAdvanced(House_S, currentVolume, 1.0f, FALSE, CP_SOUND_GROUP_0);
+        break;
+
+    case B_FARM_INDEX:
+        CP_Sound_PlayAdvanced(Farm_S, currentVolume, 1.0f, FALSE, CP_SOUND_GROUP_0);
+        break;
+
+    case B_MARKET_INDEX:
+        CP_Sound_PlayAdvanced(Market_S, currentVolume, 1.0f, FALSE, CP_SOUND_GROUP_0);
+        break;
+
+    case B_TAVERN_INDEX:
+        CP_Sound_PlayAdvanced(Tavern_S, currentVolume, 1.0f, FALSE, CP_SOUND_GROUP_0);
+        break;
+    }
+}
+
+void Play_Choice_SFX(SOUND_SFX sound_sfx) {
+
+    if (sound_sfx != previousChoiceSFX) sfxPlayed = false;
+
+    if (!sfxPlayed) {
+
+        switch (sound_sfx) {
+        case Sound_SFX_Choice_LHS:
+            CP_Sound_PlayAdvanced(Choice_LHS, currentVolume/2, 1.0f, FALSE, CP_SOUND_GROUP_0);
+            previousChoiceSFX = Sound_SFX_Choice_LHS;
+            break;
+
+        case Sound_SFX_Choice_RHS:
+            CP_Sound_PlayAdvanced(Choice_RHS, currentVolume / 2, 1.0f, FALSE, CP_SOUND_GROUP_0);
+            previousChoiceSFX = Sound_SFX_Choice_RHS;
+            break;
+        }
+
+        sfxPlayed = true;
+    }
+}
+
 void Play_SFX_Sound(SOUND_SFX sound_sfx)
 {
     switch (sound_sfx)
@@ -131,20 +182,13 @@ void Play_SFX_Sound(SOUND_SFX sound_sfx)
         CP_Sound_Play(CardEndAnim_S);
         break;
 
-    case Sound_SFX_Choice_LHS:
-        CP_Sound_Play(Choice_LHS);
-        break;
-
-    case Sound_SFX_Choice_RHS:
-        CP_Sound_Play(Choice_RHS);
-        break;
+  
 
     case Sound_SFX_Click:
         CP_Sound_Play(Click_S);
         break;
 
-    //Events
-
+        //Events
     case Sound_SFX_EarthQuake:
         CP_Sound_Play(EarthquakeE_S);
         break;
@@ -164,29 +208,7 @@ void Play_SFX_Sound(SOUND_SFX sound_sfx)
     case Sound_SFX_Rat:
         CP_Sound_Play(RatE_S);
         break;
-       
-    //Buildings
-    case Sound_SFX_House:
-        CP_Sound_Play(House_S);
-        break;
-
-    case Sound_SFX_Market:
-        CP_Sound_Play(Market_S);
-        break;
-
-    case Sound_SFX_Farm:
-        CP_Sound_Play(Farm_S);
-        break;
-
-    case Sound_SFX_Gold:
-        CP_Sound_Play(Gold_S);
-        break;
-
-    case Sound_SFX_Tavern:
-        CP_Sound_Play(Tavern_S);
-        break;
-    }
-
+    }     
 }
 
 float GetVolume() {

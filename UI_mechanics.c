@@ -195,6 +195,7 @@ void DrawUI_OptionSelector()
     // Hovering A
     if (CheckWithinBounds(optionAPos, 90, 243))
     {
+        Play_Choice_SFX(Sound_SFX_Choice_LHS);
         CP_Image_Draw(image_CardA, cardSeletorPos.x, cardSeletorPos.y, 185, 243, 255);
         DrawUI_TextDesc(UIselectedEvent->descriptionA);
         DrawUI_Title(UIselectedEvent->title);
@@ -203,6 +204,7 @@ void DrawUI_OptionSelector()
     // Hovering B
     else if (CheckWithinBounds(optionBPos, 90, 243))
     {
+        Play_Choice_SFX(Sound_SFX_Choice_RHS);
         CP_Image_Draw(image_CardB, cardSeletorPos.x, cardSeletorPos.y, 185, 243, 255);
         DrawUI_TextDesc(UIselectedEvent->descriptionB);
         DrawUI_Title(UIselectedEvent->title);
@@ -211,6 +213,7 @@ void DrawUI_OptionSelector()
     // Not Hovering
     else
     {
+        StopSFX();
         CP_Image_Draw(image_CardFlipped, cardSeletorPos.x, cardSeletorPos.y, 185, 243, 255);
         DrawUI_TextDesc(UIselectedEvent->description);
         DrawUI_Title(UIselectedEvent->title);
@@ -348,6 +351,7 @@ void DrawUI_Settings() {
     if (CheckWithinBounds(CP_Vector_Set(1540, 60), 98, 93)) {
         CP_Image_Draw(settingsButtonHover, 1540, 60, 98, 93, 255);
         if (CP_Input_MouseClicked()) {
+            Play_SFX_Sound(Sound_SFX_Click);
             OpenOptions();
         }
     }
