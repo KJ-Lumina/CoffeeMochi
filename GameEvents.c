@@ -247,7 +247,7 @@ void RandomizeDeck()
 	randomDeck.cardIndexes[1] = 2;
 	randomDeck.cardIndexes[2] = 3;
 	
-	for (int i = 3; i < 6; ++i)
+	for (int i = 3; i < 9; ++i)
 	{
 		randomDeck.cardIndexes[i] = CP_Random_RangeInt(9, 15);
 	}
