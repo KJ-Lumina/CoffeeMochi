@@ -297,6 +297,7 @@ CP_Image* GetBuildingSpriteButtonByIndex(int);
 CP_Image* GetCardSpriteByType(int type);
 CARDEVENT* GetEventByIndex(int index);
 void EventSetGoldenCard();
+void RollForcedCard(int cardIndex, int chance);
 
 // Ongoing Events
 void InitOngoingEvents();

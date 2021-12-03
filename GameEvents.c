@@ -23,7 +23,7 @@ REWARDCARD* rewardCardList[TOTALREWARDCARDCOUNT];
 
 CARDDECK tutorialDeck;
 CARDDECK prototypeDeck = { 23, 1,2,3,8,12,9,10,19,5,11,13,6,18,7,20,15,23,16,17,21,4,14,22, 0 };
-CARDDECK debugDeck = { 11, 1, 27, 24, 12, 12, 12, 12, 12, 23, 23, 23 };
+CARDDECK debugDeck = { 11, 1, 13, 24, 12, 12, 12, 12, 12, 23, 23, 23 };
 
 
 CARDDECK* currentDeck;
@@ -44,6 +44,7 @@ REWARDCARD R_DemolishMarketCard		= { 7, DESTROY_TYPE_EVENT, B_MARKET_INDEX , "",
 REWARDCARD R_DemolishTavernCard		= { 8, DESTROY_TYPE_EVENT, B_TAVERN_INDEX, "", "" };
 REWARDCARD R_RatCard				= { O_RATEVENT, ONGOING_TYPE_EVENT, B_FARM_INDEX , "", ""};
 REWARDCARD R_RainCard				= { 10, ONGOING_TYPE_EVENT, R_NULL_INDEX , "", "" };
+REWARDCARD R_ForcedCard				 = { 29, EVENT_TYPE_REWARD , 40 , "", "" };
 
 //text based
 REWARDCARD R_TheGreatOstrichEscape	= { 15, TEXT_TYPE_EVENT, R_NULL_INDEX , "The birds were too fast! We couldn't catch any! Why does this sound familiar?", "The Great...Emu War?" };
@@ -101,7 +102,7 @@ CARDEVENT E_GoldMineDiscovered = { 12 , RESOURCE_TYPE_EVENT,"Gold Mine Discovery
 , {5,0,0,10} ,{ {0,0},{0,0} }, "Arrange multiple carts to distribute the gold to all the households. They deserve a reward for their hardwork.", "" };
 CARDEVENT E_ContaminatedFood = { 13, RESOURCE_TYPE_EVENT,"Granary Contamination", "Gorvernor, we have discovered that the food in our granaries are contaminated. We need to dispose of them to prevent further damage."
 , {0,-25,0,10}, { {0,0},{0,0} }, "Dispose the contaminated food quickly.", ""
-, {0,15,0,-20},{ {0,0},{0,0} }, "Perhaps the citizens won't notice if I distribute some.", "" };
+, {0,15,0,-20},{ {29,40},{0,0} }, "Perhaps the citizens won't notice if I distribute some.", "" };
 CARDEVENT E_VillagersKidnapped = { 14, RESOURCE_TYPE_EVENT,"Kidnap and Extortion", "Gorvernor, we received reports that some of our citizens have been kidnapped by bandits in a skirmish! We have to send out troops to rescue them."
 , {0,-20,0,10}, { {0,0},{0,0} }, "Hire the mercenaries that have reached out to us to rescue the kidnapped citizens", ""
 , {-30,0,0,10}, { {0,0},{0,0} }, "Bribe them, we can't risk hurting our citizens", "" };
@@ -160,7 +161,7 @@ CARDEVENT E_GoldenOne = { 26 , BUILD_TYPE_EVENT, "Mysterious Man", "A mysterious
 , {0,0,0,0}, { {0,0}, {0,0} }, "Idk.", "" };
 
 // FOLLOW UP EVENTS
-CARDEVENT E_FoodPoisoning = { 00 , RESOURCE_TYPE_EVENT, "Food Poisoning", "There is an outbreak of food poisoning in the kingdom. What could have caused this?"
+CARDEVENT E_FoodPoisoning = { 40 , RESOURCE_TYPE_EVENT, "Food Poisoning", "There is an outbreak of food poisoning in the kingdom. What could have caused this?"
 , {-20,-10,0,15}, { {0,0}, {0,0} }, "Tend to the sick. Let's provide them with proper meals this time.", ""
 , {0,0,-2,-20}, { {0,0}, {0,0} }, "Mere food poisoning will pass, this is not a concern.", "" };
 
@@ -209,6 +210,8 @@ void InitCardList()
 	cardList[26] = &E_GoldenOne;
 	cardList[27] = &E_TheGreatOstrichWar;
 
+	cardList[40] = &E_FoodPoisoning;
+
 	rewardCardList[0] = &R_NullCard;
 	rewardCardList[1] = &R_HouseCard;
 	rewardCardList[2] = &R_FarmCard;
@@ -222,6 +225,7 @@ void InitCardList()
 	rewardCardList[10] = &R_RainCard;
 
 	rewardCardList[15] = &R_TheGreatOstrichEscape;
+	rewardCardList[29] = &R_ForcedCard;
 
 	buildCardSprite = CP_Image_Load("./ImperoArtAssets/Impero_CardBuild.png");
 	destroyCardSprite = CP_Image_Load("./ImperoArtAssets/Impero_CardDestroy.png");
@@ -296,5 +300,14 @@ void EventAddForcedEvent(int index)
 void EventSetGoldenCard()
 {
 	EventAddForcedEvent(26);
+}
+
+void RollForcedCard(int cardIndex, int chance)
+{
+	int roll = CP_Random_RangeInt(0, 100);
+	if (roll <= chance)
+	{
+		EventAddForcedEvent(cardIndex);
+	}
 }
 
