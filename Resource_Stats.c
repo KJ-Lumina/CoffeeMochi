@@ -183,6 +183,22 @@ typedef struct
 
 DELAYEDRESOURCE delayedList[MAX_DELAYRES];
 
+void CheckMoraleStatus()
+{
+    if (curMorale >= HIGH_MORALE)
+    {
+        currentMoraleStatus = HIGH_MORALE;
+    }
+    else if (curMorale >= MEDIUM_MORALE)
+    {
+        currentMoraleStatus = MEDIUM_MORALE;
+    }
+    else
+    {
+        currentMoraleStatus = LOW_MORALE;
+    }
+}
+
 /*!_____________________________________________________________________________
 @brief      This function calculates the amount of Population at the end of a
             turn. It takes no input and gives no output.

@@ -53,7 +53,7 @@ void InitSound()
     //gameplayscreen
     BGM_Test = CP_Sound_Load("./Sounds/BGMgame.wav");
     //homescreen
-    BGM_Home = CP_Sound_load("./Sounds/BGMhome.wav");
+    BGM_Home = CP_Sound_Load("./Sounds/BGMhome.wav");
     //losescreen 
     BGM_Lose = CP_Sound_Load("./Sounds/BGMlose.wav");
     //winscreen
