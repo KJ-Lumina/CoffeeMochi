@@ -276,6 +276,7 @@ void PlayBGM(SOUND_BGM sound_BGM);
 void Play_SFX_Sound(SOUND_SFX sound_sfx);
 void Play_Building_SFX(int buildingIndex);
 void Play_Choice_SFX(SOUND_SFX sound_sfx);
+void Play_Event_SFX(int eventIndex);
 void StopBGM();
 void StopSFX();
 

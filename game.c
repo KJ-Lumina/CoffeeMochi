@@ -342,8 +342,9 @@ void GameStateControl()
         if (AnimTimer <= 0)
         {
             Play_SFX_Sound(Sound_SFX_Card);
-            gameState = State_MakeAChoice;
+            gameState = State_MakeAChoice;         
             selectedEvent = GetNextEvent();
+            Play_Event_SFX(selectedEvent->eventIndex);
             UI_SetEvent(selectedEvent);
         }
         break;
