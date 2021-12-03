@@ -189,6 +189,7 @@ bool AttemptPlaceBuilding(CP_Vector cursorPosition)
         ScreenToGridPosition(&cursorPosition);
         if (!IsTileOccupied(cursorPosition))
         {
+            Play_SFX_Sound(Sound_SFX_Click);
             SetNewBuilding((int)cursorPosition.x, (int)cursorPosition.y, selectedBuilding->spriteIndex);
             AddNewResourceBuilding(selectedBuilding->spriteIndex);
             return 1;

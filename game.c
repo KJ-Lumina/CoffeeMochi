@@ -191,6 +191,7 @@ void MouseClick() //Run when Mouse is Clicked
         case State_Idle: 
             if (ClickCheck_CardDraw())
             {
+                Play_SFX_Sound(Sound_SFX_Click);
                 AnimTimer = 0.6f;
                 gameState = State_CardDraw;
             }
@@ -213,6 +214,7 @@ void MouseClick() //Run when Mouse is Clicked
                     rewardCardsLeft[index] = selectedEvent->resourceRewardA[index].rewardAmount;
                 }
                 //AnimTimer = 1.3f;
+                Play_SFX_Sound(Sound_SFX_Click);
                 gameState = State_ResourceChange;
                 break;
             case 2:
@@ -226,6 +228,7 @@ void MouseClick() //Run when Mouse is Clicked
                     rewardCardsLeft[index] = selectedEvent->resourceRewardB[index].rewardAmount;
                 }
                 //AnimTimer = 1.3f;
+                Play_SFX_Sound(Sound_SFX_Click);
                 gameState = State_ResourceChange;
                 break;
             }
@@ -594,7 +597,7 @@ void MainGame_Initialize(void)
     InitUI();
     InitVfx();
     InitOngoingEvents();
-    InitSound();
+
     
 }
 
