@@ -29,9 +29,9 @@
 
 #define TAVERN_UPKEEP_COST 5
 
-#define HIGH_MORALE 0
-#define MEDIUM_MORALE 1
-#define LOW_MORALE 2
+#define HIGH_MORALE 140
+#define MEDIUM_MORALE 80
+#define LOW_MORALE 50
 
 #define MAX_DELAYRES 50
 
@@ -189,7 +189,21 @@ DELAYEDRESOURCE delayedList[MAX_DELAYRES];
 *//*__________________________________________________________________________*/
 void GenerateResourcesOnEndTurn()
 {
-    curPopulation = numHouses * PAX_PER_HOUSING * 10;
+    CheckMoraleStatus();
+    switch (currentMoraleStatus)
+    {
+    case HIGH_MORALE:
+        curPopulation += 2;
+        SpawnNpc(CP_Vector_Set(1620, 450), 2);
+        break;
+    case MEDIUM_MORALE:
+        curPopulation += 1;
+        SpawnNpc(CP_Vector_Set(1620, 450), 1);
+        break;
+
+    case LOW_MORALE:
+        break;
+    }
 }
 
 /*!_____________________________________________________________________________
@@ -350,6 +364,10 @@ void AddFarm()
 void AddHouse()
 {
 	numHouses++;
+    curPopulation += 3;
+    SpawnNpc(CP_Vector_Set(810, 470), 1);
+    SpawnNpc(CP_Vector_Set(810, 450), 1);
+    SpawnNpc(CP_Vector_Set(810, 430), 1);
 }
 void AddTavern()
 {
@@ -484,6 +502,7 @@ void ApplyEventResourceAnim(int resourceChange[4])
     SpawnGoldGainAnimation(resourceChange[0], CP_Vector_Set(200, 450), CP_Vector_Set(CP_Random_RangeFloat(150,250), CP_Random_RangeFloat(400, 500)), CP_Vector_Set(520, 90), 0.6f, 0);
     SpawnFoodGainAnimation(resourceChange[1], CP_Vector_Set(200, 450), CP_Vector_Set(CP_Random_RangeFloat(150, 250), CP_Random_RangeFloat(400, 500)), CP_Vector_Set(520, 180), 0.6f, 0);
     SpawnMoraleGainAnimation(resourceChange[3], CP_Vector_Set(200, 450), CP_Vector_Set(CP_Random_RangeFloat(150, 250), CP_Random_RangeFloat(400, 500)), CP_Vector_Set(520, 360), 0.6f, 0);
+    SpawnNpc(CP_Vector_Set(1620, 450), (resourceChange[2]));
 }
 
 

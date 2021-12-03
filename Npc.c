@@ -34,13 +34,16 @@ void InitNpc()
 
 void SpawnNpc(CP_Vector position, int amtToSpawn)
 {
-	NPC newNpc = { 1, position, CP_Vector_Set(0, 0), 0, 0, 0, CP_Random_RangeFloat(80,160), {0} };
-	for (int i = 0; i < MAXNPC; ++i)
+	for (int i = 0; i < amtToSpawn; ++i)
 	{
-		if (npcList[i].spriteIndex == 0)
+		NPC newNpc = { 1, position, CP_Vector_Set(0, 0), 0, 0, 0, CP_Random_RangeFloat(60,120), {0} };
+		for (int j = 0; j < MAXNPC; ++j)
 		{
-			npcList[i] = newNpc;
-			return;
+			if (npcList[j].spriteIndex == 0)
+			{
+				npcList[j] = newNpc;
+				return;
+			}
 		}
 	}
 }
@@ -133,8 +136,7 @@ void CalculateNextPosition(NPC* npc)
 			if (npc->checkPointsLeft == 0)
 			{
 				//new idle timer
-				//npc->nextMoveTimer = CP_Random_RangeFloat(1, 3);
-				npc->nextMoveTimer = CP_Random_RangeFloat(1, 5);
+				npc->nextMoveTimer = CP_Random_RangeFloat(1, 3);
 				//add nearest checkpoint
 				npc->checkPoints[1] = FindNearestCheckPoint(npc->worldPosition);
 

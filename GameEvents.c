@@ -76,39 +76,41 @@ CARDEVENT E_BuildAHouse = { 4, BUILD_TYPE_EVENT,"Lodging Request", "Gorvernor, o
 CARDEVENT E_BuildAMarket = { 5 , BUILD_TYPE_EVENT,"Expand Markets", "Gorvernor, our markets are crowding up!"
 , {5,0,2,0}, { {3,1}, {0,0} }, "Having another market can appeal to more buisness.", "Our city grows!"
 , {10,0,0,10}, { {0,0}, {0,0} }, "A crowded market means good business, there is not a need to construct another market." , "Our gold seems sustainable for now...right?" };
-CARDEVENT E_ScarceFood = { 6, BUILD_TYPE_EVENT,"Expand Farmland", "Gorvernor, there is food shortage in our kingdom. We advice you to allow farms to be built."
+CARDEVENT E_ScarceFood = { 6, BUILD_TYPE_EVENT,"Expand Farmland", "Gorvernor, we need more food if we want a bigger kingdom. Should we create more farms."
 , {-20,0,0,5},{ {2,2}, {0,0} },"Get our workers to start with the construction of the farm. We have enough blueprints for two.", "Starvation will not be a concern in my kingdom."
 , {10,10,0,-15},{ {0,0},{0,0} }, "The citizens could do with some exercise." , "We have to adapt to be sustainable." };
-CARDEVENT E_MerchantSetUp = { 7, BUILD_TYPE_EVENT,"Welcome Neighbours", "Gorvernor, various merchants have shown interest in settling down. Allow the merchants in by constructing two markets."
-, {-20,0,2,0},{ {3,1},{0,0} }, "Welcome them in. Prepare a quality ", ""
-, {10,0,0,-10}, { {0,0},{0,0} }, "We don't have enough manpower to construct markets.", "" };
+CARDEVENT E_MerchantSetUp = { 7, BUILD_TYPE_EVENT,"Welcome Neighbours", "Gorvernor, merchants bringing luxurious goods have arrived. They will need 2 markets to settle down."
+, {-20,0,2,0},{ {3,1},{0,0} }, "Welcome them in. Prepare 2 quality markets for them", "This will bring us more income"
+, {10,0,0,-10}, { {0,0},{0,0} }, "Luxury products brings no practical use. We don't need them.", "Luxuries can wait." };
 CARDEVENT E_BuidldATavern = {8, BUILD_TYPE_EVENT,"Entertainment Request", "There is a lack of entertainment in our kingdom, our citizens are getting restless. Construct a tavern to raise their morale."
 , {-10,0,0,10}, { {4,1},{0,0} }, "Entertainment would boost our citizens morale, get our builders to construct the taverns.", "Laughter and merriment fill the previously silent nights."
 , {5,0,0,-15}, { {0,0},{0,0} }, "I will not risk the laziness disease. Entertainments are a distraction to our expansion." , "Citizens are definitely not happy with that decision..." };
 
 
 //BASIC EVENT - RESOURCE TYPE
-CARDEVENT E_FoodMerchantArrival = { 9, RESOURCE_TYPE_EVENT,"Merchants Trade", "Gorvernor, food peddlers have arrived at your kingdom, they wish to trade"
-, {-30,15,0,0},{ {0,0},{0,0} }, "Inform them that we will be accepting their trades, send carts over to carry the goods to our granaries.", ""
-, {0,0,0,-15},{ {0,0},{0,0} }, "We have a substantial amount of food in our granaries, there is not a need to trade.", "" };
-CARDEVENT E_StolenFood = { 10 , RESOURCE_TYPE_EVENT,"Granary Thievery","Gorvernor, there is a report of food stolen from our granaries. We advice an investigation to apprehend the culprit."
-, {-15,5,0,-15}, { {0,0},{0,0} }, "We need to give our citizens a sense of security, proceed with the investigation! We want the culprit aprehended. ", ""
-, {0,-25,0,5}, { {0,0},{0,0} }, "He must really needed the food, let it pass and increase our security around the granaries.", "" };
+CARDEVENT E_FoodMerchantArrival = { 9, RESOURCE_TYPE_EVENT,"Food peddlers", "A group of sleazy-looking food peddlers have arrived at your kingdom, they wish to trade."
+, {-30,15,0,0},{ {0,0},{0,0} }, "We shall accept their trades, send them sufficient gold.", "We have more to eat!"
+, {0,20,0,-15},{ {0,0},{0,0} }, "Acquire those food one way or another. They will not be touching my gold!", "They left and never came back." };
+CARDEVENT E_StolenFood = { 10 , RESOURCE_TYPE_EVENT,"Granary Thievery","Gorvernor, there is a report of a child stealing food from our granaries."
+, {0,-25,0,10}, { {0,0},{0,0} }, "Let it pass. The child might really need it.", "The citizens applaud your magnanimity."
+, {-15,5,0,-15}, { {0,0},{0,0} }, "We want the culprit apprehended. Let this be known it is a crime in my kingdom", "Fear strikes the children of the kingdom." };
 CARDEVENT E_HeavyStorm = { 11 , RESOURCE_TYPE_EVENT,"Storm Bypassing","Gorvernor, we have been hit by a heavy thunderstorm, many houses are currently damaged and citizens are requesting for repair."
-, {-25,-25,0,15}, { {0,0},{0,0} }, "Divide our manpower to sort out the damages and to repair the damaged houses.", ""
-, {10,10,0,-25}, { {0,0},{0,0} }, "Our food and gold must be protected, the repairs can wait.", "" };
-CARDEVENT E_GoldMineDiscovered = { 12 , RESOURCE_TYPE_EVENT,"Gold Mine Discovery", "Gorvernor, our miners have discovered a gold mine.They are currently waiting on instruction to deal with it."
-, {25,0,0,5}, { {0,0},{0,0} }, "Arrange carts to bring the gold back to the treasury, we will sell them to increase our capital.", ""
-, {5,0,0,10} ,{ {0,0},{0,0} }, "Arrange multiple carts to distribute the gold to all the households. They deserve a reward for their hardwork.", "" };
+, {-25,-25,0,15}, { {0,0},{0,0} }, "Divide our manpower to sort out the damages and to repair the damaged houses.", "At least the citizens are safe."
+, {10,10,0,-25}, { {0,0},{0,0} }, "Our food and gold must be protected, the repairs can wait.", "At least our essentials are safe." };
+CARDEVENT E_GoldMineDiscovered = { 12 , RESOURCE_TYPE_EVENT,"Gold Mine Discovery", "Gorvernor, We have discovered a gold mine"
+, {5,0,0,20} ,{ {0,0},{0,0} }, "Distribute gold to everyone", "Citizens are happy to see free gold." 
+, {25,0,0,5}, { {0,0},{0,0} }, "Keep them in treasury.", "We have more funds for our kingdom." };
 CARDEVENT E_ContaminatedFood = { 13, RESOURCE_TYPE_EVENT,"Granary Contamination", "Gorvernor, we have discovered that the food in our granaries are contaminated. We need to dispose of them to prevent further damage."
-, {0,-25,0,10}, { {0,0},{0,0} }, "Dispose the contaminated food quickly.", ""
-, {0,15,0,-20},{ {29,40},{0,0} }, "Perhaps the citizens won't notice if I distribute some.", "" };
-CARDEVENT E_VillagersKidnapped = { 14, RESOURCE_TYPE_EVENT,"Kidnap and Extortion", "Gorvernor, we received reports that some of our citizens have been kidnapped by bandits in a skirmish! We have to send out troops to rescue them."
-, {0,-20,0,10}, { {0,0},{0,0} }, "Hire the mercenaries that have reached out to us to rescue the kidnapped citizens", ""
+, {0,-25,0,10}, { {0,0},{0,0} }, "Dispose the contaminated food quickly.", "Our people's health is safe."
+, {0,15,0,-20},{ {29,40},{0,0} }, "Perhaps the citizens won't notice if I distribute some.", "We have more food to serve."};
+
+CARDEVENT E_VillagersKidnapped = { 14, RESOURCE_TYPE_EVENT,"Kidnap and Extortion", "Gorvernor, some of our citizens have been kidnapped by bandits!"
+, {0,-20,0,10}, { {0,0},{0,0} }, "Hire mercenaries that have reached out to us to rescue the kidnapped citizens", ""
 , {-30,0,0,10}, { {0,0},{0,0} }, "Bribe them, we can't risk hurting our citizens", "" };
-CARDEVENT E_MagnificentHunt = { 15, RESOURCE_TYPE_EVENT,"Great Food Hunt", "Gorvernor, our hunters have return back from the wildness with a magnificent hunt. We are waiting for your instruction on what to do with the hunt."
-, {0,20,0,0}, { {0,0},{0,0} }, "Gather the food and store the hunt in our granaries for future use.", ""
-, {-15,0,0,10}, { {0,0},{0,0} }, "This calls for a celebration. Use some of our gold in the coffers to hold a festival to celebrate the magnificent hunt.", "" };
+
+CARDEVENT E_MagnificentHunt = { 15, RESOURCE_TYPE_EVENT,"Great Food Hunt", "Gorvernor, our hunters have return with a magnificent hunt."
+, {-10,0,0,20}, { {0,0},{0,0} }, "Hold a festival for our kingdom.", "Drinks are toasted in your honour."
+, {-10,0,4,5}, { {0,0},{0,0} }, "Hold a festival, invite neighbouring kingdoms to join us!", "People enjoyed themselves here and have decided to stay." };
 
 
 //ADVANCED EVENTS - BUILD TYPE

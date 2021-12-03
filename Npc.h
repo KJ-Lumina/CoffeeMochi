@@ -16,7 +16,7 @@ typedef struct {
 
 
 void InitNpc();
-void SpawnNpc(CP_Vector position, int amtToSpawn);
+
 void CalculateNextPosition(NPC* npc);
 void UpdateAllNpc();
 CP_Vector GetNpc(int index);

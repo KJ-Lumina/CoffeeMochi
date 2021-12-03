@@ -260,14 +260,6 @@ void MouseClick() //Run when Mouse is Clicked
         case State_PlaceYourBuilding:
             if (AttemptPlaceBuilding(currentMousePos))
             {
-                if (selectedReward[rewardIndex]->eventIndex == B_HOUSE_INDEX)
-                {
-                    ScreenToWorldPosition(&currentMousePos);
-                    SpawnNpc(CP_Vector_Set(currentMousePos.x - GetWorldSpaceOrigin().x - 30, currentMousePos.y - GetWorldSpaceOrigin().y + 60), 1);
-                    SpawnNpc(CP_Vector_Set(currentMousePos.x - GetWorldSpaceOrigin().x, currentMousePos.y - GetWorldSpaceOrigin().y + 60), 1);
-                    SpawnNpc(CP_Vector_Set(currentMousePos.x - GetWorldSpaceOrigin().x + 30, currentMousePos.y - GetWorldSpaceOrigin().y + 60), 1);
-                }
-
                 switch(rewardIndex) //Prevention for going out of bounds
                 {
                 case 0: //Check Reward Index = 0
