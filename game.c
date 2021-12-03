@@ -66,7 +66,7 @@ void GameOver()
 bool LoseCondition_Resources()
 {
     //Check for Lose Conditions [Any Resource < 0]
-    if (Get_current_food() <= 0 || Get_current_population() <= 0 || Get_current_gold() < 0 || Get_current_morale() < 0) {
+    if (Get_current_food() < 0 || Get_current_population() < 0 || Get_current_gold() < 0 || Get_current_morale() < 0) {
         return true;
     }
     return false;
