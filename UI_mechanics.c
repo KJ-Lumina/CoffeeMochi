@@ -390,7 +390,7 @@ void DrawUI_Title(const char* text)
 {
     CP_Settings_TextSize(50);
     CP_Settings_Fill(CP_Color_Create(255, 255, 255, 255));
-    CP_Font_DrawTextBox(text, 110, 105, 300);
+    CP_Font_DrawTextBox(text, 100, 105, 330);
 }
 void DrawUI_AffectedLand()
 {

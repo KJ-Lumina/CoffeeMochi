@@ -357,10 +357,20 @@ void GameStateControl()
         if (AnimTimer <= 0)
         {
             if (rewardCardsLeft[rewardIndex])
-            {
-                // reward cards exist
-                UI_SetReward(selectedReward[rewardIndex], rewardCardsLeft[0] + rewardCardsLeft[1]);
-                gameState = State_CollectRewards;
+            { 
+                if (selectedReward[rewardIndex]->cardType == EVENT_TYPE_REWARD)
+                {
+                    RollForcedCard(selectedReward[0]->resourceType, rewardCardsLeft[0]);
+                    // no reward cards
+                    AnimTimer = 0.6f;
+                    gameState = State_EndOfTurn;
+                }
+                else
+                {
+                    // reward cards exist
+                    UI_SetReward(selectedReward[rewardIndex], rewardCardsLeft[0] + rewardCardsLeft[1]);
+                    gameState = State_CollectRewards;
+                }
             }
             else
             {
