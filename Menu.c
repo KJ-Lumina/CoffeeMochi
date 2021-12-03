@@ -600,11 +600,6 @@ void OpenOptions()
 {
 	if (!isOptionsOpen) isOptionsOpen = true;
 }
-void ChangeVolume(float vol)
-{
-	current_Volume = vol;
-	CP_Sound_SetGroupVolume(CP_SOUND_GROUP_0, current_Volume);
-}
 
 void AdjustVolumeSlider() {
 
@@ -632,7 +627,7 @@ void AdjustVolumeSlider() {
 				newVol = 1.0f;
 			}
 
-			ChangeVolume(newVol); //Update new volume
+			SetVolume(newVol); //Update new volume
 		}
 
 	}
