@@ -16,7 +16,7 @@
 #include <stdbool.h>
 #include "Common_Headers.h"
 
-#define GOLD_AMT_FROM_MARKETS 3
+#define GOLD_AMT_FROM_MARKETS 2
 #define TAX_AMOUNT 1
 
 #define FOOD_AMT_FROM_FARMS 7
