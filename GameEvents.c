@@ -249,18 +249,18 @@ void RandomizeDeck()
 	
 	for (int i = 3; i < 6; ++i)
 	{
-		randomDeck.cardIndexes[i + 3] = CP_Random_RangeInt(9, 15);
+		randomDeck.cardIndexes[i] = CP_Random_RangeInt(9, 15);
 	}
 	randomDeck.cardIndexes[10] = CP_Random_RangeInt(4, 8);
 	for (int i = 11; i < 16; ++i)
 	{
-		randomDeck.cardIndexes[i + 3] = CP_Random_RangeInt(9, 20);
+		randomDeck.cardIndexes[i] = CP_Random_RangeInt(9, 20);
 	}
 	randomDeck.cardIndexes[16] = CP_Random_RangeInt(4, 8);
 	randomDeck.cardIndexes[17] = CP_Random_RangeInt(4, 8);
 	for (int i = 18; i < 26; ++i)
 	{
-		randomDeck.cardIndexes[i + 3] = CP_Random_RangeInt(18, 24);
+		randomDeck.cardIndexes[i] = CP_Random_RangeInt(18, 24);
 	}
 	randomDeck.cardsInDeck = 25;
 }
