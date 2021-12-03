@@ -368,7 +368,6 @@ void DrawUI_Settings() {
     if (CheckWithinBounds(CP_Vector_Set(1540, 60), 98, 93)) {
         CP_Image_Draw(settingsButtonHover, 1540, 60, 98, 93, 255);
         if (CP_Input_MouseClicked()) {
-            printf("Clicked");
             OpenOptions();
         }
     }

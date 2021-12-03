@@ -12,7 +12,7 @@
 
 
 #pragma region Game Options Control
-bool AllowAdminControl = true;
+bool AllowAdminControl = false;
 bool AllowMouseDrag = false;
 bool mouseDrag = false;
 float MouseCounter = 0;
@@ -52,19 +52,20 @@ void StartTurn()
 
 //End Game Functions
 void GameEnd() {
-    GameWin = true;
-    gameState = State_GameOver;
+    GameWin = true; //Proceed with Game Win
+    gameState = State_GameOver; //Change GameState to State_GameOver
 }
 
 void GameOver() 
 {
     //Lose UI Pop Up
-    GameWin = false;
-    gameState = State_GameOver;
+    GameWin = false; //Proceed With Game False
+    gameState = State_GameOver; //Change GameState to State_GameOver
 }
 
 bool LoseCondition_Resources()
 {
+    //Check for Lose Conditions [Any Resource < 0]
     if (Get_current_food() <= 0 || Get_current_population() <= 0 || Get_current_gold() < 0 || Get_current_morale() < 0) {
         return true;
     }
@@ -73,14 +74,14 @@ bool LoseCondition_Resources()
 
 void EndTurn() 
 {
-    GenerateResourcesOnEndTurn();
+    GenerateResourcesOnEndTurn(); 
     OnEndUpdateEvents();
 
     if (LoseCondition_Resources()) {
         GameOver();
     }
     else {
-        gameState = State_GameEntry;
+        gameState = State_GameEntry; //Change GameState to GameEntry if Game is not lost
     }
 }
 #pragma endregion
@@ -90,7 +91,7 @@ void UpdateMouseInput()
     currentMousePos.x = CP_Input_GetMouseX();
     currentMousePos.y = CP_Input_GetMouseY();
     
-    //mouseDrag purpose
+    //Update Left Mouse Button Position for Mouse Drag
     if (CP_Input_MouseTriggered(0))
     {
         mouseDragPos = currentMousePos;
@@ -172,13 +173,14 @@ void CheckKeyInput()
     {
         ReturnToCenter();
     }
-    // Debugging
+    //For Debugging Purpose
     if (AllowAdminControl)
     {
         AdminControlInput();
     }
 }
-void MouseClick()
+
+void MouseClick() //Run when Mouse is Clicked
 {
     switch (gameState)
     {
@@ -186,7 +188,7 @@ void MouseClick()
             //Run Condition on Start of Turn
             gameState = State_Idle;
             break;
-        case State_Idle:
+        case State_Idle: 
             if (ClickCheck_CardDraw())
             {
                 AnimTimer = 0.6f;
@@ -197,7 +199,7 @@ void MouseClick()
             
             break;
         case State_MakeAChoice:
-            // made a choice
+            // check for each card choices
             switch (ClickCheck_CardChoice())
             {
             case 1:
@@ -320,7 +322,7 @@ void GameStateControl()
         AnimTimer = 1.0f;
         if (Get_current_blessing() >= 100)
         {
-            UI_SetGoldCard();
+            UI_SetGoldCard(); 
             EventSetGoldenCard();
             ResetBlessing();
         }
@@ -553,19 +555,19 @@ void GameStateControl()
 void MouseDragOrClick(void)
 {
     if (AllowMouseDrag)
-    {
+    {   // To deferentiate between drag and click (Check for Mouse Drag)
         if (CP_Input_MouseDragged(0))
         {
             mouseDrag = true;
             MoveWorldSpaceOrigin(currentMousePos.x - mouseDragPos.x, currentMousePos.y - mouseDragPos.y);
             mouseDragPos = currentMousePos;
         }
-        // To deferentiate between drag and click
+        // To deferentiate between drag and click (Check for Mouse Click)
         if (CP_Input_MouseClicked() && !mouseDrag)
         {
             MouseClick();
         }
-        // end of drag
+        // Check if its at end of mouse drag
         if (CP_Input_MouseReleased(0) && mouseDrag)
         {
             mouseDrag = false;
@@ -596,11 +598,14 @@ void MainGame_Initialize(void)
 
 void MainGame_Update(void)
 {
+    //Get Inputs Start
     UpdateResources();
     UpdateMouseInput();
     MouseDragOrClick();
     CheckKeyInput();
-    // Graphics
+    //Get Inputs End
+   
+    //Graphics Start
     DrawTileSet();
     UpdateAllNpc();
     DrawUI(gameState);
@@ -610,6 +615,7 @@ void MainGame_Update(void)
     DrawTempTextResources();
     DrawAllVfx();
     DrawAllAnimations();
+    //Graphic End
     //LoopSound();
     
 }

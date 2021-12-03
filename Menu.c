@@ -73,8 +73,7 @@ void ExitGame()
 
 
 void game_init(void)
-{
-	
+{	
 	CP_System_SetWindowSize(1600, 900);
 	accFont = CP_Font_Load("./Assets/accid.ttf");
 	CP_Font_Set(accFont);
@@ -85,10 +84,12 @@ void game_init(void)
 
 	//START FROM BEGINNING
 	gameScene = SCENE_SPLASH_DIGIPEN;
+
 	//SKIP TO GAME
 	/*MainGame_Initialize();
 	gameScene = SCENE_GAMEPHASE;*/
-	//CHANGEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+
+	//Splash Screen Assets
 	Splash_Digipen = CP_Image_Load("./ImperoArtAssets/Impero_Digipen.png");
 	Splash_CoffeeMochi = CP_Image_Load("./ImperoArtAssets/CoffeeMochi_BG.png");
 
@@ -127,9 +128,11 @@ void game_init(void)
 	Vol_Slider = CP_Image_Load("./ImperoArtAssets/OtherMenuAssets/Impero_slider.png");
 	currentSliderPos = CP_Vector_Set(1050, 508);
 	
+	//Other Type of Menus
 	CreditsScreenImage = CP_Image_Load("./ImperoArtAssets/OtherMenuAssets/Impero_Credits.png");
 	HowToPlayScreenImage = CP_Image_Load("./ImperoArtAssets/OtherMenuAssets/Impero_HowToPlay.png");
 
+	//Additional Screen Images
 	whiteFlash = CP_Image_Load("./Assets/WhiteFlash.png");
 	InitSpritesheets();
 
@@ -165,7 +168,7 @@ void game_update(void)
 
 		CP_Graphics_ClearBackground(CP_Color_Create(0, 0, 0, 255));
 
-		CP_Image_Draw(OptionsScreenImage, 800, 450, 1600, 900, 255);
+		CP_Image_Draw(OptionsScreenImage, 800, 450, 1600, 900, 255); 
 
 		//Return to main menu
 		if (CheckWithinBounds(CP_Vector_Set(1150, 700), 281, 87))
@@ -222,7 +225,7 @@ void game_update(void)
 		}
 		if (splashdigipentimer < 1)
 		{
-			CP_Image_Draw(Splash_Digipen, 800, 450, 1600, 900, CP_Math_LerpInt(0, 255, splashdigipentimer / 1));
+			CP_Image_Draw(Splash_Digipen, 800, 450, 1600, 900, CP_Math_LerpInt(0, 255, splashdigipentimer / 1)); //Lerp Through Alpha of the Splash Screen
 		}
 		else if (splashdigipentimer < 3)
 		{
@@ -247,7 +250,7 @@ void game_update(void)
 		}
 		if (splashcoffeemochitimer < 1)
 		{
-			CP_Image_Draw(Splash_CoffeeMochi, 800, 450, 1600, 900, CP_Math_LerpInt(0, 255, splashcoffeemochitimer / 1));
+			CP_Image_Draw(Splash_CoffeeMochi, 800, 450, 1600, 900, CP_Math_LerpInt(0, 255, splashcoffeemochitimer / 1)); //Lerp Through Alpha of the Splash Screen
 		}
 		else if (splashcoffeemochitimer < 3)
 		{
@@ -288,7 +291,7 @@ void game_update(void)
 		}
 		else
 		{
-			//crazy ass star near start button
+			//crazy ass star near start button (Main menu animations)
 			ConstantAnimSpawner(3, 2, 5.f, 970, 970, 500, 500, 300, 300, 0.75f, 0, 0);
 			CP_Image_Draw(StartButtonImage, 800, 550, 328, 99, 255);
 		}
@@ -372,7 +375,7 @@ void game_update(void)
 		
 		CP_Image_Draw(Vol_Slider, currentSliderPos.x, currentSliderPos.y, 35, 58, 255);
 		CP_Image_Draw(ResolutionBtn_1600, 800, 365, 241,90, 255);
-		AdjustVolumeSlider();
+		AdjustVolumeSlider(); //Update the Volume Slider Position and Volume
 	}
 
 	else if (gameScene == SCENE_CREDITS) {
@@ -395,7 +398,6 @@ void game_update(void)
 					gameScene = SCENE_MAINMENU;
 					currentTimer = 0;
 				}
-
 			}
 			else {
 				CP_Image_Draw(ReturnToMainMenuButton, 1300, 475, 281, 87, 255);
@@ -404,24 +406,23 @@ void game_update(void)
 	}
 
 	else if (gameScene == SCENE_HOWTOPLAY) {
+		CP_Graphics_ClearBackground(CP_Color_Create(0, 0, 0, 255));
 
-	CP_Graphics_ClearBackground(CP_Color_Create(0, 0, 0, 255));
+		CP_Image_Draw(HowToPlayScreenImage, 800, 450, 1600, 900, 255);
 
-	CP_Image_Draw(HowToPlayScreenImage, 800, 450, 1600, 900, 255);
-
-	if (CheckWithinBounds(CP_Vector_Set(1425, 75), 281, 87))
-	{
-		CP_Image_Draw(ReturnToMainMenuButtonHover, 1425, 75, 281, 87, 255);
-		if (CP_Input_MouseClicked())
+		if (CheckWithinBounds(CP_Vector_Set(1425, 75), 281, 87))
 		{
-			gameScene = SCENE_MAINMENU;
-			currentTimer = 0;
+			CP_Image_Draw(ReturnToMainMenuButtonHover, 1425, 75, 281, 87, 255);
+			if (CP_Input_MouseClicked())
+			{
+				gameScene = SCENE_MAINMENU;
+				currentTimer = 0;
+			}
 		}
-	}
 
-	else {
-		CP_Image_Draw(ReturnToMainMenuButton, 1425, 75, 281, 87, 255);
-	}
+		else {
+			CP_Image_Draw(ReturnToMainMenuButton, 1425, 75, 281, 87, 255);
+		}
 	}
 
 	else if (gameScene == SCENE_GAMEENTRY)
@@ -500,11 +501,6 @@ void game_update(void)
 		{		
 			currentTimer -= CP_System_GetDt();
 			CP_Image_Draw(mainScreenImage, windowsWidth / 2, CP_Math_LerpFloat(exitScreenYLerpStart, exitScreenYLerpEnd, currentTimer / exitDuration), 1600, 2700, 255);
-			//CP_Image_Draw(mainScreenImage, windowsWidth / 2, CP_Math_LerpFloat(exitScreenYLerpStart, exitScreenYLerpEnd, currentTimer / exitDuration), 1600, 2700, 255);
-			/*CP_Image_Draw(titleImage, windowsWidth / 2, CP_Math_LerpFloat(titleImageYLerpStart, titleImageYLerpEnd, currentTimer / entryDuration), 985, 440, 255);
-			CP_Image_Draw(StartButtonImage, 1200, 700, 328, 99, CP_Math_LerpInt(255, 0, (currentTimer * 2)));
-			CP_Image_Draw(SettingsButtonImage, 800, 700, 328, 99, CP_Math_LerpInt(255, 0, (currentTimer * 2)));
-			CP_Image_Draw(ExitButtonImage, 400, 700, 328, 99, CP_Math_LerpInt(255, 0, (currentTimer * 2)));*/
 
 			if (currentTimer >= exitDuration / 2)
 			{
@@ -515,7 +511,6 @@ void game_update(void)
 		}
 		if (currentTimer <= 0)
 		{
-			//CP_Image_Draw(whiteFlash, windowsWidth / 2, windowsHeight / 2, 1600, 900, 255);
 			currentTimer = 0;
 			gameScene = SCENE_ENDPHASE;
 		}		
@@ -554,14 +549,6 @@ void game_update(void)
 		else {
 			CP_Image_Draw(RestartGameButton, 500, 700, 281, 87, 255);
 		}
-
-		/*currentTimer += CP_System_GetDt();
-		CP_Image_Draw(whiteFlash, windowsWidth / 2, windowsHeight / 2, 1600, 900, CP_Math_LerpInt(0, 255, (currentTimer)));
-		if (currentTimer >= 1)
-		{
-			currentTimer = 0;
-			gameScene = SCENE_MAINMENU;
-		}*/
 	}
 }
 
@@ -579,7 +566,6 @@ void DrawIntroNarritive(int alpha) {
 	CP_Settings_Fill(CP_Color_Create(128, 128, 128, alpha));
 
 	//Draw Text for Starting Narrative
-
 	CP_Font_DrawTextBox(text, 350, 150, 900);
 }
 
@@ -603,7 +589,6 @@ void ChangeVolume(float vol)
 void AdjustVolumeSlider() {
 
 	float mouseX = CP_Input_GetMouseX();
-	//float mouseY = CP_Input_GetMouseY();
 	CP_Vector previousSliderPos = currentSliderPos;
 
 	if (CP_Input_MouseDragged(MOUSE_BUTTON_LEFT)) {		
@@ -613,12 +598,12 @@ void AdjustVolumeSlider() {
 			int withinMinPos = currentSliderPos.x + sliderMovement >= sliderMinPos;
 			if (withinMaxPos && withinMinPos) {
 				float newSliderPosX = currentSliderPos.x + sliderMovement;
-				currentSliderPos = CP_Vector_Set(newSliderPosX, currentSliderPos.y);
+				currentSliderPos = CP_Vector_Set(newSliderPosX, currentSliderPos.y); //Update X-Axis of the Volume Slider
 			}
 
 			float vol_percentageChange = (sliderMovement / (sliderMaxPos - sliderMinPos));
 			
-			float newVol = current_Volume + vol_percentageChange;
+			float newVol = current_Volume + vol_percentageChange; //Get new vol by the percentage change
 
 			if (newVol <= 0.0f) {
 				newVol = 0.0f;
@@ -627,7 +612,7 @@ void AdjustVolumeSlider() {
 				newVol = 1.0f;
 			}
 
-			ChangeVolume(newVol);
+			ChangeVolume(newVol); //Update new volume
 		}
 
 	}

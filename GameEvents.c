@@ -10,20 +10,6 @@ typedef struct
 	int cardIndexes[30];
 }CARDDECK;
 
-
-/*typedef struct
-{
-	int eventIndex; // unique ID
-	int eventType; //
-	char* description;
-	int resourceChangeA[4];
-	int resourceRewardA[2];
-	char* descriptionA;
-	int resourceChangeB[4];
-	int resourceRewardB[2];
-	char* descriptionB;
-}CARDEVENT; */
-
 CP_Image buildCardSprite;
 CP_Image destroyCardSprite;
 CP_Image blankCardSprite;
@@ -38,7 +24,6 @@ REWARDCARD* rewardCardList[TOTALREWARDCARDCOUNT];
 CARDDECK tutorialDeck;
 CARDDECK prototypeDeck = { 23, 1,2,3,8,12,9,10,19,5,11,13,6,18,7,20,15,23,16,17,21,4,14,22, 0 };
 CARDDECK debugDeck = { 11, 1, 27, 24, 12, 12, 12, 12, 12, 23, 23, 23 };
-
 
 
 CARDDECK* currentDeck;
@@ -70,7 +55,7 @@ CARDEVENT emptyCard = { 0, NULL_TYPE_EVENT,"", "This is a null event, for errors
 , {0,0,0,0}, {0,0}, "Why are you reading this? This is a bug. Ignore and move along.", "Please wait"
 , {0,0,0,0}, {0,0}, "You are looking at a bug right now. Please ignore.", "Wait for it..." };
 
-//TUTORIALS EVENTS [CARD INDEX STARTS WITH 0X]
+//TUTORIALS EVENTS
 CARDEVENT E_TutBuildAHouse = { 1, BUILD_TYPE_EVENT,"Build Houses","Gorvernor, we need to build houses for our citizens. Click on either red or the blue card."
 , {-20,0,0,5}, { {1, 2}, {0,0} } ,"Lay a strong foundation. Who knows what might happen in the future.","Citizens are happy with new shelters."
 , {-5,0,0,-10}, { {1, 2}, {0,0} } ,"Lay the foundation with enough materials to stand. We can't afford more." ,"At least we have roofs..."};
@@ -237,7 +222,6 @@ void InitCardList()
 	rewardCardList[10] = &R_RainCard;
 
 	rewardCardList[15] = &R_TheGreatOstrichEscape;
-
 
 	buildCardSprite = CP_Image_Load("./ImperoArtAssets/Impero_CardBuild.png");
 	destroyCardSprite = CP_Image_Load("./ImperoArtAssets/Impero_CardDestroy.png");
