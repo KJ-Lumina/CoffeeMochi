@@ -64,7 +64,7 @@ bool CheckCurrent(int typeofeffect, int x, int y)
 }
 
 
-void GenerateEvents(int eventIndex, int xPos, int yPos) 
+void GenerateEvents(int eventIndex, int xPos, int yPos, int turnsAlive) 
 {
 	//create store in array
 	for (int i = 0; i < (EVENTLIMIT); ++i) {
@@ -72,7 +72,7 @@ void GenerateEvents(int eventIndex, int xPos, int yPos)
 			switch (eventIndex)
 			{
 			case O_RATEVENT:
-				ongoingEvents[i] = (ONGOING){ O_RATEVENT, sprite_rat, xPos, yPos, B_FARM_INDEX, 5, ISALIVE,"Rat has infiltrated the city , food will be compromised every turn "};//store into array
+				ongoingEvents[i] = (ONGOING){ O_RATEVENT, sprite_rat, xPos, yPos, B_FARM_INDEX, turnsAlive, ISALIVE,"Rat has infiltrated the city , food will be compromised every turn "};//store into array
 				return;
 			case 2:
 				//currentEvent[i] = { 2,sprite_one, CP_Vector_set(0,0), position, FARM, AreaOfEffect,0,5,"Rat has infiltrated the city , food will be compromised every turn ", ISALIVE };

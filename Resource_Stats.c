@@ -28,6 +28,7 @@
 #define PAX_MEDIUM_MODIFIER 0.25
 
 #define TAVERN_UPKEEP_COST 5
+#define MORALE_AMT_FROM_TAVERN 2
 
 #define HIGH_MORALE 150
 #define MEDIUM_MORALE 100
@@ -151,6 +152,11 @@ int farm_food_prediction()
 int house_pop_prediction()
 {
 	return PAX_PER_HOUSING;
+}
+
+int tavern_morale_preduction()
+{
+    return MORALE_AMT_FROM_TAVERN;
 }
 
 /*--------------------

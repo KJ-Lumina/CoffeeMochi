@@ -295,6 +295,9 @@ int Get_current_food();
 int Get_current_population();
 int Get_current_morale();
 int Get_additional_morale();
+int market_gold_prediction();
+int farm_food_prediction();
+int tavern_morale_preduction();
 void AddNewResourceBuilding(int buildingIndex);
 void AddMarket();
 void AddFarm();
@@ -343,7 +346,7 @@ void SpawnNpc(CP_Vector position, int amtToSpawn);
 
 // Ongoing Events
 void InitOngoingEvents();
-void GenerateEvents(int eventIndex, int xPos, int yPos);// generate the event of rat|| any ongoing events 
+void GenerateEvents(int eventIndex, int xPos, int yPos, int turnsAlive);// generate the event of rat|| any ongoing events 
 void DrawOngoingEvents();
 void OnEndUpdateEvents();//end turn, turn reduce by 1 
 bool CheckCurrent(int typeofeffect, int x, int y);

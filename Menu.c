@@ -80,7 +80,7 @@ void game_init(void)
 	CP_System_SetWindowSize(1600, 900);
 	accFont = CP_Font_Load("./Assets/accid.ttf");
 	CP_Font_Set(accFont);
-	//CP_System_FullscreenAdvanced(1600, 900); //Enable for full screen
+	CP_System_FullscreenAdvanced(1600, 900); //Enable for full screen
 	CP_Settings_TextAlignment(CP_TEXT_ALIGN_H_CENTER, CP_TEXT_ALIGN_V_TOP);
 	windowsWidth = (float)CP_System_GetWindowWidth();
 	windowsHeight = (float)CP_System_GetWindowHeight();

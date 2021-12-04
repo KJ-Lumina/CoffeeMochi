@@ -1,9 +1,8 @@
-﻿  OngoingEvents.c
-  game.c
+﻿  GameEvents.c
   Generating code
-  22 of 161 functions (13.7%) were compiled, the rest were copied from previous compilation.
+  0 of 161 functions ( 0.0%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    14 functions had inline decision re-evaluated but remain unchanged
+    0 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
   Processing_Sample.vcxproj -> C:\Users\trave\Documents\GitHub\CoffeeMochi\x64\Release\Processing_Sample.exe
   1 File(s) copied
