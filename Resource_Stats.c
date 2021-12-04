@@ -1,5 +1,6 @@
 /*!_____________________________________________________________________________
 @file       Resource_Stats.c
+@copyright  Copyright: 2021, Digipen Institute of Technology, Singapore
 @author     Erron Quek (e.quek@digipen.edu)
 @co-authors Seow Kai Jun
             Travess Tan
