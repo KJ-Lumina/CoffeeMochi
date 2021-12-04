@@ -1,7 +1,6 @@
 #include "cprocessing.h"
 #include <stdio.h>
 #include <stdlib.h>
-//#include <Resource_stats.h>
 
 #define COMMON 0 
 #define SECOND 1

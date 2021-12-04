@@ -2,14 +2,16 @@
 @file       Resource_Stats.c
 @copyright  Copyright: 2021, Digipen Institute of Technology, Singapore
 @author     Erron Quek (e.quek@digipen.edu)
-@co-authors Seow Kai Jun
-            Travess Tan
+@co-authors Seow Kai Jun (s.kaijun@digipen.edu)
+            Travess Tan (travesscheekhang.t@digipen.edu)
 @course     CSD1120
 @section    B
 @team       CoffeeMochi
 @brief      This file contains the function definitions that are used in
             resource calculation, generation and distribution in the core game
             loop of Impero.
+
+            Copyright ©2021 DigiPen, All rights reserved.
 *//*__________________________________________________________________________*/
 
 #include <stdio.h>

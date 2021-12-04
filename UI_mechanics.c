@@ -1,12 +1,14 @@
 /*!_____________________________________________________________________________
 @file       UI_mechanics.c
 @author     Lee Xin Qian (xinqian.lee@digipen.edu)
-@co-authors Travess Tan
+@co-authors Travess Tan (travesscheekhang.t@digipen.edu)
 @course     CSD1120
 @section    B
 @team       CoffeeMochi
 @brief      This file contains the function definitions that are used in
             the user interfaces of Impero.
+
+            Copyright ©2021 DigiPen, All rights reserved.
 *//*__________________________________________________________________________*/
 
 
@@ -15,8 +17,6 @@
 #include <math.h>
 #include "cprocessing.h"
 #include "Common_Headers.h"
-#include "UI_mechanics.h"
-#include "Buildings.h"
 #include "UI_Text.h"
 
 

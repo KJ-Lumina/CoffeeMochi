@@ -1,14 +1,15 @@
-/*---------------------------------------------------------
- * file:	Sound.c
- * author:	Kelly Liaw
- * email:	liaw.k@digipen.edu
- * co-author: Seow Kai Jun
- * email: s.kaijun@digipen.edu.sg
-*
- * brief:	All Sound Related Variables and Functions Calls for the project resides here
-*
- * Copyright ?2020 DigiPen, All rights reserved.
-* ---------------------------------------------------------*/
+/*!_____________________________________________________________________________
+@file       Sound.c
+@author     Kelly Liaw (liaw.k@digipen.edu)
+@co-authors Seow Kai Jun (s.kaijun@digipen.edu)
+@course     CSD1120
+@section    B
+@team       CoffeeMochi
+@brief      This file contains the sound related variables & function definitions
+            that are used in Impero.
+            
+            Copyright ©2021 DigiPen, All rights reserved.
+*//*__________________________________________________________________________*/
 
 #include <stdio.h>
 #include "Common_Headers.h"

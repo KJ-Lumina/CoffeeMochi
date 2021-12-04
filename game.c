@@ -4,11 +4,8 @@
 #include "cprocessing.h"
 #include "TravessFunctions.h"
 #include "WorldSpaceGrid.h"
-#include "UI_mechanics.h"
 #include "UI_Animations.h"
 #include "Npc.h"
-#include "Resource_Stats.h"
-
 
 #pragma region Game Options Control
 bool AllowAdminControl = false;

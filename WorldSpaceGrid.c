@@ -1,9 +1,21 @@
+/*!_____________________________________________________________________________
+@file       WorldSpaceGrid.c
+@author     Travess Tan (travesscheekhang.t@digipen.edu)
+@course     CSD1120
+@section    B
+@team       CoffeeMochi
+@brief      This file contains the variables & function definitions that 
+            interacts with the Grid in Impero.
+
+            Copyright ©2021 DigiPen, All rights reserved.
+*//*__________________________________________________________________________*/
+
+
 #include <stdio.h>
 #include <stdbool.h>
 #include "cprocessing.h"
 #include "WorldSpaceGrid.h"
 #include "Common_Headers.h"
-#include "Buildings.h"
 
 
 float windowsWidth;

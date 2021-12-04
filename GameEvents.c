@@ -1,18 +1,21 @@
-/*---------------------------------------------------------
- * file:	GameEvents.c
- * author:	Seow Kai Jun
- * email:	s.kaijun@digipen.edu.sg
-*
- * brief:	All Event Related Variables and Functions Calls for the project resides here
-*
- * Copyright ?2020 DigiPen, All rights reserved.
-* ---------------------------------------------------------*/
+/*!_____________________________________________________________________________
+@file       GameEvents.c
+@author     Seow Kai Jun (s.kaijun@digipen.edu)
+@co-authors Travess Tan (travesscheekhang.t@digipen.edu)
+			Kelly Liaw (liaw.k@digipen.edu)
+@course     CSD1120
+@section    B
+@team       CoffeeMochi
+@brief      This file contains the Events related variables & function definitions
+			that are used in Impero.
+
+			Copyright ©2021 DigiPen, All rights reserved.
+*//*__________________________________________________________________________*/
 
 #include <stdio.h>
 #include "cprocessing.h"
 #include "Common_Headers.h"
 #include <stdlib.h>
-
 
 typedef struct
 {

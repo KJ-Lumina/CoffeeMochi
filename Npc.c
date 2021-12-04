@@ -1,21 +1,21 @@
- #include <stdio.h>
+/*!_____________________________________________________________________________
+@file       Npc.c
+@author     Travess Tan (travesscheekhang.t@digipen.edu)
+@course     CSD1120
+@section    B
+@team       CoffeeMochi
+@brief      This file contains the NPC related variables & function definitions
+			that are used in Impero.
+
+			Copyright ©2021 DigiPen, All rights reserved.
+*//*__________________________________________________________________________*/
+
+#include <stdio.h>
 #include "cprocessing.h"
 #include "Common_Headers.h"
 #include <math.h>
 #include "Npc.h"
 #include <stdbool.h>
-
-
-/*typedef struct {
-	int spriteIndex;
-	CP_Vector worldPosition;
-	CP_Vector direction;
-	int checkPointsLeft;
-	float distanceLeft;
-	float nextMoveTimer;
-	float baseSpeed;
-	CP_Vector checkPoints[6];
-}NPC;*/
 
 NPC npcList[MAXNPC] = { 0 };
 float deltaTime;

@@ -1,12 +1,14 @@
 /*!_____________________________________________________________________________
 @file       UI_Animations.c
 @author     Lee Xin Qian (xinqian.lee@digipen.edu)
-@co-authors Travess Tan
-@course     CSD1120
+@co-authors Travess Tan (travesscheekhang.t@digipen.edu)
+@course     CSD1120 
 @section    B
-@team       CoffeeMochi
+@team       CoffeeMochi 
 @brief      This file contains the function definitions that are used in
             animation sequences of Impero.
+
+            Copyright ©2021 DigiPen, All rights reserved.
 *//*__________________________________________________________________________*/
 
 

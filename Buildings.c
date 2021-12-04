@@ -1,9 +1,19 @@
+/*!_____________________________________________________________________________
+@file       Building.c
+@author     Erron Quek (e.quek@digipen.edu)
+@co-authors Travess Tan (travesscheekhang.t@digipen.edu)
+@course     CSD1120
+@section    B
+@team       CoffeeMochi
+@brief      This file contains the all building related variable & function definitions in Impero 
+
+			Copyright ©2021 DigiPen, All rights reserved.
+*//*__________________________________________________________________________*/
+
 #include <stdio.h>
+#include <stdbool.h>
 #include "cprocessing.h"
 #include "Common_Headers.h"
-#include "Buildings.h"
-
-
 
 typedef struct
 {
