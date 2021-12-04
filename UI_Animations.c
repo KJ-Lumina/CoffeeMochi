@@ -368,7 +368,7 @@ CP_Image loseFood;
 CP_Image addMorale;
 CP_Image minusMorale;
 CP_Image addBlessing;
-LINEARVFX vfxList[50];
+LINEARVFX vfxList[100];
 
 void InitVfx()
 {
@@ -379,7 +379,7 @@ void InitVfx()
     addMorale = CP_Image_Load("./Assets/addMorale2.png");
     minusMorale = CP_Image_Load("./Assets/minusMorale2.png");
     addBlessing = CP_Image_Load("./Assets/addBlessing.png");
-    for (int i = 0; i < 50; ++i)
+    for (int i = 0; i < 100; ++i)
     {
         vfxList[i] = (LINEARVFX){ 0 };
     }
@@ -412,7 +412,7 @@ CP_Image* GetVfxSpriteByIndex(int index)
 
 void SpawnLinearVfx(int spriteIndex, CP_Vector startPos, CP_Vector endPos, float lifetime, CP_Vector size, float spawnDelay)
 {
-    for (int i = 0; i < 50; ++i)
+    for (int i = 0; i < 100; ++i)
     {
         if (vfxList[i].spriteIndex == 0)
         {
@@ -450,7 +450,7 @@ float EaseOutSine(float start, float end, float value)
 void DrawAllVfx()
 {
     float deltatVfx = CP_System_GetDt();
-    for (int i = 0; i < 50; ++i)
+    for (int i = 0; i < 100; ++i)
     {
         if (vfxList[i].spriteIndex != 0)
         {
@@ -507,7 +507,7 @@ void DrawAllVfx()
 void SpawnVfxEaseInToEaseOut(int spriteIndex, CP_Vector startPos, CP_Vector checkpoint, CP_Vector endPos, float lifetime, CP_Vector size, float spawnDelay)
 {
     int count = 2;
-    for (int i = 0; i < 50; ++i)
+    for (int i = 0; i < 100; ++i)
     {
         if (vfxList[i].spriteIndex == 0)
         {

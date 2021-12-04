@@ -29,8 +29,8 @@
 
 #define TAVERN_UPKEEP_COST 5
 
-#define HIGH_MORALE 140
-#define MEDIUM_MORALE 80
+#define HIGH_MORALE 150
+#define MEDIUM_MORALE 100
 #define LOW_MORALE 50
 
 #define MAX_DELAYRES 50

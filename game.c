@@ -239,6 +239,10 @@ void MouseClick() //Run when Mouse is Clicked
             {
             case BUILD_TYPE_EVENT:
                 // reward is construction
+                if (AreAllOccupied())
+                {
+                    gameState = State_EndOfTurn;
+                }
                 SetBuildingType(GetBuildingByIndex(selectedReward[rewardIndex]->eventIndex));
                 --rewardCardsLeft[rewardIndex];
                 gameState = State_PlaceYourBuilding;
@@ -249,14 +253,29 @@ void MouseClick() //Run when Mouse is Clicked
                 gameState = State_DestroyBuilding;
                 break;
             case ONGOING_TYPE_EVENT:
-                while (selectedEvent->affectedLand[rewardIndex] != 0)
+                if (selectedEvent->affectedLand[rewardIndex] == 26)
                 {
-                    int gridPos = selectedEvent->affectedLand[rewardIndex];
-                    if (GetOccupiedIndex((gridPos - 1) % WORLDGRIDY, (gridPos - 1) / WORLDGRIDX) == selectedReward[0]->resourceType)
+                    for (int i = 0; i < 26; ++i)
                     {
-                        GenerateEvents(O_RATEVENT, (gridPos - 1) % WORLDGRIDY, (gridPos - 1) / WORLDGRIDX);
+                        printf("%d ", i);
+                        if (GetOccupiedIndex((i) % WORLDGRIDY, (i) / WORLDGRIDX) == selectedReward[0]->resourceType)
+                        {
+                            printf("%d %d \n", (i) % WORLDGRIDY, (i) / WORLDGRIDX);
+                            GenerateEvents(O_RATEVENT, (i) % WORLDGRIDY, (i) / WORLDGRIDX);
+                        }
                     }
-                    rewardIndex++;
+                }
+                else
+                {
+                    while (selectedEvent->affectedLand[rewardIndex] != 0)
+                    {
+                        int gridPos = selectedEvent->affectedLand[rewardIndex];
+                        if (GetOccupiedIndex((gridPos - 1) % WORLDGRIDY, (gridPos - 1) / WORLDGRIDX) == selectedReward[0]->resourceType)
+                        {
+                            GenerateEvents(O_RATEVENT, (gridPos - 1) % WORLDGRIDY, (gridPos - 1) / WORLDGRIDX);
+                        }
+                        rewardIndex++;
+                    }
                 }
                 gameState = State_EndOfTurn;
             }

@@ -251,6 +251,7 @@ int GetOccupiedIndex(int x, int y);
 bool IsTileOccupied(CP_Vector);
 int GetAllBuildingsPositionByIndex(int index, TILEPOSITION position[]);
 void DestroyBuildingBySelectedBuilding(int buildingIndex);
+bool AreAllOccupied();
 
 // UI_Mechanics
 bool CheckWithinBounds(CP_Vector position, float width, float height);
@@ -267,7 +268,7 @@ void UI_SetBlessingsTimer(float timer);
 void UI_SetGoldCard();
 void UI_SetNormalCard();
 void DrawUI_Settings();
-void UI_SetResourceChanage(int resourceChange[4]);
+void UI_SetResourceChange(int resourceChange[4]);
 
 //Sound
 void SetVolume(float vol);

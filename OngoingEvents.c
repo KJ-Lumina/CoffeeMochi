@@ -33,7 +33,7 @@ ONGOING ongoingEvents[10] = { 0 };
 
 void InitOngoingEvents() {
 
-	sprite_rat = CP_Image_Load("./Assets/workinprogress.png");
+	sprite_rat = CP_Image_Load("./ImperoArtAssets/Impero_Rats.png");
 	//sprite_one = CP_Image_load();
 	//sprite_two = CP_Image_load();
 	//sprite_three = CP_Image_load();
@@ -67,7 +67,6 @@ bool CheckCurrent(int typeofeffect, int x, int y)
 void GenerateEvents(int eventIndex, int xPos, int yPos) 
 {
 	//create store in array
-
 	for (int i = 0; i < (EVENTLIMIT); ++i) {
 		if (ongoingEvents[i].alive == ISDEAD) {
 			switch (eventIndex)
@@ -130,7 +129,7 @@ void DrawOngoingEvents()
 			worldPosition.x = (float)ongoingEvents[i].positionx;
 			worldPosition.y = (float)ongoingEvents[i].positiony;
 			GridToWorldPosition(&worldPosition);
-			CP_Image_Draw(ongoingEvents[i].sprite, worldPosition.x, worldPosition.y, 200, 200, 255);
+			CP_Image_Draw(ongoingEvents[i].sprite, worldPosition.x, worldPosition.y, 128, 160, 255);
 		}
 	}
 }

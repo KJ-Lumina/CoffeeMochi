@@ -173,6 +173,21 @@ int GetOccupiedIndex(int x, int y)
     return buildingGrid[x][y];
 }
 
+bool AreAllOccupied()
+{
+    for (int i = 0; i < WORLDGRIDX; ++i)
+    {
+        for (int j = 0; j < WORLDGRIDY; ++j)
+        {
+            if (buildingGrid[i][j] == 0)
+            {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
 bool IsTileOccupied(CP_Vector position)
 {
     if (buildingGrid[(int)position.x][(int)position.y] == 0)

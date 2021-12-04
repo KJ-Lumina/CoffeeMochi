@@ -467,9 +467,11 @@ void game_update(void)
 			currentTimer += CP_System_GetDt();
 			CP_Image_Draw(mainScreenImage, windowsWidth / 2, CP_Math_LerpFloat(mainScreenYLerpStart, mainScreenYLerpEnd, currentTimer / entryDuration), 1600, 2700, 255);
 			CP_Image_Draw(titleImage, windowsWidth / 2, CP_Math_LerpFloat(titleImageYLerpStart, titleImageYLerpEnd, currentTimer / entryDuration), 985, 440, 255);
-			CP_Image_Draw(StartButtonImage, 1200, 700, 328, 99, CP_Math_LerpInt(255, 0, (currentTimer * 2)));
-			CP_Image_Draw(SettingsButtonImage, 800, 700, 328, 99, CP_Math_LerpInt(255, 0, (currentTimer * 2)));
-			CP_Image_Draw(ExitButtonImage, 400, 700, 328, 99, CP_Math_LerpInt(255, 0, (currentTimer * 2)));
+			CP_Image_Draw(ExitButtonImageHover, 1325, 700, 328, 99, CP_Math_LerpInt(255, 0, (currentTimer * 2)));
+			CP_Image_Draw(CreditsButtonImageHover, 975, 700, 328, 99, CP_Math_LerpInt(255, 0, (currentTimer * 2)));
+			CP_Image_Draw(OptionsButtonImageHover, 625, 700, 328, 99, CP_Math_LerpInt(255, 0, (currentTimer * 2)));
+			CP_Image_Draw(HowToPlayButtonImageHover, 275, 700, 328, 99, CP_Math_LerpInt(255, 0, (currentTimer * 2)));
+			CP_Image_Draw(StartButtonImageHover, 800, 550, 328, 99, CP_Math_LerpInt(255, 0, (currentTimer * 2)));
 			fadeInAlpha = CP_Math_LerpInt(0, 255, ((currentTimer - (entryDuration / 2)) / (entryDuration / 2)));
 
 			if (currentTimer >= entryDuration / 2)
