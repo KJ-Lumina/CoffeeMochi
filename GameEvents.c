@@ -272,7 +272,7 @@ void InitDecks()
 	//currentDeck = &prototypeDeck;
 	//currentDeck = &debugDeck;
 	RandomizeDeck();
-	currentDeck = &debugDeck;
+	currentDeck = &randomDeck;
 }
 
 CARDEVENT* GetCurrentEvent()
