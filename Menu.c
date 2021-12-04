@@ -77,10 +77,10 @@ void ExitGame()
 
 void game_init(void)
 {	
-	CP_System_SetWindowSize(1600, 900);
+	//CP_System_SetWindowSize(1600, 900);
+	CP_System_FullscreenAdvanced(1600, 900); //Enable for full screen
 	accFont = CP_Font_Load("./Assets/accid.ttf");
 	CP_Font_Set(accFont);
-	//CP_System_FullscreenAdvanced(1600, 900); //Enable for full screen
 	CP_Settings_TextAlignment(CP_TEXT_ALIGN_H_CENTER, CP_TEXT_ALIGN_V_TOP);
 	windowsWidth = (float)CP_System_GetWindowWidth();
 	windowsHeight = (float)CP_System_GetWindowHeight();
@@ -105,8 +105,8 @@ void game_init(void)
 	OptionsButtonImageHover = CP_Image_Load("./ImperoArtAssets/MainMenuAssets/Impero_OptionsButtonHover.png");
 	SettingsButtonImage = CP_Image_Load("./ImperoArtAssets/MainMenuAssets/Impero_SettingsButton.png");
 	SettingsButtonImageHover = CP_Image_Load("./ImperoArtAssets/MainMenuAssets/Impero_SettingsButtonHover.png");
-	ExitButtonImage = CP_Image_Load("./ImperoArtAssets/MainMenuAssets/Impero_ExitButton.png");
-	ExitButtonImageHover = CP_Image_Load("./ImperoArtAssets/MainMenuAssets/Impero_ExitButtonHover.png");
+	ExitButtonImage = CP_Image_Load("./ImperoArtAssets/MainMenuAssets/Impero_QuitButton.png");
+	ExitButtonImageHover = CP_Image_Load("./ImperoArtAssets/MainMenuAssets/Impero_QuitButtonHover.png");
 	CreditsButtonImage = CP_Image_Load("./ImperoArtAssets/MainMenuAssets/Impero_CreditsButton.png");
 	CreditsButtonImageHover = CP_Image_Load("./ImperoArtAssets/MainMenuAssets/Impero_CreditsButtonHover.png");
 	HowToPlayButtonImage = CP_Image_Load("./ImperoArtAssets/MainMenuAssets/Impero_HowtoplayButton.png");
@@ -467,9 +467,11 @@ void game_update(void)
 			currentTimer += CP_System_GetDt();
 			CP_Image_Draw(mainScreenImage, windowsWidth / 2, CP_Math_LerpFloat(mainScreenYLerpStart, mainScreenYLerpEnd, currentTimer / entryDuration), 1600, 2700, 255);
 			CP_Image_Draw(titleImage, windowsWidth / 2, CP_Math_LerpFloat(titleImageYLerpStart, titleImageYLerpEnd, currentTimer / entryDuration), 985, 440, 255);
-			CP_Image_Draw(StartButtonImage, 1200, 700, 328, 99, CP_Math_LerpInt(255, 0, (currentTimer * 2)));
-			CP_Image_Draw(SettingsButtonImage, 800, 700, 328, 99, CP_Math_LerpInt(255, 0, (currentTimer * 2)));
-			CP_Image_Draw(ExitButtonImage, 400, 700, 328, 99, CP_Math_LerpInt(255, 0, (currentTimer * 2)));
+			CP_Image_Draw(ExitButtonImageHover, 1325, 700, 328, 99, CP_Math_LerpInt(255, 0, (currentTimer * 2)));
+			CP_Image_Draw(CreditsButtonImageHover, 975, 700, 328, 99, CP_Math_LerpInt(255, 0, (currentTimer * 2)));
+			CP_Image_Draw(OptionsButtonImageHover, 625, 700, 328, 99, CP_Math_LerpInt(255, 0, (currentTimer * 2)));
+			CP_Image_Draw(HowToPlayButtonImageHover, 275, 700, 328, 99, CP_Math_LerpInt(255, 0, (currentTimer * 2)));
+			CP_Image_Draw(StartButtonImageHover, 800, 550, 328, 99, CP_Math_LerpInt(255, 0, (currentTimer * 2)));
 			fadeInAlpha = CP_Math_LerpInt(0, 255, ((currentTimer - (entryDuration / 2)) / (entryDuration / 2)));
 
 			if (currentTimer >= entryDuration / 2)

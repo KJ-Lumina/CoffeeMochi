@@ -27,11 +27,6 @@ int Math_Abs_Int(int x)
 	return x;
 }
 
-void LerpTowards()
-{
-
-}
-
 bool CheckWithinBounds(CP_Vector position, float width, float height)
 {
 	float mouseX = CP_Input_GetMouseX();

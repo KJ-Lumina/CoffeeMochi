@@ -33,7 +33,7 @@ ONGOING ongoingEvents[10] = { 0 };
 
 void InitOngoingEvents() {
 
-	sprite_rat = CP_Image_Load("./Assets/workinprogress.png");
+	sprite_rat = CP_Image_Load("./ImperoArtAssets/Impero_Rats.png");
 	//sprite_one = CP_Image_load();
 	//sprite_two = CP_Image_load();
 	//sprite_three = CP_Image_load();
@@ -64,16 +64,15 @@ bool CheckCurrent(int typeofeffect, int x, int y)
 }
 
 
-void GenerateEvents(int eventIndex, int xPos, int yPos) 
+void GenerateEvents(int eventIndex, int xPos, int yPos, int turnsAlive) 
 {
 	//create store in array
-
 	for (int i = 0; i < (EVENTLIMIT); ++i) {
 		if (ongoingEvents[i].alive == ISDEAD) {
 			switch (eventIndex)
 			{
 			case O_RATEVENT:
-				ongoingEvents[i] = (ONGOING){ O_RATEVENT, sprite_rat, xPos, yPos, B_FARM_INDEX, 5, ISALIVE,"Rat has infiltrated the city , food will be compromised every turn "};//store into array
+				ongoingEvents[i] = (ONGOING){ O_RATEVENT, sprite_rat, xPos, yPos, B_FARM_INDEX, turnsAlive, ISALIVE,"Rat has infiltrated the city , food will be compromised every turn "};//store into array
 				return;
 			case 2:
 				//currentEvent[i] = { 2,sprite_one, CP_Vector_set(0,0), position, FARM, AreaOfEffect,0,5,"Rat has infiltrated the city , food will be compromised every turn ", ISALIVE };
@@ -130,7 +129,7 @@ void DrawOngoingEvents()
 			worldPosition.x = (float)ongoingEvents[i].positionx;
 			worldPosition.y = (float)ongoingEvents[i].positiony;
 			GridToWorldPosition(&worldPosition);
-			CP_Image_Draw(ongoingEvents[i].sprite, worldPosition.x, worldPosition.y, 200, 200, 255);
+			CP_Image_Draw(ongoingEvents[i].sprite, worldPosition.x, worldPosition.y, 128, 160, 255);
 		}
 	}
 }

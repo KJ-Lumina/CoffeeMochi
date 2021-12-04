@@ -135,15 +135,15 @@ void Play_Building_SFX(int buildingIndex) {
         break;
 
     case B_FARM_INDEX:
-        CP_Sound_PlayAdvanced(Farm_S, currentVolume, 1.0f, FALSE, CP_SOUND_GROUP_0);
+        CP_Sound_PlayAdvanced(Farm_S, currentVolume / 2, 1.0f, FALSE, CP_SOUND_GROUP_0);
         break;
 
     case B_MARKET_INDEX:
-        CP_Sound_PlayAdvanced(Market_S, currentVolume, 1.0f, FALSE, CP_SOUND_GROUP_0);
+        CP_Sound_PlayAdvanced(Market_S, currentVolume / 2, 1.0f, FALSE, CP_SOUND_GROUP_0);
         break;
 
     case B_TAVERN_INDEX:
-        CP_Sound_PlayAdvanced(Tavern_S, currentVolume, 1.0f, FALSE, CP_SOUND_GROUP_0);
+        CP_Sound_PlayAdvanced(Tavern_S, currentVolume / 2, 1.0f, FALSE, CP_SOUND_GROUP_0);
         break;
     }
 }
@@ -170,6 +170,33 @@ void Play_Choice_SFX(SOUND_SFX sound_sfx) {
     }
 }
 
+void Play_Event_SFX(int eventIndex) {
+
+    switch (eventIndex) {
+        //Events
+        case 9:
+            CP_Sound_PlayAdvanced(Peddler_S, currentVolume / 2, 1.0f, FALSE, CP_SOUND_GROUP_0);
+            break;
+
+        case 11:
+            CP_Sound_PlayAdvanced(ThunderE_S, currentVolume / 2, 1.0f, FALSE, CP_SOUND_GROUP_0);
+            break;
+
+        case 19:
+            CP_Sound_PlayAdvanced(FireE_S, currentVolume, 1.0f, FALSE, CP_SOUND_GROUP_0);
+            break;
+
+        case 24:
+            CP_Sound_PlayAdvanced(RatE_S, currentVolume, 1.0f, FALSE, CP_SOUND_GROUP_0);
+            break;     
+
+        case 25:
+            CP_Sound_PlayAdvanced(ThunderE_S, currentVolume / 2, 1.0f, FALSE, CP_SOUND_GROUP_0);
+            break;
+    }
+
+}
+
 void Play_SFX_Sound(SOUND_SFX sound_sfx)
 {
     switch (sound_sfx)
@@ -189,25 +216,7 @@ void Play_SFX_Sound(SOUND_SFX sound_sfx)
         break;
 
         //Events
-    case Sound_SFX_EarthQuake:
-        CP_Sound_Play(EarthquakeE_S);
-        break;
 
-    case Sound_SFX_Burning:
-        CP_Sound_Play(FireE_S);
-        break;
-
-    case Sound_SFX_Peddler:
-        CP_Sound_Play(Peddler_S);
-        break;
-
-    case Sound_SFX_Thunder:
-        CP_Sound_Play(ThunderE_S);
-        break;
-
-    case Sound_SFX_Rat:
-        CP_Sound_Play(RatE_S);
-        break;
     }     
 }
 

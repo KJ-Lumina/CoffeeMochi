@@ -251,6 +251,7 @@ int GetOccupiedIndex(int x, int y);
 bool IsTileOccupied(CP_Vector);
 int GetAllBuildingsPositionByIndex(int index, TILEPOSITION position[]);
 void DestroyBuildingBySelectedBuilding(int buildingIndex);
+bool AreAllOccupied();
 
 // UI_Mechanics
 bool CheckWithinBounds(CP_Vector position, float width, float height);
@@ -267,7 +268,7 @@ void UI_SetBlessingsTimer(float timer);
 void UI_SetGoldCard();
 void UI_SetNormalCard();
 void DrawUI_Settings();
-void UI_SetResourceChanage(int resourceChange[4]);
+void UI_SetResourceChange(int resourceChange[4]);
 
 //Sound
 void SetVolume(float vol);
@@ -276,6 +277,7 @@ void PlayBGM(SOUND_BGM sound_BGM);
 void Play_SFX_Sound(SOUND_SFX sound_sfx);
 void Play_Building_SFX(int buildingIndex);
 void Play_Choice_SFX(SOUND_SFX sound_sfx);
+void Play_Event_SFX(int eventIndex);
 void StopBGM();
 void StopSFX();
 
@@ -293,6 +295,9 @@ int Get_current_food();
 int Get_current_population();
 int Get_current_morale();
 int Get_additional_morale();
+int market_gold_prediction();
+int farm_food_prediction();
+int tavern_morale_preduction();
 void AddNewResourceBuilding(int buildingIndex);
 void AddMarket();
 void AddFarm();
@@ -341,7 +346,7 @@ void SpawnNpc(CP_Vector position, int amtToSpawn);
 
 // Ongoing Events
 void InitOngoingEvents();
-void GenerateEvents(int eventIndex, int xPos, int yPos);// generate the event of rat|| any ongoing events 
+void GenerateEvents(int eventIndex, int xPos, int yPos, int turnsAlive);// generate the event of rat|| any ongoing events 
 void DrawOngoingEvents();
 void OnEndUpdateEvents();//end turn, turn reduce by 1 
 bool CheckCurrent(int typeofeffect, int x, int y);

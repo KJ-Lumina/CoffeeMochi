@@ -1,3 +1,15 @@
+/*!_____________________________________________________________________________
+@file       UI_mechanics.c
+@author     Lee Xin Qian (xinqian.lee@digipen.edu)
+@co-authors Travess Tan
+@course     CSD1120
+@section    B
+@team       CoffeeMochi
+@brief      This file contains the function definitions that are used in
+            the user interfaces of Impero.
+*//*__________________________________________________________________________*/
+
+
 #include <stdio.h>
 #include <stdbool.h>
 #include <math.h>
@@ -509,77 +521,6 @@ void DrawUI(GAMESTATE state)
     //independent draws
     DrawUI_BlessFill();
 }
-
-
-BUTTON AllButtons[BUTTONARRAYSIZE];
-
-
-BUTTON GetButtonIndex(int index)
-{
-    switch (index)
-    {
-    case 0:
-        return start_game;
-    default:
-        return start_game;
-    }
-
-}
-
-void InitButtons(void)
-{
-    int numOfButtons = 1;
-
-    for (int i = 0; i < numOfButtons; ++i)
-    {
-        AllButtons[i].width = GetButtonIndex(i).width;
-        AllButtons[i].height = GetButtonIndex(i).height;
-        AllButtons[i].xPos = GetButtonIndex(i).xPos;
-        AllButtons[i].yPos = GetButtonIndex(i).yPos;
-        AllButtons[i].isSplashScreenActive = GetButtonIndex(i).isSplashScreenActive;
-        AllButtons[i].isSettingsActive = GetButtonIndex(i).isSettingsActive;
-        AllButtons[i].index = GetButtonIndex(i).index;
-    }
-}
-
-//requires onmouseclick event to call
-int CheckMouseColliding(BUTTON buttonArray[], CP_Vector mousePos, int isSplashScreenActive, int isSettingsActive)
-{
-    float mousePosX = mousePos.x;
-    float mousePosY = mousePos.y;
-    int mouseClickFailed = 0;
-
-
-    for (int i = 0; i < BUTTONARRAYSIZE; i++)
-    {
-        if (buttonArray[i].isUsed)
-        {
-            if (mousePosX >= buttonArray[i].xPos && mousePosX <= buttonArray[i].xPos + buttonArray[i].width &&
-                mousePosY >= buttonArray[i].yPos && mousePosY <= buttonArray[i].yPos + buttonArray[i].height &&
-                buttonArray[i].isSplashScreenActive == isSplashScreenActive &&
-                buttonArray[i].isSettingsActive == isSettingsActive)
-            {
-                if (isSplashScreenActive == 1)
-                {
-                    //SplashScreenButtons(array[i].imagename);
-                    return buttonArray[i].index;
-                }
-                else if (isSettingsActive == 1)
-                {
-                    //SettingsButtons(array[i].imagename);
-                    return buttonArray[i].index;
-                }
-                else if (isSplashScreenActive == 0 && isSettingsActive == 0)
-                {
-                    //MainButtons(array[i].imagename);
-                    return buttonArray[i].index;
-                }
-            }
-        }
-    }
-    return mouseClickFailed;
-}
-
 
 
 void DrawTempTextResources()

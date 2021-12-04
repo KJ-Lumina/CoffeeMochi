@@ -66,7 +66,7 @@ void GameOver()
 bool LoseCondition_Resources()
 {
     //Check for Lose Conditions [Any Resource < 0]
-    if (Get_current_food() <= 0 || Get_current_population() <= 0 || Get_current_gold() < 0 || Get_current_morale() < 0) {
+    if (Get_current_food() < 0 || Get_current_population() < 0 || Get_current_gold() < 0 || Get_current_morale() < 0) {
         return true;
     }
     return false;
@@ -239,6 +239,10 @@ void MouseClick() //Run when Mouse is Clicked
             {
             case BUILD_TYPE_EVENT:
                 // reward is construction
+                if (AreAllOccupied())
+                {
+                    gameState = State_EndOfTurn;
+                }
                 SetBuildingType(GetBuildingByIndex(selectedReward[rewardIndex]->eventIndex));
                 --rewardCardsLeft[rewardIndex];
                 gameState = State_PlaceYourBuilding;
@@ -249,14 +253,48 @@ void MouseClick() //Run when Mouse is Clicked
                 gameState = State_DestroyBuilding;
                 break;
             case ONGOING_TYPE_EVENT:
-                while (selectedEvent->affectedLand[rewardIndex] != 0)
+                if (selectedEvent->affectedLand[rewardIndex] == 26)
                 {
-                    int gridPos = selectedEvent->affectedLand[rewardIndex];
-                    if (GetOccupiedIndex((gridPos - 1) % WORLDGRIDY, (gridPos - 1) / WORLDGRIDX) == selectedReward[0]->resourceType)
+                    int ongoingTurns = 0;
+                    if (selectedChoice == 1)
                     {
-                        GenerateEvents(O_RATEVENT, (gridPos - 1) % WORLDGRIDY, (gridPos - 1) / WORLDGRIDX);
+                        ongoingTurns = selectedEvent->resourceRewardA[1].rewardIndex;
                     }
-                    rewardIndex++;
+                    else
+                    {
+                        ongoingTurns = selectedEvent->resourceRewardB[1].rewardIndex;
+                    }
+                    for (int i = 0; i < 26; ++i)
+                    {
+
+                        printf("%d ", i);
+                        if (GetOccupiedIndex((i) % WORLDGRIDY, (i) / WORLDGRIDX) == selectedReward[0]->resourceType)
+                        {
+                            printf("%d %d \n", (i) % WORLDGRIDY, (i) / WORLDGRIDX);
+                            GenerateEvents(O_RATEVENT, (i) % WORLDGRIDY, (i) / WORLDGRIDX, ongoingTurns);
+                        }
+                    }
+                }
+                else
+                {
+                    int ongoingTurns = 0;
+                    if (selectedChoice == 1)
+                    {
+                        ongoingTurns = selectedEvent->resourceRewardA[1].rewardIndex;
+                    }
+                    else
+                    {
+                        ongoingTurns = selectedEvent->resourceRewardB[1].rewardIndex;
+                    }
+                    while (selectedEvent->affectedLand[rewardIndex] != 0)
+                    {
+                        int gridPos = selectedEvent->affectedLand[rewardIndex];
+                        if (GetOccupiedIndex((gridPos - 1) % WORLDGRIDY, (gridPos - 1) / WORLDGRIDX) == selectedReward[0]->resourceType)
+                        {
+                            GenerateEvents(O_RATEVENT, (gridPos - 1) % WORLDGRIDY, (gridPos - 1) / WORLDGRIDX, ongoingTurns);
+                        }
+                        rewardIndex++;
+                    }
                 }
                 gameState = State_EndOfTurn;
             }
@@ -342,8 +380,9 @@ void GameStateControl()
         if (AnimTimer <= 0)
         {
             Play_SFX_Sound(Sound_SFX_Card);
-            gameState = State_MakeAChoice;
+            gameState = State_MakeAChoice;         
             selectedEvent = GetNextEvent();
+            Play_Event_SFX(selectedEvent->eventIndex);
             UI_SetEvent(selectedEvent);
         }
         break;
@@ -456,7 +495,7 @@ void GameStateControl()
                             else
                             {
                                 // farm generate food
-                                SpawnFoodGainAnimation(FARM_FOODGEN, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), CP_Vector_Set(520, 180), 0.6f, animCount * animDelay);
+                                SpawnFoodGainAnimation(farm_food_prediction(), tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), CP_Vector_Set(520, 180), 0.6f, animCount * animDelay);
                             }
                             ++animCount;
                             break;
@@ -471,7 +510,7 @@ void GameStateControl()
                             else
                             {
                                 // market generate gold
-                                SpawnGoldGainAnimation(MARKET_GOLDGEN, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), CP_Vector_Set(520, 90), 0.6f, animCount * animDelay);
+                                SpawnGoldGainAnimation(market_gold_prediction(), tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), CP_Vector_Set(520, 90), 0.6f, animCount * animDelay);
                             }
                             ++animCount;
                             break;
@@ -486,7 +525,7 @@ void GameStateControl()
                             else
                             {
                                 // tavern generate morale
-                                SpawnMoraleGainAnimation(TAVERN_MORGEN, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), CP_Vector_Set(520, 360), 0.6f, animCount * animDelay);
+                                SpawnMoraleGainAnimation(tavern_morale_preduction(), tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), CP_Vector_Set(520, 360), 0.6f, animCount * animDelay);
                             }
                             ++animCount;
                             break;

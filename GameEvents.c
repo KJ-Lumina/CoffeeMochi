@@ -23,7 +23,7 @@ REWARDCARD* rewardCardList[TOTALREWARDCARDCOUNT];
 
 CARDDECK tutorialDeck;
 CARDDECK prototypeDeck = { 23, 1,2,3,8,12,9,10,19,5,11,13,6,18,7,20,15,23,16,17,21,4,14,22, 0 };
-CARDDECK debugDeck = { 11, 1, 13, 24, 12, 12, 12, 12, 12, 23, 23, 23 };
+CARDDECK debugDeck = { 11, 1, 2, 2, 24, 9, 24, 9,9,9,9 };
 CARDDECK randomDeck;
 
 
@@ -70,19 +70,19 @@ CARDEVENT E_TutBuildAMarket = { 3 , BUILD_TYPE_EVENT,"Build Markets", "Gorvernor
 //BASIC EVENTS - BUILD TYPE
 CARDEVENT E_BuildAHouse = { 4, BUILD_TYPE_EVENT,"Lodging Request", "Gorvernor, our population are growing and citizens are requesting for more lodging."
 , {-10,0,0,5}, { {1,1}, {0,0} }, "Send in workers, build more houses for our citizens!", "Our kingdom is expanding!"
-, {5,0,-1,-10}, { {0,0}, {0,0} }, "There are enough houses for everyone, that room could fit an extra person or two.", "A citizen left the kingdom with unsastisfactory living conditions." };
+, {0,0,0,-10}, { {0,0}, {0,0} }, "There are enough houses for everyone, that room could fit an extra person or two.", "A citizen left the kingdom with unsastisfactory living conditions." };
 CARDEVENT E_BuildAMarket = { 5 , BUILD_TYPE_EVENT,"Expand Markets", "Gorvernor, our markets are crowding up!"
-, {5,0,2,0}, { {3,1}, {0,0} }, "Having another market can appeal to more buisness.", "Our city grows!"
-, {10,0,0,10}, { {0,0}, {0,0} }, "A crowded market means good business, there is not a need to construct another market." , "Our gold seems sustainable for now...right?" };
+, {15,0,2,0}, { {3,1}, {0,0} }, "Having another market can appeal to more buisness.", "Our city grows!"
+, {0,0,0,10}, { {0,0}, {0,0} }, "A crowded market means good business, there is not a need to construct another market." , "Our gold seems sustainable for now...right?" };
 CARDEVENT E_ScarceFood = { 6, BUILD_TYPE_EVENT,"Expand Farmland", "Gorvernor, we need more food if we want a bigger kingdom. Should we create more farms."
 , {-20,0,0,5},{ {2,2}, {0,0} },"Get our workers to start with the construction of the farm. We have enough blueprints for two.", "Starvation will not be a concern in my kingdom."
-, {10,10,0,-15},{ {0,0},{0,0} }, "The citizens could do with some exercise." , "We have to adapt to be sustainable." };
+, {0,10,0,-15},{ {0,0},{0,0} }, "The citizens could do with some exercise." , "We have to adapt to be sustainable." };
 CARDEVENT E_MerchantSetUp = { 7, BUILD_TYPE_EVENT,"Welcome Neighbours", "Gorvernor, merchants bringing luxurious goods have arrived. They will need 2 markets to settle down."
 , {-20,0,2,0},{ {3,2},{0,0} }, "Welcome them in. Prepare 2 quality markets for them", "This will bring us more income"
-, {10,0,0,-10}, { {0,0},{0,0} }, "Luxury products brings no practical use. We don't need them.", "Luxuries can wait." };
+, {0,0,0,-10}, { {0,0},{0,0} }, "Luxury products brings no practical use. We don't need them.", "Luxuries can wait." };
 CARDEVENT E_BuidldATavern = {8, BUILD_TYPE_EVENT,"Entertainment Request", "There is a lack of entertainment in our kingdom, our citizens are getting restless. Construct a tavern to raise their morale."
 , {-10,0,0,10}, { {4,1},{0,0} }, "Entertainment would boost our citizens morale, get our builders to construct the taverns.", "Laughter and merriment fill the previously silent nights."
-, {5,0,0,-15}, { {0,0},{0,0} }, "I will not risk the laziness disease. Entertainments are a distraction to our expansion." , "Citizens are definitely not happy with that decision..." };
+, {0,0,0,-15}, { {0,0},{0,0} }, "I will not risk the laziness disease. Entertainments are a distraction to our expansion." , "Citizens are definitely not happy with that decision..." };
 
 
 //BASIC EVENT - RESOURCE TYPE
@@ -94,16 +94,16 @@ CARDEVENT E_StolenFood = { 10 , RESOURCE_TYPE_EVENT,"Granary Thievery","Gorverno
 , {-15,5,0,-15}, { {0,0},{0,0} }, "We want the culprit apprehended. Let this be known it is a crime in my kingdom", "Fear strikes the children of the kingdom." };
 CARDEVENT E_HeavyStorm = { 11 , RESOURCE_TYPE_EVENT,"Storm Bypassing","Gorvernor, we have been hit by a heavy thunderstorm, many houses are currently damaged and citizens are requesting for repair."
 , {-25,-25,0,15}, { {0,0},{0,0} }, "Divide our manpower to sort out the damages and to repair the damaged houses.", "At least the citizens are safe."
-, {10,10,0,-25}, { {0,0},{0,0} }, "Our food and gold must be protected, the repairs can wait.", "At least our essentials are safe." };
+, {0,0,0,-25}, { {0,0},{0,0} }, "Our food and gold must be protected, the repairs can wait.", "At least our essentials are safe." };
 CARDEVENT E_GoldMineDiscovered = { 12 , RESOURCE_TYPE_EVENT,"Gold Mine Discovery", "Gorvernor, We have discovered a gold mine"
-, {5,0,0,20} ,{ {0,0},{0,0} }, "Distribute gold to everyone", "Citizens are happy to receive gold." 
-, {25,0,0,5}, { {0,0},{0,0} }, "Keep them in treasury.", "We have more funds for our kingdom." };
+, {0,0,0,10} ,{ {0,0},{0,0} }, "Distribute gold to everyone", "Citizens are happy to receive gold." 
+, {15,0,0,-10}, { {0,0},{0,0} }, "The gold belongs to me.", "We...I am rich." };
 CARDEVENT E_ContaminatedFood = { 13, RESOURCE_TYPE_EVENT,"Granary Contamination", "Gorvernor, we've discovered mold in one of our granaries. We need to dispose of them to prevent further damage."
 , {0,-25,0,10}, { {0,0},{0,0} }, "Dispose the contaminated grain.", "Our people's health is safe."
 , {0,15,0,-20},{ {29,40},{0,0} }, "A little bit of mold won't hurt.", "We have more food to serve."};
 
 CARDEVENT E_VillagersKidnapped = { 14, RESOURCE_TYPE_EVENT,"Kidnap and Extortion", "Gorvernor, some of our citizens have been kidnapped by bandits!"
-, {-30,0,0,30}, { {0,0},{0,0} }, "Give in to their demands, we can't risk hurting our citizens", "Citizens grew faith in their leader."
+, {-35,0,0,30}, { {0,0},{0,0} }, "Give in to their demands, we can't risk hurting our citizens", "Citizens grew faith in their leader."
 , {0,0,2,-20}, { {0,0},{0,0} }, "Kidnap more citizens from other kingdoms", "Our population...grows...?" };
 
 CARDEVENT E_MagnificentHunt = { 15, RESOURCE_TYPE_EVENT,"Great Food Hunt", "Gorvernor, our hunters have return with a magnificent hunt."
@@ -128,7 +128,7 @@ CARDEVENT E_ArsonistAttack = { 19, RESOURCE_TYPE_EVENT,"Arsonist Invasion", "Gor
 , {0,0,0,-20}, { {0,0}, {0,0} }, "Protect our farms.", "Several citizens have suffered minor burns." };
 CARDEVENT E_CircusTroupeVisit = { 20 , RESOURCE_TYPE_EVENT,"Travelling Circus", "Gorvernor, a famous circus troupe have arrived at our kingdom and is offering their services to brighten the mood of the kingdom."
 , {-30,0,2,30}, { {0,0},{0,0} }, "Our citzens would enjoy the entertainment provided by the troupe. Invite them into our kingdom.", "The troupe decided to stay."
-, {15,0,0,-20}, { {0,0},{0,0} }, "We need to conserve our gold for the development of our kingdom. Kindly decline their services.", "Our people returned to work in gloom." };
+, {0,0,0,-20}, { {0,0},{0,0} }, "We need to conserve our gold for the development of our kingdom. Kindly decline their services.", "Our people returned to work in gloom." };
 CARDEVENT E_CivilRevolt = { 21, RESOURCE_TYPE_EVENT,"Citizens Rebellion","Gorvernor, a revolt have broken out and citizens are demanding for more food and gold while threating to leave the kingdom if they do not receive them."
 , {-20,-20,0,10}, { {0,0},{0,0} }, "The kingdom would not exist without our citizens. Distribute gold and food to our citizen and keep them pleased.", ""
 , {10,10,0,-30}, { {0,0},{0,0} }, "We must stand our ground and not submit to our citizens demands!", "" };
@@ -137,13 +137,13 @@ CARDEVENT E_DiseaseSpread = { 22, RESOURCE_TYPE_EVENT,"The Purple Plague", "Gorv
 , {0,-30,0,-20}, { {0,0},{0,0} }, "Confine and isolate the diseased. Start working on developing the cure. We cannot afford to show our weakness to the other kingdom and have us owe them a favour.", "" };
 CARDEVENT E_TheGreatOstrichWar = { 25 , BUILD_TYPE_EVENT, "The Great Ostrich War", "There has been increased sightings of flocks of large birds."
 , {0,0,0,10}, { {0,0}, {0,0} }, "Leave them be, they pose no threat.", "Those birds are really fast..."
-, {-20,0,0,-20}, { {0,0}, {0,0} }, "Prepare weapons, hunt them for food", "The birds were too fast! Our spears couldn't catch any! Why does this sound familiar?" };
+, {-25,0,0,-20}, { {0,0}, {0,0} }, "Prepare weapons, hunt them for food", "The birds were too fast! Our spears couldn't catch any! Why does this sound familiar?" };
 
 
 //ADVANCED EVENTS - ONGOING TYPE
 CARDEVENT E_RatInfestation = { 24, ONGOING_TYPE_EVENT,"Rat Infestation", "Gorvernor, there is an outbreak of rats in our agricultural locations!"
-, {-10, 0, 0, 0}, { {O_RATEVENT,1},{0,0} }, "Prepare some cages. We will capture and release them peacefully. This will take a while.", ""
-, {0,-10,0, -10}, { {O_RATEVENT,1},{0,0} }, "Burn the fields down.", "", {26} };
+, {-20, 0, 0, 0}, { {O_RATEVENT,1},{1,0} }, "Hire an expert to deal with it.", "Our harvest have suffered a little."
+, {0,0,0, -10}, { {O_RATEVENT,1},{3,0} }, "Have my men deal with it, 'tis but some rats!", "Our men reported to require 2 more turns.", {26} };
 
 CARDEVENT E_HeavyRain = { 25, ONGOING_TYPE_EVENT,"Raining Season", "Looks like a storm is approaching."
 , {-30, 0, 0, 0}, { {0,0},{0,0} }, "Upgrade our crop drainage trenches.", ""
@@ -153,20 +153,20 @@ CARDEVENT E_HeavyRain = { 25, ONGOING_TYPE_EVENT,"Raining Season", "Looks like a
 
 CARDEVENT E_Raid_Of_Shadows = { 23, DESTROY_TYPE_EVENT,"Incoming Raid", "Gorvernor, the neightbouring kingdoms have been victims of the legendary shadow bandits. They may strike us soon."
 ,{0,-20,0,-15},{ {6, 1}, {8, 1} }, "Reinforce our House and Markets! We need to protect our people!", "The raiders made off with a week's food supply."
-,{-20,0,0,-30},{ {5, 1}, {7, 1} }, "Reinforce our Farms and Taverns! We cannot let them seize our means of production!", "The raid of shadow legends left the treasury with whatever they could carry.", {26, 0} };
+,{-30,0,0,-30},{ {5, 1}, {7, 1} }, "Reinforce our Farms and Taverns! We cannot let them seize our means of production!", "The raid of shadow legends left the treasury with whatever they could carry.", {26, 0} };
 
 //GOLD CARDS
 CARDEVENT E_GoldenOne = { 45 , RESOURCE_TYPE_EVENT, "Mysterious Man", "A mysterious man arrived in your kingdom. He seems to know the ins-and-outs of your kingdom."
-, {50,0,0,0}, { {0,0}, {0,0} }, "Welcome him in peacefully.", "The town is blessed by a shower of gold not long after his arrival."
-, {0,0,6,50}, { {0,0}, {0,0} }, "Turn him away, this man is suspicious.", "The population surges after 9 months. You suspect he may have found a way in..." };
+, {30,0,0,0}, { {0,0}, {0,0} }, "Welcome him in peacefully.", "The town is blessed by a shower of gold not long after his arrival."
+, {0,0,4,30}, { {0,0}, {0,0} }, "Turn him away, this man is suspicious.", "The population surges after 9 months. You suspect he may have found a way in..." };
 
 CARDEVENT E_GoldenTwo = { 46 , RESOURCE_TYPE_EVENT, "Unknown Expert", "Perfectly crafted blueprints were given to you by an unknown recipient."
-, {-10,0,0,0}, { {1,2}, {3,2} }, "Follow the instructions.", "The materials were effectively used."
-, {-10,0,0,0}, { {2,2}, {4,2} }, "Follow the instructions.", "The blueprints were very efficient with materials usage."};
+, {-10,0,0,0}, { {1,1}, {3,1} }, "Follow the instructions.", "The materials were effectively used."
+, {-10,0,0,0}, { {2,1}, {4,1} }, "Follow the instructions.", "The blueprints were very efficient with materials usage."};
 
 // FOLLOW UP EVENTS
 CARDEVENT E_FoodPoisoning = { 40 , RESOURCE_TYPE_EVENT, "Food Poisoning", "There is an outbreak of food poisoning. What could have been the cause?"
-, {-20,-10,0,15}, { {0,0}, {0,0} }, "Deploy men to assist the doctors, we need tend to the sick.", "The outbreak ends as quickly as it arrived."
+, {-25,-10,0,15}, { {0,0}, {0,0} }, "Deploy men to assist the doctors, we need tend to the sick.", "The outbreak ends as quickly as it arrived."
 , {0,0,-2,-20}, { {0,0}, {0,0} }, "Do nothing. It is merely food poisioning. Their bodies can handle it.", "The citizens look exhausted." };
 
 
@@ -246,17 +246,22 @@ void RandomizeDeck()
 	randomDeck.cardIndexes[0] = 1;
 	randomDeck.cardIndexes[1] = 2;
 	randomDeck.cardIndexes[2] = 3;
+	randomDeck.cardIndexes[3] = 8;
 	
-	for (int i = 3; i < 9; ++i)
+	for (int i = 4; i < 8; ++i)
 	{
 		randomDeck.cardIndexes[i] = CP_Random_RangeInt(9, 15);
 	}
-	randomDeck.cardIndexes[10] = CP_Random_RangeInt(4, 8);
-	for (int i = 11; i < 16; ++i)
+	randomDeck.cardIndexes[8] = CP_Random_RangeInt(4, 8);
+	for (int i = 9; i < 13; ++i)
 	{
 		randomDeck.cardIndexes[i] = CP_Random_RangeInt(9, 20);
 	}
-	randomDeck.cardIndexes[16] = CP_Random_RangeInt(4, 8);
+	randomDeck.cardIndexes[13] = CP_Random_RangeInt(4, 8);
+	for (int i = 14; i < 17; ++i)
+	{
+		randomDeck.cardIndexes[i] = CP_Random_RangeInt(14, 20);
+	}
 	randomDeck.cardIndexes[17] = CP_Random_RangeInt(4, 8);
 	for (int i = 18; i < 26; ++i)
 	{
