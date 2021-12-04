@@ -8,7 +8,6 @@
 #include "UI_Animations.h"
 #include "Npc.h"
 #include "Resource_Stats.h"
-#include "Sound.h"
 
 
 #pragma region Game Options Control
@@ -26,8 +25,6 @@ int loseCondition_PopulationValue = 0;
 
 int GameWin = false;
 
-//bool isTutorial = true;
-
 float AnimTimer = 1;
 CARDEVENT* selectedEvent;
 REWARDCARD* selectedReward[NUMBER_OF_MAX_REWARDS];
@@ -44,12 +41,6 @@ CP_Vector worldOrigin;
 
 
 #pragma region Turn & Win Lose Functions
-//Trigger Turn Start Functions Calls
-void StartTurn() 
-{
-
-}
-
 //End Game Functions
 void GameEnd() {
     GameWin = true; //Proceed with Game Win
@@ -584,7 +575,6 @@ void GameStateControl()
                     EndTurn();  //State Set to Start Turn is in EndTurn()       
                 }
                 break;
-
             }
         }
         break;
@@ -627,7 +617,6 @@ void MouseDragOrClick(void)
 
 void MainGame_Initialize(void)
 {
-    //CP_System_FullscreenAdvanced(1600, 900); //Enable for full screen
     gameState = State_GameEntry;
     InitResources(100,40,0,50);
     InitWorldSpaceGrid();
@@ -637,9 +626,7 @@ void MainGame_Initialize(void)
     InitDecks();
     InitUI();
     InitVfx();
-    InitOngoingEvents();
-
-    
+    InitOngoingEvents(); 
 }
 
 void MainGame_Update(void)

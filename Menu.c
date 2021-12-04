@@ -3,7 +3,6 @@
 #include "Common_Headers.h"
 #include <stdlib.h>
 #include "Menu.h"
-#include "Sound.h"
 
 CP_Font accFont;
 float windowsWidth;
@@ -76,7 +75,8 @@ void ExitGame()
 
 
 void game_init(void)
-{	
+{
+
 	CP_System_SetWindowSize(1600, 900);
 	//CP_System_FullscreenAdvanced(1600, 900); //Enable for full screen
 	accFont = CP_Font_Load("./Assets/accid.ttf");

@@ -271,6 +271,7 @@ void DrawUI_Settings();
 void UI_SetResourceChange(int resourceChange[4]);
 
 //Sound
+void InitSound();
 void SetVolume(float vol);
 float GetVolume();
 void PlayBGM(SOUND_BGM sound_BGM);
@@ -280,6 +281,7 @@ void Play_Choice_SFX(SOUND_SFX sound_sfx);
 void Play_Event_SFX(int eventIndex);
 void StopBGM();
 void StopSFX();
+void Shutdown();
 
 
 // Resources

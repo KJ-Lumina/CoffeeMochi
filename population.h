@@ -3,7 +3,6 @@
 #include <stdlib.h>
 //#include <Resource_stats.h>
 
-
 #define COMMON 0 
 #define SECOND 1
 #define FIRST 2

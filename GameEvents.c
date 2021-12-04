@@ -1,3 +1,13 @@
+/*---------------------------------------------------------
+ * file:	GameEvents.c
+ * author:	Seow Kai Jun
+ * email:	s.kaijun@digipen.edu.sg
+*
+ * brief:	All Event Related Variables and Functions Calls for the project resides here
+*
+ * Copyright ?2020 DigiPen, All rights reserved.
+* ---------------------------------------------------------*/
+
 #include <stdio.h>
 #include "cprocessing.h"
 #include "Common_Headers.h"
