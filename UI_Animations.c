@@ -1,3 +1,15 @@
+/*!_____________________________________________________________________________
+@file       UI_Animations.c
+@author     Lee Xin Qian (xinqian.lee@digipen.edu)
+@co-authors Travess Tan
+@course     CSD1120
+@section    B
+@team       CoffeeMochi
+@brief      This file contains the function definitions that are used in
+            animation sequences of Impero.
+*//*__________________________________________________________________________*/
+
+
 #include <stdio.h>
 #include <stdbool.h>
 #include <math.h>
@@ -8,15 +20,12 @@
 #define NATURAL_LOG_OF_2    0.693147181f
 #define PI                3.14159265358979323846f  /* pi */
 
-//SPRITESHEET tileset_testenemy = { setNextSprite,minX,maxX,minY,maxY,maxSprites,spriteSizeX,spritesizeY,timeToDeath,posX,PosY,scaleX,scaleY,timeElapse,index,isInfiniteLoop };
-//SPRITESHEET tileset_testenemy = { setNextSprite,minX,maxX,minY,maxY,maxSprites,spriteSizeX,spritesizeY,scaleX,scaleY,index,isInfiniteLoop,posX,PosY,endposX,endposY,timeElapse,timeToDeath};
 SPRITESHEET tileset_testenemy = { 0,0,4,0,1,4,64,64,200,200,1,0,100,100, 100, 100, 0,10 };
 SPRITESHEET tileset_stars = { 0,0,10,0,1,10,64,64,100,100,2,0,100,100, 100, 100, 0, 10 };
 SPRITESHEET tileset_stars_falling = { 0,0,10,0,1,10,64,64,100,100,2,0,100,100, 100, 100, 0, 10 };
 CP_Image testenemy;
 CP_Image stars;
 
-// hardcode amt of sprites, add 1 more when more spritesheets :(
 int numOfSpritesheets;
 int setNextSprite[1];
 float minX[1];
@@ -28,13 +37,12 @@ float spriteSizeX[1];
 float spriteSizeY[1];
 float timeElapse[1];
 
-// using for testing spawner anims
+
 float spawnerAnimDelta = 0;
 
 
 void InitSpritesheets()
 {
-    //edit this when more spritesheets
     numOfSpritesheets = 2;
 
     testenemy = CP_Image_Load("./Assets/testenemy.png");
@@ -86,6 +94,8 @@ float getDelta = 0;
 float delay = 0;
 int animSize = 99;
 int currentSprite = 0;
+
+
 // Draws Animation without stopping, float x and y for position, float scale pixel size, delay is animation time, index is enum spritesheet
 void DrawAnimation(float x, float y, float scaleX, float scaleY, float newDelay, int newIndex)
 {
@@ -122,10 +132,10 @@ void DrawAnimation(float x, float y, float scaleX, float scaleY, float newDelay,
         setNextSprite[newIndex] = 0;
     }
 
-    //CP_Image_DrawSubImage(GetBuildingSpriteByIndex(7), WORLDGRIDX, WORLDGRIDY, TILEWIDTH, TILEHEIGHT, 0, 512, 128, 672, 255);
     CP_Image_DrawSubImage(GetSpriteSheetByIndex(newIndex), x, y, scaleX, scaleY, spriteSizeX[newIndex] * minX[newIndex], spriteSizeY[newIndex] * minY[newIndex], spriteSizeX[newIndex] * (minX[newIndex] + 1), spriteSizeY[newIndex] * (minY[newIndex] + 1), 255);
 
 }
+
 // Saves an animation into the AllAnims array to be rendered. If infiniteLoop put 1. timeToDeath is how long 1 cycle of animation will take in case of infiniteloop.
 void SpawnAnimation(float x, float y, float endx, float endy, float scaleX, float scaleY, int index, float timeToDeath, int isInfinteLoop)
 {
@@ -163,6 +173,8 @@ void SpawnAnimation(float x, float y, float endx, float endy, float scaleX, floa
         AllAnims[i].timeElapse = 0;
     }
 }
+
+
 // Draws out all Anims in the array until the animation's death, where it will be removed
 void DrawAllAnimations(void)
 {
@@ -219,7 +231,6 @@ void DrawAllAnimations(void)
 
             if ((currentSprite + 1) <= AllAnims[i].maxSprites)
             {
-                //CP_Image_DrawSubImage(GetBuildingSpriteByIndex(7), WORLDGRIDX, WORLDGRIDY, TILEWIDTH, TILEHEIGHT, 0, 512, 128, 672, 255);
                 CP_Image_DrawSubImage(GetSpriteSheetByIndex(AllAnims[i].index), CP_Math_LerpFloat(AllAnims[i].posX, AllAnims[i].endPosX, AllAnims[i].timeElapse / AllAnims[i].timeToDeath),
                     CP_Math_LerpFloat(AllAnims[i].posY, AllAnims[i].endPosY, AllAnims[i].timeElapse / AllAnims[i].timeToDeath), AllAnims[i].scaleX, AllAnims[i].scaleY, AllAnims[i].spriteSizeX * AllAnims[i].minX, AllAnims[i].spriteSizeY * AllAnims[i].minY, AllAnims[i].spriteSizeX * (AllAnims[i].minX + 1), AllAnims[i].spriteSizeY * (AllAnims[i].minY + 1), 255);
             }
@@ -258,9 +269,7 @@ void DrawAllAnimations(void)
 
                 AllAnims[i].setNextSprite = 0;
             }
-            // AllAnims[i].posX
-            //CP_Image_DrawSubImage(GetSpriteSheetByIndex(AllAnims[i].index), AllAnims[i].posX
-            //    , AllAnims[i].posY, AllAnims[i].scaleX, AllAnims[i].scaleY, AllAnims[i].spriteSizeX * AllAnims[i].minX, AllAnims[i].spriteSizeY * AllAnims[i].minY, AllAnims[i].spriteSizeX * (AllAnims[i].minX + 1), AllAnims[i].spriteSizeY * (AllAnims[i].minY + 1), 255);
+
             CP_Image_DrawSubImage(GetSpriteSheetByIndex(AllAnims[i].index), CP_Math_LerpFloat(AllAnims[i].posX, AllAnims[i].endPosX, AllAnims[i].timeElapse / AllAnims[i].timeToDeath),
                 CP_Math_LerpFloat(AllAnims[i].posY, AllAnims[i].endPosY, AllAnims[i].timeElapse / AllAnims[i].timeToDeath), AllAnims[i].scaleX, AllAnims[i].scaleY, AllAnims[i].spriteSizeX * AllAnims[i].minX, AllAnims[i].spriteSizeY * AllAnims[i].minY, AllAnims[i].spriteSizeX * (AllAnims[i].minX + 1), AllAnims[i].spriteSizeY * (AllAnims[i].minY + 1), 255);
         }
@@ -272,7 +281,9 @@ void DrawAllAnimations(void)
 float counter1AnimDelta = 0;
 float counter2AnimDelta = 0;
 float counter3AnimDelta = 0;
-//repeated spawnanim function
+
+
+//constantly spawns an animation
 void ConstantAnimSpawner(int counterIndex, int index, float time, int lowerX, int upperX, int lowerY, int upperY, float scaleX, float scaleY, float timeToDeath, int isTimeVariance, int isLerp)
 {
     float posX = 0;
@@ -315,8 +326,7 @@ void ConstantAnimSpawner(int counterIndex, int index, float time, int lowerX, in
     {
         endposX = posX - (float)CP_Random_RangeInt(300, upperX);
         endposY = posY + (float)CP_Random_RangeInt(200, upperY);
-        //posX += 200;
-        //posY -= 200;
+
     }
     else 
     {

@@ -1,20 +1,10 @@
-﻿  Buildings.c
-  GameEvents.c
-  Menu.c
-  Npc.c
-  OngoingEvents.c
-  Resource_Stats.c
-  Sound.c
-  UI_Animations.c
-  UI_mechanics.c
-  WorldSpaceGrid.c
-  game.c
+﻿  Menu.c
   Generating code
-  19 of 160 functions (11.9%) were compiled, the rest were copied from previous compilation.
-    1 functions were new in current compilation
-    4 functions had inline decision re-evaluated but remain unchanged
+  5 of 160 functions ( 3.1%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    1 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
-  Processing_Sample.vcxproj -> C:\Users\Seow Kai Jun\Documents\GitHub\CoffeeMochi\x64\Release\Processing_Sample.exe
+  Processing_Sample.vcxproj -> C:\Users\windy\Documents\GitHub\CoffeeMochi\x64\Release\Processing_Sample.exe
   1 File(s) copied
   1 File(s) copied
   64 File(s) copied

@@ -1,3 +1,15 @@
+/*!_____________________________________________________________________________
+@file       UI_mechanics.c
+@author     Lee Xin Qian (xinqian.lee@digipen.edu)
+@co-authors Travess Tan
+@course     CSD1120
+@section    B
+@team       CoffeeMochi
+@brief      This file contains the function definitions that are used in
+            the user interfaces of Impero.
+*//*__________________________________________________________________________*/
+
+
 #include <stdio.h>
 #include <stdbool.h>
 #include <math.h>
@@ -510,7 +522,6 @@ void DrawUI(GAMESTATE state)
     DrawUI_BlessFill();
 }
 
-
 BUTTON AllButtons[BUTTONARRAYSIZE];
 
 
@@ -526,6 +537,7 @@ BUTTON GetButtonIndex(int index)
 
 }
 
+//un-used code, initialize buttons
 void InitButtons(void)
 {
     int numOfButtons = 1;
@@ -542,7 +554,7 @@ void InitButtons(void)
     }
 }
 
-//requires onmouseclick event to call
+//un-used code, initial skeleton function for arranging button collisions
 int CheckMouseColliding(BUTTON buttonArray[], CP_Vector mousePos, int isSplashScreenActive, int isSettingsActive)
 {
     float mousePosX = mousePos.x;
@@ -561,17 +573,14 @@ int CheckMouseColliding(BUTTON buttonArray[], CP_Vector mousePos, int isSplashSc
             {
                 if (isSplashScreenActive == 1)
                 {
-                    //SplashScreenButtons(array[i].imagename);
                     return buttonArray[i].index;
                 }
                 else if (isSettingsActive == 1)
                 {
-                    //SettingsButtons(array[i].imagename);
                     return buttonArray[i].index;
                 }
                 else if (isSplashScreenActive == 0 && isSettingsActive == 0)
                 {
-                    //MainButtons(array[i].imagename);
                     return buttonArray[i].index;
                 }
             }

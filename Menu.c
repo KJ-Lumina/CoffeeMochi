@@ -105,8 +105,8 @@ void game_init(void)
 	OptionsButtonImageHover = CP_Image_Load("./ImperoArtAssets/MainMenuAssets/Impero_OptionsButtonHover.png");
 	SettingsButtonImage = CP_Image_Load("./ImperoArtAssets/MainMenuAssets/Impero_SettingsButton.png");
 	SettingsButtonImageHover = CP_Image_Load("./ImperoArtAssets/MainMenuAssets/Impero_SettingsButtonHover.png");
-	ExitButtonImage = CP_Image_Load("./ImperoArtAssets/MainMenuAssets/Impero_ExitButton.png");
-	ExitButtonImageHover = CP_Image_Load("./ImperoArtAssets/MainMenuAssets/Impero_ExitButtonHover.png");
+	ExitButtonImage = CP_Image_Load("./ImperoArtAssets/MainMenuAssets/Impero_QuitButton.png");
+	ExitButtonImageHover = CP_Image_Load("./ImperoArtAssets/MainMenuAssets/Impero_QuitButtonHover.png");
 	CreditsButtonImage = CP_Image_Load("./ImperoArtAssets/MainMenuAssets/Impero_CreditsButton.png");
 	CreditsButtonImageHover = CP_Image_Load("./ImperoArtAssets/MainMenuAssets/Impero_CreditsButtonHover.png");
 	HowToPlayButtonImage = CP_Image_Load("./ImperoArtAssets/MainMenuAssets/Impero_HowtoplayButton.png");
