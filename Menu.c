@@ -77,8 +77,8 @@ void ExitGame()
 
 void game_init(void)
 {	
-	//CP_System_SetWindowSize(1600, 900);
-	CP_System_FullscreenAdvanced(1600, 900); //Enable for full screen
+	CP_System_SetWindowSize(1600, 900);
+	//CP_System_FullscreenAdvanced(1600, 900); //Enable for full screen
 	accFont = CP_Font_Load("./Assets/accid.ttf");
 	CP_Font_Set(accFont);
 	CP_Settings_TextAlignment(CP_TEXT_ALIGN_H_CENTER, CP_TEXT_ALIGN_V_TOP);
@@ -87,10 +87,6 @@ void game_init(void)
 
 	//START FROM BEGINNING
 	gameScene = SCENE_SPLASH_DIGIPEN;
-
-	//SKIP TO GAME
-	/*MainGame_Initialize();
-	gameScene = SCENE_GAMEPHASE;*/
 
 	//Splash Screen Assets
 	Splash_Digipen = CP_Image_Load("./ImperoArtAssets/Impero_Digipen.png");
@@ -604,16 +600,16 @@ void game_exit(void)
 
 }
 
-void DrawIntroNarritive(int alpha) {
-
-	const char* text = "In A.D. 1300, Someday in an Unknown Kingdom.\n The citizens have revolted against their king, the king is dethroned and exiled.\n\n You are among the royal family and next in line as kingand the citizens have high expections from you.\n Do meet their expectations and good luck.\n\n\n\n - Click Anywhere to Continue - ";
+void DrawIntroNarritive(int alpha) 
+{
+		
 
 	CP_Settings_TextSize(60);
 
 	CP_Settings_Fill(CP_Color_Create(128, 128, 128, alpha));
 
 	//Draw Text for Starting Narrative
-	CP_Font_DrawTextBox(text, 350, 150, 900);
+	CP_Font_DrawTextBox("In the year 1300 A.D. in an unknown kingdom.\n The king has been dethroned and exiled due to a revolt against him.\n However, the citizens have high expectations of you, the heir apparent to lead the country into prosperity.\n\n You would do well to not betray their expectations. Good luck.\n\n\n\n - Click Anywhere to Continue -", 350, 150, 900);
 }
 
 void SetGameSceneEndPhase(int isWin)
@@ -628,36 +624,32 @@ void OpenOptions()
 	if (!isOptionsOpen) isOptionsOpen = true;
 }
 
+bool adjustingVol = false;
+
 void AdjustVolumeSlider() {
 
 	float mouseX = CP_Input_GetMouseX();
-	CP_Vector previousSliderPos = currentSliderPos;
 
-	if (CP_Input_MouseDragged(MOUSE_BUTTON_LEFT)) {		
-		if (CheckWithinBounds(currentSliderPos, 35, 58)) {
-			float sliderMovement = mouseX - previousSliderPos.x;
-			int withinMaxPos = currentSliderPos.x + sliderMovement <= sliderMaxPos;
-			int withinMinPos = currentSliderPos.x + sliderMovement >= sliderMinPos;
-			if (withinMaxPos && withinMinPos) {
-				float newSliderPosX = currentSliderPos.x + sliderMovement;
-				currentSliderPos = CP_Vector_Set(newSliderPosX, currentSliderPos.y); //Update X-Axis of the Volume Slider
-			}
-
-			float vol_percentageChange = (sliderMovement / (sliderMaxPos - sliderMinPos));
-			
-			float newVol = GetVolume() + vol_percentageChange; //Get new vol by the percentage change
-
-			if (newVol <= 0.0f) {
-				newVol = 0.0f;
-			}
-			else if (newVol >= 1.0f) {
-				newVol = 1.0f;
-			}
-
-			SetVolume(newVol); //Update new volume
+	if (!adjustingVol)
+	{
+		if (CP_Input_MouseTriggered(MOUSE_BUTTON_LEFT) && CheckWithinBounds(currentSliderPos, 35, 58))
+		{
+			adjustingVol = true;
 		}
-
 	}
+	if (adjustingVol)
+	{
+		if (CP_Input_MouseReleased(MOUSE_BUTTON_LEFT))
+		{
+			adjustingVol = false;
+		}
+		else
+		{
+			float volClamped = CP_Math_ClampFloat(mouseX, sliderMinPos, sliderMaxPos);
+			currentSliderPos = CP_Vector_Set(volClamped, currentSliderPos.y);
 
+			SetVolume((volClamped - sliderMinPos) / (sliderMaxPos - sliderMinPos));
+		}
+	}
 }
 

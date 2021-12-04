@@ -23,7 +23,7 @@ REWARDCARD* rewardCardList[TOTALREWARDCARDCOUNT];
 
 CARDDECK tutorialDeck;
 CARDDECK prototypeDeck = { 23, 1,2,3,8,12,9,10,19,5,11,13,6,18,7,20,15,23,16,17,21,4,14,22, 0 };
-CARDDECK debugDeck = { 11, 1, 2, 2, 24, 9, 24, 9,9,9,9 };
+CARDDECK debugDeck = { 11, 1, 2, 1, 2, 1, 2, 9,9,9,9 };
 CARDDECK randomDeck;
 
 
@@ -255,7 +255,7 @@ void RandomizeDeck()
 	randomDeck.cardIndexes[8] = CP_Random_RangeInt(4, 8);
 	for (int i = 9; i < 13; ++i)
 	{
-		randomDeck.cardIndexes[i] = CP_Random_RangeInt(9, 20);
+		randomDeck.cardIndexes[i] = CP_Random_RangeInt(13, 20);
 	}
 	randomDeck.cardIndexes[13] = CP_Random_RangeInt(4, 8);
 	for (int i = 14; i < 17; ++i)
@@ -277,7 +277,7 @@ void InitDecks()
 	//currentDeck = &prototypeDeck;
 	//currentDeck = &debugDeck;
 	RandomizeDeck();
-	currentDeck = &randomDeck;
+	currentDeck = &debugDeck;
 }
 
 CARDEVENT* GetCurrentEvent()
