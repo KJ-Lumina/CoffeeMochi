@@ -15,7 +15,37 @@
 #include <stdio.h>
 #include "CProcessing.h"
 
+/*--------------------
+OPEN OPTIONS
+---------------------*/
+/*!_____________________________________________________________________________
+@brief      This prototype function toggle the bool variable isOptionsOpen to manage
+            if the Options Menu is Open.
+*//*__________________________________________________________________________*/
 void OpenOptions();
+
+/*--------------------
+EXIT GAME
+---------------------*/
+/*!_____________________________________________________________________________
+@brief      This prototype function is called to exit the game
+*//*__________________________________________________________________________*/
 void ExitGame();
+
+/*--------------------
+DRAW INTRODUCTION NARRATIVE
+---------------------*/
+/*!_____________________________________________________________________________
+@brief      This prototype function draw text for the introduction of Impero
+            on to the screen at a specific font size
+*//*__________________________________________________________________________*/
 void DrawIntroNarritive(int alpha);
+
+/*--------------------
+ADJUST VOLUME SLIDER
+---------------------*/
+/*!_____________________________________________________________________________
+@brief      This prototype function adjust the position of the volume sliders by the
+            mouse position and set the adjusted volume.
+*//*__________________________________________________________________________*/
 void AdjustVolumeSlider();
