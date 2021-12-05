@@ -1,3 +1,16 @@
+/*!_____________________________________________________________________________
+@file       OngoingEvents.c
+@author     Kelly Liaw (liaw.k@digipen.edu)
+@co-authors Travess Tan (travesscheekhang.t@digipen.edu)
+@course     CSD1120
+@section    B
+@team       CoffeeMochi
+@brief      This file contains the function definitions that are used in
+			the ongoing events in Impero.
+
+			Copyright ©2021 DigiPen, All rights reserved.
+*//*__________________________________________________________________________*/
+
 #include <stdio.h>
 #include <math.h>
 #include <stdbool.h>
@@ -9,16 +22,6 @@
 #define EVENTLIMIT 10
 #define ISALIVE 1
 #define ISDEAD 0
-
-	//int eventIndex;
-	//CP_Image sprite;
-	//CP_Vector direction;//where the sprite is going next
-	//CP_Vector currentPosition;// where the events are at 
-	//int typeOfEffect;//index of which building it will affect
-	//CP_Vector AreaofEffect;//where it will affect , pull in location of building 
-	//int eventsize;//number of event spawn when initialized
-	//int turn;//number of turn it will stay 
-	//int live;
 
 CP_Image sprite_rat;
 
