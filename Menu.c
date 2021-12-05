@@ -64,6 +64,7 @@ float current_Volume = 1.0f;
 int scrollSpeed = 6;
 int isOptionsOpen = false;
 int isCreditRolling = false;
+int GameEndReason = 0;
 
 float splashdigipentimer = 0;
 float splashcoffeemochitimer = 0;
@@ -583,10 +584,31 @@ void game_update(void)
 		if (ShowWinScreen) {
 			PlayBGM(Sound_BGM_Win);
 			CP_Image_Draw(GameWinScreen, 800, 450, 1600, 900, 255);
+			CP_Settings_TextSize(50);
+			CP_Settings_Fill(CP_Color_Create(255, 238, 131, 255));
+			CP_Font_DrawTextBox("You succeeded in raising the town which was once \nin a state of ruin to the glory that it is today. \nThe townsfolk will sing your praises for years to come. \nCongratulations.", 300, 450, 1000);
 		}
 		else {
 			PlayBGM(Sound_BGM_Lose);
 			CP_Image_Draw(GameLoseScreen, 800, 450, 1600, 900, 255);
+			CP_Settings_TextSize(50);
+			CP_Settings_Fill(CP_Color_Create(64, 73, 115, 255));
+			switch (GameEndReason)
+			{
+			case 1:
+				CP_Font_DrawTextBox("The town has fallen into poverty due to your incapability as a ruler. \nThe townsfolk gathered and led a revolution against you. \nYou have been exiled.", 300, 450, 1000);
+				break;
+			case 2:
+				CP_Font_DrawTextBox("The town was ravaged by famine due to your incapability as a ruler. \nThe townsfolk gathered and led a revolution against you. \nYou have been exiled.", 300, 450, 1000);
+				break;
+			case 3:
+				CP_Font_DrawTextBox("The townsfolk, having lost morale due to your incapability as a ruler gathered and led a revolution against you. \nYou have been exiled.", 300, 450, 1000);
+				break;
+			default:
+				CP_Font_DrawTextBox("The town has fallen into poverty due to your incapability as a ruler. \nThe townsfolk gathered and led a revolution against you. \nYou have been exiled.", 300, 450, 1000);
+				break;
+			}
+			
 		}
 
 		if (CheckWithinBounds(CP_Vector_Set(1100, 700), 281, 87))
@@ -662,6 +684,11 @@ void SetGameSceneEndPhase(int isWin)
 	currentTimer = 3;
 	ShowWinScreen = isWin;
 	gameScene = SCENE_ENDENTRY;
+}
+
+void SetGameEndReason(int type)
+{
+	GameEndReason = type;
 }
 
 /*--------------------

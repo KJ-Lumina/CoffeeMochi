@@ -350,6 +350,7 @@ void DrawUI_RewardCards(bool rewardPicked)
     {
         DrawUI_TextDesc(UIselectedReward->rewardDesc);
     }
+    DrawUI_Title(UIselectedEvent->title);
 }
 
 void DrawUI_EventResult()
@@ -532,11 +533,13 @@ void DrawUI(GAMESTATE state)
         DrawUI_Settings();
         DrawUI_Textbox();
         DrawUI_RewardCards(true);
+        DrawUI_Title(UIselectedEvent->title);;
         break;
     case State_DestroyBuilding:
         DrawUI_Settings();
         DrawUI_Textbox();
         DrawUI_RewardCards(true);
+        DrawUI_Title(UIselectedEvent->title);
         break;
     case State_EndOfTurn:
         DrawUI_Settings();

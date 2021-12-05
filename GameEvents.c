@@ -182,11 +182,6 @@ CARDEVENT E_FoodPoisoning = { 40 , RESOURCE_TYPE_EVENT, "Food Poisoning", "There
 , {-25,-10,0,15}, { {0,0}, {0,0} }, "Deploy men to assist the doctors, we need tend to the sick.", "The outbreak ends as quickly as it arrived."
 , {0,0,-2,-20}, { {0,0}, {0,0} }, "Do nothing. It is merely food poisioning. Their bodies can handle it.", "The citizens look exhausted." };
 
-
-/*CARDEVENT E_GoldenOne = {00 , BUILD_TYPE_EVENT, "", ""
-, {0,0,0,0}, { {0,0}, {0,0} }, ""
-, {0,0,0,0}, { {0,0}, {0,0} }, "" }*/
-
 #pragma endregion
 
 /*--------------------
@@ -392,5 +387,10 @@ void RollForcedCard(int cardIndex, int chance)
 	{
 		EventAddForcedEvent(cardIndex);
 	}
+}
+
+void SkipToEndOfDeck()
+{
+	currentCardIndex = currentDeck->cardsInDeck;
 }
 

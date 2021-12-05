@@ -527,8 +527,11 @@ void ApplyEventResourceAnim(int resourceChange[4])
     SpawnGoldGainAnimation(resourceChange[0], CP_Vector_Set(200, 450), CP_Vector_Set(CP_Random_RangeFloat(150,250), CP_Random_RangeFloat(400, 500)), CP_Vector_Set(520, 90), 0.6f, 0);
     SpawnFoodGainAnimation(resourceChange[1], CP_Vector_Set(200, 450), CP_Vector_Set(CP_Random_RangeFloat(150, 250), CP_Random_RangeFloat(400, 500)), CP_Vector_Set(520, 180), 0.6f, 0);
     SpawnMoraleGainAnimation(resourceChange[3], CP_Vector_Set(200, 450), CP_Vector_Set(CP_Random_RangeFloat(150, 250), CP_Random_RangeFloat(400, 500)), CP_Vector_Set(520, 360), 0.6f, 0);
-    SpawnNpc(CP_Vector_Set(810, 430), (resourceChange[2]));
-    curPopulation += resourceChange[2];
+    for (int i = 0; i < resourceChange[2]; ++i)
+    {
+        SpawnNpc(CP_Vector_Set(810, 430), 1);
+        curPopulation += 1;
+    }
 }
 
 

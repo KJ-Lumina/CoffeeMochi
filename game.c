@@ -20,7 +20,7 @@
 #include "Npc.h"
 
 #pragma region Game Options Control
-bool AllowAdminControl = false;
+bool AllowAdminControl = true;
 bool AllowMouseDrag = false;
 bool mouseDrag = false;
 float MouseCounter = 0;
@@ -56,7 +56,9 @@ End of Game FUNCTIONS
             based on cards left and resources left.
 *//*__________________________________________________________________________*/
 
-void GameEnd() {
+void GameEnd() 
+{
+    SetGameEndReason(0);
     GameWin = true; //Proceed with Game Win
     gameState = State_GameOver; //Change GameState to State_GameOver
 }
@@ -71,9 +73,22 @@ void GameOver()
 bool LoseCondition_Resources()
 {
     //Check for Lose Conditions [Any Resource < 0]
-    if (Get_current_food() < 0 || Get_current_population() < 0 || Get_current_gold() < 0 || Get_current_morale() < 0) {
+    if (Get_current_gold() < 0)
+    {
+        SetGameEndReason(1);
         return true;
     }
+    if (Get_current_food() < 0)
+    {
+        SetGameEndReason(2);
+        return true;
+    }
+    if (Get_current_morale() < 0)
+    {
+        SetGameEndReason(3);
+        return true;
+    }
+
     return false;
 }
 
@@ -183,6 +198,24 @@ void AdminControlInput()
         int moremoral[4] = { 0,0,0,-10 };
         ApplyEventResourceChange(moremoral);
     }
+    if (CP_Input_KeyTriggered(KEY_9))
+    {
+        IncreaseBlessing(100);
+    }
+    if (CP_Input_KeyTriggered(KEY_J))
+    {
+        EventAddForcedEvent(24);
+    }
+    if (CP_Input_KeyTriggered(KEY_K))
+    {
+        EventAddForcedEvent(40);
+        EventAddForcedEvent(13);
+    }
+    if (CP_Input_KeyTriggered(KEY_L))
+    {
+        SkipToEndOfDeck();
+    }
+
     if (CP_Input_KeyTriggered(KEY_R))
     {
         RestartGame();

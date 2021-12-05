@@ -238,6 +238,7 @@ void InitDecks();
 void InitUI();
 void InitResources(int startingGold, int startingFood, int startingPopulation, int startingMorale);
 void GameOver();
+void SetGameEndReason(int type);
 
 // WorldGridSpace
 CP_Vector GetWorldSpaceOrigin();
@@ -342,6 +343,8 @@ CARDEVENT* GetEventByIndex(int index);
 void EventSetGoldenCard();
 void RollForcedCard(int cardIndex, int chance);
 void RandomizeDeck();
+void EventAddForcedEvent(int index);
+void SkipToEndOfDeck();
 
 // NPC 
 void SpawnNpc(CP_Vector position, int amtToSpawn);
