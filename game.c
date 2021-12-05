@@ -14,7 +14,7 @@
 #include <stdbool.h>
 #include "Common_Headers.h"
 #include "cprocessing.h"
-#include "TravessFunctions.h"
+#include "CommonFunctions.h"
 #include "WorldSpaceGrid.h"
 #include "UI_Animations.h"
 #include "Npc.h"

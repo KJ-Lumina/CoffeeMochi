@@ -213,9 +213,8 @@ xcopy "$(ProjectDir)Assets\*" "$(OutDir)Assets\" /s /r /y /q</Command>
     <ClInclude Include="Npc.h" />
     <ClInclude Include="OngoingEvents.h" />
     <ClInclude Include="UI_Animations.h" />
-    <ClInclude Include="UI_Text.h" />
     <ClInclude Include="WorldSpaceGrid.h" />
-    <ClInclude Include="TravessFunctions.h" />
+    <ClInclude Include="CommonFunctions.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
