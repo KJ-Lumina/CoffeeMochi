@@ -81,17 +81,16 @@ float exitDuration = 2;
 float currentTimer;
 CP_Image whiteFlash;
 
-void ExitGame() 
-{
-	CP_Engine_Terminate();
-}
 
-
+/*--------------------
+INITIALIZE FUNCTIONS
+---------------------*/
+/*!_____________________________________________________________________________
+@brief      This function initalize the main game loop and process at the first frame
+*//*__________________________________________________________________________*/
 void game_init(void)
 {
-
 	CP_System_SetWindowSize(1600, 900);
-	//CP_System_FullscreenAdvanced(1600, 900); //Enable for full screen
 	accFont = CP_Font_Load("./Assets/accid.ttf");
 	CP_Font_Set(accFont);
 	CP_Settings_TextAlignment(CP_TEXT_ALIGN_H_CENTER, CP_TEXT_ALIGN_V_TOP);
@@ -150,16 +149,29 @@ void game_init(void)
 	InitSound();
 }
 
+/*--------------------
+RESTART FUNCTION
+---------------------*/
+/*!_____________________________________________________________________________
+@brief      This function calls the game to restart and set the game state to restart state
+*//*__________________________________________________________________________*/
 void RestartGame()
 {
 	currentTimer = 0;
 	gameScene = SCENE_RESTART;
 }
 
+/*--------------------
+UPDATE FUNCTION
+---------------------*/
+/*!_____________________________________________________________________________
+@brief      This function handle the game update for Impero
+*//*__________________________________________________________________________*/
 void game_update(void)
 {
 	CP_Graphics_ClearBackground(CP_Color_Create(150, 150, 150, 255));
 	
+	//Runs when GameScene is GAMEPHASE
 	if (gameScene == SCENE_GAMEPHASE)
 	{
 		PlayBGM(Sound_BGM_Game);
@@ -176,6 +188,7 @@ void game_update(void)
 			gameScene = SCENE_GAMEOPTIONS;
 		}
 	}
+	//Runs when GameScene is GAMEOPTIONS
 	else if (gameScene == SCENE_GAMEOPTIONS) {
 
 		CP_Graphics_ClearBackground(CP_Color_Create(0, 0, 0, 255));
@@ -608,11 +621,24 @@ void game_update(void)
 	}
 }
 
+/*--------------------
+GAME EXIT
+---------------------*/
+/*!_____________________________________________________________________________
+@brief      This function calls when game exit
+*//*__________________________________________________________________________*/
 void game_exit(void)
 {
 
 }
 
+/*--------------------
+DRAW INTRODUCTION NARRATIVE
+---------------------*/
+/*!_____________________________________________________________________________
+@brief      This function draw text for the introduction of Impero 
+			on to the screen at a specific font size
+*//*__________________________________________________________________________*/
 void DrawIntroNarritive(int alpha) 
 {
 		
@@ -625,6 +651,12 @@ void DrawIntroNarritive(int alpha)
 	CP_Font_DrawTextBox("In the year 1300 A.D. in an unknown kingdom.\n The king has been dethroned and exiled due to a revolt against him.\n However, the citizens have high expectations of you, the heir apparent to lead the country into prosperity.\n\n You would do well to not betray their expectations. Good luck.\n\n\n\n - Click Anywhere to Continue -", 350, 150, 900);
 }
 
+/*--------------------
+SET GAMESCENE ENDPHASE
+---------------------*/
+/*!_____________________________________________________________________________
+@brief      This function set the game to end and its called by game.c
+*//*__________________________________________________________________________*/
 void SetGameSceneEndPhase(int isWin)
 {
 	currentTimer = 3;
@@ -632,13 +664,39 @@ void SetGameSceneEndPhase(int isWin)
 	gameScene = SCENE_ENDENTRY;
 }
 
+/*--------------------
+OPEN OPTIONS
+---------------------*/
+/*!_____________________________________________________________________________
+@brief      This function toggle the bool variable isOptionsOpen to manage
+			if the Options Menu is Open.
+*//*__________________________________________________________________________*/
 void OpenOptions()
 {
 	if (!isOptionsOpen) isOptionsOpen = true;
 }
 
+/*--------------------
+EXIT GAME
+---------------------*/
+/*!_____________________________________________________________________________
+@brief      This function is called to exit the game
+*//*__________________________________________________________________________*/
+void ExitGame()
+{
+	CP_Engine_Terminate();
+}
+
+
 bool adjustingVol = false;
 
+/*--------------------
+ADJUST VOLUME SLIDER
+---------------------*/
+/*!_____________________________________________________________________________
+@brief      This function adjust the position of the volume sliders by the
+			mouse position and set the adjusted volume.
+*//*__________________________________________________________________________*/
 void AdjustVolumeSlider() {
 
 	float mouseX = CP_Input_GetMouseX();
