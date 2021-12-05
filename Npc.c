@@ -22,6 +22,10 @@ float deltaTime;
 CP_Vector worldSpaceOrigin;
 CP_Image npcSprite;
 
+
+/*!_____________________________________________________________________________
+@brief      This function loads images and clears all npcs in the game.
+*//*__________________________________________________________________________*/
 void InitNpc()
 {
 	npcSprite = CP_Image_Load("./Assets/best_npc.png");
@@ -32,6 +36,9 @@ void InitNpc()
 	}
 }
 
+/*!_____________________________________________________________________________
+@brief      This function spawns npcs with given locations.
+*//*__________________________________________________________________________*/
 void SpawnNpc(CP_Vector position, int amtToSpawn)
 {
 	for (int i = 0; i < amtToSpawn; ++i)
@@ -48,6 +55,14 @@ void SpawnNpc(CP_Vector position, int amtToSpawn)
 	}
 }
 
+/*!_____________________________________________________________________________
+@brief      This function searches for nearest position on the grid.
+			This is called when the npc is first spawned,
+			to ensure it moves to within the grid space from outside
+			the map.
+
+			Checkpoints are allocated to 4 corners of each tile.
+*//*__________________________________________________________________________*/
 CP_Vector FindNearestCheckPoint(CP_Vector position)
 {
 	int checkPointx = (int)(position.x / TILEWIDTH);
@@ -71,6 +86,9 @@ CP_Vector FindNearestCheckPoint(CP_Vector position)
 	return CP_Vector_Set((float)checkPointx, (float)checkPointy);
 }
 
+/*!_____________________________________________________________________________
+@brief      This function converts simple npc checkpoints to world positions.
+*//*__________________________________________________________________________*/
 void CheckpointToWorldPosition(CP_Vector* checkPoint)
 {
 	if ((int)checkPoint->x % 2 == 1)
@@ -91,6 +109,11 @@ void CheckpointToWorldPosition(CP_Vector* checkPoint)
 	}
 }
 
+/*!_____________________________________________________________________________
+@brief      This function returns a random number between 1 and given parameter
+			This is to create a turning point for the npc to create a variety
+			of movements before reaching the destination.
+*//*__________________________________________________________________________*/
 int GetRandomCheckPoint(int differenceLeft)
 {
 	if (differenceLeft == 0)
@@ -108,13 +131,22 @@ int GetRandomCheckPoint(int differenceLeft)
 	}
 }
 
+/*!_____________________________________________________________________________
+@brief      This function calculates npc's new position and stores it within
+			its struct object.
+
+			Further comments are within the function.
+*//*__________________________________________________________________________*/
 void CalculateNextPosition(NPC* npc)
 {
-	//moving
+	//-------------------------------------------------------
+	// Nextmovetimer determines whether the npc is currently
+	// moving or idling. If it is below 0, it will move and
+	// calculate its new position.
+	//-------------------------------------------------------
 	if (npc->nextMoveTimer <= 0)
 	{
-		
-		//Snap NPC to destination
+		//Snap NPC to destination when near to prevent issues.
 		if (npc->distanceLeft <= deltaTime * npc->baseSpeed)
 		{
 			npc->worldPosition.x += npc->direction.x * npc->distanceLeft;
@@ -129,10 +161,17 @@ void CalculateNextPosition(NPC* npc)
 			npc->distanceLeft -= npc->baseSpeed * deltaTime;
 		}
 
-		//reached destination
-		//set new destination
+		//-------------------------------------------------------
+		// Npc has reached its destination. 
+		//-------------------------------------------------------
 		if (npc->distanceLeft <= 0)
 		{
+			//-------------------------------------------------------
+			// Npc has reached its final destination. 
+			// First checkpoint is to search for the nearest 
+			// checkpoint within the grid to prevent npc from leaving
+			// the game at all times.
+			//-------------------------------------------------------
 			if (npc->checkPointsLeft == 0)
 			{
 				//new idle timer
@@ -140,7 +179,10 @@ void CalculateNextPosition(NPC* npc)
 				//add nearest checkpoint
 				npc->checkPoints[1] = FindNearestCheckPoint(npc->worldPosition);
 
-				//add other checkpoints
+				//-------------------------------------------------------
+				// Checkpoints are created by first randomizing a corner
+				// in any of the tile in the game
+				//-------------------------------------------------------
 				int finalCheckpointx = CP_Random_RangeInt(1, WORLDGRIDX * 2);
 				int finalCheckpointy = CP_Random_RangeInt(1, WORLDGRIDY * 2);
 
@@ -149,10 +191,18 @@ void CalculateNextPosition(NPC* npc)
 
 				int turnCount = 1;
 				bool newX = Math_Abs_Int(checkpointDiffX) > Math_Abs_Int(checkpointDiffY);
-				//npc->checkPoints[turnCount + 1] = CP_Vector_Set(npc->checkPoints[turnCount].x, npc->checkPoints[turnCount].y + checkpointDiffY);
 
 				while (checkpointDiffX != 0 && checkpointDiffY != 0)
 				{
+					//-------------------------------------------------------
+					// 2 random checkpoints are now added between the final
+					// checkpoint and the current npc's position
+					// 
+					// Checkpoints are calculated in such a way where it 
+					// will move horizontally then vertically.
+					// Variable newX determines if last movement was a 
+					// horizontal or vertical one.
+					//-------------------------------------------------------
 					if (turnCount < 2)
 					{
 						if (newX)
@@ -172,6 +222,11 @@ void CalculateNextPosition(NPC* npc)
 							newX = !newX;
 						}
 					}
+					//-------------------------------------------------------
+					// After the first 2 random checkpoints are added, the
+					// last 2 checkpoints will ensure it reaches the final
+					// destination.
+					//-------------------------------------------------------
 					else if (newX)
 					{
 						//last 2 turns are maxed
@@ -193,6 +248,12 @@ void CalculateNextPosition(NPC* npc)
 					}
 				}
 
+				//----------------------------------------------------------
+				// These 2 if statements check if the character has already
+				// reached the horizontal or vertical axis position.
+				// The next checkpoint will then move it to the final 
+				// destination.
+				//----------------------------------------------------------
 				if (checkpointDiffX == 0 && checkpointDiffY != 0)
 				{
 					npc->checkPoints[turnCount + 1] = CP_Vector_Set(npc->checkPoints[turnCount].x, npc->checkPoints[turnCount].y + checkpointDiffY);
@@ -208,6 +269,12 @@ void CalculateNextPosition(NPC* npc)
 
 				npc->checkPointsLeft += turnCount;
 			}
+
+			//-------------------------------------------------------
+			// Npc has not reached its final destination. Move all
+			// checkpoints forward and calculate its new direction
+			// and distance left.
+			//-------------------------------------------------------
 			if (npc->checkPointsLeft > 0)
 			{
 				npc->checkPoints[0] = npc->checkPoints[1];
@@ -244,24 +311,11 @@ void CalculateNextPosition(NPC* npc)
 	}
 }
 
-float CalculateMoveDistance(float baseSpeed, float distance)
-{
-	if (distance > 5)
-	{
-		return baseSpeed;
-	}
-	if (distance <= 2)
-	{
-		return baseSpeed / 5;
-	}
-	else
-	{
-		distance -= 2;
-		baseSpeed *= distance / 3;
-	}
-	return 1;
-}
 
+/*!_____________________________________________________________________________
+@brief      This function moves all existing npcs in the game and draws
+			the image with its respective positions.
+*//*__________________________________________________________________________*/
 void UpdateAllNpc()
 {
 	worldSpaceOrigin = GetWorldSpaceOrigin();
@@ -284,6 +338,11 @@ void UpdateAllNpc()
 	}
 }
 
+/*!_____________________________________________________________________________
+@brief      This function returns the position of an npc struct with
+			given index parameter. If npc is not spawned in with the 
+			given index, it will return a zero vector.
+*//*__________________________________________________________________________*/
 CP_Vector GetNpc(int index)
 {
 	if (npcList[index].spriteIndex == 0)

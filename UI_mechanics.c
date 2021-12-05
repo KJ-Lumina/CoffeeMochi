@@ -17,7 +17,6 @@
 #include <math.h>
 #include "cprocessing.h"
 #include "Common_Headers.h"
-#include "UI_Text.h"
 
 
 #define BUTTONARRAYSIZE 3
@@ -56,8 +55,6 @@ MOVINGSPRITES blessingCard;
 float blessFill = 0;
 float blessTimer = 0;
 
-
-
 CP_Image settingsButton;
 CP_Image settingsButtonHover;
 
@@ -92,6 +89,10 @@ bool ralerpinc = true;
 extern int rewardIndex;
 
 
+/*!_____________________________________________________________________________
+@brief      This set of function loads all images, and sets all game variables
+            to its default state.
+*//*__________________________________________________________________________*/
 void InitUI()
 {
     windowWidth = (float)CP_System_GetWindowWidth();
@@ -132,6 +133,11 @@ void InitUI()
     blessFill = 0;
     blessTimer = 0;
 }
+
+/*!_____________________________________________________________________________
+@brief      These set of functions saves current event information to know 
+            which events to draw out.
+*//*__________________________________________________________________________*/
 void UI_SetEvent(CARDEVENT* newEvent)
 {
     UIselectedEvent = newEvent;
@@ -161,6 +167,11 @@ void UI_SetNormalCard()
     cardDraw.image = image_CardNormal;
 }
 
+/*!_____________________________________________________________________________
+@brief      These set of functions checks if the mouse is within the
+            UI button space. 
+            These are usually called after the player has clicked.
+*//*__________________________________________________________________________*/
 bool ClickCheck_CardDraw()
 {
     if (CheckWithinBounds(cardDraw.startingPos, 185, 243))
@@ -198,6 +209,12 @@ int ClickCheck_Rewards()
     return 0;
 }
 
+/*!_____________________________________________________________________________
+@brief      These set of functions Draws the different UIs of the game, mainly
+            the card events segment.
+            Functions also include animations of the UIs, such as flashing
+            effect or moving cards.
+*//*__________________________________________________________________________*/
 void DrawUI_OptionSelector()
 {
     // Hovering A
@@ -384,6 +401,11 @@ void DrawUI_Title(const char* text)
     CP_Settings_Fill(CP_Color_Create(255, 255, 255, 255));
     CP_Font_DrawTextBox(text, 100, 105, 330);
 }
+
+/*!_____________________________________________________________________________
+@brief      This function draws a red zone on the grid when an ongoing
+            event is drawn. The zone will show which tiles will be affected.
+*//*__________________________________________________________________________*/
 void DrawUI_AffectedLand()
 {
     static float alphaLerp = 0;
@@ -419,6 +441,12 @@ void DrawUI_AffectedLand()
         break;
     }
 }
+
+/*!_____________________________________________________________________________
+@brief      This function draws the golden card and its fill percentage.
+            The fill is drawn with cut-off greyscaled version overlayed on
+            the golden card.
+*//*__________________________________________________________________________*/
 void DrawUI_BlessFill()
 {
     if (blessTimer <= 0)
@@ -454,6 +482,10 @@ void DrawUI_BlessFill()
     }
 }
 
+/*!_____________________________________________________________________________
+@brief      This function is called every frame. It decides on what to draw
+            based on the given current state of the game.
+*//*__________________________________________________________________________*/
 void DrawUI(GAMESTATE state)
 {
     switch (state)
@@ -518,7 +550,12 @@ void DrawUI(GAMESTATE state)
     DrawUI_BlessFill();
 }
 
-
+/*!_____________________________________________________________________________
+@brief      This function will draw the resource bars and the amount of each
+            resources. 
+            Bar will fade in and out if the event will affect that specific
+            resource.
+*//*__________________________________________________________________________*/
 void DrawTempTextResources()
 {
     if (ralerpinc)
@@ -579,12 +616,7 @@ void DrawTempTextResources()
     {
         CP_Image_Draw(image_moralebar, 520, 360, CP_Math_LerpFloat(0, maxBarSize, (float)GetDelayedMorale() / 200), 60, 255);
     }
-
-
-
-
     CP_Settings_TextSize(40);
-    
 
     CP_Settings_Fill(CP_Color_Create(255, 255, 255, 255));
 
