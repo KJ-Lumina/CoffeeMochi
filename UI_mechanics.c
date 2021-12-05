@@ -372,7 +372,7 @@ void DrawUI_Settings() {
 
 void DrawUI_TextDesc(const char* text)
 {
-    CP_Settings_TextSize(30);
+    CP_Settings_TextSize(25);
     CP_Settings_Fill(CP_Color_Create(255, 255, 255, 255));
     CP_Font_DrawTextBox(text, 110, 155, 300);
 }
