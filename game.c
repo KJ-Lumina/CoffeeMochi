@@ -48,9 +48,14 @@ float animDelay = 0.1f;
 CP_Vector tempVector;
 CP_Vector worldOrigin;
 
+/*--------------------
+End of Game FUNCTIONS
+---------------------*/
+/*!_____________________________________________________________________________
+@brief      This set of functions are used to check if the game has ended
+            based on cards left and resources left.
+*//*__________________________________________________________________________*/
 
-#pragma region Turn & Win Lose Functions
-//End Game Functions
 void GameEnd() {
     GameWin = true; //Proceed with Game Win
     gameState = State_GameOver; //Change GameState to State_GameOver
@@ -72,6 +77,14 @@ bool LoseCondition_Resources()
     return false;
 }
 
+/*--------------------
+End of Game FUNCTIONS
+---------------------*/
+/*!_____________________________________________________________________________
+@brief      This function is used to Activate and update end of turn
+            events. Also used to check if the game should end here.
+*//*__________________________________________________________________________*/
+
 void EndTurn() 
 {
     GenerateResourcesOnEndTurn(); 
@@ -84,7 +97,16 @@ void EndTurn()
         gameState = State_GameEntry; //Change GameState to GameEntry if Game is not lost
     }
 }
-#pragma endregion
+
+
+/*--------------------
+Player Input FUNCTIONS
+---------------------*/
+/*!_____________________________________________________________________________
+@brief      This set of functions are used to check for player input.
+            Player clicking for Game UI interaction.
+            Keyboard Inputs for Debugging (If admin control is enabled)
+*//*__________________________________________________________________________*/
 
 void UpdateMouseInput()
 {
@@ -98,7 +120,6 @@ void UpdateMouseInput()
     }
 }
 
-//Debug instant commands
 void AdminControlInput()
 {
     if (CP_Input_KeyTriggered(KEY_Q))
@@ -113,7 +134,7 @@ void AdminControlInput()
         SpawnAnimation(currentMousePos.x, currentMousePos.y, currentMousePos.x, currentMousePos.y, 200, 200, 1, 0.5f, 1);
     }
 
-    if (CP_Input_KeyTriggered(KEY_E)) 
+    if (CP_Input_KeyTriggered(KEY_E))
     {
         SpawnVfxEaseInToEaseOut(1, currentMousePos, CP_Vector_Set(CP_Random_RangeFloat(-50, 50) + currentMousePos.x, CP_Random_RangeFloat(-50, 50) + currentMousePos.y), CP_Vector_Set(50, 50), 1, CP_Vector_Set(128, 128), 0);
     }
@@ -167,6 +188,7 @@ void AdminControlInput()
         RestartGame();
     }
 }
+
 void CheckKeyInput()
 {
     if (CP_Input_KeyTriggered(KEY_F))
@@ -179,6 +201,22 @@ void CheckKeyInput()
         AdminControlInput();
     }
 }
+
+/*--------------------
+Mouse Click FUNCTION
+---------------------*/
+/*!_____________________________________________________________________________
+@brief      This function is called when the player has clicked in the game
+            It looks for the current state of the game and checks if respective
+            UIs or interactables have been clicked on
+
+            State Idle - Clicks on card -> State Card Draw
+            State MakeAChoice - Clicks on red/blue -> Starts Event
+            State CollectRewards - Clicks on Reward card -> Spawn Rewards
+                if no rewards left, State EndOfTurn
+            State PlaceYourBuilding - Clicks on tiles -> Construct Building
+                if no rewards left, State EndOfTurn
+*//*__________________________________________________________________________*/
 
 void MouseClick() //Run when Mouse is Clicked
 {
@@ -196,9 +234,6 @@ void MouseClick() //Run when Mouse is Clicked
                 AnimTimer = 0.6f;
                 gameState = State_CardDraw;
             }
-            break;
-        case State_CardDraw:
-            
             break;
         case State_MakeAChoice:
             // check for each card choices
@@ -266,11 +301,8 @@ void MouseClick() //Run when Mouse is Clicked
                     }
                     for (int i = 0; i < 26; ++i)
                     {
-
-                        printf("%d ", i);
                         if (GetOccupiedIndex((i) % WORLDGRIDY, (i) / WORLDGRIDX) == selectedReward[0]->resourceType)
                         {
-                            printf("%d %d \n", (i) % WORLDGRIDY, (i) / WORLDGRIDX);
                             GenerateEvents(O_RATEVENT, (i) % WORLDGRIDY, (i) / WORLDGRIDX, ongoingTurns);
                         }
                     }
@@ -338,20 +370,28 @@ void MouseClick() //Run when Mouse is Clicked
 
             }
             break;
-        case State_DestroyBuilding:
-            
-            break;
-
-        case State_EndOfTurn:
-
-            break;
     }
 }
+
+/*--------------------
+Main Game Control FUNCTION
+---------------------*/
+/*!_____________________________________________________________________________
+@brief      This function is the main game loop, controlling the game state
+            Main uses for this loop is to stall game states for animations
+            to run.
+            Further comments are written within the function.
+*//*__________________________________________________________________________*/
 void GameStateControl()
 {
     DrawGridIndicator(currentMousePos);
     switch (gameState)
     {
+    //------------------------------------------------------------------------------------------
+    // Allows for gold card to exit animation.
+    // Checks if blessing points are enough for gold card, if so draw a gold card,
+    // if not, draw a normal card.
+    //------------------------------------------------------------------------------------------
     case State_GameEntry:
         AnimTimer = 1.0f;
         if (Get_current_blessing() >= 100)
@@ -366,6 +406,9 @@ void GameStateControl()
         }
         gameState = State_StartOfTurn;
         break;
+    //------------------------------------------------------------------------------------------
+    // Allows for draw card to enter animation
+    //------------------------------------------------------------------------------------------
     case State_StartOfTurn:
         AnimTimer -= CP_System_GetDt();
         if (AnimTimer < 0)
@@ -373,8 +416,10 @@ void GameStateControl()
             gameState = State_Idle;
         }
         break;
-    case State_Idle:
-        break;
+    //------------------------------------------------------------------------------------------
+    // Allows for card draw animation
+    // Sets events based on card draw
+    //------------------------------------------------------------------------------------------
     case State_CardDraw:
         AnimTimer -= CP_System_GetDt();
         if (AnimTimer <= 0)
@@ -386,8 +431,10 @@ void GameStateControl()
             UI_SetEvent(selectedEvent);
         }
         break;
-    case State_MakeAChoice:
-        break;
+    //------------------------------------------------------------------------------------------
+    // Allows for resouces bar change animation
+    // Sets rewards based on choice selected
+    //------------------------------------------------------------------------------------------
     case State_ResourceChange:
         AnimTimer -= CP_System_GetDt();
         if (AnimTimer <= 0)
@@ -416,11 +463,15 @@ void GameStateControl()
             }
         }
         break;
-    case State_CollectRewards:
-        break;
+    //------------------------------------------------------------------------------------------
+    // Draws constructing building.
+    //------------------------------------------------------------------------------------------
     case State_PlaceYourBuilding:
         DrawCursorTile(currentMousePos);
         break;
+    //------------------------------------------------------------------------------------------
+    // Destroys building based on event
+    //------------------------------------------------------------------------------------------
     case State_DestroyBuilding:
         DestroyBuildingBySelectedBuilding(selectedReward[rewardIndex]->resourceType); //Destroy 1 building by the building chosen in choice
         switch (rewardIndex) //Prevention for going out of bounds
@@ -457,13 +508,25 @@ void GameStateControl()
             break;
         }
         break;
+
+    //------------------------------------------------------------------------------------------
+    // End of turn goes through a series of animations before it returns to Start of turn again.
+    //------------------------------------------------------------------------------------------
     case State_EndOfTurn:
         endTurnTimer -= CP_System_GetDt();
         if (endTurnTimer <= 0)
         {
             switch (endState)
             {
-            //generate resources from buildings
+            //------------------------------------------------------------------------------------------
+            // This marks the first animation. Resources generated from buildings are collected
+            // and stored.
+            // It loops through all buildings on the grid, checks for status, if not broken
+            // or destroyed by any events, proceeed to generate resources.
+            // 
+            // animCount is used to calculate number of animations to draw and delay next state
+            // accordingly.
+            //------------------------------------------------------------------------------------------
             case 0:
                 rewardIndex = 0;  // Reset Reward Index Before Event Begin
                 worldOrigin = GetWorldSpaceOrigin();
@@ -473,71 +536,61 @@ void GameStateControl()
                     {
                         switch (GetOccupiedIndex(i, j))
                         {
-                        case B_HOUSE_INDEX:
-                            tempVector.x = i * TILEWIDTH + TILEWIDTH / 2 + worldOrigin.x;
-                            tempVector.y = j * TILEHEIGHT + TILEHEIGHT / 3 + worldOrigin.y;
-                            if (CheckCurrent(B_HOUSE_INDEX, i, j))
-                            {
-                                // house broken, lose morale
-                                SpawnMoraleGainAnimation(-1, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), CP_Vector_Set(520, 360), 0.6f, animCount * animDelay);
-                                //SpawnVfxEaseInToEaseOut(6, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), CP_Vector_Set(50, 180), 0.6f, CP_Vector_Set(128, 128), animCount * animDelay);
-                            }
-                            ++animCount;
-                            break;
-                        case B_FARM_INDEX:
-                            tempVector.x = i * TILEWIDTH + TILEWIDTH / 2 + worldOrigin.x;
-                            tempVector.y = j * TILEHEIGHT + TILEHEIGHT / 3 + worldOrigin.y;
-                            // farm broken, no food
-                            if (CheckCurrent(B_FARM_INDEX, i, j))
-                            {
-                                //SpawnFoodGainAnimation(0, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), CP_Vector_Set(520, 180), 0.6f, animCount * animDelay);
-                            }
-                            else
-                            {
-                                // farm generate food
-                                SpawnFoodGainAnimation(farm_food_prediction(), tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), CP_Vector_Set(520, 180), 0.6f, animCount * animDelay);
-                            }
-                            ++animCount;
-                            break;
-                        case B_MARKET_INDEX:
-                            tempVector.x = i * TILEWIDTH + TILEWIDTH / 2 + worldOrigin.x;
-                            tempVector.y = j * TILEHEIGHT + TILEHEIGHT / 3 + worldOrigin.y;
-                            // market broke, no gold
-                            if (CheckCurrent(B_MARKET_INDEX, i, j))
-                            {
+                            case B_HOUSE_INDEX:
+                                tempVector.x = i * TILEWIDTH + TILEWIDTH / 2 + worldOrigin.x;
+                                tempVector.y = j * TILEHEIGHT + TILEHEIGHT / 3 + worldOrigin.y;
 
-                            }
-                            else
-                            {
-                                // market generate gold
-                                SpawnGoldGainAnimation(market_gold_prediction(), tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), CP_Vector_Set(520, 90), 0.6f, animCount * animDelay);
-                            }
-                            ++animCount;
-                            break;
-                        case B_TAVERN_INDEX:
-                            tempVector.x = i * TILEWIDTH + TILEWIDTH / 2 + worldOrigin.x;
-                            tempVector.y = j * TILEHEIGHT + TILEHEIGHT / 3 + worldOrigin.y;
-                            // tavern broken, no morale
-                            if (CheckCurrent(B_TAVERN_INDEX, i, j))
-                            {
-
-                            }
-                            else
-                            {
-                                // tavern generate morale
-                                SpawnMoraleGainAnimation(tavern_morale_preduction(), tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), CP_Vector_Set(520, 360), 0.6f, animCount * animDelay);
-                            }
-                            ++animCount;
-                            break;
-                        default:
-                            break;
+                                // Checks if any events are affecting this house, if so lose morale.
+                                if (CheckCurrent(B_HOUSE_INDEX, i, j))
+                                {
+                                    SpawnMoraleGainAnimation(-1, tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), CP_Vector_Set(520, 360), 0.6f, animCount * animDelay);
+                                }
+                                ++animCount;
+                                break;
+                            case B_FARM_INDEX:
+                                tempVector.x = i * TILEWIDTH + TILEWIDTH / 2 + worldOrigin.x;
+                                tempVector.y = j * TILEHEIGHT + TILEHEIGHT / 3 + worldOrigin.y;
+                                // Check if any events are affecting this farm, if not, generate food
+                                if (!CheckCurrent(B_FARM_INDEX, i, j))
+                                {
+                                    SpawnFoodGainAnimation(farm_food_prediction(), tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), CP_Vector_Set(520, 180), 0.6f, animCount* animDelay);
+                                }
+                                ++animCount;
+                                break;
+                            case B_MARKET_INDEX:
+                                tempVector.x = i * TILEWIDTH + TILEWIDTH / 2 + worldOrigin.x;
+                                tempVector.y = j * TILEHEIGHT + TILEHEIGHT / 3 + worldOrigin.y;
+                                // Check if any events are affecting this market, if not, generate gold
+                                if (!CheckCurrent(B_MARKET_INDEX, i, j))
+                                {
+                                    SpawnGoldGainAnimation(market_gold_prediction(), tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), CP_Vector_Set(520, 90), 0.6f, animCount* animDelay);
+                                }
+                                ++animCount;
+                                break;
+                            case B_TAVERN_INDEX:
+                                tempVector.x = i * TILEWIDTH + TILEWIDTH / 2 + worldOrigin.x;
+                                tempVector.y = j * TILEHEIGHT + TILEHEIGHT / 3 + worldOrigin.y;
+                                // Check if any events are affecting this tavern, if not, generate morale
+                                if (!CheckCurrent(B_TAVERN_INDEX, i, j))
+                                {
+                                    SpawnMoraleGainAnimation(tavern_morale_preduction(), tempVector, CP_Vector_Set(tempVector.x, tempVector.y - TILEHEIGHT / 3), CP_Vector_Set(520, 360), 0.6f, animCount * animDelay);
+                                }
+                                ++animCount;
+                                break;
+                            default:
+                                break;
                         }
                     }
                 }
                 endTurnTimer = animCount * animDelay + 0.5f;
                 endState = 1;
                 break;
-            //consume food from citizens
+            //------------------------------------------------------------------------------------------
+            // This marks the second animation. Food is consumed for every existing npc in the game.
+            //
+            // animCount is used to calculate number of animations to draw and delay next state
+            // accordingly.
+            //------------------------------------------------------------------------------------------
             case 1:
                 animCount = 0;
                 worldOrigin = GetWorldSpaceOrigin();
@@ -554,7 +607,13 @@ void GameStateControl()
                 endTurnTimer = animCount * animDelay + 1.5f;
                 endState = 2;
                 break;
-            // generate gold points
+            //------------------------------------------------------------------------------------------
+            // This marks the third animation. Blessing points for the gold card is generated
+            // for every existing npc in the game
+            //
+            // animCount is used to calculate number of animations to draw and delay next state
+            // accordingly.
+            //------------------------------------------------------------------------------------------
             case 2:
                 animCount = 0;
                 worldOrigin = GetWorldSpaceOrigin();
@@ -572,7 +631,10 @@ void GameStateControl()
                 endState = 3;
                 UI_SetBlessingsTimer(endTurnTimer + 2.2f);
                 break;
-            // end turn
+            //------------------------------------------------------------------------------------------
+            // This marks the final stage for End Of Turn state. Checks if the game is still running
+            // or should the game end.
+            //------------------------------------------------------------------------------------------
             case 3:
                 endState = 0;
                 if (GetCardsLeft() == 0)
@@ -587,16 +649,27 @@ void GameStateControl()
             }
         }
         break;
+    //------------------------------------------------------------------------------------------
+    // Game has ended. Change game phase in main.c accordingly.
+    //------------------------------------------------------------------------------------------
     case State_GameOver:
         SetGameSceneEndPhase(GameWin);
         gameState = State_End;
         break;
-
-    case State_End:
-
-        break;
     }
 }
+
+/*--------------------
+Click Or Drag FUNCTION
+---------------------*/
+/*!_____________________________________________________________________________
+@brief      This function checks if the player is dragging or clicking.
+            Originally intended to allow moving the map around if the
+            world were to be bigger than the given screen space.
+            Allows to expansion of tiles.
+*//*__________________________________________________________________________*/
+
+
 void MouseDragOrClick(void)
 {
     if (AllowMouseDrag)
@@ -624,6 +697,13 @@ void MouseDragOrClick(void)
     }
 }
 
+/*--------------------
+Game Initialize FUNCTION
+---------------------*/
+/*!_____________________________________________________________________________
+@brief      This function is called when the game starts or restarts.
+            Sets everything to default state.
+*//*__________________________________________________________________________*/
 void MainGame_Initialize(void)
 {
     gameState = State_GameEntry;
@@ -638,6 +718,14 @@ void MainGame_Initialize(void)
     InitOngoingEvents(); 
 }
 
+/*--------------------
+Main Game Update FUNCTION
+---------------------*/
+/*!_____________________________________________________________________________
+@brief      This function serves as the Game Update, called every frame.
+            It will call every main functions necessary to keep the game
+            loop running.
+*//*__________________________________________________________________________*/
 void MainGame_Update(void)
 {
     //Get Inputs Start
@@ -658,6 +746,4 @@ void MainGame_Update(void)
     DrawAllVfx();
     DrawAllAnimations();
     //Graphic End
-    //LoopSound();
-    
 }

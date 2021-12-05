@@ -256,7 +256,6 @@ void MoveWorldSpaceOrigin(float positionChangeX, float positionChangeY);
 void GridToWorldPosition(CP_Vector*);
 void DrawGridIndicator(CP_Vector cursorPosition);
 void DrawCursorTile(CP_Vector cursorPos);
-float CalculateUnitsToBorder(CP_Vector position, CP_Vector directionUnit);
 void SetNewBuilding(int xPos, int yPos, int buildingIndex);
 void SetBuildingType(BUILDING* newBuilding);
 bool AttemptPlaceBuilding(CP_Vector cursorPos);

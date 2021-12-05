@@ -1,6 +1,7 @@
 /*!_____________________________________________________________________________
 @file       WorldSpaceGrid.c
 @author     Travess Tan (travesscheekhang.t@digipen.edu)
+@co-authors Lee Xin Qian (xinqian.lee@digipen.edu)
 @course     CSD1120
 @section    B
 @team       CoffeeMochi
@@ -38,6 +39,13 @@ float tilesetHeight = 160;
 int varX = 0;
 int varY = 0;
 
+/*--------------------
+Initialize FUNCTION
+---------------------*/
+/*!_____________________________________________________________________________
+@brief      This function clears the grid and loads all necessary images
+*//*__________________________________________________________________________*/
+
 void InitWorldSpaceGrid()
 {
     windowsWidth = (float)CP_System_GetWindowWidth();
@@ -55,6 +63,20 @@ void InitWorldSpaceGrid()
         }
     }
 }
+
+/*----------------------------
+Screen to Worldspace FUNCTIONS
+----------------------------*/
+/*!_____________________________________________________________________________
+@brief      This set of functions are used to calculate positions between
+            screen space and world space. 
+            WorldSpaceOrigin is moved as the player moves the grid around
+            grid and building position is calculate based on WorldSpaceOrigin
+
+            Functions take in CP_Vector pointer as a parameter, saving
+            the new position in that variable
+*//*__________________________________________________________________________*/
+
 CP_Vector GetWorldSpaceOrigin()
 {
     return worldSpaceOrigin;
@@ -115,29 +137,13 @@ void GridToWorldPosition(CP_Vector* position)
 
 }
 
-float CalculateUnitsToBorder(CP_Vector position, CP_Vector directionUnit)
-{
-    float dirUnitsToXBorder = 0;
-    float dirUnitsToYBorder = 0;
-    if (directionUnit.x > 0)
-    {
-        dirUnitsToXBorder = (WORLDGRIDX * TILEWIDTH - position.x) / directionUnit.x;
-    }
-    else
-    {
-        dirUnitsToXBorder = position.x / Math_Abs(directionUnit.x);
-    }
-    if (directionUnit.y > 0)
-    {
-        dirUnitsToYBorder = (WORLDGRIDY * TILEHEIGHT - position.y) / directionUnit.y;
-    }
-    else
-    {
-        dirUnitsToYBorder = position.y / Math_Abs(directionUnit.y);
-    }
-    return dirUnitsToXBorder > dirUnitsToYBorder ? dirUnitsToYBorder : dirUnitsToXBorder;
-}
-
+/*------------------------------
+Event Destroy Building FUNCTIONS
+------------------------------*/
+/*!_____________________________________________________________________________
+@brief      This function searches for a building with given index and 
+            removes it
+*//*__________________________________________________________________________*/
 void DestroyBuildingBySelectedBuilding(int buildingIndex) {
 
     TILEPOSITION tile_positions[MAXTILECOUNT];
@@ -170,6 +176,14 @@ void DestroyBuildingBySelectedBuilding(int buildingIndex) {
         SetNewBuilding((tile_positions + randIndex)->positionX, (tile_positions + randIndex)->positionY, B_EMPTY_INDEX); //Replace it with nothing (Empty Sqaure)
     }
 }
+
+/*------------------------------
+Grid FUNCTIONS
+------------------------------*/
+/*!_____________________________________________________________________________
+@brief      These functions do simple checking and setting of buildings
+            on the grid
+*//*__________________________________________________________________________*/
 
 void SetNewBuilding(int x, int y, int buildingIndex)
 {
@@ -209,6 +223,14 @@ bool IsTileOccupied(CP_Vector position)
     return true;
 }
 
+/*------------------------------
+Construct FUNCTIONS
+------------------------------*/
+/*!_____________________________________________________________________________
+@brief      This function checks if the tile on the cursor is empty
+            If so, place the building on the grid.
+*//*__________________________________________________________________________*/
+
 bool AttemptPlaceBuilding(CP_Vector cursorPosition)
 {
     if (IsWithinGrid(cursorPosition))
@@ -229,11 +251,48 @@ bool AttemptPlaceBuilding(CP_Vector cursorPosition)
 
 
 
+/*------------------------------
+Utility FUNCTIONS
+------------------------------*/
+/*!_____________________________________________________________________________
+@brief      These functions retrieves building with given building index
+            and sets grid to the center of the screen
+*//*__________________________________________________________________________*/
+
+int GetAllBuildingsPositionByIndex(int index, TILEPOSITION position[]) {
+
+    int arrayIndex = 0;
+
+    for (int j = 0; j < WORLDGRIDY; ++j)
+    {
+        for (int i = 0; i < WORLDGRIDX; ++i)
+        {
+            if (buildingGrid[i][j] == index) {
+
+                position[arrayIndex].positionY = j;
+                position[arrayIndex].positionX = i;
+                ++arrayIndex;
+
+            }
+        }
+    }
+    return arrayIndex;
+}
+
 void ReturnToCenter()
 {
     worldSpaceOrigin.x = windowsWidth / 2 - TILEWIDTH * WORLDGRIDX / 2 + MAPOFFSETX;
     worldSpaceOrigin.y = windowsHeight / 2 - TILEHEIGHT * WORLDGRIDY / 2 + MAPOFFSETY;
 }
+
+
+
+/*------------------------------
+Draw FUNCTIONS
+------------------------------*/
+/*!_____________________________________________________________________________
+@brief      These functions draws the different art for tiles and buildings
+*//*__________________________________________________________________________*/
 
 void DrawGridIndicator(CP_Vector cursorPosition)
 {
@@ -243,6 +302,7 @@ void DrawGridIndicator(CP_Vector cursorPosition)
         CP_Image_Draw(gridIndicator, cursorPosition.x, cursorPosition.y, TILEWIDTH, TILEHEIGHT, 255);
     }
 }
+
 
 void DrawCursorTile(CP_Vector cursorPosition)
 {
@@ -267,28 +327,7 @@ void DrawCursorTile(CP_Vector cursorPosition)
     }
 }
 
-int GetAllBuildingsPositionByIndex(int index, TILEPOSITION position[]) {
 
-    int arrayIndex = 0;
-
-
-    for (int j = 0; j < WORLDGRIDY; ++j)
-    {
-        for (int i = 0; i < WORLDGRIDX; ++i)
-        {
-            if (buildingGrid[i][j] == index) {
-
-                position[arrayIndex].positionY = j;
-                position[arrayIndex].positionX = i;
-                ++arrayIndex;
-
-            }
-        }
-    }
-
-    return arrayIndex;
-
-}
 
 // Draw all structures
 void DrawBuildings()
