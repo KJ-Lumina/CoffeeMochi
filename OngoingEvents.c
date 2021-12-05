@@ -27,21 +27,18 @@ CP_Image sprite_rat;
 
 ONGOING ongoingEvents[10] = { 0 };
 
-// event_rat = { 1,CP_Vector_set(0,0), position, FARM, AreaOfEffect,0,5,"Rat has infiltrated the city , food will be compromised every turn " };
-// event_one = { 2,CP_Vector_set(0,0), position, FARM, AreaOfEffect,0,5,"Rat has infiltrated the city , food will be compromised every turn " };
-// event_two = { 3,CP_Vector_set(0,0), position, FARM, AreaOfEffect,0,5,"Rat has infiltrated the city , food will be compromised every turn " };
-// event_three = { 4,CP_Vector_set(0,0), position, FARM, AreaOfEffect,0,5,"Rat has infiltrated the city , food will be compromised every turn " };
-// event_four = { 5,CP_Vector_set(0,0), position, FARM, AreaOfEffect,0,5,"Rat has infiltrated the city , food will be compromised every turn " };
-// event_five = { 6,CP_Vector_set(0,0), position, FARM, AreaOfEffect,0,5,"Rat has infiltrated the city , food will be compromised every turn " };
 
+
+/*----------------------------
+ONGOING INITIALIZATION FUNCTION
+----------------------------*/
+/*!_____________________________________________________________________________
+@brief      This set of functions contains all activated ongoing events and loads 
+			images for ongoing events.
+*//*__________________________________________________________________________*/
 void InitOngoingEvents() {
 
 	sprite_rat = CP_Image_Load("./ImperoArtAssets/Impero_Rats.png");
-	//sprite_one = CP_Image_load();
-	//sprite_two = CP_Image_load();
-	//sprite_three = CP_Image_load();
-	//sprite_four = CP_Image_load();
-	//sprite_five = CP_Image_load();
 
 	for (int i = 0; i < EVENTLIMIT; ++i)
 	{
@@ -49,9 +46,18 @@ void InitOngoingEvents() {
 	}
 }
 
+/*----------------------------
+ONGOING POSITION FUNCTION
+----------------------------*/
+/*!_____________________________________________________________________________
+@brief      This function recieves input of the area of effect and the current x-axis
+			and y-axis of its position. It checks if the event is affecting the
+			right resources and standing on the correct grid position of the affected resource.
+			(ONLY IF THE EVENT IS CURRENTLY ACTIVATED AS ALIVE)
+*//*__________________________________________________________________________*/
 bool CheckCurrent(int typeofeffect, int x, int y)
 {
-	//int GetOccupiedIndex(int x, int y)
+
 	//this function, if u put in the xand y position, it will return u the building index, 
 	//then u check if the event is standing on the correct one
 	for (int i = 0; i < EVENTLIMIT; i++) {
@@ -66,7 +72,13 @@ bool CheckCurrent(int typeofeffect, int x, int y)
 	return false;
 }
 
-
+/*----------------------------
+ONGOING EVENT GENERATION FUNCTION
+----------------------------*/
+/*!_____________________________________________________________________________
+@brief      This function stores the event from game event.c and the amount of
+			turns it will remain on the game when the event is being picked from the gameplay deck 
+*//*__________________________________________________________________________*/
 void GenerateEvents(int eventIndex, int xPos, int yPos, int turnsAlive) 
 {
 	//create store in array
@@ -83,7 +95,6 @@ void GenerateEvents(int eventIndex, int xPos, int yPos, int turnsAlive)
 			case 3:
 				//currentEvent[i] = { 3,sprite_two, CP_Vector_set(0,0), position, FARM, AreaOfEffect,0,5,"Rat has infiltrated the city , food will be compromised every turn " , ISALIVE };
 				return;
-
 			case 4:
 				//currentEvent[i] = { 4,sprite_three, CP_Vector_set(0,0), position, FARM, AreaOfEffect,0,5,"Rat has infiltrated the city , food will be compromised every turn " , ISALIVE };
 				return;
@@ -101,11 +112,26 @@ void GenerateEvents(int eventIndex, int xPos, int yPos, int turnsAlive)
 
 }
 
+/*----------------------------
+REMOVE EVENT FUNCTION
+----------------------------*/
+/*!_____________________________________________________________________________
+@brief      This function removes the event from the input index given. 
+*//*__________________________________________________________________________*/
 void RemoveEvent(int i) 
 {
 	//remove current event when turn hit 0
 	ongoingEvents[i].alive = ISDEAD;
 }
+
+/*----------------------------
+EVENT UPDATE FUNCTION
+----------------------------*/
+/*!_____________________________________________________________________________
+@brief      This function updates on turn end, one turn from every event that is 
+			currently active on the grid, calls remove event once the number of 
+			turns left hits 0.
+*//*__________________________________________________________________________*/
 void OnEndUpdateEvents()
 {
 	//turn minus one when called
@@ -122,6 +148,14 @@ void OnEndUpdateEvents()
 		}
 	}
 }
+
+/*----------------------------
+DRAW EVENT FUNCTION
+----------------------------*/
+/*!_____________________________________________________________________________
+@brief      This function continuously draw the image of the current event on the grid
+			while it is still active(number of turns left not 0).
+*//*__________________________________________________________________________*/
 void DrawOngoingEvents() 
 {
 	CP_Vector worldPosition;
