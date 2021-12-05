@@ -280,7 +280,6 @@ void UI_SetBlessingsTimer(float timer);
 void UI_SetGoldCard();
 void UI_SetNormalCard();
 void DrawUI_Settings();
-void UI_SetResourceChange(int resourceChange[4]);
 
 //Sound
 void InitSound();
@@ -293,7 +292,6 @@ void Play_Choice_SFX(SOUND_SFX sound_sfx);
 void Play_Event_SFX(int eventIndex);
 void StopBGM();
 void StopSFX();
-void Shutdown();
 
 
 // Resources
@@ -354,6 +352,7 @@ CP_Image* GetCardSpriteByType(int type);
 CARDEVENT* GetEventByIndex(int index);
 void EventSetGoldenCard();
 void RollForcedCard(int cardIndex, int chance);
+void RandomizeDeck();
 
 // NPC 
 void SpawnNpc(CP_Vector position, int amtToSpawn);
