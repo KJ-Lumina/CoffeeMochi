@@ -37,7 +37,14 @@ CP_Image sprite_tavern;
 CP_Image button_house;
 CP_Image button_farm;
 CP_Image button_grass;
-
+/*--------------------
+SET BUILDING FUNCTIONS
+---------------------*/
+/*!_____________________________________________________________________________
+@brief      This function initializes the every respective building's CP_Image
+			with its respective sprite image. It takes no input and returns no
+			output.
+*//*__________________________________________________________________________*/
 void InitBuildings(void)
 {
 	sprite_grass = CP_Image_Load("./Assets/grasstile.png");
@@ -50,6 +57,16 @@ void InitBuildings(void)
 	button_grass = CP_Image_Load("./Assets/grassbtn.png");
 }
 
+/*!_____________________________________________________________________________
+@brief      These 2 functions AddBuilding and RemoveBuilding searches for a
+			building's CP_Vector 'pos' and adds or removes the building 
+			accordingly. For AddBuilding it will first ensure that the tile 
+			is empty before adding the building indicated by 'index'; for 
+			RemoveBuilding, it will search for the indicated pos and set the tile
+			back to an empty tile. 
+			AddBuilding takes an int and a CP_Vector and returns nothing.
+			RemoveBuilding takes a CP_Vector and returns nothing.
+*//*__________________________________________________________________________*/
 void AddBuilding(int index, CP_Vector pos)
 {
 	for (int i = 0; i < (WORLDGRIDX * WORLDGRIDY); i++)
@@ -71,6 +88,15 @@ void RemoveBuilding(CP_Vector pos)
 	}
 }
 
+/*----------------------
+OTHER BUILDING FUNCTIONS
+-----------------------*/
+/*!_____________________________________________________________________________
+@brief      This function searches for the closest building type 'index' from
+			the CP_Vector 'location'. It takes in an int and a CP_Vector and
+			returns a CP_Vector of the closest building found.
+*//*__________________________________________________________________________*/
+
 CP_Vector FindNearestBuilding(int index, CP_Vector location)
 {
 	float closestDist = 1000.0f;
@@ -86,6 +112,11 @@ CP_Vector FindNearestBuilding(int index, CP_Vector location)
 	return buildingArray[nearest].position;
 }
 
+/*!_____________________________________________________________________________
+@brief      This function counts the total number of building type 'index' that
+			is currently on the field. It takes an input of int, and returns
+			an int of the total count.
+*//*__________________________________________________________________________*/
 int CountBuilding(int index)
 {
 	int count = 0;
@@ -97,6 +128,11 @@ int CountBuilding(int index)
 	return count;
 }
 
+/*!_____________________________________________________________________________
+@brief      This function returns the memory address of a building tile 'index'
+			It takes an input of int and returns a pointer to the first address
+			of the object BUILDING.
+*//*__________________________________________________________________________*/
 BUILDING* GetBuildingByIndex(int index)
 {
 	switch (index)
@@ -115,6 +151,11 @@ BUILDING* GetBuildingByIndex(int index)
 	}
 }
 
+/*!_____________________________________________________________________________
+@brief      This function returns the memory address of a CP_Image of a tile 
+			'index'. It takes an input of int and returns a pointer to the 
+			first address of a CP_Image.
+*//*__________________________________________________________________________*/
 CP_Image* GetBuildingSpriteByIndex(int index)
 {
 	switch (index)
@@ -131,13 +172,18 @@ CP_Image* GetBuildingSpriteByIndex(int index)
 		return &sprite_grass;
 	}
 }
+
+/*!_____________________________________________________________________________
+@brief      This function returns the memory address of a CP_Image button of a 
+			tile 'index'. It takes an input of int and returns a pointer to the
+			first address of a CP_Image.
+*//*__________________________________________________________________________*/
 CP_Image* GetBuildingSpriteButtonByIndex(int index)
 {
 	switch (index)
 	{
 	case 1:
-		return &button_grass;
-		
+		return &button_grass;		
 	case 2:
 		return &button_house;
 	case 3:
