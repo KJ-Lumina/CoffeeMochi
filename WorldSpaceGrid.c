@@ -370,8 +370,10 @@ void DrawBuildings()
     }
 }
 
-// Tileset method on drawing tiles
-// valid tilenumbers are from 1 to 9
+/*!_____________________________________________________________________________
+@brief      This function draws the corresponding tile for the grid.
+            It takes no input and returns no output.
+*//*__________________________________________________________________________*/
 void DrawTileSet()
 {
     for (int j = 0; j < WORLDGRIDY; ++j)

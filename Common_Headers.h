@@ -182,18 +182,7 @@ typedef struct
 	int foodGen;
 	int moraleGen;
 }BUILDING;
-typedef struct
-{
-	bool isUsed;
-	float width;
-	float height;
-	float xPos;
-	float yPos;
-	int isSplashScreenActive;
-	int isSettingsActive;
-	int index;
 
-}BUTTON;
 typedef struct
 {
 	int setNextSprite;
