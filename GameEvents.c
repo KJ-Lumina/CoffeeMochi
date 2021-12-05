@@ -189,7 +189,14 @@ CARDEVENT E_FoodPoisoning = { 40 , RESOURCE_TYPE_EVENT, "Food Poisoning", "There
 
 #pragma endregion
 
-
+/*--------------------
+INITIALIZATION FUNCTIONS
+---------------------*/
+/*!_____________________________________________________________________________
+@brief      This functions is used to initialize the various cards that Impero have
+			and store them according to their arrays and the Decks that is going
+			to be used in the game
+*//*__________________________________________________________________________*/
 void InitCardList()
 {
 	//Init Tutorial Card List
@@ -242,13 +249,27 @@ void InitCardList()
 	rewardCardList[9] = &R_RatCard;
 	rewardCardList[10] = &R_RainCard;
 
-
 	rewardCardList[29] = &R_ForcedCard;
 
 	buildCardSprite = CP_Image_Load("./ImperoArtAssets/Impero_CardBuild.png");
 	destroyCardSprite = CP_Image_Load("./ImperoArtAssets/Impero_CardDestroy.png");
 	blankCardSprite = CP_Image_Load("./ImperoArtAssets/Impero_CardBlank.png");
 }
+
+void InitDecks()
+{
+	InitCardList();
+	currentCardIndex = 0;
+	RandomizeDeck();
+	currentDeck = &debugDeck;
+}
+
+/*--------------------
+RANDOMIZE DECK
+---------------------*/
+/*!_____________________________________________________________________________
+@brief      This function is used to randomize the card that are generate per deck in a game of Impero
+*//*__________________________________________________________________________*/
 
 void RandomizeDeck()
 {
@@ -283,15 +304,14 @@ void RandomizeDeck()
 	randomDeck.cardsInDeck = 25;
 }
 
-void InitDecks()
-{	
-	InitCardList();
-	currentCardIndex = 0;
-	//currentDeck = &prototypeDeck;
-	//currentDeck = &debugDeck;
-	RandomizeDeck();
-	currentDeck = &debugDeck;
-}
+/*--------------------
+GET FUNCTIONS
+---------------------*/
+/*!_____________________________________________________________________________
+@brief      This functions are used to retrieve the Events, Rewards and CardsLeft
+			from their respective variables to ensure that modifying from external
+			sources is not possible.
+*//*__________________________________________________________________________*/
 
 CARDEVENT* GetCurrentEvent()
 {
@@ -343,6 +363,14 @@ CP_Image* GetCardSpriteByType(int type)
 		return &buildCardSprite;
 	}
 }
+
+/*--------------------
+EVENT UTILITY FUNCTIONS
+---------------------*/
+/*!_____________________________________________________________________________
+@brief      This functions are used manage special card 
+			such as Golden Card, Forced Card
+*//*__________________________________________________________________________*/
 
 void EventAddForcedEvent(int index)
 {
