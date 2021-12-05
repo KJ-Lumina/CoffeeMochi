@@ -58,10 +58,6 @@ float blessTimer = 0;
 
 
 
-//Button normalinitialize = {width,height,xPos,yPos,isSplashScreenActive,isSettingActive,index}
-BUTTON start_game = { true,100,100,200,200,1,0,START_GAME };
-
-
 CP_Image settingsButton;
 CP_Image settingsButtonHover;
 

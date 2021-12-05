@@ -20,7 +20,6 @@ CP_Image GetSpriteSheetByIndex(int index);
 void InitSpritesheets(void);
 void DrawAnimation(float x, float y, float scaleX, float scaleY, float delay, int index);
 
-//have to add more in for more spritesheets
 enum SpriteAnimationIndex
 {
     TILESET_NULL,
