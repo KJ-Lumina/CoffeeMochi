@@ -261,7 +261,7 @@ void InitDecks()
 	InitCardList();
 	currentCardIndex = 0;
 	RandomizeDeck();
-	currentDeck = &debugDeck;
+	currentDeck = &randomDeck;
 }
 
 /*--------------------

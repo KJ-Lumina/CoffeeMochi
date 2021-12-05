@@ -256,6 +256,5 @@ float GetVolume() {
 
 void SetVolume(float vol) {
     currentVolume = vol;
-    printf("Current Volume: %f", currentVolume);
     CP_Sound_SetGroupVolume(CP_SOUND_GROUP_0, currentVolume);
 }
