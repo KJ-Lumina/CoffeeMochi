@@ -212,7 +212,6 @@ xcopy "$(ProjectDir)Assets\*" "$(OutDir)Assets\" /s /r /y /q</Command>
     <ClInclude Include="Menu.h" />
     <ClInclude Include="Npc.h" />
     <ClInclude Include="OngoingEvents.h" />
-    <ClInclude Include="population.h" />
     <ClInclude Include="UI_Animations.h" />
     <ClInclude Include="UI_Text.h" />
     <ClInclude Include="WorldSpaceGrid.h" />
