@@ -16,16 +16,6 @@
 #include "cprocessing.h"
 #include <stdbool.h>
 
-#define PLAY 1
-#define STOP 0
-
-typedef struct {
-    int soundIndex;
-    int soundState;
-    int soundLocation;
-}
-SOUND;
-
 bool SoundInit = false;
 
 //Card Based
@@ -63,7 +53,12 @@ bool isBGM_Playing = false;
 SOUND_SFX previousChoiceSFX;
 bool sfxPlayed = false;
 
-//PlayingSound[20];
+/*--------------------
+INITIALIZATION FUNCTIONS
+---------------------*/
+/*!_____________________________________________________________________________
+@brief      This function is used to initialize the sounds through a file path for Impero
+*//*__________________________________________________________________________*/
 void InitSound()
 {
     if (!SoundInit) {
@@ -102,6 +97,13 @@ void InitSound()
     }
 }
 
+/*--------------------
+STOP FUNCTIONS
+---------------------*/
+/*!_____________________________________________________________________________
+@brief      This functions is used to stop the current BGM or SFX from playing.
+*//*__________________________________________________________________________*/
+
 void StopBGM() {
     CP_Sound_StopAll(); //Stop All Sound before playing new ones
     isBGM_Playing = false;
@@ -110,6 +112,15 @@ void StopBGM() {
 void StopSFX() {
     sfxPlayed = false;
 }
+
+
+/*--------------------
+PLAY FUNCTIONS
+---------------------*/
+/*!_____________________________________________________________________________
+@brief      This functions is used to play any BGM, SFX 
+            through their respective identifier
+*//*__________________________________________________________________________*/
 void PlayBGM(SOUND_BGM sound_BGM) {
     
     if (isBGM_Playing == false) {
@@ -231,6 +242,14 @@ void Play_SFX_Sound(SOUND_SFX sound_sfx)
     }     
 }
 
+/*--------------------
+GET & SET FUNCTIONS
+---------------------*/
+/*!_____________________________________________________________________________
+@brief      This functions is used to GET and SET the current volume
+            the sounds are playing at.
+*//*__________________________________________________________________________*/
+
 float GetVolume() {
     return currentVolume;
 }
@@ -240,36 +259,3 @@ void SetVolume(float vol) {
     printf("Current Volume: %f", currentVolume);
     CP_Sound_SetGroupVolume(CP_SOUND_GROUP_0, currentVolume);
 }
-
-//void Shutdown()
-//{
-//    switch (SoundIndex)
-//    {
-//    case CARD:
-//        CP_Sound_Free(&CardDeckHover_S);
-//        return;
-//
-//    case HOUSE:
-//        CP_Sound_Free(&House_S);
-//        return;
-//
-//    case MARKET:
-//        CP_Sound_Free(&Market_S);
-//        return;
-//
-//    case FARM:
-//        //CP_Sound_Free(&Farm_S);
-//        return;
-//
-//    case GOLD:
-//        CP_Sound_Free(&Gold_S);
-//        return;
-//
-//    case RAT:
-//        CP_Sound_Play(RatE_S);
-//        return;
-//    case 7:
-//        CP_Sound_Play(BGM_Game);
-//        return;
-//    }
-//}
