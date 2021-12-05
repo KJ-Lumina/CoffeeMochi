@@ -43,6 +43,15 @@ float timeElapse[1];
 float spawnerAnimDelta = 0;
 
 
+/*--------------------
+  ANIMATION FUNCTIONS
+---------------------*/
+/*!_____________________________________________________________________________
+@brief      This function initializes every respective spritesheet's CP_Image
+            with its respective sprite image, as well as initializes an array
+            of parameters for DrawAnimation() function.
+            It takes no input and returns no output.
+*//*__________________________________________________________________________*/
 void InitSpritesheets()
 {
     numOfSpritesheets = 2;
@@ -62,6 +71,12 @@ void InitSpritesheets()
     }
 
 }
+
+/*!_____________________________________________________________________________
+@brief      This function takes in an index and returns the associated 
+            SPRITESHEET struct. 
+            It takes in an int and returns SPRITESHEET struct.
+*//*__________________________________________________________________________*/
 SPRITESHEET GetSpriteAnimationByIndex(int index)
 {
     switch (index)
@@ -76,6 +91,14 @@ SPRITESHEET GetSpriteAnimationByIndex(int index)
         return tileset_testenemy;
     }
 }
+
+
+
+/*!_____________________________________________________________________________
+@brief      This function takes in an index and returns the associated
+            CP_Image struct.
+            It takes in an int and returns CP_Image struct.
+*//*__________________________________________________________________________*/
 CP_Image GetSpriteSheetByIndex(int index)
 {
     switch (index)
@@ -98,7 +121,16 @@ int animSize = 99;
 int currentSprite = 0;
 
 
-// Draws Animation without stopping, float x and y for position, float scale pixel size, delay is animation time, index is enum spritesheet
+/*!_____________________________________________________________________________
+@brief      This function renders a spritesheet with specific parameters,
+            and the animation will keep looping.
+
+            It takes in a float x and y for render position,
+            float scaleX and scaleY for the scale of spritesheet, 
+            float newDelay for how long it takes to render the next frame,
+            and an int for the spritesheet index.
+            This function returns no output.
+*//*__________________________________________________________________________*/
 void DrawAnimation(float x, float y, float scaleX, float scaleY, float newDelay, int newIndex)
 {
 
@@ -138,7 +170,16 @@ void DrawAnimation(float x, float y, float scaleX, float scaleY, float newDelay,
 
 }
 
-// Saves an animation into the AllAnims array to be rendered. If infiniteLoop put 1. timeToDeath is how long 1 cycle of animation will take in case of infiniteloop.
+/*!_____________________________________________________________________________
+@brief      This function loads an assortment of an animation's parameters 
+            into the SPRITESHEET AllAnims array to be rendered.
+            
+            It takes in a float x and y for starting position, 
+            float endx and endy for ending position, float scaleX and scaleY 
+            for the scale of spritesheet, int index for spritesheet index, 
+            float time to death and an int for infiniteloop option.
+            This function returns no output.
+*//*__________________________________________________________________________*/
 void SpawnAnimation(float x, float y, float endx, float endy, float scaleX, float scaleY, int index, float timeToDeath, int isInfinteLoop)
 {
     int i = 0;
@@ -177,7 +218,13 @@ void SpawnAnimation(float x, float y, float endx, float endy, float scaleX, floa
 }
 
 
-// Draws out all Anims in the array until the animation's death, where it will be removed
+/*!_____________________________________________________________________________
+@brief      This function renders all the animation loaded in the SPRITESHEET
+            AllAnims array. All animations that have ended will be cleared
+            afterwards from the array. InfiniteLoop anims will not be cleared.
+
+            This function takes in no input and returns no output.
+*//*__________________________________________________________________________*/
 void DrawAllAnimations(void)
 {
 
@@ -285,7 +332,24 @@ float counter2AnimDelta = 0;
 float counter3AnimDelta = 0;
 
 
-//constantly spawns an animation
+/*!_____________________________________________________________________________
+@brief      This function loads an assortment of an animation's parameters
+            into the SPRITESHEET AllAnims array to be rendered. This spawn
+            function will repeatedly spawn animations to be rendered after
+            a specific time.
+
+            It takes in a int counterindex to keep track of which timer is used
+            for the animation, int index for spritesheet index, 
+            float time for the time between each spawn of animation,
+            int lowerX, lowerY, upperX and upperY for random spawn between
+            the set range of positions,
+            float scaleX and scaleY for animaton scale, 
+            float time to death for timelength of animation,
+            int isTimeVariance to slightly alter the time between each spawn
+            and an int isLerp for changing endposition of animation.
+
+            This function returns no output.
+*//*__________________________________________________________________________*/
 void ConstantAnimSpawner(int counterIndex, int index, float time, int lowerX, int upperX, int lowerY, int upperY, float scaleX, float scaleY, float timeToDeath, int isTimeVariance, int isLerp)
 {
     float posX = 0;
@@ -372,6 +436,15 @@ CP_Image minusMorale;
 CP_Image addBlessing;
 LINEARVFX vfxList[100];
 
+
+/*--------------------
+    VFX FUNCTIONS
+---------------------*/
+/*!_____________________________________________________________________________
+@brief      This function initializes every respective Vfx's CP_Image
+            with its respective sprite image.
+            It takes no input and returns no output.
+*//*__________________________________________________________________________*/
 void InitVfx()
 {
     addGold = CP_Image_Load("./Assets/addGold2.png");
@@ -387,6 +460,12 @@ void InitVfx()
     }
 }
 
+
+/*!_____________________________________________________________________________
+@brief      This function takes in an index and returns the associated
+            CP_Image struct.
+            It takes in an int and returns CP_Image struct.
+*//*__________________________________________________________________________*/
 CP_Image* GetVfxSpriteByIndex(int index)
 {
     switch (index)
@@ -411,7 +490,16 @@ CP_Image* GetVfxSpriteByIndex(int index)
 }
 
 
+/*!_____________________________________________________________________________
+@brief      This function loads an assortment of a VFX's parameters into the
+            LinearVFX vfxList array to be rendered.
 
+            It takes in an int index, CP_Vector for both starting position and 
+            end position, float of its lifetime duration, 
+            CP_Vector of its size in pixels and a float for spawn time delay. 
+            
+            This function returns no output.
+*//*__________________________________________________________________________*/
 void SpawnLinearVfx(int spriteIndex, CP_Vector startPos, CP_Vector endPos, float lifetime, CP_Vector size, float spawnDelay)
 {
     for (int i = 0; i < 100; ++i)
@@ -449,6 +537,14 @@ float EaseOutSine(float start, float end, float value)
     return end * sinf(value * (PI * 0.5f)) + start;
 }
 
+
+/*!_____________________________________________________________________________
+@brief      This function renders all the vfx loaded in the LINEARVFX vfxList
+            array. All vfx that have ended will be cleared
+            afterwards from the array.
+
+            This function takes in no input and returns no output.
+*//*__________________________________________________________________________*/
 void DrawAllVfx()
 {
     float deltatVfx = CP_System_GetDt();
@@ -506,6 +602,17 @@ void DrawAllVfx()
     }
 }
 
+
+/*!_____________________________________________________________________________
+@brief      This function loads an assortment of a VFX's parameters into the
+            LinearVFX vfxList array to be rendered.
+
+            It takes in an int index, CP_Vector for both starting position, 
+            middle checkpoint and end position, float of its lifetime duration, 
+            CP_Vector of its size in pixels and a float for spawn time delay. 
+            
+            This function returns no output.
+*//*__________________________________________________________________________*/
 void SpawnVfxEaseInToEaseOut(int spriteIndex, CP_Vector startPos, CP_Vector checkpoint, CP_Vector endPos, float lifetime, CP_Vector size, float spawnDelay)
 {
     int count = 2;
