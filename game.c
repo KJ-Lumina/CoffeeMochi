@@ -20,7 +20,7 @@
 #include "Npc.h"
 
 #pragma region Game Options Control
-bool AllowAdminControl = false;
+bool AllowAdminControl = true;
 bool AllowMouseDrag = false;
 bool mouseDrag = false;
 float MouseCounter = 0;
